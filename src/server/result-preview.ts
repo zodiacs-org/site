@@ -1351,15 +1351,25 @@ export function famousChartStory(model: FamousChartCardModel, images: Map<ShareS
   ]), model.sign.slug);
 }
 
+/**
+ * The page's address as the retrograde story prints it, on the site the share was opened from: the request's origin
+ * is the validated one the share page links with (requestOrigin), so a staging share never points at production,
+ * where the page may be switched off.
+ */
+export function retrogradeForYouStoryAddress(requestUrl: string): string {
+  const host = new URL(requestUrl).host.toLowerCase();
+  return `${host === 'www.zodiacs.org' ? 'zodiacs.org' : host}/retrogrades/for-you`;
+}
+
 /** A retrograde in one person's chart (C, the keepsake): the Sky dial, the planet, the published window and what that retrograde means in general. */
-export function retrogradeForYouStory(model: RetrogradeForYouCardModel, art: string[]) {
+export function retrogradeForYouStory(model: RetrogradeForYouCardModel, art: string[], address = 'zodiacs.org/retrogrades/for-you') {
   return storyFrame(art, storyColumn([
     storyKicker('Retrogrades in my chart', model.hue),
     storyTitle(model.title, storyFit([model.title], 112, 64)),
     storyLine(model.span),
     storyLine(model.line, 36),
     ...storyConfidence(model.confidence),
-    storyAction('See your retrogrades', 'zodiacs.org/retrogrades/for-you'),
+    storyAction('See your retrogrades', address),
   ]));
 }
 
@@ -1524,7 +1534,8 @@ export async function handleRetrogradeForYouStoryRequest(request: Request): Prom
   if (!data) return errorResponse(503);
   const model = retrogradeForYouCardModel(share, data.skyEvents);
   if (!model) return errorResponse(400);
-  return storyFor([], ['sky-calendar-hero'], (_images, art) => retrogradeForYouStory(model, art));
+  const address = retrogradeForYouStoryAddress(request.url);
+  return storyFor([], ['sky-calendar-hero'], (_images, art) => retrogradeForYouStory(model, art, address));
 }
 
 export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {

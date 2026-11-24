@@ -17,6 +17,7 @@ import { z } from 'zod';
 import type { LocalTimeFlag, LocalTimeModule } from '../../lib/compute-api/local-time';
 import { computeChart } from '../../lib/engine/full.js';
 import type { Chart } from '../../lib/engine/types';
+import { birthDaySpan } from '../../lib/time/birth-day-span';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import type { PlaceTable } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
@@ -166,7 +167,9 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
 }
 
 /**
- * The two ends of an untimed birth day: the local day with a zone, else every
+ * The two ends of an untimed birth day: the local day with a zone, its whole
+ * span on that clock (a repeated last minute at its later pass, a skipped end
+ * at the nearest minute shown: src/lib/time/birth-day-span.ts), else every
  * zone's version of that date (UTC−12 to UTC+14). A placement holds for an
  * untimed birth only when it is the same at both ends.
  */
@@ -174,8 +177,7 @@ export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
-  const local = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!)).utc;
-  return [local('00:00'), local('23:59')];
+  return birthDaySpan(args.birthDate, args.zone, longitude, (date, time, zone, options) => clock.resolveLocalToUtc(date, time, zone, options));
 }
 
 /**

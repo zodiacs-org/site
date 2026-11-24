@@ -346,6 +346,30 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     expect(computeRetrogradeForYou({ birthDate: '1990-03-25', birthTime: null, place: MADRID, planets: ['Mercury'], now, zone: 'UTC' }).refused).toBeUndefined();
   });
 
+  it('reads an untimed birth date over its whole day when the clocks repeat its last hour, on the page and in the tool', async () => {
+    // Gaza went back from 00:00 on 17 October 2003 to 23:00 on the 16th, so the 16th's 23:59 showed twice. Jupiter
+    // stood at 160.427 degrees at the first 23:59 (inside the January 2027 Mars loop, which turns at about 160.429) and
+    // at 160.435 at the second, outside it: over the real day the contact is possible, never definite.
+    const GAZA = { lat: 31.5, lon: 34.47, tz: 'Asia/Gaza' };
+    const now = new Date('2026-11-24T09:00:00Z');
+    await prepareLocalTime('2003-10-16', GAZA.tz);
+    const page = computeRetrogradeForYou({ birthDate: '2003-10-16', birthTime: null, place: GAZA, planets: ['Mars'], now, zone: 'UTC' });
+    if (page.refused) throw new Error(page.refused);
+    const pagePeriod = page.periods[0];
+    expect(pagePeriod.stationRetrograde.utc.slice(0, 10)).toBe('2027-01-10');
+    expect(pagePeriod.contacts.map((entry) => entry.point)).not.toContain('Jupiter');
+    expect(pagePeriod.possibleContacts.map((entry) => entry.point)).toContain('Jupiter');
+    for (const placed of [{ latitude: GAZA.lat, longitude: GAZA.lon }, {}]) {
+      const result = await retrogradeForMe({ birthDate: '2003-10-16', zone: GAZA.tz, ...placed, planets: ['Mars'], currentZone: 'UTC' }, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true });
+      if ('refused' in result) throw new Error(result.refused);
+      const period = result.data.periods[0];
+      expect(period.contacts.map((entry) => entry.point), JSON.stringify(placed)).not.toContain('Jupiter');
+      expect(period.possibleContacts.map((entry) => entry.point), JSON.stringify(placed)).toContain('Jupiter');
+      expect(period.contacts).toEqual(pagePeriod.contacts);
+      expect(period.possibleContacts).toEqual(pagePeriod.possibleContacts);
+    }
+  });
+
   it('takes the later pass the real size of the change on: half an hour on Lord Howe Island', async () => {
     // 15 Mar 1987, 01:30: the clocks went back 30 minutes, and both passes give Capricorn rising. An hour on would give Aquarius.
     const place = { lat: -31.55, lon: 159.08, tz: 'Australia/Lord_Howe' };

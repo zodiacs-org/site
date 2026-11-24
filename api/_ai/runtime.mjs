@@ -43103,6 +43103,25 @@ function withClockLimit(reading, limit) {
 
 // src/ai-tools/personal/shared.ts
 import { z as z15 } from "zod";
+
+// src/lib/time/birth-day-span.ts
+var DAY_MINUTES = 24 * 60;
+var hhmm = (minute2) => `${String(Math.floor(minute2 / 60)).padStart(2, "0")}:${String(minute2 % 60).padStart(2, "0")}`;
+var jumpOf = (wall) => wall.jumpMinutes ?? (wall.jump && wall.transition ? Math.abs(wall.transition.offsetAfterMinutes - wall.transition.offsetBeforeMinutes) : null);
+function birthDaySpan(date3, zone10, longitude2, resolve2) {
+  const read = (time2) => longitude2 !== void 0 ? resolve2(date3, time2, zone10, { longitude: longitude2 }) : resolve2(date3, time2, zone10);
+  let first2 = 0;
+  let start = read(hhmm(first2));
+  while (start.flags.includes("dst-gap") && first2 < DAY_MINUTES - 1) start = read(hhmm(++first2));
+  let last2 = DAY_MINUTES - 1;
+  let end = read(hhmm(last2));
+  while (end.flags.includes("dst-gap") && last2 > first2) end = read(hhmm(--last2));
+  if (start.flags.includes("dst-gap")) return [read("00:00").utc, read("23:59").utc];
+  const jump = end.flags.includes("dst-fold") ? jumpOf(end) : null;
+  return [start.utc, new Date(end.utc.getTime() + (jump ? jump * 6e4 : 0))];
+}
+
+// src/ai-tools/personal/shared.ts
 var PERSONAL_MIN_YEAR = 1800;
 var PERSONAL_MAX_YEAR = 2199;
 var ZONE = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -43150,8 +43169,7 @@ async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
-  const local = (time2) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time2, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time2, args.zone)).utc;
-  return [local("00:00"), local("23:59")];
+  return birthDaySpan(args.birthDate, args.zone, longitude2, (date3, time2, zone10, options) => clock2.resolveLocalToUtc(date3, time2, zone10, options));
 }
 async function currentClock(currentZone, birthZone, context) {
   if (currentZone) return { zone: await context.resolveZone(currentZone, "/currentZone"), note: null };
@@ -43286,6 +43304,7 @@ function toolLoops(planet2, now, rowsAt = positionsMemo(), span2 = sky_default) 
   return { ...fromSky, current: after };
 }
 async function retrogradeForMe(args, context) {
+  if (args.zone !== void 0) args = { ...args, zone: await context.resolveZone(args.zone, "/zone") };
   if (args.time === void 0 && args.zone) {
     await context.localTime.prepareLocalTime(args.birthDate, args.zone);
     const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -45090,8 +45109,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       offsetFormatter(timeZone);
       const { longitude: longitude2, calendar, country, fold: fold3 } = readOptions2(options);
       const written = parseCalendarDate2(date3, calendar);
-      const hhmm = typeof time2 === "string" ? /^([01]\d|2[0-3]):([0-5]\d)$/u.exec(time2) : null;
-      if (!written || !hhmm) {
+      const hhmm2 = typeof time2 === "string" ? /^([01]\d|2[0-3]):([0-5]\d)$/u.exec(time2) : null;
+      if (!written || !hhmm2) {
         throw new RangeError(`Local date/time must be a ${calendar === "julian" ? "Julian" : "Gregorian"} date YYYY-MM-DD and a time HH:MM.`);
       }
       const civil = calendar === "julian" ? civilDateOf2(julianDayNumber2(written, "julian"), "gregorian") : written;
@@ -45099,7 +45118,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const gregorianDate = `${pad2(civil.year, 4)}-${pad2(civil.month)}-${pad2(civil.day)}`;
       const wall = /* @__PURE__ */ new Date(0);
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
-      const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
+      const wallMs = wall.setUTCHours(Number(hhmm2[1]), Number(hhmm2[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
       if (loaded === void 0 && wallMs < DAY24) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;

@@ -187,6 +187,8 @@ export function toolLoops(planet: RetrogradePlanet, now: Date, rowsAt = position
 
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
 export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
+  // The birth zone goes through the same check as currentZone, whose refusal names the field and never the value given.
+  if (args.zone !== undefined) args = { ...args, zone: await context.resolveZone(args.zone, '/zone') };
   // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
   if (args.time === undefined && args.zone) {
     await context.localTime.prepareLocalTime(args.birthDate, args.zone);

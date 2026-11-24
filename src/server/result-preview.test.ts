@@ -42,6 +42,8 @@ import {
   handleRetrogradeForYouImageRequest,
   handleRetrogradeForYouLinkRequest,
   handleRetrogradeForYouStoryRequest,
+  retrogradeForYouStory,
+  retrogradeForYouStoryAddress,
   RESULT_SHARE_ROUTE_KEY,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
@@ -67,6 +69,7 @@ import {
   skyEvents,
 } from './result-preview-model';
 import { parseRetrogradeForYouShare, retrogradeForYouCleanQuery } from '../lib/retrograde-for-you/share';
+import { requestOrigin } from './chart-preview';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
@@ -911,6 +914,20 @@ describe('a retrograde in one person’s chart', () => {
     });
     expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2027-01-10'))!, events)!.title).toBe('Mars retrograde');
     expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2026-10-24'))!, events)).toBeNull();
+  });
+
+  it('prints on the story the site the share was opened from, as the share page links, never production from staging', () => {
+    const staging = 'https://site-git-retro-zodiacsofficial.vercel.app/api/og/retrograde-for-you-story?p=mercury&s=2026-10-24';
+    expect(retrogradeForYouStoryAddress(staging)).toBe('site-git-retro-zodiacsofficial.vercel.app/retrogrades/for-you');
+    expect(retrogradeForYouStoryAddress('https://zodiacs.org/api/og/retrograde-for-you-story?p=mercury&s=2026-10-24')).toBe('zodiacs.org/retrogrades/for-you');
+    expect(retrogradeForYouStoryAddress('https://www.zodiacs.org/api/og/retrograde-for-you-story?p=mercury&s=2026-10-24')).toBe('zodiacs.org/retrogrades/for-you');
+    // The deployed entry builds the request from requestOrigin: an untrusted host falls back to production.
+    expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: 'evil.example' } })}/api/og/retrograde-for-you-story`)).toBe('zodiacs.org/retrogrades/for-you');
+    expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: 'site-git-retro-zodiacsofficial.vercel.app' } })}/api/og/retrograde-for-you-story`)).toBe('site-git-retro-zodiacsofficial.vercel.app/retrogrades/for-you');
+    const model = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24'))!, events)!;
+    const drawn = JSON.stringify(retrogradeForYouStory(model, [], retrogradeForYouStoryAddress(staging)));
+    expect(drawn).toContain('site-git-retro-zodiacsofficial.vercel.app/retrogrades/for-you');
+    expect(drawn).not.toContain('"zodiacs.org/retrogrades/for-you"');
   });
 
   it('opens a page whose action leads back to the retrogrades page', async () => {

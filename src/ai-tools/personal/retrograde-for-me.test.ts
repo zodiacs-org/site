@@ -294,6 +294,23 @@ describe('get_retrograde_for_me privacy and refusals', () => {
     });
   });
 
+  it('checks the birth zone as it checks currentZone, never repeating the value given', async () => {
+    // An otherwise valid call with a well-formed zone name tzdb does not have: the same fixed refusal as for currentZone.
+    const birthZone = await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', zone: 'Mars/Olympus_Mons', currentZone: 'UTC' }, ON);
+    const currentZone = await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', currentZone: 'Mars/Olympus_Mons' }, ON);
+    expect(birthZone).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    expect(JSON.stringify(birthZone)).not.toMatch(/Olympus|Mars\//u);
+    expect(JSON.stringify(currentZone)).not.toMatch(/Olympus|Mars\//u);
+    expect((birthZone as { error: { message: string } }).error.message).toBe("zone must be a time zone name the server's time zone data includes.");
+    expect((currentZone as { error: { message: string } }).error.message).toBe("currentZone must be a time zone name the server's time zone data includes.");
+    // With a time and a place too, and a known zone in any letter case is read as tzdb spells it.
+    const timed = await executeAiTool('get_retrograde_for_me', { ...MADRID, zone: 'Mars/Olympus_Mons', currentZone: 'UTC' }, ON);
+    expect(JSON.stringify(timed)).not.toMatch(/Olympus|Mars\//u);
+    const cased = await executeAiTool('get_retrograde_for_me', { ...MADRID, zone: 'europe/madrid', currentZone: 'UTC' }, ON);
+    const exact = await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'UTC' }, ON);
+    expect(JSON.stringify(cased)).toBe(JSON.stringify(exact));
+  });
+
   it('refuses a time without a zone and an unknown planet', async () => {
     expect(await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false });
     expect(await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', planets: ['Jupiter'] }, ON)).toMatchObject({ ok: false });
