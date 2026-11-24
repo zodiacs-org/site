@@ -130,6 +130,7 @@ await withPreview({ port: 4371 }, async (base) => {
         const shared = await cls(tab);
         check(`${viewport.name}: a shared link opens on its results with zero CLS`, shared.cls === 0, JSON.stringify(shared));
         check(`${viewport.name}: the shared link reads the general sky`, (await tab.textContent('.good-days__title'))?.startsWith('Wedding: the best days') === true);
+        check(`${viewport.name}: a general reading does not carry the birth-detail note`, (await tab.locator('.good-days__result small').filter({ hasText: READING_CONFIDENCE_NOTE }).count()) === 0);
         check(`${viewport.name}: the shared link's days are counted in its zone`, (await tab.textContent('.good-days__zone')) === 'Days are counted in Asia/Makassar.', await tab.textContent('.good-days__zone') ?? '');
         check(`${viewport.name}: the zone picker shows the shared link's zone`, (await tab.inputValue('#gd-zone')) === 'Asia/Makassar');
         check(`${viewport.name}: shared link has no page errors`, errors.length === 0, errors.join('\n'));

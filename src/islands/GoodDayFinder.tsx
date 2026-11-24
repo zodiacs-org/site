@@ -308,7 +308,9 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
           <div class="calc__result good-days__result" ref={resultRef} tabIndex={-1} aria-label={`Good days: ${result.goalLabel}`}>
             <h2 class="good-days__title">{result.goalLabel}: the best days</h2>
             <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.
-              <small class="good-days__confidence-note" style={{ visibility: error ? 'hidden' : 'visible' }}>{READING_CONFIDENCE_NOTE}</small>
+              {result.personal && (
+                <small class="good-days__confidence-note">{READING_CONFIDENCE_NOTE}</small>
+              )}
             </p>
             <ol class="good-days__list">
               {result.best.map((day, index) => (

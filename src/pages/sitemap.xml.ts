@@ -773,7 +773,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The meaning of reading confidence and the numerology and tarot exception.
   ...['/developers/demo/', '/your-2027-sky/', '/numerology/'].map((loc) => [loc, READING_CONFIDENCE_UPDATED] as const),
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', READING_CONFIDENCE_UPDATED] as const] : []),
-  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', READING_CONFIDENCE_UPDATED] as const] : []),
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-24'] as const] : []),
   ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', READING_CONFIDENCE_UPDATED] as const] : []),
   // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
   // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.

@@ -1754,7 +1754,6 @@ export async function handleOccasionLinkRequest(request: Request): Promise<Respo
     story: { href: `${OCCASION_SHARE_STORY_PATH}?${occasionQuery(share)}`, filename: `zodiacs-${share.occasion}-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.headline}, ${model.when}: ${model.score} out of 100. ${model.verdict}.${model.confidence ? ` ${model.confidence}.` : ''}`,
-    confidenceNote: model.confidence ? READING_CONFIDENCE_NOTE : undefined,
     explanation: `Zodiacs rated this date ${model.score} out of 100 from the sky that day: the Moon’s phase and sign, Venus, and any planets in retrograde.${model.confidence ? ` ${model.confidence}.` : ''}`,
     action: { label: 'Rate your own date', href: '/occasions/' },
     note: SHARE_NOTE,

@@ -232,7 +232,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
     return <>
       <p class="ys-moment__confidence">{w.confidence(moment.confidence)}</p>
       {locale === 'en' && moment === firstLabel && (
-        <small class="sharing-note" style={{ visibility: error ? 'hidden' : 'visible' }}>{w.confidenceNote}</small>
+        <small class="sharing-note">{w.confidenceNote}</small>
       )}
     </>;
   }
