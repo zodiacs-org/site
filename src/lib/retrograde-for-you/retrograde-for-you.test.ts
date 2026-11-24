@@ -370,6 +370,32 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     }
   });
 
+  it('leaves the Sun sign and houses unset for a day the Sun changed sign in its last minute: Lagos, 20 May 1972', async () => {
+    // The Sun entered Gemini at 23:59:28 on the Lagos clock: the day runs up to the next midnight, so it holds both signs.
+    const LAGOS = { lat: 6.45, lon: 3.4, tz: 'Africa/Lagos' };
+    const now = new Date('2026-11-24T09:00:00Z');
+    await prepareLocalTime('1972-05-20', LAGOS.tz);
+    const page = computeRetrogradeForYou({ birthDate: '1972-05-20', birthTime: null, place: LAGOS, planets: ['Mercury', 'Venus', 'Mars'], now, zone: 'UTC' });
+    if (page.refused) throw new Error(page.refused);
+    expect(page.periods.length).toBeGreaterThan(0);
+    for (const period of page.periods) {
+      expect(period.housesCountedFrom).toBeNull();
+      expect(period.houses).toEqual([]);
+      expect(period.shareQuery).not.toBeNull();
+      expect(period.shareQuery).not.toMatch(/(?:^|&)sun=/);
+    }
+    for (const placed of [{ latitude: LAGOS.lat, longitude: LAGOS.lon }, {}]) {
+      const result = await retrogradeForMe({ birthDate: '1972-05-20', zone: LAGOS.tz, ...placed, planets: ['Mercury', 'Venus', 'Mars'], currentZone: 'UTC' }, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true });
+      if ('refused' in result) throw new Error(result.refused);
+      for (const period of result.data.periods) {
+        expect(period.housesCountedFrom, JSON.stringify(placed)).toBeNull();
+        expect(period.houses).toEqual([]);
+        expect(period.shareUrl).not.toBeNull();
+        expect(new URL(period.shareUrl!).searchParams.has('sun')).toBe(false);
+      }
+    }
+  });
+
   it('takes the later pass the real size of the change on: half an hour on Lord Howe Island', async () => {
     // 15 Mar 1987, 01:30: the clocks went back 30 minutes, and both passes give Capricorn rising. An hour on would give Aquarius.
     const place = { lat: -31.55, lon: 159.08, tz: 'Australia/Lord_Howe' };

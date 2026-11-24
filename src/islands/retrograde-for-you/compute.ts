@@ -88,7 +88,8 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
   if (!timeKnown) {
     // Without a birth time a placement holds only if it is the same at both ends of the birth day, its whole span on
-    // the birthplace clock: a repeated last minute at its later pass, a skipped end at the nearest minute shown.
+    // the birthplace clock up to the instant before the next local midnight: a repeated last minute at its later pass,
+    // a skipped end at the nearest minute shown.
     const [dayStart, dayEnd] = birthDaySpan(input.birthDate, input.place.tz, input.place.lon, resolveLocalToUtc);
     const rows = (at: Date) => POINT_NAMES.map((body) => ({ body, lon: bodyLongitude(body, at) }));
     dayEnds = [rows(dayStart), rows(dayEnd)];

@@ -43108,6 +43108,7 @@ import { z as z15 } from "zod";
 var DAY_MINUTES = 24 * 60;
 var hhmm = (minute2) => `${String(Math.floor(minute2 / 60)).padStart(2, "0")}:${String(minute2 % 60).padStart(2, "0")}`;
 var jumpOf = (wall) => wall.jumpMinutes ?? (wall.jump && wall.transition ? Math.abs(wall.transition.offsetAfterMinutes - wall.transition.offsetBeforeMinutes) : null);
+var LAST_INSTANT_MS = 6e4 - 1;
 function birthDaySpan(date3, zone10, longitude2, resolve2) {
   const read = (time2) => longitude2 !== void 0 ? resolve2(date3, time2, zone10, { longitude: longitude2 }) : resolve2(date3, time2, zone10);
   let first2 = 0;
@@ -43116,9 +43117,9 @@ function birthDaySpan(date3, zone10, longitude2, resolve2) {
   let last2 = DAY_MINUTES - 1;
   let end = read(hhmm(last2));
   while (end.flags.includes("dst-gap") && last2 > first2) end = read(hhmm(--last2));
-  if (start.flags.includes("dst-gap")) return [read("00:00").utc, read("23:59").utc];
+  if (start.flags.includes("dst-gap")) return [read("00:00").utc, new Date(read("23:59").utc.getTime() + LAST_INSTANT_MS)];
   const jump = end.flags.includes("dst-fold") ? jumpOf(end) : null;
-  return [start.utc, new Date(end.utc.getTime() + (jump ? jump * 6e4 : 0))];
+  return [start.utc, new Date(end.utc.getTime() + (jump ? jump * 6e4 : 0) + LAST_INSTANT_MS)];
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43166,7 +43167,7 @@ async function castNatal(args, clock2) {
   return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
 async function birthDayEnds2(args, clock2) {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:59.999Z`) + 12 * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
   return birthDaySpan(args.birthDate, args.zone, longitude2, (date3, time2, zone10, options) => clock2.resolveLocalToUtc(date3, time2, zone10, options));
@@ -47397,6 +47398,13 @@ function sanitizeProtocolMessage(message, refusal) {
   return message;
 }
 
+// src/lib/staging-host.ts
+var LABEL = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+function configuredStagingHost(env) {
+  const host = env.ZODIACS_MCP_STAGING_HOST;
+  return host && host.length <= 253 && host.includes(".") && host.split(".").every((label) => LABEL.test(label)) ? host : null;
+}
+
 // src/ai-tools/argument-hints.ts
 var shapeOf = (schema) => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : void 0);
 var unwrap = (schema) => {
@@ -47570,8 +47578,8 @@ function createAiNodeHandler(options = {}) {
     try {
       const method = req.method ?? "GET";
       const host = req.headers?.host;
-      const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
-      const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes(".") && stagingHost.split(".").every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
+      const stagingHost = configuredStagingHost(env);
+      const validStagingHost = stagingHost !== null;
       const allowedHosts = options.allowedHosts ?? ["zodiacs.org", "www.zodiacs.org", ...validStagingHost ? [stagingHost] : []];
       if (typeof host !== "string" || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, "host-not-allowed");
       const origin = req.headers?.origin;

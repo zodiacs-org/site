@@ -1,5 +1,5 @@
 import { createServer, request, type Server } from 'node:http';
-import { afterAll, describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it, vi } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { wholeSignHouseFromAsc } from '../../lib/daily';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
@@ -9,6 +9,8 @@ import { executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
 import { RETROGRADE_ASK, RETROGRADE_LINE, retrogradeForMe, retrogradeForMeTool, retrogradeLoops } from './retrograde-for-me';
 import { castNatal, forbiddenClaim } from './shared';
+import { handleResultShareNodeRequest, retrogradeForYouStoryAddress } from '../../server/result-preview';
+import { requestOrigin } from '../../server/chart-preview';
 
 const clock = createLocalTimeModule();
 const NOW = new Date('2026-11-09T09:00:00Z');
@@ -281,6 +283,67 @@ describe('get_retrograde_for_me privacy and refusals', () => {
       const links = pageLinks(live);
       expect(links.length).toBeGreaterThan(0);
       expect(links.every((url) => url.startsWith('https://zodiacs.org/'))).toBe(true);
+    });
+
+    it('opens a share issued on a configured custom staging host on that host: its picture, its redirect and its story address', async () => {
+      const CUSTOM = 'staging.zodiacs.org';
+      const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', ZODIACS_MCP_STAGING_HOST: CUSTOM, [PAGE_FLAG]: '1' };
+      const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+      const server = createServer((req, res) => { void handle(req, res); });
+      await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+      servers.push(server);
+      const port = (server.address() as { port: number }).port;
+      const staged = await call(port, CUSTOM, '/mcp/de440');
+      expect(staged.structuredContent?.ok).toBe(true);
+      expect(staged.structuredContent.data.pageUrl).toBe(`https://${CUSTOM}/retrogrades/for-you/`);
+      const shareUrl = new URL(staged.structuredContent.data.periods.find((period: { shareUrl: string | null }) => period.shareUrl).shareUrl);
+      expect(shareUrl.origin).toBe(`https://${CUSTOM}`);
+
+      // The share function, as vercel.json's rewrite calls it, on the host the link names.
+      const open = async (host: string, query: Record<string, string>) => {
+        const headers = new Map<string, string>();
+        const res = { statusCode: 0, body: Buffer.alloc(0) as Buffer, setHeader(name: string, value: string) { headers.set(name.toLowerCase(), value); }, end(body?: Buffer) { this.body = body ?? Buffer.alloc(0); } };
+        await handleResultShareNodeRequest({ method: 'GET', headers: { host }, query: { __zodiacs_share: 'retrograde-for-you-link', ...query } }, res, 'retrograde-for-you-link');
+        return { status: res.statusCode, location: headers.get('location'), html: res.body.toString('utf8') };
+      };
+      const query = Object.fromEntries(shareUrl.searchParams);
+      vi.stubEnv(PAGE_FLAG, '1');
+      vi.stubEnv('ZODIACS_MCP_STAGING_HOST', CUSTOM);
+      try {
+        const page = await open(shareUrl.host, query);
+        expect(page.status).toBe(200);
+        expect(page.html).toContain(`<meta property="og:image" content="https://${CUSTOM}/api/og/retrograde-for-you-image?`);
+        expect(page.html).not.toContain('https://zodiacs.org/');
+        // A key the share does not use is cleared by a redirect to the same host.
+        const cleared = await open(shareUrl.host, { ...query, utm_source: 'chat' });
+        expect(cleared.status).toBe(303);
+        expect(cleared.location).toBe(shareUrl.href);
+        // The story prints the page on the host the share was opened on.
+        expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: CUSTOM } })}/api/og/retrograde-for-you-story`)).toBe(`${CUSTOM}/retrogrades/for-you`);
+      } finally {
+        vi.unstubAllEnvs();
+      }
+
+      // With no staging host configured, the same host is not trusted: the MCP refuses it, and a share opened there
+      // builds its addresses on production.
+      vi.stubEnv(PAGE_FLAG, '1');
+      vi.stubEnv('ZODIACS_MCP_STAGING_HOST', '');
+      try {
+        const unconfigured = createAiNodeHandler({ env: { ...env, ZODIACS_MCP_STAGING_HOST: undefined }, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+        const refused = { statusCode: 0, setHeader() {}, end() {} };
+        await unconfigured({ method: 'POST', url: '/mcp/de440', headers: { host: CUSTOM, 'content-type': 'application/json' }, query: {} }, refused);
+        expect(refused.statusCode).toBe(403);
+        const page = await open(CUSTOM, query);
+        expect(page.html).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/retrograde-for-you-image?');
+        expect(page.html).not.toContain(CUSTOM);
+        expect((await open(CUSTOM, { ...query, utm_source: 'chat' })).location).toBe(`https://zodiacs.org${shareUrl.pathname}${shareUrl.search}`);
+        expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: CUSTOM } })}/api/og/retrograde-for-you-story`)).toBe('zodiacs.org/retrogrades/for-you');
+        // A configured value that is not a valid hostname is not trusted either, nor a host that only begins with it.
+        expect(requestOrigin({ headers: { host: 'Staging.Zodiacs.org' } }, { ZODIACS_MCP_STAGING_HOST: 'Staging.Zodiacs.org' })).toBe('https://zodiacs.org');
+        expect(requestOrigin({ headers: { host: 'staging.zodiacs.org.evil.test' } }, { ZODIACS_MCP_STAGING_HOST: CUSTOM })).toBe('https://zodiacs.org');
+      } finally {
+        vi.unstubAllEnvs();
+      }
     });
 
     it('links neither the page nor a card on either host while the page is switched off', async () => {

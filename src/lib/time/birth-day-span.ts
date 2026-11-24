@@ -1,8 +1,9 @@
 /**
  * The whole span of an untimed birth date on the birthplace clock, for the
  * /retrogrades/for-you/ page and get_retrograde_for_me alike: a placement
- * counts as definite only if it holds from the first minute the clock showed
- * that date to the last.
+ * counts as definite only if it holds from the first instant the clock showed
+ * that date up to, not including, the next local midnight, so the seconds of
+ * 23:59 count (the Sun entered Gemini at 23:59:28 on 20 May 1972 in Lagos).
  *
  * The local-time resolver reads a repeated wall time at its earlier pass and
  * moves a skipped one forward by the jump. Read naively, 00:00 and 23:59 are
@@ -33,9 +34,14 @@ const hhmm = (minute: number) => `${String(Math.floor(minute / 60)).padStart(2, 
 const jumpOf = (wall: WallReading) => wall.jumpMinutes
   ?? (wall.jump && wall.transition ? Math.abs(wall.transition.offsetAfterMinutes - wall.transition.offsetBeforeMinutes) : null);
 
+/** The last millisecond before the next local midnight, so the span reads every second of its last minute. */
+const LAST_INSTANT_MS = 60_000 - 1;
+
 /**
- * The first and last minute of the date on the zone's clock (with the birthplace's longitude for its local mean
- * time, when given): the first at its earlier pass, the last at its later one. The caller awaits
+ * The first and last instant of the date on the zone's clock (with the birthplace's longitude for its local mean
+ * time, when given): the first minute at its earlier pass, and the last millisecond of the last minute at its later
+ * one, which is the instant before the next local midnight (or before the jump, when the clocks skip from the end of
+ * this date). The caller awaits
  * prepareLocalTime(date, zone) first, as for any call of the resolver. A date the clock skipped whole is refused
  * before this is asked (src/lib/vedic-signs/clock.ts, skippedWholeDate); here it falls back to its 00:00 and 23:59.
  */
@@ -47,7 +53,7 @@ export function birthDaySpan(date: string, zone: string, longitude: number | und
   let last = DAY_MINUTES - 1;
   let end = read(hhmm(last));
   while (end.flags.includes('dst-gap') && last > first) end = read(hhmm(--last));
-  if (start.flags.includes('dst-gap')) return [read('00:00').utc, read('23:59').utc];
+  if (start.flags.includes('dst-gap')) return [read('00:00').utc, new Date(read('23:59').utc.getTime() + LAST_INSTANT_MS)];
   const jump = end.flags.includes('dst-fold') ? jumpOf(end) : null;
-  return [start.utc, new Date(end.utc.getTime() + (jump ? jump * 60_000 : 0))];
+  return [start.utc, new Date(end.utc.getTime() + (jump ? jump * 60_000 : 0) + LAST_INSTANT_MS)];
 }
