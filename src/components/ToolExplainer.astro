@@ -1,0 +1,16 @@
+---
+import { TOOL_EXPLAINERS, type ToolExplainerKind } from '../lib/seo/tool-explainers';
+interface Props { kind: ToolExplainerKind }
+const { faq } = TOOL_EXPLAINERS[Astro.props.kind];
+---
+<section class="tool-explainer" aria-labelledby={`tool-explainer-${Astro.props.kind}`} data-tool-explainer={Astro.props.kind}>
+  <div class="section-head"><h2 id={`tool-explainer-${Astro.props.kind}`}>Questions, answered</h2></div>
+  <div class="tool-explainer__items">{faq.map(({ q, a }) => <details class="tool-explainer__item"><summary>{q}</summary><p>{a}</p></details>)}</div>
+</section>
+<style>
+  .tool-explainer { margin-top: clamp(36px, 6vw, 56px); max-width: 72ch; }
+  .tool-explainer__items { display: grid; gap: 8px; }
+  .tool-explainer__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
+  .tool-explainer__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); min-height: 44px; }
+  .tool-explainer__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>
