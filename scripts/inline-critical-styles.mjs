@@ -86,12 +86,14 @@ const horoscopePathSet = new Set(horoscopePaths);
 // then came ahead of the page's long first layout and Lighthouse counted that
 // layout as blocking time.
 const pairSlugs = signs.flatMap((sign, index) => signs.slice(index).map((other) => `${sign}-${other}`));
-// Russian pairs exist only when the locale expansion builds them (released, or
-// held in a preview build); they then get the same treatment.
-const pairPrefixes = ['', 'es/', 'fr/', 'it/', 'pt/',
-  ...(enabledLocalesForPath('/compatibility/aries-aries/').includes('ru') ? ['ru/'] : [])];
-const pairPaths = pairPrefixes
-  .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`));
+const pairPaths = ['', 'es/', 'fr/', 'it/', 'pt/']
+  .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`))
+  // A Russian pair exists only when the locale expansion builds it (released,
+  // in a partial batch or whole, or held in a preview build): each pair is
+  // checked on its own path.
+  .concat(pairSlugs
+    .filter((slug) => enabledLocalesForPath(`/compatibility/${slug}/`).includes('ru'))
+    .map((slug) => `ru/compatibility/${slug}/index.html`));
 const pairPathSet = new Set(pairPaths);
 const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // Every pair page must inline at least these. Feature flags can add more
