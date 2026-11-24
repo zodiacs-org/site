@@ -300,7 +300,7 @@ const monthDay = (iso: string) => ({
     <!-- 2. The sky in one line, the same line the home page shows. -->
     <div class="kwrap">
       <div class="ticker-band today-skyline">
-        <SkyTicker />
+        <SkyTicker reserveLabels />
       </div>
     </div>
 
@@ -742,6 +742,17 @@ const monthDay = (iso: string) => ({
      stack directly. The line does the same, including the date label, whose
      size is 14px times the 76.8% EB Garamond fallback adjustment. */
   .today-skyline .skyticker { font-family: var(--today-face); }
+  /* The response can pause after a glyph. Size its row and text cell from
+     the full label on the opening tag so the glyph paints in its final spot. */
+  .today-skyline .skyticker__item { display: inline-grid; }
+  .today-skyline .skyticker__item::after,
+  .today-skyline .skyticker__icon + span { grid-area: 1 / 2; }
+  .today-skyline .skyticker__item::after {
+    content: attr(data-label);
+    visibility: hidden;
+  }
+  .today-skyline .skyticker__icon { grid-area: 1 / 1; width: 13px; }
+  .today-skyline .skyticker__icon--disc { width: 18px; }
   .today-skyline .skyticker__label {
     font-family: Georgia, 'Liberation Serif', 'Times New Roman', serif;
     font-size: 10.75px;

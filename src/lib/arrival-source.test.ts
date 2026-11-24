@@ -27,7 +27,7 @@ const throwingStore = {
 
 describe('arrival source', () => {
   it('is the closed list the events accept', () => {
-    expect(ARRIVAL_SOURCES).toEqual(['direct', 'video', 'chatgpt', 'assistant', 'card', 'app', 'note']);
+    expect(ARRIVAL_SOURCES).toEqual(['direct', 'video', 'chatgpt', 'assistant', 'card', 'app', 'note', 'hn', 'github', 'reddit']);
     expect(ARRIVAL_REFS).toEqual(ARRIVAL_SOURCES.filter((source) => source !== 'direct'));
     for (const event of ['email_capture_viewed', 'email_subscribed', 'good_day_check', 'good_day_calendar_add']) {
       expect(ANALYTICS_EVENT_VALUES[event].source).toEqual(ARRIVAL_SOURCES);

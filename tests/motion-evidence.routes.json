@@ -1,0 +1,15 @@
+[
+  { "path": "/numerology/", "minMarks": 39, "rest": "changed", "primaryAction": "form button[type=submit]",
+    "steps": [ { "scrollTo": ".num-paths" }, { "fill": { "input[type=date]": "1990-03-14" }, "click": "form button[type=submit]" } ] },
+  { "path": "/compatibility/", "minMarks": 0, "rest": "identical" },
+  { "path": "/birth-chart/", "minMarks": 0, "rest": "identical", "primaryAction": "form button[type=submit]" },
+  { "path": "/big-three/", "minMarks": 0, "rest": "identical", "primaryAction": "form button[type=submit]" },
+  { "path": "/learn/aspects/opposition/", "minMarks": 0, "rest": "identical" },
+  { "path": "/learn/zodiac-dates/", "minMarks": 0, "rest": "identical" },
+  { "path": "/aries/", "minMarks": 0, "rest": "identical" },
+  { "path": "/today/", "minMarks": 0, "rest": "identical" },
+  { "path": "/horoscopes/aries/", "minMarks": 0, "rest": "identical" },
+  { "path": "/people/ada-lovelace/", "minMarks": 0, "rest": "identical" },
+  { "path": "/tools/", "minMarks": 31, "rest": "identical" },
+  { "path": "/", "minMarks": 0, "rest": "identical" }
+]
