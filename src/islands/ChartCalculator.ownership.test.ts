@@ -41,7 +41,7 @@ const input = (date = '1990-06-15') => ({ date, time: '14:30', timeKnown: true,
   city: { name: 'Synthetic place', admin1: '', country: '', tz: 'UTC', lat: 0, lon: 0, pop: 0 }, houseSystem: 'whole' });
 function harness() {
   const state: Record<string, any> = {
-    chart: null, receiptExport: null, signature: null, computedInput: null, shareInput: null,
+    chart: null, resultCount: 0, receiptExport: null, signature: null, computedInput: null, shareInput: null,
     card: 'idle', saved: 'idle', busy: false, error: '', chartActionDockModule: {},
     date: '1990-06-15', time: '14:30', city: input().city, timeKnown: true, houseSystem: 'whole',
     tourOpen: false, depthOpen: false, depthMod: null, lens: 'natal', lensMod: null, tourMod: null, selection: null,
@@ -88,6 +88,7 @@ function harness() {
   const chart = (calculation: any) => ({ input: calculation, bodies: [{ body: 'Sun', lon: 1 }, { body: 'Moon', lon: 2 }], flags: [], houses: null, angles: null, aspects: [] });
   const engine = { computeChart: (calculation: any) => { calls.push('legacy-natal'); return chart(calculation); }, computeBodies: () => [] };
   context.loadEngine = () => Promise.resolve(engine);
+  context.loadWheel = () => Promise.resolve({ default: () => null });
   context.loadChartControls = () => Promise.resolve({ default: () => null });
   context.loadCalculatorReceipt = () => Promise.resolve({ computeCalculatorReceipt: (calculation: any) => { calls.push('portable-natal'); return { chart: chart(calculation), envelopeJson: 'synthetic exact envelope' }; } });
   context.loadInterpretations = () => Promise.resolve({ bigThree: () => 'Synthetic reading' });
@@ -120,6 +121,7 @@ describe('ChartCalculator result ownership', () => {
     expect(h.context.busy).toBe(false);
     pending.resolve(boundary === 'engine' ? h.engine : { computeCalculatorReceipt: () => { throw Error('Obsolete calculation executed'); } });
     await work; await flush(); expectEmpty(h.context);
+    expect(h.context.resultCount).toBe(0);
     expect(h.calls).not.toContain('legacy-natal'); expect(h.calls).not.toContain('portable-natal');
     expect(h.context.date).toBe('1991-06-15');
   });
@@ -131,6 +133,7 @@ describe('ChartCalculator result ownership', () => {
     h.context.invalidateProfileHandoff(); await h.context.runChart(input('1991-06-15'), false); await flush();
     const currentChart = h.context.chart; older.resolve(h.engine); await oldRun; await flush();
     expect(h.context.chart).toBe(currentChart); expect(h.context.computedInput.date).toBe('1991-06-15');
+    expect(h.context.resultCount).toBe(1);
     expect(h.calls.filter((call) => call === 'portable-natal')).toHaveLength(1);
   });
 
@@ -145,6 +148,7 @@ describe('ChartCalculator result ownership', () => {
     h.context.loadCalculatorReceipt = workingLoader;
     h.context.assessLocalDateReference = () => ({ referenceStatus: 'member' });
     await h.context.runChart(input('1992-06-15'), true); await flush();
+    expect(h.context.resultCount).toBe(2);
     expect(h.context.computedInput.date).toBe('1992-06-15'); expect(h.context.error).toBe('');
   });
 
@@ -153,6 +157,25 @@ describe('ChartCalculator result ownership', () => {
     await h.context.runChart(input(), true); await flush();
     expect(h.calls.filter((call) => call === 'legacy-natal')).toHaveLength(1);
     expect(h.calls).not.toContain('portable-natal'); expect(h.context.chart).not.toBeNull(); expect(h.context.receiptExport).toBeNull();
+  });
+
+  it('publishes the result during the entrance and skips an obsolete background export', async () => {
+    const h = harness();
+    const entrance = deferred();
+    const prepare = vi.fn();
+    h.modules.set('./PositionsShareSurface', Promise.resolve({ preparePrimaryShareArtifact: prepare }));
+    h.context.resultRef.current = {
+      querySelector: () => ({ getAnimations: () => [{ finished: entrance.promise }] }),
+    };
+    await h.context.runChart(input(), true);
+    await flush();
+    expect(h.context.chart).not.toBeNull();
+    expect(prepare).not.toHaveBeenCalled();
+
+    h.context.invalidateProfileHandoff();
+    entrance.resolve(undefined);
+    await flush();
+    expect(prepare).not.toHaveBeenCalled();
   });
 
   it.each(['signature', 'prepared-share'])('does not publish delayed %s for a newer input', async (boundary) => {
