@@ -31,6 +31,7 @@ describe('crawler counts', () => {
     expect(pathFamily('/sky-calendar.ics')).toBe('events');
     expect(pathFamily('/full-moon/2026-07-29/')).toBe('events');
     expect(pathFamily('/venus-retrograde/2026-10-03/')).toBe('events');
+    expect(pathFamily('/void-of-course-moon/')).toBe('events');
     expect(pathFamily('/mystery.md')).toBe('other');
     expect(isMachineOnlyPath('/birth-chart.md')).toBe(true);
     expect(isMachineOnlyPath('/mystery.md')).toBe(false);
@@ -114,5 +115,18 @@ describe('crawler counts', () => {
     const summary = summarise(fixture, { pathLimit: 7 });
     expect(summary.incompletePathBreakdown).toBe(true);
     expect(renderTable(summary, { from: '2026-11-16', to: '2026-11-22' })).toContain('reached its group limit');
+  });
+
+  it('normalises a raw array that already uses bot and count keys, and rejects user-agent fields', () => {
+    const summary = summarise([
+      { bot: 'gptbot', count: 10 },
+      { bot: 'gptbot', path: '/llms.txt', count: 4 },
+      { bot: 'ClaudeBot', path: '/void-of-course-moon/', count: 2 },
+    ]);
+    expect(summary.totalSource).toBe('bot-totals');
+    expect(summary.table.get('GPTBot').total).toBe(10);
+    expect(summary.table.get('GPTBot').byFamily.llms).toBe(4);
+    expect(summary.table.get('ClaudeBot').byFamily.events).toBe(2);
+    expect(() => summarise([{ bot: 'GPTBot', count: 1, user_agent: 'test' }])).toThrow(/user_agent/);
   });
 });

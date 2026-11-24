@@ -77,7 +77,7 @@ const normalisedPath = (rawPath) => String(rawPath ?? '').split(/[?#]/u)[0] || '
 const LOCALE_PREFIX = /^\/(?:es|pt|fr|it|ru|zh-hans|zh-hant)(?=\/)/u;
 const CALCULATORS = /^\/(?:birth-chart|compatibility\/?$|compatibility\/invite|moon-sign|rising-sign|saturn-return|solar-return|lunar-return|transits|moon-phase|numerology|big-three|chart-twins|group-charts|good-days|year-score|astrologer-kit|your-sky-wrapped|your-2027-sky|chinese-zodiac|tools)(?:\/|$)/u;
 const HOROSCOPES = /^\/(?:horoscopes?|today|tomorrow)(?:\/|$)/u;
-const EVENTS = /^\/(?:events|mercury-retrograde|venus-retrograde|mars-retrograde|retrogrades|full-moon-calendar|full-moon|new-moon-calendar|new-moon|eclipses|sky-calendar|seasons|ingresses|feeds)(?:[/.-]|$)/u;
+const EVENTS = /^\/(?:events|mercury-retrograde|venus-retrograde|mars-retrograde|retrogrades|full-moon-calendar|full-moon|new-moon-calendar|new-moon|eclipses|void-of-course-moon|sky-calendar|seasons|ingresses|feeds)(?:[/.-]|$)/u;
 const LEARN = /^\/(?:learn|aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces|compatibility|birthdays?|people|methodology|about|privacy|glossary|placements)(?:\/|$)/u;
 
 /** The path family a request path belongs to. Query strings and fragments are ignored. */
@@ -101,8 +101,11 @@ const clean = (label) => String(label ?? '').trim().toLowerCase().replace(/[\s_]
 
 /** The table row a Vercel bot label counts under. */
 export function botRow(label) {
+  if (label === UNLABELLED || label === OTHER_LABELLED) return label;
   const key = clean(label);
   if (!key || key === 'null' || key === 'none' || key === '(empty)') return UNLABELLED;
+  if (key === clean(UNLABELLED)) return UNLABELLED;
+  if (key === clean(OTHER_LABELLED)) return OTHER_LABELLED;
   for (const [name, labels] of NAMED_BOTS) if (labels.includes(key) || clean(name) === key) return name;
   return OTHER_LABELLED;
 }
@@ -143,11 +146,7 @@ export function splitCountSources(input) {
  *  Bot-only rows feed Total. Path-grouped rows feed families and the unlabelled share.
  *  Combining both kinds of export no longer double-counts the same requests. */
 export function summarise(input, { pathLimit = PATH_QUERY_LIMIT } = {}) {
-  const { totals: totalRows, paths: pathRows } = Array.isArray(input) && input.length && input[0].bot !== undefined && input[0].count !== undefined && !input.totals
-    ? { totals: input.filter((row) => row.path === null), paths: input.filter((row) => row.path !== null) }
-    : splitCountSources(input);
-  const totals = totalRows;
-  const paths = pathRows;
+  const { totals, paths } = splitCountSources(input);
   const rowNames = [...NAMED_BOTS.map(([name]) => name), OTHER_LABELLED, UNLABELLED];
   const table = new Map(rowNames.map((name) => [name, { total: 0, byFamily: Object.fromEntries(FAMILIES.map((family) => [family, 0])) }]));
   const pathCounted = paths.length > 0;

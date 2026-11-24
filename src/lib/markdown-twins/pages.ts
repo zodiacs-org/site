@@ -9,7 +9,6 @@ import { traditionalRuler } from '../rising-example';
 import { SIGNS } from '../signs';
 import { signDateRange } from '../sign-display';
 import { datedEditionText } from '../edition-freshness';
-import { horoscopeHubTeaser, pageReadingFromProgram } from '../horoscope-page-data';
 import type { HoroscopeProgram } from '../horoscope-program';
 import programData from '../../data/horoscope-program.json';
 import { t } from '../i18n';
@@ -287,13 +286,10 @@ function horoscopes(): Twin {
       { p: `Find your sign for ${dated('today’s')} focus, pressure point, and most useful move. Read your Sun sign first, and your rising sign too, if you know it.`, computed: true },
       { h: 2, text: 'A look at today’s readings' },
       ...SIGNS.flatMap((sign): Block[] => {
-        const reading = pageReadingFromProgram(program, sign.slug, 'today');
         return [
           { h: 3, text: sign.name, computed: true },
           { list: [
             signDateRange(sign),
-            reading.label,
-            dated(horoscopeHubTeaser(reading.sections[0]?.body ?? reading.intro)),
             `[${dated('Read today →').replace(/\s*→$/u, '')}](https://zodiacs.org/horoscopes/${sign.slug}/)`,
           ], computed: true },
         ];
@@ -336,7 +332,7 @@ function methodology(): Twin {
       { h: 2, text: 'Birthplace search' },
       { p: 'Place lookup runs against a bundled index of ~34,000 cities from GeoNames (CC BY 4.0), each carrying its IANA time zone. Coordinates are stored to ~1 km precision, far finer than a birth chart needs.' },
       { h: 2, text: 'Privacy' },
-      { p: `The entire chart calculation happens in your browser. Your birth date, time, and place are not sent to a chart API, and there is no account requirement or analytics attached to birth data. Charts you save live in your browser's local storage first, deletable by you at any time. ${signingInDoesNotSend} Guide sends each question to Anthropic; if you press “Attach my chart”, which is offered only in the encrypted sync preview, a placements-only summary goes with each message while “Using my chart” remains on. The assistant never attaches the saved name, birth fields, or coordinates, though the summary's positions still give the birth date and time, and its ascendant and midheaven, kept to the whole degree, the birthplace roughly. A transit calendar or a compatibility invitation sends a chart's positions, which still give the birth date and time; the privacy page lists every case.`, computed: true },
+      { p: `The entire chart calculation happens in your browser. Your birth date, time, and place are not sent to a chart API, and there is no account requirement or analytics attached to birth data. Charts you save live in your browser's local storage first, deletable by you at any time. ${signingInDoesNotSend} Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide. A calendar file you download from the Transits page is built in your browser from your chart as calculated there, not from the chart code, and its times are exact. Anyone you share it with, or any online calendar you import it into, can work out from them your birth date and time, and your birthplace from those for your ascendant or midheaven; the privacy page lists every case.`, computed: true },
       { h: 2, text: 'Honest limits' },
       { list: [
         'Chiron and the asteroids aren\'t included yet (the engine\'s remit is major bodies); they\'re planned via public-domain JPL data.',
@@ -360,7 +356,7 @@ function privacy(): Twin {
       { p: 'Place search downloads from zodiacs.org a city file chosen by the first letter you type, and searches it in your browser. For a birth before 1970, the calculator also downloads a file of historical clock changes chosen by the birthplace\'s time zone. Neither request goes to any other service. Which files are requested shows our host the first letter of the city you typed and, for a birth before 1970, a group of time zones that includes the birthplace\'s. When a page shows the signs of a birth chart, it first requests the pictures of all twelve signs, in the same order for every chart, so those requests do not show which signs the chart has.' },
       { h: 2, text: 'How to check this yourself' },
       { p: 'You can watch this in your own browser. Open the developer tools, choose the Network tab, and calculate a chart on the birth chart page. The page downloads files from zodiacs.org: a city file named by the first letter you type, for a birth before 1970 a file of historical clock changes, and the pictures of all twelve signs. None of these requests carries your birth date, time or place, and the page sends nothing to our servers while it works out your chart.' },
-      { p: 'Birth details leave your device only when you choose an action that sends them: syncing a chart to your account, sharing a link that carries them, or typing them into an assistant message. A transit calendar or a compatibility invitation sends a chart\'s positions, which still give the birth date and time. If you attach a chart to Guide, which is offered only in the encrypted sync preview, its placements-only summary goes to Anthropic with your question. A program that uses the compute API sends the birth details it chooses in the body of its request; the site\'s own calculators do not use that API.' },
+      { p: 'Birth details leave your device only when you choose an action that sends them: syncing a chart to your account, sharing a link that carries them, or typing them into an assistant message. A calendar file you download from the Transits page is built in your browser from your chart as calculated there, not from the chart code, and its times are exact. Anyone you share it with, or any online calendar you import it into, can work out from them your birth date and time, and your birthplace from those for your ascendant or midheaven. If you are signed in and create a compatibility invitation from a synced chart, our server stores the chart\'s name (up to 24 characters), its Sun sign, its positions-only chart code, and whether the birth time is known. A program that uses the compute API sends the birth details it chooses in the body of its request; the site\'s own calculators do not use that API.' },
       { h: 2, text: 'Guide' },
       { p: t('en', 'trustGuideNotice'), computed: true },
       { p: 'When you send a question to Guide, that message, recent Guide messages, and the visible Guide context are sent to Anthropic for an input safety check and to generate a draft reply. That generated draft reply is then sent back to Anthropic for a second safety check before you see it. The current web Guide conversation stays only in this browser session, is not synced to an account, and is not stored as text on Zodiacs.org servers, whether or not you are signed in. Anthropic says it does not use API inputs or outputs to train models by default and deletes them from its backend within 30 days, except when the law or enforcement of its Usage Policy requires longer retention. To enforce the daily limit, we keep a salted one-way identifier derived from your IP address, never the raw IP, with its daily count and a record of each request. Each later quota check deletes counts older than the previous UTC day and request records older than 48 hours. We do not send that identifier to Anthropic or put conversation text in provider metadata. Guide also sets a session cookie holding a random, signed identifier. It is used to limit simultaneous requests from one browser, lasts until the browser session ends, and is not stored with your messages.' },
@@ -395,7 +391,7 @@ function about(): Twin {
       { h: 2, text: 'Accuracy without the homework' },
       { p: 'When a date, degree, or birth time matters, it is calculated against the actual sky and checked before it appears. If you want the ephemeris, house systems, historical time-zone handling, and accuracy limits, the full methodology is public.' },
       { h: 2, text: 'Your data stays yours' },
-      { p: `The engine runs in your browser, so chart calculation sends no birth fields to a chart API. Charts you save live on your device. ${signingInDoesNotSend} If you explicitly attach a chart to Guide, which is offered only in the encrypted sync preview and not on the public site, its placements-only summary, not the saved name or raw birth fields, is sent with your question to Anthropic for that conversation; its positions still give your birth date and time. There are no ads and no cross-site tracking. The full detail is on the privacy page.`, computed: true },
+      { p: `The engine runs in your browser, so chart calculation sends no birth fields to a chart API. Charts you save live on your device. ${signingInDoesNotSend} Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide. There are no ads and no cross-site tracking. The full detail is on the privacy page.`, computed: true },
       { h: 2, text: 'How Zodiacs.org is maintained' },
       { p: 'Zodiacs.org is a Zodiacs LLC publication maintained by automated systems, without a traditional human editorial staff. Articles use the Zodiacs.org organizational byline; there is no invented editor, biography, or set of credentials behind it. The calculators remain free because the core math runs on your device.' },
       { h: 2, text: 'Get in touch' },

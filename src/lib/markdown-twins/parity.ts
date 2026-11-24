@@ -75,16 +75,46 @@ export function faqOf(html: string): { q: string; a: string }[] {
 
 /** Every cell of the page's dated tables (the sky calendar pages' rows). */
 export function tableCellsOf(html: string): string[] {
-  const cells: string[] = [];
+  return tableRowsOf(html).flat();
+}
+
+/** Dated table body rows, in page order, without the "now" and "ahead" markers. */
+export function tableRowsOf(html: string): string[][] {
+  const rows: string[][] = [];
   for (const [, table] of html.matchAll(/<table class="rx-table"[\s\S]*?<tbody\b[^>]*>([\s\S]*?)<\/tbody>/gu)) {
-    for (const [, attrs, cell] of table.matchAll(/<td\b([^>]*)>([\s\S]*?)<\/td>/gu)) {
-      // The "now" and "ahead" markers restate each row's date against the build day.
-      if (attrs.includes('rx-table__state')) continue;
-      const text = collapse(decodeEntities(stripTags(cell)));
-      if (text && text !== '\u2014') cells.push(text);
+    for (const [, row] of table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gu)) {
+      const cells: string[] = [];
+      for (const [, attrs, cell] of row.matchAll(/<td\b([^>]*)>([\s\S]*?)<\/td>/gu)) {
+        if (attrs.includes('rx-table__state')) continue;
+        const text = collapse(decodeEntities(stripTags(cell)));
+        if (text && text !== '\u2014') cells.push(text);
+      }
+      if (cells.length) rows.push(cells);
     }
   }
-  return cells;
+  return rows;
+}
+
+/** Body rows of Markdown tables, in file order, skipping the header row of each table. */
+export function markdownTableRows(markdown: string): string[][] {
+  const rows: string[][] = [];
+  let pending: string[][] = [];
+  const flush = () => {
+    if (pending.length > 1) rows.push(...pending.slice(1));
+    pending = [];
+  };
+  for (const raw of markdown.split('\n')) {
+    const line = raw.trim();
+    if (!line.startsWith('|')) {
+      flush();
+      continue;
+    }
+    if (/^\|?\s*-{3,}/u.test(line)) continue;
+    const cells = line.slice(1, line.endsWith('|') ? -1 : undefined).split('|').map((cell) => collapse(cell)).filter(Boolean);
+    if (cells.length) pending.push(cells);
+  }
+  flush();
+  return rows;
 }
 
 /**

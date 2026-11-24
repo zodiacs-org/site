@@ -10,7 +10,7 @@ import {
   type Block,
   type TwinSlug,
 } from './index';
-import { faqOf, headOf, markdownStatements, tableCellsOf, visibleHtmlText, visibleSourceText } from './parity';
+import { faqOf, headOf, markdownStatements, tableCellsOf, tableRowsOf, markdownTableRows, visibleHtmlText, visibleSourceText } from './parity';
 
 const read = (path: string) => readFileSync(path, 'utf8');
 /** Compared without whitespace: the built HTML drops the space where a line break meets a tag. */
@@ -124,11 +124,15 @@ describe.skipIf(!existsSync('dist/birth-chart.md'))('Markdown twins match the bu
     if (!['horoscopes', 'methodology', 'privacy', 'about'].includes(slug)) expect(faq.length).toBeGreaterThan(2);
     const droppedFaq = faq.flatMap(({ q, a }) => [q, a]).filter((part) => !twinText.includes(squash(part)));
     expect(droppedFaq).toEqual([]);
-    const cells = new Set(statements);
-    const rows = tableCellsOf(html);
-    if (['mercury-retrograde', 'full-moon-calendar', 'eclipses'].includes(slug)) expect(rows.length).toBeGreaterThan(40);
-    const droppedRows = rows.filter((cell) => !cells.has(cell));
-    expect(droppedRows).toEqual([]);
+    if (['mercury-retrograde', 'full-moon-calendar', 'eclipses'].includes(slug)) {
+      const rows = tableRowsOf(html);
+      expect(rows.length).toBeGreaterThan(10);
+      expect(markdownTableRows(markdown), slug).toEqual(rows);
+    } else {
+      const cells = new Set(statements);
+      const droppedRows = tableCellsOf(html).filter((cell) => !cells.has(cell));
+      expect(droppedRows).toEqual([]);
+    }
   });
 
   it('leaves other pages and other languages without a twin link', () => {

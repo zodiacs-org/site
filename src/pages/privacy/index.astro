@@ -129,13 +129,16 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       <p>
         Birth details leave your device only when you choose an action that sends
         them: syncing a chart to your account, sharing a link that carries them, or
-        typing them into an assistant message. A transit calendar or a compatibility
-        invitation sends a chart's positions, which still give the birth date and
-        time. If you attach a chart to Guide, which is offered only in the encrypted
-        sync preview, its placements-only summary goes to Anthropic with your
-        question. A program that uses the compute API sends the birth details it
-        chooses in the body of its request; the site's own calculators do not use
-        that API.
+        typing them into an assistant message. A calendar file you download from the
+        Transits page is built in your browser from your chart as calculated there,
+        not from the chart code, and its times are exact. Anyone you share it with,
+        or any online calendar you import it into, can work out from them your birth
+        date and time, and your birthplace from those for your ascendant or midheaven.
+        If you are signed in and create a compatibility invitation from a synced
+        chart, our server stores the chart's name (up to 24 characters), its Sun
+        sign, its positions-only chart code, and whether the birth time is known.
+        A program that uses the compute API sends the birth details it chooses in
+        the body of its request; the site's own calculators do not use that API.
       </p>
 
       <h2>Guide</h2>
