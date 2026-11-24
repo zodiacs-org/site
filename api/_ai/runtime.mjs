@@ -43295,12 +43295,64 @@ var isRegionName = (hint) => REGION_NAMES.has(words(hint).trim());
 function regionMatches(hint, region) {
   return words(hint).trim() !== "" && words(region).includes(words(hint));
 }
-function countryHintMatches(hint, region, country) {
-  return isRegionName(hint) ? regionMatches(hint, region) : countryMatches(country, hint);
+var countryKey = (text2) => words(text2).trim().replace(/^the /u, "");
+var COUNTRY_ALIASES = {
+  uk: "united kingdom",
+  "u k": "united kingdom",
+  britain: "united kingdom",
+  "great britain": "united kingdom",
+  us: "united states",
+  "u s": "united states",
+  usa: "united states",
+  "u s a": "united states",
+  america: "united states",
+  "united states of america": "united states",
+  uae: "united arab emirates",
+  "u a e": "united arab emirates",
+  holland: "netherlands",
+  korea: "south korea",
+  "republic of korea": "south korea",
+  dprk: "north korea",
+  "czech republic": "czechia",
+  burma: "myanmar",
+  swaziland: "eswatini",
+  macedonia: "north macedonia",
+  "cape verde": "cabo verde",
+  "cote d ivoire": "ivory coast",
+  "east timor": "timor leste",
+  "russian federation": "russia",
+  "viet nam": "vietnam",
+  macau: "macao",
+  turkiye: "turkey",
+  palestine: "palestinian territory",
+  "vatican city": "vatican",
+  "holy see": "vatican",
+  drc: "democratic republic of the congo",
+  "dr congo": "democratic republic of the congo",
+  "congo kinshasa": "democratic republic of the congo",
+  "congo brazzaville": "republic of the congo"
+};
+var countryWanted = (hint) => COUNTRY_ALIASES[countryKey(hint)] ?? countryKey(hint);
+function countryNameMatches(country, hint) {
+  const wanted = countryWanted(hint);
+  return wanted !== "" && countryKey(country) === wanted;
 }
-function hintsMatch(hints, region, country) {
-  if (hints.length === 1) return regionMatches(hints[0], region) || countryHintMatches(hints[0], region, country);
+function countryHintMatches(hint, region, country) {
+  return isRegionName(hint) ? regionMatches(hint, region) : countryNameMatches(country, hint);
+}
+function hintsMatch(hints, region, country, countries) {
+  if (hints.length === 1) {
+    const [hint] = hints;
+    const asRegion = countries.has(countryWanted(hint)) ? countryKey(region) === countryKey(hint) : regionMatches(hint, region);
+    return asRegion || countryHintMatches(hint, region, country);
+  }
   return hints.every((hint, index) => index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region));
+}
+var countryKeys = /* @__PURE__ */ new WeakMap();
+function countrySet(countries) {
+  let set = countryKeys.get(countries);
+  if (!set) countryKeys.set(countries, set = new Set(countries.map(countryKey)));
+  return set;
 }
 var Fit = { Whole: 0, Words: 1, Longer: 2, Contains: 3 };
 function fitOf(names, query) {
@@ -43343,7 +43395,8 @@ function resolvePlace(table, text2) {
       if (known === void 0 || fit < known) named2.set(row, fit);
     }
   }
-  const found = new Map([...named2].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? "", table.index.countries[row[3]] ?? "")));
+  const countries = countrySet(table.index.countries);
+  const found = new Map([...named2].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? "", table.index.countries[row[3]] ?? "", countries)));
   const rows3 = (from, fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
   const best = (from) => {
     for (const fit of [Fit.Whole, Fit.Words, Fit.Longer, Fit.Contains]) {
@@ -43365,7 +43418,10 @@ function resolvePlace(table, text2) {
     const larger = rows3(found, Fit.Words).filter((row) => row[7] > largest[7]);
     return larger.length ? choose([...larger, largest]) : choose([largest]);
   }
-  return choose(best(found));
+  const inPlace = best(found);
+  const wholeElsewhere = rows3(named2, Fit.Whole).filter((row) => !found.has(row));
+  if (wholeElsewhere.length && found.get(inPlace[0]) > Fit.Words) return { suggestions: [...wholeElsewhere, ...inPlace].slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+  return choose(inPlace);
 }
 function placeLabel(place2) {
   return placeLabelText({ name: place2.name, admin1: place2.region, country: place2.country });
@@ -47496,6 +47552,13 @@ function sanitizeProtocolMessage(message, refusal) {
   return message;
 }
 
+// src/lib/staging-host.ts
+var LABEL = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+function configuredStagingHost(env) {
+  const host = env.ZODIACS_MCP_STAGING_HOST;
+  return host && host.length <= 253 && host.includes(".") && host.split(".").every((label) => LABEL.test(label)) ? host : null;
+}
+
 // src/ai-tools/argument-hints.ts
 var shapeOf = (schema) => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : void 0);
 var unwrap = (schema) => {
@@ -47669,8 +47732,8 @@ function createAiNodeHandler(options = {}) {
     try {
       const method = req.method ?? "GET";
       const host = req.headers?.host;
-      const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
-      const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes(".") && stagingHost.split(".").every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
+      const stagingHost = configuredStagingHost(env);
+      const validStagingHost = stagingHost !== null;
       const allowedHosts = options.allowedHosts ?? ["zodiacs.org", "www.zodiacs.org", ...validStagingHost ? [stagingHost] : []];
       if (typeof host !== "string" || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, "host-not-allowed");
       const origin = req.headers?.origin;

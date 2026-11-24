@@ -14,7 +14,8 @@ import { loadPlaceTable } from '../features/place-table';
 import { astrocartographyInput, astrocartographyTool, equatorialBodies, greenwichSiderealDegrees, resolvePlace } from './astrocartography';
 import { forbiddenClaim } from './shared';
 import { parseAstrocartographyShare } from '../../lib/astrocartography/share';
-import { astrocartographyCardModel } from '../../server/result-preview';
+import { astrocartographyCardModel, astrocartographyStoryAddress, handleResultShareNodeRequest } from '../../server/result-preview';
+import { requestOrigin } from '../../server/chart-preview';
 
 const BIRTH = new Date('1990-05-03T07:30:00Z');
 const PAGE_FLAG = 'PUBLIC_ASTROCARTOGRAPHY_ENABLED';
@@ -255,6 +256,64 @@ describe('get_astrocartography', () => {
     expect(resolvePlace(table, 'London, England, Canada')).toMatchObject({ suggestions: expect.any(Array) });
     expect(resolvePlace(table, 'London, Ontario, United Kingdom')).toMatchObject({ suggestions: expect.any(Array) });
     expect(resolvePlace(table, 'Cardiff, Scotland')).toMatchObject({ suggestions: [{ name: 'Cardiff', region: 'Wales' }] });
+  });
+
+  it('matches a country by its whole name or a known other name, never by part of one, and asks when the country named has no such place', async () => {
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Apia, American Samoa', 'Apia, Samoa'] }, ON) as { ok: true; data: any };
+    expect(result.ok).toBe(true);
+    // Samoa is part of American Samoa's name, but no Apia is in American Samoa: no reading for Apia, Samoa in its place.
+    expect(result.data.cities.map((city: { asked: string; name: string; country: string }) => [city.asked, `${city.name}, ${city.country}`])).toEqual([['Apia, Samoa', 'Apia, Samoa']]);
+    expect(result.data.didYouMean).toEqual([{ asked: 'Apia, American Samoa', places: [{ id: expect.stringMatching(/^p[0-9a-z]{11}$/u), name: 'Apia', region: 'Tuamasaga', country: 'Samoa', label: 'Apia, Tuamasaga, Samoa' }] }]);
+    expect(result.data.limits).toContain('No town or city in the index matches Apia, American Samoa. Did you mean Apia, Tuamasaga, Samoa? Ask which one is meant, then give its id in placeIds.');
+    const table = await loadPlaceTable();
+    const read = (text: string) => {
+      const resolved = resolvePlace(table, text);
+      return resolved && 'place' in resolved ? `${resolved.place.name}, ${resolved.place.region}, ${resolved.place.country}` : null;
+    };
+    const suggested = (text: string) => {
+      const resolved = resolvePlace(table, text);
+      return resolved && 'suggestions' in resolved ? resolved.suggestions.map((place) => `${place.name}, ${place.country}`) : null;
+    };
+    // The country, or a region with that whole name: Georgia the US state and Georgia the country are each read as named.
+    expect(read('Atlanta, Georgia')).toBe('Atlanta, Georgia, United States');
+    expect(read('Tbilisi, Georgia')).toBe('Tbilisi, Tbilisi, Georgia');
+    expect(read('Atlanta, Georgia, United States')).toBe('Atlanta, Georgia, United States');
+    expect(suggested('Tbilisi, Georgia, United States')).toEqual(['Tbilisi, Georgia']);
+    expect(suggested('Atlanta, Georgia, Georgia')).toEqual(['Atlanta, United States']);
+    // Guinea is not Papua New Guinea, Equatorial Guinea or Guinea-Bissau, and none of them is Guinea.
+    expect(read('Conakry, Guinea')).toBe('Conakry, Conakry, Guinea');
+    expect(read('Port Moresby, Papua New Guinea')).toBe('Port Moresby, National Capital, Papua New Guinea');
+    expect(read('Bata, Equatorial Guinea')).toBe('Bata, Litoral, Equatorial Guinea');
+    expect(suggested('Port Moresby, Guinea')).toEqual(['Port Moresby, Papua New Guinea']);
+    expect(suggested('Malabo, Guinea')).toEqual(['Malabo, Equatorial Guinea']);
+    expect(suggested('Bissau, Guinea')?.[0]).toBe('Bissau, Guinea-Bissau');
+    expect(suggested('Conakry, Papua New Guinea')).toEqual(['Conakry, Guinea']);
+    expect(suggested('Conakry, Equatorial Guinea')).toEqual(['Conakry, Guinea']);
+    // Niger is not Nigeria, nor Niger State in Nigeria unless that region is named whole.
+    expect(read('Niamey, Niger')).toBe('Niamey, Niamey, Niger');
+    expect(suggested('Niamey, Nigeria')).toEqual(['Niamey, Niger']);
+    expect(suggested('Maradi, Nigeria')).toEqual(['Maradi, Niger']);
+    expect(suggested('Lagos, Niger')).toContain('Lagos, Nigeria');
+    expect(suggested('Minna, Niger')).toEqual(['Minna, Nigeria']);
+    expect(read('Minna, Niger State, Nigeria')).toBe('Minna, Niger State, Nigeria');
+    // Dominica is not the Dominican Republic.
+    expect(read('Roseau, Dominica')).toBe('Roseau, Saint George Parish, Dominica');
+    expect(read('Santo Domingo, Dominican Republic')).toBe('Santo Domingo, Nacional, Dominican Republic');
+    expect(suggested('Roseau, Dominican Republic')).toEqual(['Roseau, Dominica']);
+    expect(suggested('Santo Domingo, Dominica')).toContain('Santo Domingo, Dominican Republic');
+    // Sudan is not South Sudan; and a longer name in the country named (Jubayt, Sudan) is not read for Juba.
+    expect(read('Khartoum, Sudan')).toBe('Khartoum, Khartoum, Sudan');
+    expect(read('Juba, South Sudan')).toBe('Juba, Central Equatoria, South Sudan');
+    expect(suggested('Khartoum, South Sudan')).toEqual(['Khartoum, Sudan']);
+    expect(suggested('Juba, Sudan')?.[0]).toBe('Juba, South Sudan');
+    // Ireland is not Northern Ireland; known other names still read.
+    expect(suggested('Belfast, Ireland')).toContain('Belfast, United Kingdom');
+    expect(read('Dublin, Ireland')).toBe('Dublin, Leinster, Ireland');
+    for (const [text, country] of [['London, UK', 'United Kingdom'], ['New York, USA', 'United States'], ['Amsterdam, Netherlands', 'The Netherlands'], ['Amsterdam, Holland', 'The Netherlands'], ['Seoul, Korea', 'South Korea'], ['Kinshasa, DRC', 'Democratic Republic of the Congo']] as const) {
+      expect(resolvePlace(table, text), text).toMatchObject({ place: { country } });
+    }
+    expect(suggested('Pyongyang, Korea')).toEqual(['Pyongyang, North Korea']);
+    expect(suggested('Kinshasa, Congo')).toEqual(['Kinshasa, Democratic Republic of the Congo']);
   });
 
   it('gives each place an id and a label that tells same-named places apart, and reads the place an id names', async () => {
@@ -573,6 +632,79 @@ describe('get_astrocartography on the hosted server', () => {
     const live = await callOn('zodiacs.org', '/mcp');
     expect(live.structuredContent.data.pageUrl.startsWith('https://zodiacs.org/astrocartography/')).toBe(true);
     expect(pageLinks(live).every((url) => url.startsWith('https://zodiacs.org/'))).toBe(true);
+  });
+
+  it('opens a share issued on a configured custom staging host on that host: its picture, its redirect and its story address', async () => {
+    const STAGING = 'staging.example.org';
+    const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', ZODIACS_MCP_STAGING_HOST: STAGING, [PAGE_FLAG]: '1' };
+    const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: ON.now, placeTable: ON.placeTable } });
+    const server = createServer((req, res) => { void handle(req, res); });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+    servers.push(server);
+    const port = (server.address() as { port: number }).port;
+    const callOn = (host: string) => new Promise<{ status: number; result: any }>((resolve, reject) => {
+      const req = request({ host: '127.0.0.1', port, path: '/mcp/de440', method: 'POST', headers: { Host: host, 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18' } }, (res) => {
+        let text = ''; res.setEncoding('utf8');
+        res.on('data', (chunk) => { text += chunk; });
+        res.on('end', () => {
+          const body = text.includes('data: ') ? text.split('\n').find((line) => line.startsWith('data: '))!.slice(6) : text;
+          resolve({ status: res.statusCode ?? 0, result: body.startsWith('{') ? JSON.parse(body).result : null });
+        });
+      });
+      req.on('error', reject);
+      req.end(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'get_astrocartography', arguments: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, cities: ['Lisbon'] } } }));
+    });
+    const staged = await callOn(STAGING);
+    expect(staged.result.structuredContent?.ok).toBe(true);
+    const shareUrl = new URL(staged.result.structuredContent.data.cities[0].closest[0].shareUrl);
+    expect(shareUrl.origin).toBe(`https://${STAGING}`);
+
+    // The share function, as vercel.json's rewrite calls it, on the host the link names.
+    const open = async (host: string, query: Record<string, string>) => {
+      const headers = new Map<string, string>();
+      const res = { statusCode: 0, body: Buffer.alloc(0) as Buffer, setHeader(name: string, value: string) { headers.set(name.toLowerCase(), value); }, end(body?: Buffer) { this.body = body ?? Buffer.alloc(0); } };
+      await handleResultShareNodeRequest({ method: 'GET', headers: { host }, query: { __zodiacs_share: 'astrocartography-link', ...query } }, res, 'astrocartography-link');
+      return { status: res.statusCode, location: headers.get('location'), html: res.body.toString('utf8') };
+    };
+    const query = Object.fromEntries(shareUrl.searchParams);
+    vi.stubEnv(PAGE_FLAG, '1');
+    vi.stubEnv('ZODIACS_MCP_STAGING_HOST', STAGING);
+    try {
+      const page = await open(shareUrl.host, query);
+      expect(page.status).toBe(200);
+      expect(page.html).toContain(`<meta property="og:image" content="https://${STAGING}/api/og/astrocartography-image?${shareUrl.search.slice(1).replace(/&/gu, '&amp;')}"`);
+      expect(page.html).not.toContain('https://zodiacs.org/');
+      // A key the share does not use is cleared by a redirect to the same host.
+      const cleared = await open(shareUrl.host, { ...query, utm_source: 'chat' });
+      expect(cleared.status).toBe(303);
+      expect(cleared.location).toBe(shareUrl.href);
+      // The story prints the map page on the host the share was opened on.
+      expect(astrocartographyStoryAddress(`${requestOrigin({ headers: { host: STAGING } })}/api/og/astrocartography-story`)).toBe(`${STAGING}/astrocartography`);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+
+    // With no staging host configured, the same host is not trusted: the MCP refuses it, and a share opened there
+    // builds its addresses on production.
+    vi.stubEnv(PAGE_FLAG, '1');
+    vi.stubEnv('ZODIACS_MCP_STAGING_HOST', '');
+    try {
+      const unconfigured = createAiNodeHandler({ env: { ...env, ZODIACS_MCP_STAGING_HOST: undefined }, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: ON.now, placeTable: ON.placeTable } });
+      const refused = { statusCode: 0, setHeader() {}, end() {} };
+      await unconfigured({ method: 'POST', url: '/mcp/de440', headers: { host: STAGING, 'content-type': 'application/json' }, query: {} }, refused);
+      expect(refused.statusCode).toBe(403);
+      const page = await open(STAGING, query);
+      expect(page.html).toContain(`<meta property="og:image" content="https://zodiacs.org/api/og/astrocartography-image?`);
+      expect(page.html).not.toContain(STAGING);
+      expect((await open(STAGING, { ...query, utm_source: 'chat' })).location).toBe(`https://zodiacs.org${shareUrl.pathname}${shareUrl.search}`);
+      expect(astrocartographyStoryAddress(`${requestOrigin({ headers: { host: STAGING } })}/api/og/astrocartography-story`)).toBe('zodiacs.org/astrocartography');
+      // A configured value that is not a valid hostname is not trusted either.
+      expect(requestOrigin({ headers: { host: 'Staging.Example.org' } }, { ZODIACS_MCP_STAGING_HOST: 'Staging.Example.org' })).toBe('https://zodiacs.org');
+      expect(requestOrigin({ headers: { host: 'staging.example.org.evil.test' } }, { ZODIACS_MCP_STAGING_HOST: STAGING })).toBe('https://zodiacs.org');
+      expect(requestOrigin({ headers: { host: STAGING } }, { ZODIACS_MCP_STAGING_HOST: STAGING })).toBe(`https://${STAGING}`);
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 
   it('leaves every other tool\'s reply to arguments its schema refuses as it was', async () => {

@@ -89,7 +89,7 @@ function countryFold(hint: string): string {
 }
 
 /** The hint is the country's name, or whole words of it: Korea finds South Korea, and Oman never finds Romania. */
-export function countryMatches(country: string, hint: string): boolean {
+function countryMatches(country: string, hint: string): boolean {
   const words = (text: string) => ` ${text.replace(/[^a-z0-9]+/gu, ' ').trim()} `;
   const wanted = countryFold(hint);
   const name = fold(country);

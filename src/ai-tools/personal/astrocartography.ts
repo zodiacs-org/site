@@ -16,7 +16,7 @@ import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
 import { ACG_CONFIDENCE, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, lineMeaning, lineSentence, roundedDistanceKm, under18At } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
-import { countryMatches, queryVariants, type PlaceTable } from '../features/birthplace';
+import { queryVariants, type PlaceTable } from '../features/birthplace';
 import { fold, queryRows, shardKey, type Row } from '../../lib/geo/rank';
 import { distinctPlaceLabels, placeId, placeLabelText, rowPoint } from '../../lib/geo/place-label';
 import { roundCoordinate } from '../plain-text';
@@ -146,14 +146,55 @@ const isRegionName = (hint: string) => REGION_NAMES.has(words(hint).trim());
 function regionMatches(hint: string, region: string): boolean {
   return words(hint).trim() !== '' && words(region).includes(words(hint));
 }
-/** The hint is the place's country (countryMatches); a region name such as Scotland must be the place's region instead. */
-function countryHintMatches(hint: string, region: string, country: string): boolean {
-  return isRegionName(hint) ? regionMatches(hint, region) : countryMatches(country, hint);
+/** A country's name as compared: folded words, without a leading "the" (The Netherlands, The Gambia). */
+const countryKey = (text: string) => words(text).trim().replace(/^the /u, '');
+/**
+ * Other names people give for a country in the index, each to the index's own name. A country is matched only by its
+ * whole name or one of these, never by part of a name: Samoa is not American Samoa, Guinea is not Papua New Guinea,
+ * Equatorial Guinea or Guinea-Bissau, Niger is not Nigeria, Dominica is not the Dominican Republic and Sudan is not
+ * South Sudan. Korea reads as South Korea; a place only in North Korea then comes back as a suggestion, not the answer.
+ */
+const COUNTRY_ALIASES: Readonly<Record<string, string>> = {
+  uk: 'united kingdom', 'u k': 'united kingdom', britain: 'united kingdom', 'great britain': 'united kingdom',
+  us: 'united states', 'u s': 'united states', usa: 'united states', 'u s a': 'united states', america: 'united states', 'united states of america': 'united states',
+  uae: 'united arab emirates', 'u a e': 'united arab emirates',
+  holland: 'netherlands',
+  korea: 'south korea', 'republic of korea': 'south korea', dprk: 'north korea',
+  'czech republic': 'czechia', burma: 'myanmar', swaziland: 'eswatini', macedonia: 'north macedonia',
+  'cape verde': 'cabo verde', 'cote d ivoire': 'ivory coast', 'east timor': 'timor leste', 'russian federation': 'russia',
+  'viet nam': 'vietnam', macau: 'macao', turkiye: 'turkey', palestine: 'palestinian territory', 'vatican city': 'vatican', 'holy see': 'vatican',
+  drc: 'democratic republic of the congo', 'dr congo': 'democratic republic of the congo', 'congo kinshasa': 'democratic republic of the congo',
+  'congo brazzaville': 'republic of the congo',
+};
+const countryWanted = (hint: string) => COUNTRY_ALIASES[countryKey(hint)] ?? countryKey(hint);
+/** The hint is the place's country by its whole name or a known other name for it (COUNTRY_ALIASES). */
+export function countryNameMatches(country: string, hint: string): boolean {
+  const wanted = countryWanted(hint);
+  return wanted !== '' && countryKey(country) === wanted;
 }
-/** One part after the name: the region or the country. Several: each a region, and the last the country. */
-function hintsMatch(hints: readonly string[], region: string, country: string): boolean {
-  if (hints.length === 1) return regionMatches(hints[0], region) || countryHintMatches(hints[0], region, country);
+/** The hint is the place's country; a region name such as Scotland must be the place's region instead. */
+function countryHintMatches(hint: string, region: string, country: string): boolean {
+  return isRegionName(hint) ? regionMatches(hint, region) : countryNameMatches(country, hint);
+}
+/**
+ * One part after the name: the region or the country. Several: each a region, and the last the country. A single part
+ * that is a country's name in the index (countries) is read as a region only when it is the region's whole name
+ * (Atlanta, Georgia), never part of a longer one, so Niger is not Niger State in Nigeria and Ireland is not Northern
+ * Ireland.
+ */
+function hintsMatch(hints: readonly string[], region: string, country: string, countries: ReadonlySet<string>): boolean {
+  if (hints.length === 1) {
+    const [hint] = hints;
+    const asRegion = countries.has(countryWanted(hint)) ? countryKey(region) === countryKey(hint) : regionMatches(hint, region);
+    return asRegion || countryHintMatches(hint, region, country);
+  }
   return hints.every((hint, index) => (index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region)));
+}
+const countryKeys = new WeakMap<readonly string[], ReadonlySet<string>>();
+function countrySet(countries: readonly string[]): ReadonlySet<string> {
+  let set = countryKeys.get(countries);
+  if (!set) countryKeys.set(countries, (set = new Set(countries.map(countryKey))));
+  return set;
 }
 
 /** How a place's name meets the name asked for: whole, then with whole words added, then a longer word, then containing it. */
@@ -216,7 +257,8 @@ export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace
       if (known === undefined || fit < known) named.set(row, fit);
     }
   }
-  const found = new Map([...named].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? '', table.index.countries[row[3]] ?? '')));
+  const countries = countrySet(table.index.countries);
+  const found = new Map([...named].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? '', table.index.countries[row[3]] ?? '', countries)));
   // Each fit's places, largest first.
   const rows = (from: Map<Row, Fit>, fit: Fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
   const best = (from: Map<Row, Fit>) => {
@@ -239,7 +281,12 @@ export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace
     const larger = rows(found, Fit.Words).filter((row) => row[7] > largest[7]);
     return larger.length ? choose([...larger, largest]) : choose([largest]);
   }
-  return choose(best(found));
+  const inPlace = best(found);
+  // Only a longer name in the region or country given, and the whole name elsewhere (Juba, Sudan: Jubayt is in Sudan,
+  // Juba in South Sudan): suggestions to ask about, the whole name first, never the longer name as the answer.
+  const wholeElsewhere = rows(named, Fit.Whole).filter((row) => !found.has(row));
+  if (wholeElsewhere.length && found.get(inPlace[0])! > Fit.Words) return { suggestions: [...wholeElsewhere, ...inPlace].slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+  return choose(inPlace);
 }
 
 /** "Belmont, California, United States": a choice written as the cities input reads it. */

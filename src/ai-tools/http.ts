@@ -6,6 +6,7 @@ import { createAiServer } from './server';
 import { describeDe440Tools } from './de440-contract';
 import { AGE_FIRST_TOOLS, ageFirstRefusal, coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
+import { configuredStagingHost } from '../lib/staging-host';
 import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
 import { countAiToolCall, usageHostFamily, type UsageHost } from './usage';
@@ -114,8 +115,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const method = req.method ?? 'GET';
     const host = req.headers?.host;
     // Staging is an exact administrator-configured hostname, never a header-derived wildcard.
-    const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
-    const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes('.') && stagingHost.split('.').every(label => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
+    // The same validator the share handlers' requestOrigin uses (../lib/staging-host.ts), so a link issued here opens there.
+    const stagingHost = configuredStagingHost(env);
+    const validStagingHost = stagingHost !== null;
     const allowedHosts = options.allowedHosts ?? ['zodiacs.org', 'www.zodiacs.org', ...(validStagingHost ? [stagingHost] : [])];
     if (typeof host !== 'string' || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, 'host-not-allowed');
     const origin = req.headers?.origin;
