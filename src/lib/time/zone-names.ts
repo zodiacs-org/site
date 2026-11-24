@@ -8,7 +8,7 @@
  * per spelling) and an answer names the zone as tzdb does: america/new_york
  * becomes America/New_York.
  *
- * The names are those of the runtime's Intl data and of tzdata 2025c with its
+ * The names are those of the runtime's Intl data and of tzdata 2026f with its
  * backzone file, which the engine ships (src/data/tz-names.json). No two of
  * them differ only in letter case. A name neither has maps to nothing, even
  * where Intl would accept it (US/Pacific-New, SystemV/AST4, or a UTC offset
@@ -44,7 +44,7 @@ function intlName(key: string): string | undefined {
 
 let tzdbNames: Promise<ReadonlyMap<string, string>> | null = null;
 
-/** The spelling of tzdata 2025c with backzone, loaded once; a failed load is not remembered. */
+/** The spelling of tzdata 2026f with backzone, loaded once; a failed load is not remembered. */
 function tzdbName(key: string): Promise<string | undefined> {
   if (!tzdbNames) {
     const pending = loadModule(() => import('../../data/tz-names.json'))
@@ -59,7 +59,7 @@ function tzdbName(key: string): Promise<string | undefined> {
 
 /**
  * The tzdb spelling of `name` in any letter case, or null when neither the
- * runtime nor tzdata 2025c with backzone knows it. Rejects with a
+ * runtime nor tzdata 2026f with backzone knows it. Rejects with a
  * ModuleLoadError when the names cannot be loaded.
  */
 export async function canonicalZoneName(name: string): Promise<string | null> {
