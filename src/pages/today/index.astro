@@ -734,12 +734,17 @@ const monthDay = (iso: string) => ({
     transform: translate(-50%, -50%);
   }
   .today-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
-  /* Lay out the whole caption first. Each incoming entry replaces its
-     same-size flex slot, so other entries keep their row and centre. */
-  .today-legend:has([data-entry="rx"]) [data-slot="rx"],
-  .today-legend:has([data-entry="easy"]) [data-slot="easy"],
-  .today-legend:has([data-entry="tense"]) [data-slot="tense"],
-  .today-legend:has([data-entry="joined"]) [data-slot="joined"] { display: none; }
+  /* Size the entire caption before its first visible glyph arrives. A
+     reservation occupies the cell until that entry has a glyph to paint. */
+  .today-legend__item[data-slot] { display: none; visibility: hidden; }
+  @supports selector(:has(> i)) {
+    .today-legend__item[data-slot] { display: inline-grid; }
+    .today-legend__item[data-entry]:not(:has(> i)),
+    .today-legend:has([data-entry="rx"] > i) [data-slot="rx"],
+    .today-legend:has([data-entry="easy"] > i) [data-slot="easy"],
+    .today-legend:has([data-entry="tense"] > i) [data-slot="tense"],
+    .today-legend:has([data-entry="joined"] > i) [data-slot="joined"] { display: none; }
+  }
   .today-legend__item { display: inline-grid; grid-template-columns: 18px max-content; align-items: center; column-gap: 7px; }
   .today-legend__item[data-key="rx"] { grid-template-columns: max-content max-content; }
   .today-legend__item[data-key="rx"]::before { content: 'Rx'; visibility: hidden; grid-area: 1 / 1; }
@@ -762,17 +767,6 @@ const monthDay = (iso: string) => ({
      stack directly. The line does the same, including the date label, whose
      size is 14px times the 76.8% EB Garamond fallback adjustment. */
   .today-skyline .skyticker { font-family: var(--today-face); }
-  /* The response can pause after a glyph. Size its row and text cell from
-     the full label on the opening tag so the glyph paints in its final spot. */
-  .today-skyline .skyticker__item { display: inline-grid; }
-  .today-skyline .skyticker__item::after,
-  .today-skyline .skyticker__icon + span { grid-area: 1 / 2; }
-  .today-skyline .skyticker__item::after {
-    content: attr(data-label);
-    visibility: hidden;
-  }
-  .today-skyline .skyticker__icon { grid-area: 1 / 1; width: 13px; }
-  .today-skyline .skyticker__icon--disc { width: 18px; }
   .today-skyline .skyticker__label {
     font-family: Georgia, 'Liberation Serif', 'Times New Roman', serif;
     font-size: 10.75px;

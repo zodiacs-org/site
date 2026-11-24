@@ -626,13 +626,15 @@ async function drive(BASE, browser) {
     const start = html.indexOf('<figcaption class="today-legend"');
     const end = html.indexOf('</figcaption>', start);
     assert.ok(start > 0 && end > start);
-    const glyphs = [...html.slice(start, end).matchAll(/<\/i>/g)];
-    // Some editions list only retrograde. Otherwise stop between the
-    // second glyph and its label, where the first two entries used to move.
-    assert.ok(glyphs.length > 0);
-    return glyphs.slice(0, 2).map((glyph) => start + glyph.index + glyph[0].length);
+    const legend = html.slice(start, end);
+    // A packet can end between empty reservations, after an entry opens,
+    // or between its glyph and text. Exercise each of these parser states.
+    const boundaries = [...legend.matchAll(/data-slot="[^"]+"[^>]*><\/span>|data-entry="[^"]+"[^>]*>|<\/i>/g)];
+    assert.ok(boundaries.length >= 3);
+    return boundaries.map((match) => start + match.index + match[0].length);
   }, 600);
   try {
+    await inspectReturningMobile(proxy.origin, browser, threeHitMobileProfile, 'active', 3, 'active-streamed-legend');
     await inspectReturningMobile(proxy.origin, browser, quietMobileProfile, 'quiet', 0, 'quiet-streamed-legend');
   } finally {
     await proxy.close();

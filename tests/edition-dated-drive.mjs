@@ -95,6 +95,9 @@ const total = (shifts) => shifts.reduce((sum, shift) => sum + shift.value, 0);
 await withPreview({ port: 4393 }, async (baseURL) => {
   const served = new Map();
   const ariesStream = '/horoscopes/aries/?stream=mobile';
+  const splitCounts = new Map();
+  const eventStream = '/horoscopes/aries/?stream=events';
+  const tickerStream = '/pt/today/?stream=ticker';
   const proxy = await startStreamedPreview(baseURL, (path, html) => {
     if (path === ariesStream) {
       const body = html.indexOf('<div class="hz-hero__body"');
@@ -111,6 +114,21 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       assert.ok(title > dateOpen && titleEnd > title && periods > titleEnd && linkEnd > periods);
       assert.ok(facts > titleEnd && discEnd > facts && periods > discEnd);
       return [bodyOpen + 1, dateOpen + 1, titleEnd + '</h1>'.length, discEnd + '</picture>'.length, linkEnd + '</a>'.length];
+    }
+    if (path === tickerStream) {
+      const start = html.indexOf('<p class="skyticker"');
+      const end = html.indexOf('</p>', start);
+      assert.ok(start >= 0 && end > start);
+      const glyphs = [...html.slice(start, end).matchAll(/(?:<\/svg>|<img[^>]*>)<\/span>/g)];
+      assert.ok(glyphs.length > 0);
+      splitCounts.set(path, glyphs.length);
+      return glyphs.map((glyph) => start + glyph.index + glyph[0].length);
+    }
+    if (path === eventStream) {
+      const rail = html.match(/<aside class="upcoming-events[^"]*"[^>]*>[\s\S]*?<\/aside>/);
+      const cuts = rail ? [...rail[0].matchAll(/<\/picture>/g)].map((icon) => rail.index + icon.index + icon[0].length) : [];
+      splitCounts.set(path, cuts.length);
+      return cuts;
     }
     const route = routeByPath.get(path);
     const wordBreak = route ? relativeWordBreak(html, languages[route.locale].word) : -1;
@@ -304,6 +322,36 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       check('360px dated Aries: streamed headline and period links have exactly zero CLS', total(shifts) === 0, JSON.stringify(shifts));
     } finally {
       await aries.context.close();
+    }
+
+    const ticker = await open(tickerStream, viewports[0], datedNow);
+    try {
+      assert.equal(ticker.status, 200);
+      await settle(ticker.page);
+      assert.equal(await ticker.page.getAttribute('html', 'data-edition-state'), 'dated');
+      const items = await ticker.page.locator('.tdl-skyline .skyticker__item[data-label]').count();
+      assert.ok(items >= 3);
+      assert.equal(splitCounts.get(tickerStream), items);
+      const shifts = await ticker.page.evaluate(() => globalThis.__editionShifts);
+      check('360px dated Portuguese Today: streamed ticker glyphs keep exactly zero CLS', total(shifts) === 0, JSON.stringify(shifts));
+    } finally {
+      await ticker.context.close();
+    }
+
+    const events = await open(eventStream, { width: 1280, height: 1600 }, datedNow);
+    try {
+      assert.equal(events.status, 200);
+      await settle(events.page);
+      assert.equal(await events.page.getAttribute('html', 'data-edition-state'), 'dated');
+      assert.equal(await events.page.locator('[data-daily-hero]').count(), 1);
+      const icons = await events.page.locator('[data-daily-event-links] picture.sign-icon').count();
+      assert.equal(splitCounts.get(eventStream), icons);
+      if (icons > 0) {
+        const shifts = await events.page.evaluate(() => globalThis.__editionShifts);
+        check('1280px dated Aries: streaming the event icons keeps exactly zero CLS', total(shifts) === 0, JSON.stringify(shifts));
+      }
+    } finally {
+      await events.context.close();
     }
 
     // Without JavaScript nothing decides the state: EditionText keeps the
