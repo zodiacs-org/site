@@ -55,7 +55,21 @@ function inlined(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== 'object') return schema;
   const node = schema as Json;
-  if (typeof node.$ref === 'string') return inlined(COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')]);
+  if (typeof node.$ref === 'string') {
+    const name = node.$ref.replace('#/components/schemas/', '');
+    // The 13 published connector schemas freeze LocalResolution.flags to the original three flags (AGENTS.md).
+    if (name === 'LocalResolution') {
+      const local = COMPUTE_SCHEMAS.LocalResolution as Json;
+      return inlined({
+        ...local,
+        properties: {
+          ...(local.properties as Json),
+          flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+        },
+      });
+    }
+    return inlined(COMPUTE_SCHEMAS[name]);
+  }
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
 }
 
