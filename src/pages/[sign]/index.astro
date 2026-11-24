@@ -2,8 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
-import Motion from '../../components/Motion.astro';
 import SignIcon from '../../components/SignIcon.astro';
+import Motion from '../../components/Motion.astro';
 import SignGuideHero from '../../components/SignGuideHero.astro';
 import SignGuideFacts from '../../components/SignGuideFacts.astro';
 import type { SignGuideFact } from '../../components/SignGuideFacts.astro';
@@ -143,7 +143,10 @@ const jsonLd = [
   />
   <article class="guide" style={`--sign:${sign.hue};--hue:${sign.hue}`}>
     {/* No reveal on the masthead: the art is the LCP and must paint before
-        any script runs. */}
+        any script runs. Only the small sign disc beside the kicker grows in
+        (docs/MOTION.md); the art, title, lines and the essentials row under
+        it stay still. Further down, the neighbouring sign cards rise. */}
+    <Motion />
     <SignGuideHero
       sign={sign.slug}
       title={sign.name}
@@ -188,7 +191,6 @@ const jsonLd = [
             <div class="guide-history__prose">
               {lore.paragraphs.map((p) => <p>{plainDashes(p)}</p>)}
             </div>
-            <Motion />
             <div class="guide-history__figs">
               <figure class="guide-history__fig">
                 <ArtFrame
