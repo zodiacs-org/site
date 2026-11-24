@@ -13,6 +13,7 @@
  */
 import { mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { READING_CONFIDENCE_NOTE } from '../src/lib/reading-confidence-note.ts';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { projectRoot, withPreview } from './visual/preview-server.mjs';
@@ -99,6 +100,8 @@ await withPreview({ port: 4371 }, async (base) => {
         await tab.click('.calc__submit');
         await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
         await settle(tab);
+        const note = tab.locator('.good-days__result small').filter({ hasText: READING_CONFIDENCE_NOTE });
+        check(`${viewport.name}: the first confidence label has one note`, await note.count() === 1 && await note.isVisible());
         const after = await cls(tab);
         check(`${viewport.name}: results arrive with zero CLS`, after.cls === 0, JSON.stringify(after));
         check(`${viewport.name}: no request carries the birth date`, !requests.some((line) => line.includes(BIRTH) || line.includes('1990')), requests.filter((line) => line.includes('1990')).join('\n'));
@@ -109,6 +112,17 @@ await withPreview({ port: 4371 }, async (base) => {
         check(`${viewport.name}: the share link carries only the goal, dates and zone`, /^http:\/\/127\.0\.0\.1:\d+\/good-days\/#g=contract&f=2027-01-01&t=2027-06-30&z=[A-Za-z0-9_+\-/]+$/u.test(link ?? ''), link ?? '');
         const card = await tab.textContent('.good-days-card');
         check(`${viewport.name}: the share card holds no birth detail`, !/1990|05-03|3 May 1990/u.test(card ?? ''), card ?? '');
+        await tab.evaluate(() => {
+          Object.defineProperty(navigator, 'clipboard', {
+            configurable: true,
+            value: { writeText: () => Promise.reject(new Error('denied')) },
+          });
+        });
+        await tab.getByRole('button', { name: 'Copy the link' }).click();
+        await tab.locator('.calc__error').waitFor({ timeout: 5_000 });
+        check(`${viewport.name}: a refused clipboard copy still leaves the note visible`,
+          await note.count() === 1 && await note.isVisible()
+          && (await tab.locator('.calc__error').textContent())?.includes('The link could not be copied') === true);
         const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
         check(`${viewport.name}: no horizontal scroll`, !overflow);
         check(`${viewport.name}: no page errors`, errors.length === 0, errors.join('\n'));
@@ -127,6 +141,7 @@ await withPreview({ port: 4371 }, async (base) => {
         const shared = await cls(tab);
         check(`${viewport.name}: a shared link opens on its results with zero CLS`, shared.cls === 0, JSON.stringify(shared));
         check(`${viewport.name}: the shared link reads the general sky`, (await tab.textContent('.good-days__title'))?.startsWith('Wedding: the best days') === true);
+        check(`${viewport.name}: a general reading does not carry the birth-detail note`, (await tab.locator('.good-days__result small').filter({ hasText: READING_CONFIDENCE_NOTE }).count()) === 0);
         check(`${viewport.name}: the shared link's days are counted in its zone`, (await tab.textContent('.good-days__zone')) === 'Days are counted in Asia/Makassar.', await tab.textContent('.good-days__zone') ?? '');
         check(`${viewport.name}: the zone picker shows the shared link's zone`, (await tab.inputValue('#gd-zone')) === 'Asia/Makassar');
         check(`${viewport.name}: shared link has no page errors`, errors.length === 0, errors.join('\n'));
