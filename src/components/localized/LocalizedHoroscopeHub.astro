@@ -39,7 +39,7 @@ const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
 });
 const cards = SIGNS.map((sign) => {
   const reading = dailyReadingForLocale(sign.slug, daily, locale);
-  return { sign, teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
+  return { sign, name: signName(sign, locale), teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
 });
 
 // A link that resolves to the English page (its localized copy is not built
@@ -69,10 +69,10 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
 
     <p class="hhl-jump-label">{c.jumpLabel}</p>
     <nav class="hhl-picker" aria-label={c.pickerAria}>
-      {cards.map(({ sign }) => (
-        <a href={local(`/horoscopes/${sign.slug}/`)} {...englishAttrs(local(`/horoscopes/${sign.slug}/`))} style={`--sign:${sign.hue}`}>
+      {cards.map(({ sign, name }) => (
+        <a href={local(`/horoscopes/${sign.slug}/`)} {...englishAttrs(local(`/horoscopes/${sign.slug}/`))} data-name={name} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={24} webpOnly fetchPriority="low" />
-          <span>{signName(sign, locale)}</span>
+          <span>{name}</span>
         </a>
       ))}
     </nav>
@@ -128,8 +128,11 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   .hhl-jump-label { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
   .hhl-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 28px; }
   .hhl-picker a {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-areas: "icon label";
+    grid-template-columns: 24px minmax(0, max-content);
+    place-items: center;
+    align-content: center;
     justify-content: center;
     gap: 7px;
     min-width: 0;
@@ -141,7 +144,10 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     font-size: 13px;
     text-decoration: none;
   }
-  .hhl-picker a span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hhl-picker a :global(.sign-icon) { grid-area: icon; }
+  .hhl-picker a span { justify-self: stretch; }
+  .hhl-picker a::before { content: attr(data-name); visibility: hidden; }
+  .hhl-picker a::before, .hhl-picker a span { grid-area: label; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hhl-picker a:hover { border-color: var(--sign); background: var(--void-2); }
   .hhl-picker a:focus-visible { outline: 2px solid var(--sign); outline-offset: 3px; }
   @media (max-width: 359px) { .hhl-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -194,7 +200,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   .hhl-method a { color: var(--text); }
   @media (max-width: 460px) {
     /* Longer sign names (Capricornio, Capricórnio) sit under their disc. */
-    .hhl-picker a { flex-direction: column; gap: 3px; min-height: 60px; padding-block: 6px; font-size: 12px; }
+    .hhl-picker a { grid-template-areas: "icon icon icon" ". label ."; grid-template-columns: 1fr max-content 1fr; gap: 3px 0; min-height: 60px; padding-block: 6px; font-size: 12px; }
     .hhl-grid { grid-template-columns: 1fr; }
     .hhl-card { padding-inline: 18px; }
   }
