@@ -41,3 +41,25 @@ describe('the tarot draw reads the form it is in', () => {
     expect(source).toMatch(/const chosen = formChoice\(formRef\.current\);\s*if \(chosen\) \{ setSpread\(chosen\.spread\); setReversals\(chosen\.reversals\); \}\s*setReady\(true\);/u);
   });
 });
+
+describe('the spread description keeps its height whichever spread is chosen', () => {
+  it('renders every description in one cell, the chosen one shown and the others hidden from sight and from assistive technology', async () => {
+    const { SPREADS, SPREAD_IDS } = await import('../lib/tarot/spreads');
+    const markup = render(h(TarotDraw, {}));
+    const cell = markup.match(/<div class="tarot__spread-help">([\s\S]*?)<\/div>/u)?.[1] ?? '';
+    const paragraphs = [...cell.matchAll(/<p class="field__help"([^>]*)>([^<]*)<\/p>/gu)];
+    expect(paragraphs.map((match) => match[2])).toEqual(SPREAD_IDS.map((id) => SPREADS[id].description.replaceAll("'", '&#39;').replaceAll('"', '&quot;')));
+    const shown = paragraphs.filter((match) => /data-shown/u.test(match[1]));
+    expect(shown).toHaveLength(1);
+    expect(shown[0][2]).toBe(SPREADS['three-card'].description.replaceAll("'", '&#39;'));
+    expect(shown[0][1]).not.toContain('aria-hidden');
+    for (const match of paragraphs.filter((entry) => !/data-shown/u.test(entry[1]))) expect(match[1]).toContain('aria-hidden="true"');
+  });
+
+  it('stacks them in one grid cell and hides all but the chosen one, so the cell is as tall as the longest', () => {
+    const css = readFileSync(new URL('../styles/tarot.css', import.meta.url), 'utf8');
+    expect(css).toContain('.tarot__spread-help { display: grid; }');
+    expect(css).toContain('.tarot__spread-help > .field__help { grid-area: 1 / 1; }');
+    expect(css).toContain('.tarot__spread-help > .field__help:not([data-shown]) { visibility: hidden; }');
+  });
+});

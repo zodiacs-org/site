@@ -82,6 +82,11 @@ export interface AiDependencies {
    */
   tarot?: boolean;
   /**
+   * Whether the website's /tarot/ page is switched on (PUBLIC_TAROT_ENABLED exactly '1'). draw_tarot and
+   * explain_astrology's tarot pointer link it only then: off, it is the 404 page, even with draw_tarot offered.
+   */
+  tarotPage?: boolean;
+  /**
    * The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1, src/ai-tools/personal/registry.ts), in effect only with the
    * coverage and occasion tools (personalOn).
    */
@@ -816,7 +821,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'explain_astrology': {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents, ...(numerologyOn(dependencies) ? { numerology: true } : {}), ...(tarotOn(dependencies) ? { tarot: true } : {}) }));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents, ...(numerologyOn(dependencies) ? { numerology: true } : {}), ...(tarotOn(dependencies) ? { tarot: true, ...(dependencies.tarotPage ? { tarotPage: true } : {}) } : {}) }));
         break;
       }
       case 'search_sky_events': {
@@ -904,7 +909,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'draw_tarot': {
-        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), ORIGIN));
+        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), ORIGIN, dependencies.tarotPage === true));
         break;
       }
       case 'find_birthplace': {

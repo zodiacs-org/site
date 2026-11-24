@@ -82,7 +82,13 @@ export default function TarotDraw() {
                 <span>{SPREADS[id].name}</span>
               </label>
             ))}
-            <p class="field__help">{SPREADS[spread].description}</p>
+            {/* Every spread's description, stacked in one cell with only the chosen one shown, so the cell is always as
+                tall as the longest at any width: a choice taken over when the island hydrates moves nothing below it. */}
+            <div class="tarot__spread-help">
+              {SPREAD_IDS.map((id) => (
+                <p key={id} class="field__help" aria-hidden={id === spread ? undefined : 'true'} data-shown={id === spread ? '' : undefined}>{SPREADS[id].description}</p>
+              ))}
+            </div>
           </fieldset>
           <label class="tarot__choice tarot__reversals">
             <input type="checkbox" name={REVERSALS_NAME} checked={reversals} onChange={(e) => { setReversals((e.target as HTMLInputElement).checked); setDrawn(null); }} />

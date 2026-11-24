@@ -50,8 +50,12 @@ export const TAROT_SEPARATE = 'Tarot is a separate practice from astrology. It w
 export const TAROT_METHOD = 'Each card is drawn from the full 78-card deck without replacement, using a secure random number generator and rejection sampling so that no card is favoured. With reversals on, each card is upright or reversed with even odds. Nothing about the person, and no question, goes into the draw.';
 export const TAROT_NOTE = 'The meanings are Zodiacs\' own, written to the themes the tarot tradition gives each card.';
 
-/** The answer for a draw already made: separated from drawTarot so the tests can check the shape of a known draw. */
-export function tarotAnswer(spread: TarotData['spread'], reversals: boolean, drawn: readonly DrawnCard[], origin: string): { data: TarotData; links: { title: string; url: string }[] } {
+/**
+ * The answer for a draw already made: separated from drawTarot so the tests can check the shape of a known draw.
+ * `pageOn`: the website's /tarot/ page is switched on (PUBLIC_TAROT_ENABLED=1); only then is it linked, since off it is
+ * the 404 page, whatever the tool's own switch says.
+ */
+export function tarotAnswer(spread: TarotData['spread'], reversals: boolean, drawn: readonly DrawnCard[], origin: string, pageOn = false): { data: TarotData; links: { title: string; url: string }[] } {
   const layout = SPREADS[spread];
   const data: TarotData = {
     spread, spreadName: layout.name, spreadDescription: layout.description, reversals,
@@ -60,11 +64,11 @@ export function tarotAnswer(spread: TarotData['spread'], reversals: boolean, dra
     method: TAROT_METHOD,
     note: TAROT_NOTE,
   };
-  return { data, links: [{ title: 'Tarot on Zodiacs', url: `${origin}/tarot/` }] };
+  return { data, links: pageOn ? [{ title: 'Tarot on Zodiacs', url: `${origin}/tarot/` }] : [] };
 }
 
-export function drawTarotReading(args: TarotInput, origin: string) {
+export function drawTarotReading(args: TarotInput, origin: string, pageOn = false) {
   const spread = args.spread ?? 'one-card';
   const reversals = args.reversals ?? true;
-  return tarotAnswer(spread, reversals, drawTarot(spread, reversals), origin);
+  return tarotAnswer(spread, reversals, drawTarot(spread, reversals), origin, pageOn);
 }

@@ -36442,7 +36442,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
       note: EXPLAIN_NOTE
     };
     if (outside === "numerology" && options.numerology) return { data: data2, links: [{ title: "Numerology calculator on Zodiacs", url: `${origin}/numerology/` }] };
-    if (outside === "tarot" && options.tarot) return { data: data2, links: [{ title: "Tarot on Zodiacs", url: `${origin}/tarot/` }] };
+    if (outside === "tarot" && options.tarot) return { data: data2, links: options.tarotPage ? [{ title: "Tarot on Zodiacs", url: `${origin}/tarot/` }] : [] };
     return { data: data2, links: [{ title: "Learn astrology on Zodiacs", url: `${origin}/learn/` }, { title: "Glossary", url: `${origin}/learn/glossary/` }] };
   }
   const terms2 = topic.glossary.map(term);
@@ -44184,7 +44184,7 @@ var tarotData = z16.object({
 var TAROT_SEPARATE = "Tarot is a separate practice from astrology. It works from a shuffled deck of 78 cards, with no planets, signs or birth details in it.";
 var TAROT_METHOD = "Each card is drawn from the full 78-card deck without replacement, using a secure random number generator and rejection sampling so that no card is favoured. With reversals on, each card is upright or reversed with even odds. Nothing about the person, and no question, goes into the draw.";
 var TAROT_NOTE = "The meanings are Zodiacs' own, written to the themes the tarot tradition gives each card.";
-function tarotAnswer(spread, reversals, drawn, origin) {
+function tarotAnswer(spread, reversals, drawn, origin, pageOn = false) {
   const layout = SPREADS[spread];
   const data = {
     spread,
@@ -44196,12 +44196,12 @@ function tarotAnswer(spread, reversals, drawn, origin) {
     method: TAROT_METHOD,
     note: TAROT_NOTE
   };
-  return { data, links: [{ title: "Tarot on Zodiacs", url: `${origin}/tarot/` }] };
+  return { data, links: pageOn ? [{ title: "Tarot on Zodiacs", url: `${origin}/tarot/` }] : [] };
 }
-function drawTarotReading(args, origin) {
+function drawTarotReading(args, origin, pageOn = false) {
   const spread = args.spread ?? "one-card";
   const reversals = args.reversals ?? true;
-  return tarotAnswer(spread, reversals, drawTarot(spread, reversals), origin);
+  return tarotAnswer(spread, reversals, drawTarot(spread, reversals), origin, pageOn);
 }
 
 // src/ai-tools/contracts.ts
@@ -44578,7 +44578,7 @@ var TOOL_DESCRIPTIONS = {
   get_solar_return: `Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. The themes come with their limits, the return's time on the person's clock and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. Money, career, wellbeing and legal themes are read as astrology traditionally reads them; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
   get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. It gives no timing for surgery, medical procedures or treatment, and a goal that asks for one gets that answer; do not call it for those. Make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything.",
-  draw_tarot: "Draws tarot cards: one card, three cards (past, present, future) or the ten-card Celtic Cross, each upright or reversed, with Zodiacs' own written meaning and a question to think about. Tarot is a separate practice from astrology, with no planets, signs or birth details in it: say so when you share the cards, and do not mix them with a chart reading. Use it when someone asks for a tarot card or a tarot reading. Each draw is random and fair, from the full 78-card deck with a secure random number generator, and a new call is a new draw. It takes only the spread and whether to allow reversed cards: never send the person's question, name or birth details, and keep the question in the conversation. Share each card plainly as tarot's traditional reading, including work, practical foundations, wellbeing and agreements where the card speaks to them, such as the Ace of Pentacles as a steady practical foundation or the Four of Swords as a call to rest, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
+  draw_tarot: "Draws tarot cards: one card, three cards (past, present, future) or the ten-card Celtic Cross, each upright or reversed, with Zodiacs' own written meaning and a question to think about. Tarot is a separate practice from astrology, with no planets, signs or birth details in it: say so when you share the cards, and do not mix them with a chart reading. Use it when someone asks for a tarot card or a tarot reading. Each draw is random and fair, from the full 78-card deck with a secure random number generator, and a new call is a new draw. It takes only the spread and whether to allow reversed cards: never send the person's question, name or birth details, and keep the question in the conversation. Zodiacs is not directed at children under 13: give no tarot reading for a named child under 13, and do not ask for or send that child's name, age or other details. Share each card plainly as tarot's traditional reading, including work, practical foundations, wellbeing and agreements where the card speaks to them, such as the Ace of Pentacles as a steady practical foundation or the Four of Swords as a call to rest, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   ...personalRecord((tool) => tool.description)
 };
 var SKY_EVENTS_INPUT_SCHEMAS = {
@@ -46303,7 +46303,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "explain_astrology": {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2, ...numerologyOn(dependencies) ? { numerology: true } : {}, ...tarotOn(dependencies) ? { tarot: true } : {} }));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2, ...numerologyOn(dependencies) ? { numerology: true } : {}, ...tarotOn(dependencies) ? { tarot: true, ...dependencies.tarotPage ? { tarotPage: true } : {} } : {} }));
         break;
       }
       case "search_sky_events": {
@@ -46426,7 +46426,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "draw_tarot": {
-        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), ORIGIN));
+        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), ORIGIN, dependencies.tarotPage === true));
         break;
       }
       case "find_birthplace": {
@@ -47845,7 +47845,7 @@ function createAiNodeHandler(options = {}) {
         res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));
         return;
       }
-      const dependencies = { ...options.dependencies ?? {}, ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...skyEvents2 ? { skyEvents: true } : {}, ...yearScore ? { yearScore: true } : {}, ...yearScorePeople ? { yearScorePeople: true } : {}, ...solarReturn ? { solarReturn: true } : {}, ...env.PUBLIC_BIRTHDAY_REPORT_ENABLED === "1" ? { birthdayReportPage: true } : {}, ...numerology ? { numerology: true } : {}, ...goodDays ? { goodDays: true } : {}, ...tarot ? { tarot: true } : {}, ...personal2 ? { personal: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
+      const dependencies = { ...options.dependencies ?? {}, ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...skyEvents2 ? { skyEvents: true } : {}, ...yearScore ? { yearScore: true } : {}, ...yearScorePeople ? { yearScorePeople: true } : {}, ...solarReturn ? { solarReturn: true } : {}, ...env.PUBLIC_BIRTHDAY_REPORT_ENABLED === "1" ? { birthdayReportPage: true } : {}, ...numerology ? { numerology: true } : {}, ...goodDays ? { goodDays: true } : {}, ...tarot ? { tarot: true, ...env.PUBLIC_TAROT_ENABLED === "1" ? { tarotPage: true } : {} } : {}, ...personal2 ? { personal: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
         try {
           const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
           return addressVerdict === "allowed" ? await atomicQuota("event") : addressVerdict;

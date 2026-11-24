@@ -210,12 +210,41 @@ describe('draw_tarot and privacy', () => {
   const spies: ReturnType<typeof vi.spyOn>[] = [];
   afterEach(() => { for (const spy of spies.splice(0)) spy.mockRestore(); });
 
-  it('logs nothing and links only to the tarot page', async () => {
+  it('logs nothing and links only to the tarot page, while the website\'s page is switched on', async () => {
     for (const method of ['log', 'info', 'warn', 'error', 'debug'] as const) spies.push(vi.spyOn(console, method).mockImplementation(() => {}));
-    const host = await serveAt(ON);
+    const host = await serveAt({ ...ON, PUBLIC_TAROT_ENABLED: '1' });
     const result = await call(host, 'draw_tarot', { spread: 'three-card' });
     expect(result.structuredContent.links.map((link: { url: string }) => link.url)).toEqual(['https://zodiacs.org/tarot/?ref=assistant']);
     for (const spy of spies) expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('tells the assistant to give no reading for a named child under 13, and to ask for and send nothing about them', () => {
+    const description = TOOL_DESCRIPTIONS.draw_tarot;
+    expect(description).toContain('Zodiacs is not directed at children under 13: give no tarot reading for a named child under 13, and do not ask for or send that child\'s name, age or other details.');
+    // Said before the card meanings, next to what the call must never carry.
+    expect(description.indexOf('named child under 13')).toBeLessThan(description.indexOf('Share each card'));
+    expect(description.indexOf('keep the question in the conversation')).toBeLessThan(description.indexOf('named child under 13'));
+    expect(description).not.toMatch(/[\u2013\u2014]/u);
+  });
+
+  it('links no tarot page while the website\'s page is off, as after a web rollback, with draw_tarot still offered', async () => {
+    const urls = (result: { structuredContent: unknown }) => JSON.stringify(result.structuredContent).match(/https:\/\/[^"]+/gu) ?? [];
+    // The tool switch on and the page off: the page's own variable unset, or anything but exactly '1'.
+    for (const page of [undefined, '0', '', 'true', ' 1']) {
+      const host = await serveAt({ ...ON, PUBLIC_TAROT_ENABLED: page });
+      const drawn = await call(host, 'draw_tarot', { spread: 'three-card' });
+      expect(drawn.structuredContent.ok, String(page)).toBe(true);
+      expect(drawn.structuredContent.data.cards).toHaveLength(3);
+      expect(drawn.structuredContent.links).toEqual([]);
+      expect(urls(drawn).filter((url) => url.includes('/tarot/'))).toEqual([]);
+      const pointer = await call(host, 'explain_astrology', { topic: 'tarot' });
+      expect(pointer.structuredContent.data.message).toBe(TAROT_POINTER);
+      expect(urls(pointer).filter((url) => url.includes('/tarot/')), String(page)).toEqual([]);
+    }
+    // Both on: the pointer links the page too.
+    const host = await serveAt({ ...ON, PUBLIC_TAROT_ENABLED: '1' });
+    const pointer = await call(host, 'explain_astrology', { topic: 'tarot' });
+    expect(pointer.structuredContent.links.map((link: { url: string }) => link.url)).toEqual(['https://zodiacs.org/tarot/?ref=assistant']);
   });
 });
 
