@@ -161,7 +161,19 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
     for (const text of ['Hoje em dia, até hoje.', 'Hoje, Marte muda de signo.', 'Leia hoje o seu signo.']) {
       expect(datedEditionTextIn('pt', text, date)).toBe(text);
     }
-    for (const locale of ['fr', 'it', 'ru', 'ar']) expect(editionRules(locale)).toBeNull();
+    for (const locale of ['ru', 'ar']) expect(editionRules(locale)).toBeNull();
+    // The held French and Italian daily editions (locale expansion) date every relative word.
+    expect(datedEditionTextIn('fr', 'La Lune traverse aujourd’hui le Lion. Le ciel d’aujourd’hui.', '2026-11-08'))
+      .toBe('Le 8 novembre 2026, la Lune traverse le Lion. Le ciel du 8 novembre 2026.');
+    expect(datedEditionTextIn('it', 'Oggi, il cielo di oggi per il Leone.', '2026-11-08'))
+      .toBe('L’8 novembre 2026, il cielo dell’8 novembre 2026 per il Leone.');
+    expect(datedEditionTextIn('it', 'La Luna attraversa oggi il Leone.', '2026-12-01'))
+      .toBe('Il 1° dicembre 2026 la Luna attraversa il Leone.');
+    for (const [locale, words] of [['fr', ['aujourd’hui', 'Aujourd’hui']], ['it', ['oggi', 'Oggi']]] as const) {
+      for (const text of words) {
+        expect(datedEditionTextIn(locale, `x ${text} y`, '2026-11-08')).not.toMatch(/aujourd’hui|\boggi\b/iu);
+      }
+    }
   });
 
   it('inlines rules that date text in the browser exactly as on the server', () => {
@@ -176,6 +188,22 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
         const browser = rules.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), text as string);
         expect(browser).toBe(datedEditionTextIn(locale, text, date));
         expect(browser).not.toBe(text);
+      }
+    }
+  });
+
+  it('elides the article before 8 and 11 in Italian only, on the server and in the browser', () => {
+    for (const day of ['2026-11-08', '2026-11-11']) {
+      const n = Number(day.slice(8));
+      for (const [locale, text, expected] of [
+        ['es', 'Horóscopos de hoy', `Horóscopos del ${n} de noviembre de 2026`],
+        ['es', 'Hoy', `El cielo del ${n} de noviembre de 2026`],
+        ['it', 'il cielo di oggi', `il cielo dell’${n} novembre 2026`],
+      ] as const) {
+        expect(datedEditionTextIn(locale, text, day)).toBe(expected);
+        const browser = inlineEditionRules(locale, day)
+          .reduce((value, [source, flags, replacement]) => value.replace(new RegExp(source, flags), replacement), text as string);
+        expect(browser).toBe(expected);
       }
     }
   });
@@ -215,7 +243,9 @@ describe('dated tab titles and the pt-BR first of the month', () => {
       expect(datedEditionTitleIn('pt', `Horóscopo de ${pt} hoje, 1º de novembro | Zodiacs.org`)).toBe(`Horóscopo de ${pt} de 1º de novembro | Zodiacs.org`);
     }
     expect(editionTitleRules('en')).toEqual([]);
-    expect(editionTitleRules('fr')).toEqual([]);
+    expect(editionTitleRules('ru')).toEqual([]);
+    expect(datedEditionTitleIn('it', 'Oroscopo Leone oggi, 8 novembre | Zodiacs.org')).toBe('Oroscopo Leone dell’8 novembre | Zodiacs.org');
+    expect(datedEditionTitleIn('fr', 'Horoscope Lion aujourd’hui, 8 novembre | Zodiacs.org')).toBe('Horoscope Lion du 8 novembre | Zodiacs.org');
   });
 
   it('inlines title rules that date a title in the browser exactly as on the server', () => {

@@ -1,9 +1,10 @@
 ---
 import { datedEditionTextIn } from '../../lib/edition-freshness';
+import type { HubLocale } from './today-copy-registry';
 
 interface Props {
   text: string;
-  locale: 'es' | 'pt';
+  locale: HubLocale;
   editionDate: string;
 }
 const { text, locale, editionDate } = Astro.props;
