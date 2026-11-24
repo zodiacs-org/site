@@ -1,5 +1,6 @@
 /** Actual article-to-transit behavior at the gated mobile and desktop widths. */
 import { mkdir, readFile } from 'node:fs/promises';
+import { READING_CONFIDENCE_UPDATED } from '../src/lib/reading-confidence-note.ts';
 
 const publication = JSON.parse(await readFile(new URL('../src/data/events-publication.json', import.meta.url), 'utf8'));
 const demo = JSON.parse(await readFile(new URL('../src/data/demo-chart-frida.json', import.meta.url), 'utf8'));
@@ -18,7 +19,8 @@ const archived = (anchor) => Object.entries(links).find(([key]) => key.endsWith(
 const nasaFor = (anchor) => [...nasa.ingresses, ...nasa.stations, ...nasa.aspects]
   .find((row) => row.engine.some((at) => iso(at) === iso(archived(anchor))));
 const modifiedFor = (event) => iso(Math.max(Date.parse(`${event.lastModified}T00:00:00.000Z`),
-  ...(de440Dates.paths.includes(event.path) ? [Date.parse(`${de440Dates.date}T00:00:00.000Z`)] : [])));
+  ...(de440Dates.paths.includes(event.path) ? [Date.parse(`${de440Dates.date}T00:00:00.000Z`)] : []),
+  Date.parse(`${READING_CONFIDENCE_UPDATED}T00:00:00.000Z`)));
 const events = ids.map((id) => {
   const event = publication.pages.find((page) => page.id === id);
   if (!event) throw new Error(`Missing event fixture: ${id}`);
