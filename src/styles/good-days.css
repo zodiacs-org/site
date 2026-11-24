@@ -7,6 +7,7 @@
 .good-days__check input { width: 18px; height: 18px; accent-color: var(--ink-1); }
 .good-days__result { margin-top: var(--s-6, 24px); outline: none; }
 .good-days__title { margin: 0 0 8px; font: 500 clamp(28px, 5vw, 40px)/1.12 var(--font-serif); color: var(--ink-0); }
+.good-days__confidence-note { display: block; }
 .good-days__sub { margin: 0 0 18px; color: var(--ink-2); }
 .good-days__list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .good-days__day { padding: 16px 18px; }

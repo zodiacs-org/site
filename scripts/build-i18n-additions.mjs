@@ -109,7 +109,8 @@ function schemaEntries() {
 }
 
 function chineseEntries() {
-  const entries = entriesFromObject('chineseZodiac', CHINESE_ZODIAC_COPY);
+  // iconRailNote is a retired caption kept in English only (see src/data/chinese-zodiac-zh.ts).
+  const entries = entriesFromObject('chineseZodiac', CHINESE_ZODIAC_COPY).filter(({ key }) => key !== 'chineseZodiac.iconRailNote');
   for (const animal of CHINESE_ZODIAC_ANIMALS) {
     for (const field of ['name', 'association', 'context']) {
       entries.push({

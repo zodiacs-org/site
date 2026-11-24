@@ -2205,11 +2205,10 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   // Prepare the two reading images after the first chart image so their canvas
   // work also stays outside the entrance. The readings render immediately.
   const prepareReadingImages = !firstResult || !preparingChartImage;
+  const shareLabel = subjectMode === 'other' ? wheelActionCopy.shareOther : t(locale, 'shareChart');
   const shareActionLabel = preparingChartImage
-    ? `${t(locale, 'shareChart')} · ${t(locale, 'chartActionsMore')}`
-    : subjectMode === 'other'
-    ? wheelActionCopy.shareOther
-    : t(locale, 'shareChart');
+    ? `${shareLabel} · ${t(locale, 'chartActionsMore')}`
+    : shareLabel;
   const shareActionDisabled = card === 'busy' && !preparingChartImage;
   const shareActionStatusLabel = shareActionDisabled
     ? t(locale, 'rendering')

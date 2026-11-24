@@ -7,6 +7,7 @@ import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-
 import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
 import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
 import type { LocalTimeModule } from '../lib/compute-api/local-time';
+import { isFixedOffsetZone } from '../lib/time/fixed-zones';
 import { occasionCard } from '../lib/occasions/card';
 import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path';
 import { MILESTONE_WORDS, milestoneCard } from '../lib/occasions/milestone-card';
@@ -34,6 +35,7 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
+import { earliestToday } from '../lib/birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -320,9 +322,14 @@ export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZon
  * The hosted tools' refusal of a child's birth date, before anything is worked out: Zodiacs is not directed at
  * children under 13, so a call that carries a birth date less than 13 years before today, or one still to come, gets
  * the fixed refusal and no card, chart or reading. Null for every other call.
+ *
+ * "Today" is the calendar date at UTC-12, the earliest date anywhere on Earth, the same day the site's chart forms
+ * use (../lib/birth-date-policy.ts). So nobody is accepted before their 13th birthday in any time zone; the UTC date
+ * accepted a child west of UTC up to 12 hours early. The cost is the one the 9 November audit states: someone at
+ * UTC+14 is accepted up to 26 hours after their 13th birthday begins.
  */
 export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
-  const today = now.toISOString().slice(0, 10);
+  const today = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
 }
 
@@ -478,7 +485,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes('find_birthplace') ? ' a town or city named instead of coordinates, find_birthplace;' : ''} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
           if (skyEvents) capabilities.limitations.push('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet\'s next retrograde, when a planet changes sign, every full Moon next year or this week\'s void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.');
           // Numerology is a separate tradition from astrology, and the line says so.
-          if (numerologyOn(dependencies)) capabilities.limitations.push('get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.');
+          if (numerologyOn(dependencies)) capabilities.limitations.push(
+            'get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.',
+            'For a numerology reading, use get_numerology, not explain_astrology.',
+          );
         }
         if (goodDaysOn(dependencies)) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -551,7 +561,31 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
-        const calculation = await computeSkyFact(request, { localTime: localTime() });
+        const rawCalculation = await computeSkyFact(request, { localTime: localTime() });
+        const zoneName = rawCalculation.result.fact.zone;
+        const fixedZone = zoneName !== null && isFixedOffsetZone(zoneName);
+        const zoneFlags = rawCalculation.result.zone
+          ? [...rawCalculation.result.zone.start.flags, ...rawCalculation.result.zone.end.flags]
+          : [];
+        if (!fixedZone && zoneFlags.includes('calendar-unknown')) {
+          return failure(tool, 'calendar-unknown', 'That date was skipped by a calendar change in the requested time zone, so the civil date is ambiguous without a calendar or country. Omit zone to check across every time zone, or inspect the UTC window with get_upcoming_events.');
+        }
+        if (zoneFlags.includes('host-zone-data-differs')) {
+          return failure(tool, 'host-zone-data-differs', 'This server\'s time zone rules differ near that date. Omit zone to check across every time zone, or inspect the UTC window with get_upcoming_events.');
+        }
+        const publishedLocalFlags = (flags: readonly string[]) => flags.filter((flag) => flag === 'dst-gap' || flag === 'dst-fold' || flag === 'lmt');
+        const calculation = rawCalculation.result.zone
+          ? {
+            ...rawCalculation,
+            result: {
+              ...rawCalculation.result,
+              zone: {
+                start: { ...rawCalculation.result.zone.start, flags: publishedLocalFlags(rawCalculation.result.zone.start.flags) },
+                end: { ...rawCalculation.result.zone.end, flags: publishedLocalFlags(rawCalculation.result.zone.end.flags) },
+              },
+            },
+          }
+          : rawCalculation;
         data = { answer: calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
         links = [methodLink, calendarLink];
         break;

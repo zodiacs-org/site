@@ -96,8 +96,10 @@ describe('the angles against the ERFA arbiter (rule 1b)', () => {
     // residual pins shrink on the same corpus and ERFA values; gates below stay fixed.
     expect(worst.id).toBe('1850-03-21T18:00:00Z -66°');
     expect(worst.asc).toBeCloseTo(0.0956, 4);
-    expect(quantile(asc, 0.95)).toBeCloseTo(0.00357, 5);
-    expect(quantile(asc, 0.5)).toBeCloseTo(0.000668, 6);
+    // Engine 2.0.0 reads instants after 2027-10-02 as continuous UTC; the arbiter
+    // was rerun on that clock, which moves these pins from 0.00357 and 0.000668.
+    expect(quantile(asc, 0.95)).toBeCloseTo(0.00358, 5);
+    expect(quantile(asc, 0.5)).toBeCloseTo(0.000669, 6);
     expect(Math.max(...midLatitudes)).toBeCloseTo(0.00378, 5);
     // Rule 1b's gates.
     expect(Math.max(...asc)).toBeLessThan(8);

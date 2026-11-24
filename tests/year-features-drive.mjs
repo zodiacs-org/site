@@ -24,6 +24,7 @@
  *
  *   npm run build && node tests/year-features-drive.mjs [--shots <dir>]
  */
+import { READING_CONFIDENCE_NOTE } from '../src/lib/reading-confidence-note.ts';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
@@ -174,6 +175,8 @@ try {
           if (!introText.includes('your Year Ahead Score, your numerology Personal Year')) fail(`${path} @${size.width}: the introduction reads "${introText}"`);
         }
         if (path === '/year-score/') {
+          const note = page.locator('.ys__score-core small').filter({ hasText: READING_CONFIDENCE_NOTE });
+          if (await note.count() !== 1 || !await note.isVisible()) fail(`${path} @${size.width}: missing or repeated confidence note`);
           // The focused heading reads as a sentence, not a bare number.
           const heading = await page.locator('.ys__heading').evaluate((node) => node.textContent.replace(/\s+/gu, ' ').trim());
           const named = await page.getByRole('heading', { level: 2, name: /^Your Year Ahead Score: \d+\.\d out of 10$/u }).count();
@@ -235,6 +238,7 @@ try {
         const recent = `${new Date().getUTCFullYear() - 5}-01-01`;
         await page.fill('#ys-date', recent);
         await page.getByRole('button', { name: 'Score my year' }).click();
+        if (await page.locator('.ys__score-core small').count()) fail(`${path} @${size.width}: refused reading shows a confidence note`);
         const refusal = (await error.innerText()).trim();
         if (refusal !== 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.') fail(`${path} @${size.width}: a date five years ago shows "${refusal}"`);
         console.log(`ok ${path} form @${size.width}: time without place, incomplete time, future date and under-13 refusal`);

@@ -247,7 +247,7 @@ await withPreview({ port: 4396 }, async (baseURL) => {
     });
     check('no-JavaScript record keeps the simple path and disclosures visible',
       noJsState.quickVisible
-        && /Showing the latest saved price/.test(noJsState.status)
+        && /Showing the latest saved price|No saved price is recorded/.test(noJsState.status)
         && noJsState.detailVisible
         && noJsState.recordSafetyCount === 0
         && noJsState.acquireAliases === 1

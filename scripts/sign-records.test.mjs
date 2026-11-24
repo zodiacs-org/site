@@ -413,6 +413,24 @@ describe('Zodiac token records', () => {
         expect(format(value)).toBe(expected);
         expect(format(String(value))).toBe(expected);
       }
+      // A missing saved price is unavailable, never a recorded $0
+      // (Number(null) is 0).
+      for (const missing of [null, undefined, '', true, false, Number.NaN, Infinity, 'n/a']) {
+        expect(format(missing)).toBe('—');
+      }
+    }
+    expect(source).toContain("if (savedPriceMissing) {\n        livePrice.textContent = '—';");
+    for (const sign of signs) {
+      const page = await read(`public/registry/${sign}/index.html`);
+      const quote = page.match(/data-live-price( data-price-missing)?>([^<]*)</u);
+      expect(quote, sign).not.toBeNull();
+      const [, missing, shown] = quote;
+      if (missing) {
+        expect(shown, sign).toBe('—');
+        expect(page, sign).toContain('data-live-state>No saved price is recorded. Checking for a current one…');
+      } else {
+        expect(Number(shown.replace(/^\$/u, '')), sign).toBeGreaterThan(0);
+      }
     }
     expect(source).not.toContain('wing_acquisition_click');
     expect(scorpio).not.toMatch(/href="https:\/\/jup\.ag\//u);
