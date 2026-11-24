@@ -19,6 +19,7 @@
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../ArtFrame.astro';
 import AskGuideLine from '../AskGuideLine.astro';
+import DailyWheelLegend from '../DailyWheelLegend.astro';
 import DailyLocaleReading from '../DailyLocaleReading.astro';
 import EvidenceDisclosure from '../EvidenceDisclosure.astro';
 import GuideQuickPrompts from '../GuideQuickPrompts.astro';
@@ -686,19 +687,18 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
             {todayMoonPath && todayMoonPath !== 'full' && <path d={moonPath(daily.moon.illumination, waxing, 18)} fill="#E6E2D6" />}
           </svg>
         </div>
-        <figcaption class="tdl-legend">
-          <span><i class="tdl-legend__rx">Rx</i>{c.legendRx}</span>
-          {(aspectTypes.has('trine') || aspectTypes.has('sextile')) && <span><i class="tdl-legend__line tdl-legend__line--easy"></i>{c.legendEasy}</span>}
-          {(aspectTypes.has('square') || aspectTypes.has('opposition')) && <span><i class="tdl-legend__line tdl-legend__line--tense"></i>{c.legendTense}</span>}
-          {aspectTypes.has('conjunction') && <span><i class="tdl-legend__line tdl-legend__line--joined"></i>{c.legendJoined}</span>}
-        </figcaption>
+        <DailyWheelLegend
+          class="tdl-legend"
+          aspectTypes={aspectTypes}
+          labels={{ rx: c.legendRx, easy: c.legendEasy, tense: c.legendTense, joined: c.legendJoined }}
+        />
       </figure>
     </header>
 
     <!-- 2. The sky in one line, the same line the home page shows. -->
     <div class="kwrap">
       <div class="ticker-band tdl-skyline">
-        <SkyTicker locale={locale} />
+        <SkyTicker locale={locale} reserveLabels />
       </div>
     </div>
 
@@ -1098,14 +1098,6 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
   }
-  .tdl-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
-  .tdl-legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .tdl-legend i { font-style: normal; }
-  .tdl-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
-  .tdl-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
-  .tdl-legend__line--easy { color: rgba(182, 212, 228, 0.85); }
-  .tdl-legend__line--tense { color: rgba(222, 142, 121, 0.85); }
-  .tdl-legend__line--joined { color: rgba(238, 241, 247, 0.6); }
 
   /* ── 2. The sky line ──────────────────────────────────────────── */
   .tdl-skyline { margin-top: 18px; }
@@ -1397,7 +1389,6 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
     .tdl-hero__lede { margin-top: 16px; font-size: 1.06rem; }
     .tdl-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
     .tdl-hero__actions .btn { width: 100%; }
-    .tdl-legend { gap: 6px 14px; font-size: 12px; }
     .tdl-skyline .skyticker { gap: 10px 18px; }
     .tdl-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .tdl-light__art .artframe { aspect-ratio: 16 / 9; }
