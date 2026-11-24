@@ -149,6 +149,15 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     const documentEnd = html.indexOf('</body>');
     if (wordBreak < 0 || documentEnd < wordBreak) return [];
     served.set(path, html);
+    if (path.endsWith('/horoscopes/')) {
+      const picker = html.match(/<nav class="(?:horo|hhl)-picker"[^>]*>[\s\S]*?<\/nav>/);
+      assert.ok(picker);
+      const icons = [...picker[0].matchAll(/<\/picture>/g)];
+      assert.equal(icons.length, 12);
+      // Paint the Aries, Taurus and Cancer discs before their names.
+      const cuts = [icons[0], icons[1], icons[3]].map((icon) => picker.index + icon.index + icon[0].length);
+      return [wordBreak, ...cuts, documentEnd].sort((a, b) => a - b);
+    }
     return [wordBreak, documentEnd];
   });
   const { origin } = proxy;
