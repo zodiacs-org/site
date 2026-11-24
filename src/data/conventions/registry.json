@@ -1,15 +1,15 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-11-19",
+  "version": "2026-11-23",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
   "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value. Natal receipts from @zodiacs/engine 1.1.0-rc.1 list, as conventionIds, every id that they and their result name, in code-unit order, each once, and the compute API's receipts list the ids their own fields name in the same way.",
   "engine": {
     "package": "@zodiacs/engine",
-    "version": "1.1.0",
+    "version": "2.1.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "2496c28f273e1e99526490e857332fae44473367"
+    "commit": "92825deeeb5c74c5f56b37d5d612c3439347087e"
   },
   "conformance": {
     "suite": "zodiacs-conformance",
@@ -139,7 +139,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "zodiac:sidereal",
@@ -919,7 +919,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "nutation:iau2000b-p03",
@@ -1200,7 +1200,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "speed:degrees-per-day;central-difference-plus-minus-0.25-day",
@@ -1315,7 +1315,7 @@
           "id": "time:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
           "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
           "title": "The engine's time basis",
-          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; outside that span, the instant read as UT1 and TT from the ΔT model. The natal receipt names the same basis in its timeScale convention.",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; before 1972, the instant read as UT1 and TT from the ΔT model. After the table, engines before 2.0.0 read the instant as UT1 too; from 2.0.0 the id stays the same, and each instant's timeScale.basis continuous-utc records that TT is UTC plus 69.184 s and UT1 comes from the ΔT model. The natal receipt names the same basis in its timeScale convention.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
@@ -1619,7 +1619,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "angles:gast-and-mean-obliquity",
@@ -1702,7 +1702,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes",
@@ -1794,7 +1794,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1834,7 +1834,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1862,7 +1862,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "deltaT:tt-minus-ut1;ut1-read-as-utc;value-in-result",
@@ -1912,7 +1912,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1936,7 +1936,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1960,7 +1960,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1992,7 +1992,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "moonPosition:astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
@@ -2042,7 +2042,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -2066,7 +2066,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "planetPositions:apparent-geocentric-ecliptic-of-date",
@@ -2094,7 +2094,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -2130,7 +2130,33 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0"
+        },
+        {
+          "id": "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
+          "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
+          "title": "The engine's time basis with continuous UTC, in the result",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds and UT1 from IERS UT1 − UTC; after the table, TT is UTC plus 69.184 s and UT1 comes from the ΔT model; before 1972, the instant read as UT1 and TT from the ΔT model; the basis recorded in the result's timeScale. A receipt names this set only for a chart whose basis is continuous-utc.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#receipts"
+            },
+            {
+              "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
+              "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -2223,6 +2249,36 @@
           "status": "current"
         },
         {
+          "id": "flag:calendar-unknown",
+          "value": "calendar-unknown",
+          "title": "Calendar unknown",
+          "definition": "A local date given with no country that a calendar changeover may have skipped, so its civil calendar is uncertain. A caller assertion that a natal receipt accepts only from 1582-10-04 to before 1918-02-28 (UTC). From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, README, Input flag compatibility",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/README.md#input-flag-compatibility"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:host-zone-data-differs",
+          "value": "host-zone-data-differs",
+          "title": "Host zone data differs",
+          "definition": "A wall time from 1970 on that the host's Intl read where the host's time zone data differs from the engine's pinned tzdata nearby. A caller assertion that a natal receipt refuses before 1970-01-01T00:00Z. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, README, Input flag compatibility",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/README.md#input-flag-compatibility"
+            },
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, Host time zone data",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#host-time-zone-data"
+            }
+          ],
+          "status": "current"
+        },
+        {
           "id": "flag:no-time",
           "value": "no-time",
           "title": "No birth time",
@@ -2244,6 +2300,19 @@
             {
               "title": "@zodiacs/engine 1.0.0, README, House systems",
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:polar-angles",
+          "value": "polar-angles",
+          "title": "Polar angles",
+          "definition": "The chart's angles are inside the polar circle, where |latitude| ≥ 90° less the true obliquity of date, in any house system; the ascendant there turns half a circle twice a day. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/README.md#house-systems"
             }
           ],
           "status": "current"
@@ -2441,10 +2510,23 @@
           "status": "current"
         },
         {
+          "id": "time-basis:continuous-utc",
+          "value": "continuous-utc",
+          "title": "Continuous UTC",
+          "definition": "After the IERS table (2027-10-02): TT is UTC plus 69.184 s, the last listed leap seconds carried, and UT1 comes from the ΔT model. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        },
+        {
           "id": "time-basis:delta-t",
           "value": "delta-t",
           "title": "ΔT model",
-          "definition": "Outside the IERS span: the instant read as UT1, TT from the ΔT model.",
+          "definition": "Before 1972: the instant read as UT1, TT from the ΔT model. Engines before 2.0.0 also used it after the IERS table.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
@@ -2697,11 +2779,24 @@
           "id": "ut1-source:fallback",
           "value": "fallback",
           "title": "Fallback",
-          "definition": "After the table, for UTC or TT input: 0 ± 0.9 s.",
+          "definition": "0 ± 0.9 s after the table: what engines before 2.0.0 recorded for UTC or TT input there, and what a pinned ΔT on UTC input still records.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ut1-source:model",
+          "value": "model",
+          "title": "Model",
+          "definition": "After the table, on the continuous UTC rule: 69.184 s less the ΔT model's TT − UT1, with the model's band. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#what-a-chart-reports"
             }
           ],
           "status": "current"
@@ -3563,7 +3658,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.10 to 1.1.0"
+          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },

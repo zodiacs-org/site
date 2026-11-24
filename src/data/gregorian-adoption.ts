@@ -21,7 +21,7 @@
  * - wikipedia: "List of adoption dates of the Gregorian calendar by country",
  *   English Wikipedia, read 2026-09-25; its rows cite Grotefend, Ginzel and
  *   the laws that made each change.
- * - tzdb: the IANA time zone database 2025c (the release @zodiacs/engine/geo
+ * - tzdb: the IANA time zone database 2026f (the release @zodiacs/engine/geo
  *   ships, its TZDB), file `calendars`, which quotes H. Grotefend,
  *   Taschenbuch der Zeitrechnung (1941), pp. 26–28. Public domain.
  * - lv, fi: the Latvian and Finnish Wikipedia articles on the Gregorian
