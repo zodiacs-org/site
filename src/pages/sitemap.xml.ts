@@ -760,11 +760,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
   // From 19 November it says in words that the hosted server needs no account, sign-in or API key.
   ['/developers/ai/', '2026-11-19'] as const,
-  // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
-  // the daily edition it was built with, last so this date wins.
   // The Fortune 500 CEO Sun sign study, first published 17 November.
   ['/studies/fortune-500-ceo-signs/', '2026-11-17'] as const,
-  ['/', '2026-11-14'] as const,
+  // The home greeting now has server-rendered copy. Use the checked-in edition date.
+  ['/', '2026-11-20'] as const,
   // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
   ['/feeds/', '2026-11-17'] as const,
   ['/developers/', '2026-11-17'] as const,
