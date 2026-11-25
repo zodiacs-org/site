@@ -302,10 +302,12 @@ describe('the natal chart\'s lunar nodes against the reference pipeline\'s true 
       const match = /^(\d+)°(\d{2})′ (\w+)$/u.exec(position)!;
       return SIGNS.findIndex((sign) => sign.name === match[3]) * 30 + Number(match[1]) + Number(match[2]) / 60;
     };
+    // The latest reference instant is in 2026. Each fixture is an adult at this clock.
+    const chartOptions = { ...on, now: () => new Date('2050-01-01T12:00:00Z') };
     expect(nodePolar.trueNode).toHaveLength(3);
     for (const reference of nodePolar.trueNode) {
       const [date, clock] = reference.input.utc.split('T');
-      const result = await executeAiTool('get_natal_chart', { birthDate: date, time: clock.slice(0, 5), zone: 'UTC', latitude: 0, longitude: 0 }, on);
+      const result = await executeAiTool('get_natal_chart', { birthDate: date, time: clock.slice(0, 5), zone: 'UTC', latitude: 0, longitude: 0 }, chartOptions);
       if (!result.ok || result.tool !== 'get_natal_chart' || !('nodes' in result.data)) throw new Error(JSON.stringify(result));
       const { nodes } = result.data as NatalChartDataWithNodes;
       const { north, south } = nodes;

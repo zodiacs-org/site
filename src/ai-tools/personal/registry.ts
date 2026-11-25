@@ -9,8 +9,9 @@
  */
 import type { PersonalToolDefinition } from './shared';
 import { astrocartographyTool } from './astrocartography';
+import { vedicSignsTool } from './vedic-signs';
 
-export const PERSONAL_TOOLS = [astrocartographyTool] as const satisfies readonly PersonalToolDefinition[];
+export const PERSONAL_TOOLS = [astrocartographyTool, vedicSignsTool] as const satisfies readonly PersonalToolDefinition[];
 
 export type PersonalToolName = typeof PERSONAL_TOOLS[number]['name'];
 /** The same list, read as definitions (an empty registry's element type is never). */

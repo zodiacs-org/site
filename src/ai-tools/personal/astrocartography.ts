@@ -19,7 +19,7 @@ import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
-import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type PersonalToolContext } from './shared';
+import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, withCheckedZone, zoneField, type PersonalToolContext } from './shared';
 
 export const ACG_MAX_CITIES = 5;
 /** Latitudes the rising and setting lines are listed at in the answer: every 5 degrees from 75 south to 75 north. */
@@ -50,8 +50,11 @@ const nearLine = z.object({
   side: z.enum(['east', 'west']).nullable(),
   strength: z.enum(['strong', 'noticeable', 'faint']),
   line: z.string(),
-  /** A share card of this line alone: the planet and the angle, never the birth details or the place. */
-  shareUrl: z.url(),
+  /**
+   * A share card of this line alone: the planet and the angle, never the birth details or the place. Null while the
+   * website's page is switched off.
+   */
+  shareUrl: z.url().nullable(),
 });
 export const astrocartographyData = z.object({
   birthDate: z.string(),
@@ -85,7 +88,8 @@ export const astrocartographyData = z.object({
   confidence: z.number().int().min(40).max(95),
   confidenceLabel: z.string(),
   limits: z.array(z.string()),
-  pageUrl: z.url(),
+  /** The map page, where the map is drawn in the person's browser. Null while the website's page is switched off. */
+  pageUrl: z.url().nullable(),
 });
 export type AstrocartographyData = z.infer<typeof astrocartographyData>;
 
@@ -108,7 +112,9 @@ function splitCity(text: string): { place: string; country?: string } {
   return place.length >= 2 && country.length >= 2 ? { place, country } : { place: text.trim() };
 }
 
-export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'placeTable' | 'resolveZone' | 'hostZone'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
+export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'placeTable' | 'resolveZone' | 'hostZone' | 'pageOn'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
+  // The page and its share cards are linked only while the website's page is on (the definition's pageFlag).
+  const pageOn = context.pageOn === true;
   const natal = await castNatal(args, context.localTime);
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
@@ -156,7 +162,8 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
           planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
           distanceKm, distanceMiles: Math.round(distanceKm / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
           line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${ACG_CONFIDENCE_TEXT}.`,
-          shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }),
+          // The share card is linked only while the website's page is on: with it off it would be a 404.
+          shareUrl: pageOn ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null,
         };
       });
       const strong = closest.filter((row) => row.strength === 'strong');
@@ -177,10 +184,10 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
       lines, cities, unmatched,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
       confidence: ACG_CONFIDENCE, confidenceLabel: ACG_CONFIDENCE_TEXT, limits,
-      pageUrl: `${context.origin}/astrocartography/`,
+      pageUrl: pageOn ? `${context.origin}/astrocartography/` : null,
     },
     links: [
-      { title: 'Draw your map on Zodiacs (calculated in your browser)', url: `${context.origin}/astrocartography/` },
+      ...(pageOn ? [{ title: 'Draw your map on Zodiacs (calculated in your browser)', url: `${context.origin}/astrocartography/` }] : []),
       { title: 'Resolve a town or city (find_birthplace)', url: `${context.origin}/birth-chart/` },
       { title: 'How we calculate', url: `${context.origin}/methodology/` },
     ],
@@ -191,10 +198,12 @@ export const astrocartographyTool = definePersonalTool({
   name: 'get_astrocartography',
   title: 'Your map lines',
   summary: 'astrocartography lines, and the lines nearest named towns and cities',
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link when there is one, where the map is drawn in their own browser. A line near a place can carry a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   clockDependent: false,
+  pageFlag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, cities: ['Lisbon', 'New York', 'Tokyo'] },
-  run: (args, context) => getAstrocartography(args, context),
+  // The zone is checked and spelled as tzdb spells it before any clock sees it, so an unknown one is never repeated back.
+  run: async (args, context) => getAstrocartography(await withCheckedZone(args, context), context),
 });

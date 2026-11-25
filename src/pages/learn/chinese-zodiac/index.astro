@@ -1,7 +1,6 @@
 ---
 import { editorialDates } from '../../../lib/editorial-metadata.mjs';
 import Base from '../../../layouts/Base.astro';
-import ChineseZodiacBrandRail from '../../../components/ChineseZodiacBrandRail.astro';
 import {
   CHINESE_ZODIAC_ANIMALS,
   CHINESE_ZODIAC_COPY,
@@ -50,7 +49,6 @@ const jsonLd = [
     <header>
       <h1 class="display cz-page__title">{CHINESE_ZODIAC_COPY.hubTitle}</h1>
       <p class="cz-page__lede">{CHINESE_ZODIAC_COPY.hubIntro}</p>
-      <ChineseZodiacBrandRail />
     </header>
 
     <section class="cz-note">

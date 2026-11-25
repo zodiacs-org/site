@@ -121,6 +121,7 @@ export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
   '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
   '/astrocartography/': 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
+  '/vedic-signs/': 'PUBLIC_VEDIC_SIGNS_ENABLED',
 });
 const launchedRoute = (route, env) => !LAUNCH_FLAGGED_ROUTES[route] || env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
 

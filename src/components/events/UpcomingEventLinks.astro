@@ -32,11 +32,11 @@ const dayLabel = (anchor: string) => {
         return (
           <li style={sign ? `--event-sign:${sign.hue}` : undefined}>
             <a href={event.path} class:list={{ 'upcoming-events__link--text': !sign }}>
-              {sign && <SignIcon sign={sign.slug} size={30} />}
-              <span>
+              <span class="upcoming-events__copy">
                 <strong>{event.title}</strong>
                 <time datetime={event.anchor}>{dayLabel(event.anchor)}</time>
               </span>
+              {sign && <SignIcon sign={sign.slug} size={30} />}
             </a>
           </li>
         );
@@ -85,13 +85,18 @@ const dayLabel = (anchor: string) => {
     color: var(--text-2);
     text-decoration: none;
   }
+  /* The event text establishes the row height before its centered icon paints. */
+  .upcoming-events a:not(.upcoming-events__link--text) { grid-template-rows: minmax(30px, auto); }
+  .upcoming-events a > :global(.sign-icon) { grid-area: 1 / 1; }
   .upcoming-events a.upcoming-events__link--text { grid-template-columns: minmax(0, 1fr); }
   .upcoming-events a:hover,
   .upcoming-events a:focus-visible {
     color: var(--text);
     background: color-mix(in oklab, var(--event-sign, var(--accent)) 7%, transparent);
   }
-  .upcoming-events a > span:last-child {
+  .upcoming-events__copy {
+    grid-column: -2 / -1;
+    grid-row: 1;
     display: flex;
     min-width: 0;
     align-items: baseline;
@@ -114,6 +119,6 @@ const dayLabel = (anchor: string) => {
   .upcoming-events--compact { padding: 14px; }
   .upcoming-events--compact h2 { font-size: var(--text-md); }
   @media (max-width: 520px) {
-    .upcoming-events a > span:last-child { align-items: flex-start; flex-direction: column; gap: 3px; }
+    .upcoming-events__copy { align-items: flex-start; flex-direction: column; gap: 3px; }
   }
 </style>

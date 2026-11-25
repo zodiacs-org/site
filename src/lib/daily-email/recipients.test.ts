@@ -64,6 +64,14 @@ describe('daily email recipient selection', () => {
         ...chart, birth: { ...chart.birth, place: invalidPlace },
       })).toBe(false);
     }
+    expect(isDailyEmailSavedChart({
+      ...chart,
+      summary: { ...chart.summary, flags: ['polar-fallback', 'polar-angles', 'calendar-unknown', 'host-zone-data-differs'] },
+    })).toBe(true);
+    expect(isDailyEmailSavedChart({
+      ...chart,
+      summary: { ...chart.summary, flags: ['not-a-real-flag' as never] },
+    })).toBe(false);
   });
 
   /** The account's current eligible self chart, as account_v2_chart_email_sources returns it. */

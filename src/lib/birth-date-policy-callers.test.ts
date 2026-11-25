@@ -33,6 +33,7 @@ const ISLANDS = [
   'YearSky',
   'MiniBirthChartWidget',
   'AstrocartographyMap',
+  'VedicSigns',
 ] as const;
 
 const YEAR_SKY_TWINS = ['YearSkyEs', 'YearSkyFr', 'YearSkyIt', 'YearSkyPt'] as const;
