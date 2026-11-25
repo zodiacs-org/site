@@ -6,6 +6,7 @@
  * wording from src/lib/compat-i18n.ts. The English page
  * (src/pages/compatibility/[pair]/index.astro) is the reference layout.
  */
+import PairCardSection from '../share/PairCardSection.astro';
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
@@ -320,6 +321,8 @@ const jsonLd = [
         </noscript>
       </div>
     </section>
+
+    {locale !== 'ru' && <PairCardSection locale={locale} pair={facts.slug} title={facts.same ? facts.nameA : `${facts.nameA} & ${facts.nameB}`} />}
 
     <section class="ksection ph-questions" aria-labelledby="questions-title">
       <div class="kwrap qa">
