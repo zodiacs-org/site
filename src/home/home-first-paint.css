@@ -1,9 +1,8 @@
 /*
  * Stable first-paint geometry for the homepage hero.
  *
- * The complete route stylesheet loads after the initial document. Keep this
- * subset equivalent to the hero's initial state so the poster can become LCP
- * without waiting for below-the-fold homepage styles.
+ * The poster hints precede these route-owned fonts and hero styles.
+ * The built page also inlines its scoped rules for the sections below.
  */
 @font-face {
   font-family: 'EB Garamond Home';
@@ -27,9 +26,10 @@
   font-display: swap;
 }
 
-html[data-local-typography][lang='en'] {
+/* A late section font change can move the reader even when the section is off screen. */
+html[data-stable-typography][lang='en'] {
   --font-serif: 'EB Garamond Home', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif;
-  --font-sans: 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Instrument Sans Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, Menlo, Consolas, monospace;
 }
 
@@ -185,8 +185,8 @@ html[data-local-chrome-typography][lang='en'] {
   text-shadow: 0 1px 14px rgba(6, 7, 9, 0.72);
 }
 
-/* The sky line under the hero starts inside a short first screen, so all
-   of its homepage geometry is here rather than in the deferred route CSS. */
+/* The sky line under the hero starts inside a short first screen, so its
+   homepage geometry lives here. */
 .home-sky {
   display: flex;
   align-items: center;

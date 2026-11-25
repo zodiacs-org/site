@@ -60,6 +60,8 @@ async function calculate(page, { unknown = false } = {}) {
   await page.locator('#place-opt-0').click();
   await page.locator('.calc__submit').click();
   await page.locator('.calc__result').waitFor();
+  check('The placements table is accessible on the first result', await page.locator('.calc__detail').getByRole('table').isVisible());
+  check('The result heading has focus', await page.locator('.calc__result > h2').evaluate(heading => document.activeElement === heading));
   await page.locator('[data-first-reading-start]').waitFor();
   await fits(page, unknown ? 'Unknown-time chart' : 'Known-time chart');
 }

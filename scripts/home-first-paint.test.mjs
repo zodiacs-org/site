@@ -51,7 +51,7 @@ const fontContract = [
 const optionalHeroFaces = ['instrument-sans-home-nav-core.woff2', 'eb-garamond-home-400-core.woff2'];
 
 describe('homepage first-paint assets', () => {
-  it('keeps the motion control out of document flow before deferred styles load', async () => {
+  it('keeps the motion control out of document flow from the first paint', async () => {
     const critical = await readFile(resolve(repositoryRoot, 'src/home/home-first-paint.css'), 'utf8');
     const page = await readFile(resolve(repositoryRoot, 'src/pages/index.astro'), 'utf8');
     const canonical = page.match(/<style>([\s\S]*?)<\/style>/u)[1];

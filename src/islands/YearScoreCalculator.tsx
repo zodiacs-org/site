@@ -5,6 +5,7 @@
  * on submit and everything is calculated on this device; the birth details
  * are never sent, stored or put in the address bar.
  */
+import { READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import PlaceSearch from './PlaceSearch';
 import { SIGNS, signForLongitude } from '../lib/signs';
@@ -15,18 +16,18 @@ import { createModuleLoader } from '../lib/module-load';
 import { birthDayEnds, rangeWorthShowing, untimedScoreNote, type ScoreRange } from '../lib/year-score/range';
 import { yearScoreShareUrl } from '../lib/year-score/share';
 import { dayName, shortMonth, yearReading, type YearReading } from '../lib/year-score/reading';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 
 const loadScorer = createModuleLoader(() => import('../lib/year-score/browser'));
 
-// Islands never import the assistant tools (the compute privacy test holds that), so the two age rules and the
-// reading-confidence rule of src/ai-tools/reading-confidence.ts are restated here, with the same cutoffs.
+// Islands never import the assistant tools (the compute privacy test holds that), so the under-18 softening and
+// reading-confidence rule of src/ai-tools/reading-confidence.ts are restated here, while under-13 and future birth
+// dates use the shared UTC-12 policy in src/lib/birth-date-policy.ts.
 const underAge = (birthDate: string, today: string, years: number) => birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
 /** Under 18, the one romantic phrase a slow-planet line can carry (Venus as "way of loving") is left out. */
 const softenMinor = (text: string) => text.replace(/\bway of loving\b/gu, 'way of caring');
 const confidenceLabel = (timed: boolean) => `Reading confidence ${timed ? 70 : 55}%`;
 
-const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.';
-const FUTURE_DATE = 'Enter a birth date in the past.';
 const TIME_NEEDS_PLACE = 'Add the birthplace to use the birth time, or clear the time.';
 const TIME_INCOMPLETE = 'Enter the full birth time, or clear the time.';
 
@@ -76,8 +77,8 @@ export default function YearScoreCalculator() {
     try {
       const today = new Date().toISOString().slice(0, 10);
       if (!/^\d{4}-\d{2}-\d{2}$/u.test(date) || date < '1800-01-01') { setError('Enter a birth date from 1800 on.'); return; }
-      if (date > today) { setError(FUTURE_DATE); return; }
-      if (underAge(date, today, 13)) { setError(UNDER_13); return; }
+      const refusal = birthDateRefusal(date);
+      if (refusal) { setError(birthDateRefusalText(refusal)); return; }
       if (showDetail && timeRef.current && !timeRef.current.validity.valid) { setTimeNote(TIME_INCOMPLETE); return; }
       if (showDetail && time && !city) { setTimeNote(TIME_NEEDS_PLACE); return; }
       const placed = showDetail && city;
@@ -160,11 +161,12 @@ export default function YearScoreCalculator() {
             <span class="orb">↗</span>
           </button>
           <p class="calc__privacy">Calculated on your device. Your birth details are not sent or saved.</p>
-          {error && <p class="calc__error" role="alert">{error}</p>}
+          {error && <p class="calc__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
         </div>
       </form>
 
-      {result && (
+      {busy && !result && <div class="ys__pending" aria-hidden="true" />}
+      {result && !error && !timeNote && (
         <div class="calc__result ys" style={`--sign:${result.hue}`}>
           <div class="ys__score shell tinted" style={`--sign:${result.hue}`}>
             <div class="core tinted ys__score-core">
@@ -182,6 +184,7 @@ export default function YearScoreCalculator() {
                   <p class="ys__meta" data-ys-sun-unsettled>Your Sun is in {result.candidates[0]} or {result.candidates[1]}: a birth time settles it.</p>
                   <p class="ys__meta">{dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
                 </>}
+              <small class="field__help">{READING_CONFIDENCE_NOTE}</small>
             </div>
           </div>
 

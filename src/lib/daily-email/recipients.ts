@@ -86,6 +86,12 @@ function validSavedPlace(value: unknown): boolean {
     && validTimezone(value.tz);
 }
 
+const DAILY_EMAIL_CHART_FLAGS = new Set([
+  'dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'polar-angles',
+  'calendar-unknown', 'host-zone-data-differs', 'outside-reference-span',
+  'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span',
+]);
+
 export function isDailyEmailSavedChart(value: unknown): value is SavedChart {
   if (!isRecord(value)
     || typeof value.id !== 'string'
@@ -106,13 +112,7 @@ export function isDailyEmailSavedChart(value: unknown): value is SavedChart {
     || !validInstant(value.summary.utcISO)
     || (value.summary.houseSystem !== 'whole' && value.summary.houseSystem !== 'placidus')
     || !Array.isArray(value.summary.flags)
-    || !value.summary.flags.every((flag) => (
-      flag === 'dst-gap'
-      || flag === 'dst-fold'
-      || flag === 'lmt'
-      || flag === 'no-time'
-      || flag === 'polar-fallback'
-    ))
+    || !value.summary.flags.every((flag) => typeof flag === 'string' && DAILY_EMAIL_CHART_FLAGS.has(flag))
     || !Array.isArray(value.summary.bodies)) return false;
   const angles = value.summary.angles;
   const validAngles = angles === null || (

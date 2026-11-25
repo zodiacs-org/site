@@ -1,4 +1,4 @@
-// rc.2 adapter: only request key system -> houseSystem; original seeds/cases unchanged.
+// rc.2 adapter: request key system -> houseSystem; 2.0+ adapter: keep ratified post-2027 UT1 clock so seeds/cases stay unchanged.
 /*
  * End to end: every house system from a UTC instant, on the engine's own
  * sidereal time and obliquity, for comparison with swe_houses_ex at the same
@@ -12,7 +12,11 @@
  *   node tools/dump-end-to-end.mjs > "$WORK/end-to-end.jsonl"
  */
 import { houses } from '@zodiacs/engine/calc';
+import { natalChart } from '@zodiacs/engine/core';
 import { HOUSE_SYSTEMS } from '@zodiacs/engine/internal/math';
+import { timeBasis } from '@zodiacs/engine/time';
+
+const J2000_JD = 2451545.0;
 
 let seed = 1234567;
 const random = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
@@ -28,7 +32,15 @@ for (const c of cases) {
   const systems = {};
   const refused = {};
   let jdUt1;
+  const ms = Date.parse(c.utc);
+  const pre20Ut1 = timeBasis(ms, 'utc').timeScale.basis === 'continuous-utc';
   for (const system of HOUSE_SYSTEMS) {
+    if (pre20Ut1) {
+      const chart = natalChart({ utc: new Date(ms), timeScale: 'ut1', timeKnown: true, latitude: c.lat, longitude: c.lon, houseSystem: system });
+      jdUt1 = J2000_JD + timeBasis(ms, 'ut1').ut1Days;
+      systems[system] = chart.houses.system === system ? chart.houses.cusps : null;
+      continue;
+    }
     const result = houses({ time: c.utc, place: { latitude: c.lat, longitude: c.lon }, houseSystem: system });
     if (result.status !== 'ok') {
       refused[system] = result.reason;

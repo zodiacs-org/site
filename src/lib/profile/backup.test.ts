@@ -54,6 +54,15 @@ describe('chart backup validation', () => {
     const b = backup(); b.me.photo = 'https://example.com/track.jpg';
     expect(parseChartBackup(JSON.stringify(b)).me.photo).toBeUndefined();
   });
+  it('round trips engine 2.1.0 polar and resolver flags on saved charts', () => {
+    const polar = chart('tromso', '1990-06-15');
+    polar.birth.place = { name: 'Tromsø', admin1: 'Troms', country: 'NO', lat: 69.6492, lon: 18.9553, tz: 'Europe/Oslo' };
+    polar.summary.flags = ['polar-angles', 'calendar-unknown', 'host-zone-data-differs'];
+    const original = backup([polar]);
+    storage.setItem(PROFILE_KEY, JSON.stringify(original.profile)); storage.setItem(ME_KEY, JSON.stringify(original.me));
+    const restored = parseChartBackup(JSON.stringify(createChartBackup()));
+    expect(restored.profile.charts[0]!.summary.flags).toEqual(['polar-angles', 'calendar-unknown', 'host-zone-data-differs']);
+  });
 });
 describe('restore preserves existing saves', () => {
   it('keeps existing data and owner when a backup has another self chart', () => {
