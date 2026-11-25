@@ -281,6 +281,11 @@ export async function runAspectPatternBrowserChecks({ browser, baseURL, check, o
     }
     await feature.locator('[data-pattern-panel]').waitFor({ timeout: 15_000 });
     check('pattern module recovery: explicit retry or warned reload restores the genuine panel', await feature.locator('[data-pattern-title]').textContent() === 'Grand cross');
+    // The reading images share the pattern card's 1080x1350 canvas and are now
+    // prepared after the chart's entrance, so let them finish before the probe
+    // fails the next encode; otherwise a reading image takes the failure.
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-approach-share], [data-communication-share]')]
+      .every((button) => button.getAttribute('data-card-state') !== 'preparing'), null, { timeout: 30_000 });
     await page.evaluate(() => { window.__patternProbe.failEncode = true; });
     await feature.locator('[data-pattern-export]').click();
     await feature.locator('[data-pattern-export-error]').waitFor({ timeout: 20_000 });

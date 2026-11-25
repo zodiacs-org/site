@@ -183,7 +183,7 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
       case 'occasion': {
         // Worked out without the names and the place name, which are display only and never stored.
         const { names: _names, place: _place, ...occasionArgs } = input.occasion!;
-        const result = await executeAiTool('get_occasion_sky', occasionArgs, tools);
+        const result = await executeAiTool('get_occasion_sky', occasionArgs, tools, { hostZone: dependencies.hostZone });
         if (!result.ok) return { failure: result.error.message };
         if (result.tool !== 'get_occasion_sky') return { failure: 'Zodiacs could not work that out again.' };
         const data = result.data;

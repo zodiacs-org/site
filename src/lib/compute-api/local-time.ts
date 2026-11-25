@@ -1,7 +1,7 @@
 /**
  * Local civil time through @zodiacs/engine/geo, the resolver the birth chart
  * calculator also reads local times with (src/lib/time/localToUtc.ts delegates
- * to it): before 1970 the history of tzdata 2025c with its backzone file, which
+ * to it): before 1970 the history of tzdata 2026f with its backzone file, which
  * the engine ships; from 1970 the runtime's Intl data; and before standard
  * time a birthplace's own mean time. Nothing here converts a time itself.
  *
@@ -10,17 +10,28 @@
  * bundles from local-time-source.ts with the engine's histories inlined, a
  * fresh copy for each request; tests pass the source module itself.
  */
-import type { LocalTimeResolution as EngineLocalTimeResolution, TZDB } from '@zodiacs/engine/geo';
+import type { CalendarName, LocalTimeResolution as EngineLocalTimeResolution, TZDB } from '@zodiacs/engine/geo';
 import type { LocalInput } from './validate.js';
 import { isFixedOffsetZone } from '../time/fixed-zones.js';
 
 export interface LocalTimeModule {
   prepareLocalTime(date: string, timeZone: string): Promise<void>;
-  resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number }): EngineLocalTimeResolution;
+  resolveLocalToUtc(
+    date: string,
+    time: string,
+    timeZone: string,
+    options?: { longitude?: number; calendar?: CalendarName; country?: string; fold?: 'earlier' | 'later' },
+  ): EngineLocalTimeResolution;
   /** The tzdb spelling of a zone name given in any letter case, or null (src/lib/time/zone-names.ts). */
   canonicalZoneName(name: string): Promise<string | null>;
   /** The tzdb release the engine ships. */
   TZDB: typeof TZDB;
+}
+
+export interface LocalResolutionContext {
+  writtenDate?: string;
+  calendar?: CalendarName;
+  country?: string | null;
 }
 
 export type LocalTimeFlag = EngineLocalTimeResolution['flags'][number];
@@ -78,10 +89,14 @@ export async function resolveLocal(
   module: LocalTimeModule,
   input: LocalInput,
   longitude: number | null,
+  context?: LocalResolutionContext,
 ): Promise<LocalResolution> {
   await module.prepareLocalTime(input.date, input.zone);
-  const options = longitude === null ? {} : { longitude };
-  const resolved = module.resolveLocalToUtc(input.date, input.time, input.zone, options);
+  const options: { longitude?: number; calendar?: CalendarName; country?: string } = {};
+  if (longitude !== null) options.longitude = longitude;
+  if (context?.calendar !== undefined) options.calendar = context.calendar;
+  if (context?.country) options.country = context.country;
+  const resolved = module.resolveLocalToUtc(context?.writtenDate ?? input.date, input.time, input.zone, options);
   const early = input.date <= PINNED_HISTORY_LAST_DATE;
   const pinned = resolved.zone.source === 'tzdb';
   const gapShiftMinutes = (resolved.utc.getTime() + resolved.offsetMinutes * 60_000 - wallMilliseconds(input)) / 60_000;

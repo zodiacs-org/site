@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { scanTransitContacts } from '../../lib/engine/transit-scan';
+import { UNDER_13_REFUSAL } from '../contracts';
 import { executeAiTool } from '../tools';
 import { numberTransitPasses, type PersonalTransitsData } from './personal-transits';
 
@@ -71,7 +72,7 @@ describe('get_personal_transits', () => {
     expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1850-01-01', to: '1850-12-01' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'The window starts before the birth date; give a from date on or after the birth date.' } });
     expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1990-05-02', to: '1990-05-10' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
     expect(await executeAiTool('get_personal_transits', { birthDate: '2100-05-03' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
-    expect(await executeAiTool('get_personal_transits', { birthDate: '2100-05-03', mode: 'year-ahead' }, on)).toMatchObject({ ok: false, error: { message: 'year-ahead starts today, which is before the birth date.' } });
+    expect(await executeAiTool('get_personal_transits', { birthDate: '2100-05-03', mode: 'year-ahead' }, on)).toMatchObject({ ok: false, error: { message: UNDER_13_REFUSAL } });
     expect((await transits({ birthDate: '1990-05-03', from: '1990-05-03', to: '1990-05-10' })).from).toBe('1990-05-03');
   });
 

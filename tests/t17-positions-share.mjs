@@ -295,6 +295,7 @@ try {
       assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
         'computed tool results must omit collection links outside the shared navigation');
 
+      await source.getByRole('button', { name: 'Share your chart', exact: true }).waitFor({ timeout: TIMEOUT });
       const preparedSheet = await source.evaluate(() => {
         const all = globalThis.__t17CanvasText.slice();
         const titleIndex = all.findLastIndex((entry) => entry.value === 'Birth chart');
@@ -1221,13 +1222,39 @@ try {
         baseURL, errors, outputDir: HYDRATION_EVIDENCE_DIR,
       }));
       await open(mobile, `${baseURL}/birth-chart/`);
+      // Hold the calculator's first sheet until the sharing dialog has opened.
+      await mobile.evaluate(() => {
+        const original = HTMLCanvasElement.prototype.toBlob;
+        globalThis.__mobileChartSheetRenders = 0;
+        HTMLCanvasElement.prototype.toBlob = function (callback, type, quality) {
+          if (this.width === 1800 && this.height === 2400) {
+            globalThis.__mobileChartSheetRenders++;
+            if (globalThis.__mobileChartSheetRenders === 1) {
+              globalThis.__releaseMobileChartSheet = () => original.call(this, callback, type, quality);
+              return;
+            }
+          }
+          return original.call(this, callback, type, quality);
+        };
+      });
       await computeChart(mobile);
+      await mobile.waitForFunction(() => typeof globalThis.__releaseMobileChartSheet === 'function', null, { timeout: TIMEOUT });
+      await mobile.getByRole('button', { name: 'Share your chart · More ways to use this chart', exact: true }).click();
+      const pendingDialog = mobile.locator('[data-share-dialog]');
+      await pendingDialog.locator('[data-positions-link]').waitFor({ state: 'visible', timeout: TIMEOUT });
+      assert.ok(await pendingDialog.locator('[data-share-card-action="sheet"]').isDisabled());
+      await mobile.evaluate(() => globalThis.__releaseMobileChartSheet());
       await mobile.waitForFunction(() => {
-        const action = document.querySelector('[data-share-card]');
-        return action instanceof HTMLButtonElement && !action.disabled;
+        const actions = document.querySelectorAll('[data-share-dialog] [data-share-card-action]');
+        return actions.length === 2 && [...actions].every(button => !button.disabled);
       }, null, { timeout: TIMEOUT });
+      assert.equal(await mobile.evaluate(() => globalThis.__mobileChartSheetRenders), 1,
+        'opening share options during preparation must reuse the first sheet');
+      await pendingDialog.locator('.calc-share-dialog__close').click();
+      const preparedShare = mobile.getByRole('button', { name: 'Share your chart', exact: true });
+      await preparedShare.waitFor({ timeout: TIMEOUT });
       const mobileTapStart = await mobile.evaluate(() => performance.now());
-      await mobile.locator('[data-share-card]').click();
+      await preparedShare.click();
       await mobile.waitForFunction(() => globalThis.__mobileShareCalls === 1, null, { timeout: TIMEOUT });
       const mobilePayload = await mobile.evaluate(() => globalThis.__mobileSharePayload);
       assert.equal(mobilePayload.files.length, 1, 'one mobile tap must share one prepared file');

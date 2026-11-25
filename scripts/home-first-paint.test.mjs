@@ -139,9 +139,8 @@ describe('homepage first-paint assets', () => {
     const ticker = page.match(/<SkyTicker\b[^>]*\/>/gu);
 
     expect(ticker).toEqual(['<SkyTicker />']);
-    // The saved-profile island has no SSR child for visibility observation.
-    // The intent/load fallback reaches returning state after the initial poster load.
-    expect(page).toContain('<WelcomeBack client:interaction />');
+    // Only a visible returning greeting needs the intent/load fallback.
+    expect(page).toContain('<WelcomeBack client:home-returning />');
     // The sign picker under the hero is twelve plain links: no island.
     expect(page).not.toContain('<TodayBySign');
     expect(page).toMatch(/<a\s+href=\{`\/horoscopes\/\$\{s\.slug\}\/`\}/u);
