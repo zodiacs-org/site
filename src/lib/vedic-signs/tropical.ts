@@ -21,6 +21,7 @@ export interface TropicalMoment {
 export interface TropicalMoments {
   timeKnown: boolean;
   placed: boolean;
+  atGeographicPole: boolean;
   at: TropicalMoment;
   /** For an untimed birth, the moments at the ends of the birth day; otherwise null. */
   ends: TropicalMoment[] | null;
@@ -34,7 +35,9 @@ function tropicalAt(utc: Date, place: { latitude: number; longitude: number } | 
 
 export function tropicalMoments(input: Omit<VedicSignsInstants, 'ayanamsa'>): TropicalMoments {
   const place = input.latitude !== undefined && input.longitude !== undefined ? { latitude: input.latitude, longitude: input.longitude } : null;
-  const at = tropicalAt(input.birthUtc, place, input.timeKnown);
+  // At a geographic pole the local east direction is undefined. Keep the geocentric positions.
+  const atGeographicPole = place !== null && Math.abs(place.latitude) === 90;
+  const at = tropicalAt(input.birthUtc, atGeographicPole ? null : place, input.timeKnown);
   const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => tropicalAt(end, null, false));
-  return { timeKnown: input.timeKnown, placed: place !== null, at, ends: ends && ends.length ? ends : null };
+  return { timeKnown: input.timeKnown, placed: place !== null, atGeographicPole, at, ends: ends && ends.length ? ends : null };
 }

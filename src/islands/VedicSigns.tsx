@@ -4,7 +4,7 @@ import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } 
 import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 import type { City } from '../lib/geo/search';
 import type { VedicReading, VedicSign } from '../lib/vedic-signs/reading';
-import { UNDER_13_MESSAGE, listOr } from '../lib/vedic-signs/reading';
+import { POLAR_RISING_LIMIT, UNDER_13_MESSAGE, listOr } from '../lib/vedic-signs/reading';
 import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 import { AYANAMSA_NAME, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../lib/vedic-signs/wording';
 import { VEDIC_SIGNS_SHARE_PATH, vedicSignsShareQuery } from '../lib/vedic-signs/share';
@@ -73,6 +73,7 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
  * then the rising sign (lagna).
  */
 export function VedicPlacements({ result }: { result: VedicReading }) {
+  const missingRising = result.timeKnown ? 'The rising sign needs the birthplace.' : 'The rising sign needs the birth time: it changes sign about every two hours.';
   const unsettledMoon = result.moon ? '' : `The Moon changed sign that day: ${listOr(result.moonCandidates)}. A birth time settles it.`;
   return (
     <>
@@ -101,7 +102,7 @@ export function VedicPlacements({ result }: { result: VedicReading }) {
       </div>
       <div class="vedic__grid">
         <Placement title="Sun (soul and self)" sign={result.sun} missing={`The Sun changed sign that day: ${listOr(result.sunCandidates)}. A birth time settles it.`} />
-        <Placement title="Rising sign (lagna)" sign={result.rising} missing={result.timeKnown ? 'The rising sign needs the birthplace.' : 'The rising sign needs the birth time: it changes sign about every two hours.'} />
+        <Placement title="Rising sign (lagna)" sign={result.rising} missing={result.limits.includes(POLAR_RISING_LIMIT) ? POLAR_RISING_LIMIT : missingRising} />
       </div>
     </>
   );

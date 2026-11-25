@@ -12,6 +12,13 @@ const TITLES = ['Moon sign (rashi)', 'Moon nakshatra (lunar mansion)', 'Sun (sou
 const positions = (markup: string) => TITLES.map((title) => markup.indexOf(`<p class="vedic__body">${title}</p>`));
 
 describe('the /vedic-signs/ result (ZOD-18)', () => {
+  it('explains the missing rising sign for a timed birth at the geographic pole', () => {
+    const result = computeVedicSigns({ birthUtc: new Date('1990-01-01T12:11:00Z'), timeKnown: true, latitude: 90, longitude: 45, ayanamsa: 'lahiri' });
+    const markup = render(h(VedicPlacements, { result }));
+    expect(markup).toContain('undefined at a geographic pole');
+    expect(markup).not.toContain('The rising sign needs the birthplace.');
+  });
+
   it('leads with the Moon sign and nakshatra, then the Sun, then the rising sign', () => {
     const reading = computeVedicSigns({ birthUtc: new Date('2000-01-01T12:00:00Z'), timeKnown: true, latitude: 28.61, longitude: 77.21, ayanamsa: 'lahiri' });
     const markup = render(h(VedicPlacements, { result: reading }));

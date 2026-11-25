@@ -18,6 +18,7 @@ export function vedicFromTropical(moments: TropicalMoments, ayanamsa: VedicAyana
   return vedicReading({
     timeKnown: moments.timeKnown,
     placed: moments.placed,
+    atGeographicPole: moments.atGeographicPole,
     ayanamsa,
     at: sidereal(moments.at, ayanamsa),
     ends: moments.ends ? moments.ends.map((end) => sidereal(end, ayanamsa)) : null,

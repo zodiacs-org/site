@@ -55,6 +55,7 @@ export interface VedicReading {
 }
 
 export interface VedicReadingInput {
+  atGeographicPole?: boolean;
   timeKnown: boolean;
   placed: boolean;
   ayanamsa: VedicAyanamsa;
@@ -63,6 +64,8 @@ export interface VedicReadingInput {
   /** For an untimed birth, the positions at the two ends of the birth day; null with a birth time. */
   ends: readonly SiderealMoment[] | null;
 }
+
+export const POLAR_RISING_LIMIT = 'The rising sign (lagna) is undefined at a geographic pole because there is no unique direction of east.';
 
 const round2 = (value: number) => Math.round(value * 100) / 100;
 const label = (index: number) => `${SIGNS[index].name} (${RASHIS[index]})`;
@@ -139,7 +142,8 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
     if (!moonHold.held) limits.push(`The Moon changed sign that day: it was in ${listOr(moonHold.candidates)}. A birth time settles it.`);
     if (!nakshatraHeld) limits.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
     if (!sunHold.held) limits.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
-  } else if (!input.placed) limits.push('No birthplace coordinates were given, so there is no rising sign (lagna).');
+  } else if (input.atGeographicPole) limits.push(POLAR_RISING_LIMIT);
+  else if (!input.placed) limits.push('No birthplace coordinates were given, so there is no rising sign (lagna).');
   // Jyotish reads the Moon first (ZOD-18): the Moon sign and its nakshatra, then the Sun, then the lagna, as the page shows them.
   const parts = [moon?.line, moonNakshatra?.line, sun?.line, rising?.line].filter((line): line is string => !!line);
   const confidence = readingConfidence(input.timeKnown && input.placed ? 'timed-place' : 'date');

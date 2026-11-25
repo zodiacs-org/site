@@ -43640,6 +43640,7 @@ var ORDINALS = ["", "first", "second", "third", "fourth", "fifth", "sixth", "sev
 var nakshatraOrdinal = (n) => ORDINALS[n];
 
 // src/lib/vedic-signs/reading.ts
+var POLAR_RISING_LIMIT = "The rising sign (lagna) is undefined at a geographic pole because there is no unique direction of east.";
 var round2 = (value) => Math.round(value * 100) / 100;
 var label = (index) => `${SIGNS2[index].name} (${RASHIS[index]})`;
 var listOr = (names) => names.length < 3 ? names.join(" or ") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
@@ -43699,7 +43700,8 @@ function vedicReading(input) {
     if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${listOr(moonHold.candidates)}. A birth time settles it.`);
     if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
     if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
-  } else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
+  } else if (input.atGeographicPole) limits2.push(POLAR_RISING_LIMIT);
+  else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
   const parts = [moon?.line, moonNakshatra?.line, sun?.line, rising?.line].filter((line) => !!line);
   const confidence = readingConfidence(input.timeKnown && input.placed ? "timed-place" : "date");
   const confidenceLabel = readingConfidenceText(confidence);
@@ -43728,6 +43730,7 @@ function vedicFromTropical(moments, ayanamsa2) {
   return vedicReading({
     timeKnown: moments.timeKnown,
     placed: moments.placed,
+    atGeographicPole: moments.atGeographicPole,
     ayanamsa: ayanamsa2,
     at: sidereal(moments.at, ayanamsa2),
     ends: moments.ends ? moments.ends.map((end) => sidereal(end, ayanamsa2)) : null
@@ -43742,9 +43745,10 @@ function tropicalAt(utc, place2, timeKnown) {
 }
 function tropicalMoments(input) {
   const place2 = input.latitude !== void 0 && input.longitude !== void 0 ? { latitude: input.latitude, longitude: input.longitude } : null;
-  const at = tropicalAt(input.birthUtc, place2, input.timeKnown);
+  const atGeographicPole = place2 !== null && Math.abs(place2.latitude) === 90;
+  const at = tropicalAt(input.birthUtc, atGeographicPole ? null : place2, input.timeKnown);
   const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => tropicalAt(end, null, false));
-  return { timeKnown: input.timeKnown, placed: place2 !== null, at, ends: ends && ends.length ? ends : null };
+  return { timeKnown: input.timeKnown, placed: place2 !== null, atGeographicPole, at, ends: ends && ends.length ? ends : null };
 }
 
 // src/lib/vedic-signs/compute.ts
@@ -44731,6 +44735,44 @@ async function getGoodDays(args, clock2, options) {
 var GOOD_DAYS_SPAN = `${longDay2(GOOD_DAYS_FIRST)} to ${longDay2(GOOD_DAYS_LAST)}`;
 var GOOD_DAY_LABELS = Object.fromEntries(GOOD_DAY_GOALS.map((goal) => [goal, GOAL_RULES[goal].label]));
 
+// src/ai-tools/features/moment-chart-contract.ts
+import { z as zod } from "zod";
+var MOMENT_CHART_TOOL = "get_moment_chart";
+var MOMENT_CHART_SWITCH = "ZODIACS_MOMENT_CHART_ENABLED";
+var MOMENT_ROUTING = "Use get_moment_chart for the sky with houses at a place now, at an event, or when a horary question was asked. It returns a sky chart. Never use it for a birth, a personal reading, or to retry a refused request.";
+var momentChartInput = zod.strictObject({
+  instant: zod.string().min(1).max(29).optional().describe("Event timestamp with Z or a numeric offset. Omit for right now."),
+  latitude: zod.number().gt(-90).lt(90).describe("Event latitude in degrees north. Houses are undefined at the poles."),
+  longitude: zod.number().min(-180).max(180).describe("Event longitude in degrees east."),
+  houseSystem: zod.enum(["whole-sign", "placidus"]).optional().describe("Defaults to whole-sign.")
+});
+var eclipticLongitude = zod.number().min(0).lt(360);
+var bodyName4 = zod.enum(POSITION_BODIES);
+var momentChartData = zod.object({
+  kind: zod.literal("moment"),
+  instant: zod.string(),
+  angles: zod.object({ asc: eclipticLongitude, mc: eclipticLongitude, dsc: eclipticLongitude, ic: eclipticLongitude }),
+  houses: zod.object({
+    system: zod.enum(["whole-sign", "placidus"]),
+    cusps: zod.array(eclipticLongitude).length(12).describe("Ecliptic longitude in degrees, starting with the first house."),
+    polarFallback: zod.boolean()
+  }),
+  positions: zod.array(zod.object({
+    body: bodyName4,
+    longitude: eclipticLongitude,
+    sign: zod.enum(SIGN_SLUGS),
+    house: zod.number().int().min(1).max(12),
+    retrograde: zod.boolean()
+  })).length(POSITION_BODIES.length),
+  aspects: zod.array(zod.object({
+    a: bodyName4,
+    b: bodyName4,
+    type: zod.enum(["conjunction", "sextile", "square", "trine", "opposition"]),
+    orb: zod.number().nonnegative(),
+    applying: zod.boolean()
+  }))
+});
+
 // src/ai-tools/contracts.ts
 var AI_VERSION = "0.6.9";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
@@ -44751,7 +44793,8 @@ var SOLAR_RETURN_TOOL_NAMES = ["get_solar_return"];
 var NUMEROLOGY_TOOL_NAMES = ["get_numerology"];
 var EVERY_SWITCHED_TOOL = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES];
 var GOOD_DAYS_TOOL_NAMES = ["find_good_days"];
-var EVERY_TOOL_NAME = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES];
+var EVERY_TOOL_WITH_GOOD_DAYS = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES];
+var EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_GOOD_DAYS, MOMENT_CHART_TOOL];
 var OCCASIONS_SWITCH_ENV = "ZODIACS_OCCASIONS_ENABLED";
 var COVERAGE_SWITCH_ENV = "ZODIACS_COVERAGE_ENABLED";
 var SKY_EVENTS_SWITCH_ENV = "ZODIACS_SKY_EVENTS_ENABLED";
@@ -44779,6 +44822,7 @@ var LEGACY_OCCASIONS_URIS = ["ui://zodiacs/occasions-v8.html", "ui://zodiacs/occ
 var READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true };
 var TOOL_TITLES = {
   get_capabilities: "What Zodiacs can do",
+  get_moment_chart: "Sky chart for a moment",
   get_sky: "Sky right now",
   get_upcoming_events: "Sky calendar",
   check_sky_fact: "Check a sky fact",
@@ -44812,6 +44856,7 @@ var wallClock = z18.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
   get_capabilities: z18.strictObject({}),
   open_chart_studio: z18.strictObject({}),
+  get_moment_chart: momentChartInput,
   get_sky: z18.strictObject({ instant: instant2.optional(), zone: zone7.optional(), bodies: z18.array(z18.enum(POSITION_BODIES)).min(1).max(12).optional() }),
   get_upcoming_events: z18.strictObject({ from: instant2.optional(), to: instant2.optional(), zone: zone7.optional(), bodies: z18.array(z18.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z18.array(z18.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
     if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
@@ -45019,6 +45064,7 @@ var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
   open_chart_studio: z18.object({ title: z18.literal("Chart Studio"), calculation: z18.literal("browser-local"), initialChart: z18.literal("birth-details"), sharing: z18.literal("user-reviewed-selection-only") }),
   get_capabilities: z18.object({ name: z18.literal("Zodiacs"), version: z18.string(), engine: computeValue("Backend"), tools: z18.array(z18.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z18.string(), limitations: z18.array(z18.string()) }),
+  get_moment_chart: momentChartData,
   get_sky: z18.object({ mode: z18.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z18.object({ name: z18.string(), angle: z18.number(), illumination: z18.number() }), interpretation: z18.literal("Astronomical calculations; no personal prediction is supplied.") }),
   get_upcoming_events: z18.object({ from: z18.string(), to: z18.string(), zone: z18.string(), events: z18.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z18.literal("tested-not-proven") }),
   check_sky_fact: z18.object({ answer: z18.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z18.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
@@ -45055,11 +45101,12 @@ function outputSchema(tool, data) {
   const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : SKY_EVENTS_TOOL_NAMES.includes(tool) ? SKY_EVENTS_ERROR_SCHEMA : YEAR_SCORE_TOOL_NAMES.includes(tool) ? YEAR_SCORE_ERROR_SCHEMA : SOLAR_RETURN_TOOL_NAMES.includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA : NUMEROLOGY_TOOL_NAMES.includes(tool) ? NUMEROLOGY_ERROR_SCHEMA : GOOD_DAYS_TOOL_NAMES.includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : PERSONAL_TOOL_NAMES.includes(tool) ? personalErrorSchema(tool) : ERROR_SCHEMA;
   return z18.union([
     z18.object({ schema: z18.literal(AI_RESULT_SCHEMA), ok: z18.literal(true), tool: z18.literal(tool), data, links: z18.array(link3) }),
-    error
+    tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z18.literal(MOMENT_CHART_TOOL) }) : error
   ]);
 }
 var OUTPUT_SCHEMAS = {
   open_chart_studio: outputSchema("open_chart_studio", dataSchemas.open_chart_studio),
+  get_moment_chart: outputSchema(MOMENT_CHART_TOOL, momentChartData),
   get_capabilities: outputSchema("get_capabilities", dataSchemas.get_capabilities),
   get_sky: outputSchema("get_sky", dataSchemas.get_sky),
   get_upcoming_events: outputSchema("get_upcoming_events", dataSchemas.get_upcoming_events),
@@ -45088,6 +45135,7 @@ var OUTPUT_SCHEMAS = {
 var TOOL_DESCRIPTIONS = {
   open_chart_studio: "Opens Chart Studio, an interactive birth chart that the person fills in themselves with a birth date, a place and, if known, a time. The chart is calculated inside the panel. It takes no input, so it opens before any birth detail is given. It fits a request for a birth chart, a rising sign or a Moon sign when no birth date is in the conversation, and someone who wants to explore their own chart: the person enters the details in the panel, so nothing has to be asked for beforehand. The assistant sees only the parts of the chart the person chooses to share.",
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
+  get_moment_chart: MOMENT_ROUTING,
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
   get_upcoming_events: "Lists changes in the sky over a window of up to 92 days: planets changing sign, planets turning retrograde or direct, and new and full Moons. With no input it covers the next seven days. It fits a question about what is coming up in the sky over the next days or weeks. It does not list eclipses or every aspect. It lists dates and makes no prediction. A request to set a reminder or an alert, or to schedule anything, is not a request for this tool, not even to look the date up first: Zodiacs sets no reminders and schedules nothing. Nor is a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee. The window is at most 92 days, within 1800 to 2199. Without a time zone its times are in UTC. Its times for a slow planet's sign change come from the engine and can differ from NASA JPL Horizons by hours: for Neptune entering Aries on 26 January 2026 it gives 14:32 UTC, where Horizons gives 17:35 UTC.",
   check_sky_fact: "Checks one claim about the sky and answers yes, no, or that it depends on the time zone when the answer changes during that day. It checks four kinds of claim: a body's sign, whether a planet is retrograde, a sign change on a date, and a Moon phase on a date. It fits a question such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?'. It is astronomy only and cannot check a prediction. Whether a retrograde, a sign or a Moon phase makes a good time to buy, sell, bet or invest is not a claim about the sky. A request for a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee is not a request for this tool, not even as a first step: Zodiacs does not do this, and no sky fact is checked for it. Dates run from 1800 to 2199. Its times for a slow planet's sign change carry the same limit as get_upcoming_events: it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026, where NASA JPL Horizons gives 17:35 UTC. API documentation: https://zodiacs.org/developers/compute/.",
@@ -46279,6 +46327,34 @@ function earliestToday(now = /* @__PURE__ */ new Date()) {
   return civilDateAt(now, -12);
 }
 
+// src/ai-tools/features/moment-chart.ts
+function castMomentChart(args, now) {
+  const { date: utc } = instantAt(args.instant ?? now.toISOString(), "/instant");
+  const chart = computeChart3({
+    utc,
+    latitude: args.latitude,
+    longitude: args.longitude,
+    houseSystem: args.houseSystem === "placidus" ? "placidus" : "whole",
+    timeKnown: true
+  });
+  const { angles, houses } = chart;
+  if (!angles || !houses) throw new Error("The sky chart requires angles and houses.");
+  return {
+    kind: "moment",
+    instant: utc.toISOString(),
+    angles,
+    houses: { system: houses.system === "whole" ? "whole-sign" : houses.system, cusps: houses.cusps, polarFallback: chart.flags.includes("polar-fallback") },
+    positions: chart.bodies.map(({ body: body2, lon, retrograde }) => ({
+      body: body2,
+      longitude: lon,
+      sign: SIGN_SLUGS[signIndexForLongitude2(lon)],
+      house: houseOf(lon, houses.cusps),
+      retrograde
+    })),
+    aspects: chart.aspects
+  };
+}
+
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
 var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
@@ -46334,7 +46410,7 @@ function offeredTools(dependencies) {
   if (!dependencies.occasions) return released;
   if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
   const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== "get_horoscope_period" || !!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram);
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : [], ...yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : [], ...numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [], ...goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : [], ...personalOn(dependencies) ? PERSONAL_TOOL_NAMES : []];
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : [], ...yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : [], ...numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [], ...goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : [], ...dependencies.momentChart ? [MOMENT_CHART_TOOL] : [], ...personalOn(dependencies) ? PERSONAL_TOOL_NAMES : []];
 }
 var isCoverageTool = (tool) => COVERAGE_TOOL_NAMES.includes(tool);
 var isPlaceTool = (tool) => PLACE_TOOL_NAMES.includes(tool);
@@ -46490,7 +46566,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
   const resolveZone = (name) => localTime2().canonicalZoneName(name);
   try {
     if (OCCASION_TOOL_NAMES.includes(tool) && !dependencies.occasions) return failure(tool, "unavailable", "This tool is not offered here.");
-    if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
+    if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) {
       const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents2, switches));
@@ -46498,12 +46574,14 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     }
     const parsed2 = inputSchemaFor(tool, skyEvents2, switches).safeParse(input);
     if (!parsed2.success) return failure(tool, "invalid-request", "Zodiacs could not use those details. Check the sign, date or time zone and try again.");
+    const child2 = childBirthDateRefusal(tool, parsed2.data, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone);
+    if (child2) return child2;
     let data;
     let links = [methodLink];
     if (isPersonalTool(tool)) {
       const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
-      const child2 = childBirthDateRefusal(tool, input, now, context.hostZone);
-      if (child2) return child2;
+      const child3 = childBirthDateRefusal(tool, input, now, context.hostZone);
+      if (child3) return child3;
       const definition = personalTool(tool);
       const result2 = await feature(() => definition.run(definition.input.parse(input), {
         now,
@@ -46552,6 +46630,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice.${skyLine2} With them Zodiacs offers ${listed + added.length + skyTools.length} tools: the ${listed} in the tools field and these ${added.length + skyTools.length}.`);
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes("find_birthplace") ? " a town or city named instead of coordinates, find_birthplace;" : ""} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
           if (skyEvents2) capabilities.limitations.push("Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet's next retrograde, when a planet changes sign, every full Moon next year or this week's void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.");
+          if (dependencies.momentChart) capabilities.limitations.push(MOMENT_ROUTING);
           if (numerologyOn(dependencies)) capabilities.limitations.push(
             "get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition's reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.",
             "For a numerology reading, use get_numerology, not explain_astrology."
@@ -46577,6 +46656,11 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           capabilities.privacy += " Sky Watch preview saves public-sky filters, owner, expiration and encrypted callback credentials. Stopping or expiring a watch clears its credentials; subscription metadata is retained for up to 30 days afterward. Public event records and delivery status are retained for up to 30 days. No birth details are accepted.";
           capabilities.limitations[2] = "Sky Watch delivers selected public-sky events through verified callbacks. Delivery can be delayed or repeated. Eclipses are listed by get_sky_calendar. No personal predictions or birth-time rectification.";
         }
+        break;
+      }
+      case MOMENT_CHART_TOOL: {
+        data = castMomentChart(INPUT_SCHEMAS.get_moment_chart.parse(input), dependencies.now?.() ?? /* @__PURE__ */ new Date());
+        links = [{ title: "The sky today", url: `${ORIGIN}/today/` }];
         break;
       }
       case "get_sky": {
@@ -47761,7 +47845,7 @@ async function buildSavedRecord(input, dependencies = {}) {
       }
       case "occasion": {
         const { names: _names, place: _place, ...occasionArgs } = input.occasion;
-        const result = await executeAiTool("get_occasion_sky", occasionArgs, tools);
+        const result = await executeAiTool("get_occasion_sky", occasionArgs, tools, { hostZone: dependencies.hostZone });
         if (!result.ok) return { failure: result.error.message };
         if (result.tool !== "get_occasion_sky") return { failure: "Zodiacs could not work that out again." };
         const data = result.data;
@@ -47987,7 +48071,7 @@ var PANELS = {
   get_personal_transits: { uri: READINGS_URI, icon: "readings" },
   explain_astrology: { uri: READINGS_URI, icon: "readings" }
 };
-var CLOCK_DEPENDENT = /* @__PURE__ */ new Set(["get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events", "get_year_score", "get_solar_return", "find_good_days", ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
+var CLOCK_DEPENDENT = /* @__PURE__ */ new Set([MOMENT_CHART_TOOL, "get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events", "get_year_score", "get_solar_return", "find_good_days", ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 var artResourceDomains = ["https://zodiacs.org"];
 var panelMeta = (preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, "openai/widgetCSP": { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, "openai/widgetPrefersBorder": true, "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode } });
 var HOST_ZONE_KEYS = ["openai/userLocation"];
@@ -48007,7 +48091,7 @@ function refFrom(meta) {
 function createAiServer(dependencies, watch, account) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...watch ? { events: {} } : {} },
-    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies))
+    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies)) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : "")
   });
   const versions = (name, uris) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ""}` }));
   for (const { uri, name } of versions("sky-events", [WIDGET_URI, ...LEGACY_WIDGET_URIS])) server.registerResource(name, uri, {
@@ -48057,7 +48141,7 @@ function createAiServer(dependencies, watch, account) {
       _meta: { ...!watch ? { securitySchemes: [{ type: "noauth" }] } : watch.service.oauth ? { securitySchemes: [{ type: "oauth2", scopes: WATCH_SCOPES }] } : {}, ...panel ? { ui: { resourceUri: panel.uri, visibility: ["model", "app"] }, "openai/outputTemplate": panel.uri, "openai/ui": { entrypoints: readingsPanel(panel.uri) ? [{ type: "thread" }] : [{ type: "global" }, { type: "thread" }] }, ...tool === "get_horoscope" ? { "openai/widgetAccessible": true } : {} } : {} }
     }, async (args, ctx) => {
       const context = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
-      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone) ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
+      const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok,
         content: [{ type: "text", text: JSON.stringify(result) }],
@@ -48473,7 +48557,7 @@ function createAiNodeHandler(options = {}) {
         res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));
         return;
       }
-      const dependencies = { ...options.dependencies ?? {}, ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...skyEvents2 ? { skyEvents: true } : {}, ...yearScore ? { yearScore: true } : {}, ...yearScorePeople ? { yearScorePeople: true } : {}, ...solarReturn ? { solarReturn: true } : {}, ...env.PUBLIC_BIRTHDAY_REPORT_ENABLED === "1" ? { birthdayReportPage: true } : {}, ...numerology ? { numerology: true } : {}, ...goodDays ? { goodDays: true } : {}, ...personal2 ? { personal: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
+      const dependencies = { ...options.dependencies ?? {}, momentChart: env[MOMENT_CHART_SWITCH] === "1", ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...skyEvents2 ? { skyEvents: true } : {}, ...yearScore ? { yearScore: true } : {}, ...yearScorePeople ? { yearScorePeople: true } : {}, ...solarReturn ? { solarReturn: true } : {}, ...env.PUBLIC_BIRTHDAY_REPORT_ENABLED === "1" ? { birthdayReportPage: true } : {}, ...numerology ? { numerology: true } : {}, ...goodDays ? { goodDays: true } : {}, ...personal2 ? { personal: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
         try {
           const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
           return addressVerdict === "allowed" ? await atomicQuota("event") : addressVerdict;

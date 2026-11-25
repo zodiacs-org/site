@@ -130,6 +130,26 @@ describe('the /vedic-signs/ page and the get_vedic_signs tool on the same birth'
     sunCandidates: reading.sunCandidates, moonCandidates: reading.moonCandidates, nakshatraCandidates: reading.nakshatraCandidates,
   });
 
+  it.each([90, -90, 89.999, -89.999, 89.99, -89.99])('respects the geographic pole after rounding a latitude of %s', async (lat) => {
+    const place = { tz: 'UTC', lat, lon: 45 };
+    const page = await form('1990-01-01', '12:11', place);
+    const answer = await tool('1990-01-01', '12:11', place);
+    expect(signs(page)).toEqual(signs(answer));
+    expect(page.limits).toEqual(answer.limits);
+    expect(page.sun).not.toBeNull();
+    expect(page.moon).not.toBeNull();
+    expect(page.moonNakshatra).not.toBeNull();
+    if (Math.abs(lat) > 89.99) {
+      expect(page.placed).toBe(true);
+      expect(page.rising).toBeNull();
+      expect(page.limits.join(' ')).toContain('geographic pole');
+      expect(page.summary).not.toContain('Your lagna');
+    } else {
+      expect(page.rising).not.toBeNull();
+      expect(page.limits.join(' ')).not.toContain('geographic pole');
+    }
+  });
+
   it('reads local mean time at the rounded longitude, as the tool does (New York, 11 May 1880, 03:34)', async () => {
     // Before 18 November 1883 New York kept its own mean time: 74.006 degrees
     // west is 4h56m01.44s behind UTC, 74.01 is 4h56m02.4s. That second puts
