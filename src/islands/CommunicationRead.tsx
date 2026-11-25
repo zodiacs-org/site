@@ -23,11 +23,12 @@ interface Props {
   locale?: Locale;
   /** The civil birth date: the card of a chart without a birth time shows 12:00 UTC on it. */
   birthDate?: string;
+  prepareImage?: boolean;
 }
 
 type ShareState = 'preparing' | 'idle' | 'busy' | 'saved' | 'error';
 
-export default function CommunicationRead({ chart, locale = 'en', birthDate }: Props) {
+export default function CommunicationRead({ chart, locale = 'en', birthDate, prepareImage = true }: Props) {
   const read = useMemo(() => communicationRead(chart), [chart]);
   const [shareState, setShareState] = useState<ShareState>('preparing');
   const [preparedCard, setPreparedCard] = useState<PreparedChartCard | null>(null);
@@ -63,6 +64,7 @@ export default function CommunicationRead({ chart, locale = 'en', birthDate }: P
     let current = true;
     setPreparedCard(null);
     setShareState('preparing');
+    if (!prepareImage) return;
     void prepareChartCard(chart, { variant: 'communication', locale, birthDate }).then((prepared) => {
       if (!current) return;
       setPreparedCard(prepared);
@@ -72,7 +74,7 @@ export default function CommunicationRead({ chart, locale = 'en', birthDate }: P
       if (current) setShareState('error');
     });
     return () => { current = false; };
-  }, [chart, locale, birthDate]);
+  }, [chart, locale, birthDate, prepareImage]);
 
   function shareReading(): void {
     if (!preparedCard || shareState === 'preparing' || shareState === 'busy') return;
@@ -104,7 +106,8 @@ export default function CommunicationRead({ chart, locale = 'en', birthDate }: P
           class="btn btn--ghost calc__comm-share"
           type="button"
           onClick={shareReading}
-          disabled={!preparedCard || shareState === 'preparing' || shareState === 'busy'}
+          aria-disabled={!preparedCard || shareState === 'busy'}
+          disabled={shareState === 'busy'}
           aria-busy={shareState === 'preparing' || shareState === 'busy'}
           data-card-state={shareState}
           data-communication-share

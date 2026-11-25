@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { executeAiTool } from '../tools';
 import type { NatalChartData } from './natal-chart';
 
-const on = { occasions: true, coverage: true, now: () => new Date('2026-11-02T05:00:00Z') };
+// The time-zone and planet fixtures include 2026, so read them after their thirteenth birthdays.
+const on = { occasions: true, coverage: true, now: () => new Date('2046-11-02T12:00:00Z') };
 async function chart(args: Record<string, unknown>): Promise<NatalChartData> {
   const result = await executeAiTool('get_natal_chart', args, on);
   if (!result.ok || result.tool !== 'get_natal_chart') throw new Error(JSON.stringify(result));
@@ -130,7 +131,7 @@ describe('get_natal_chart', () => {
   });
 
   it('leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health', async () => {
-    const young = await chart({ birthDate: '2015-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 });
+    const young = await chart({ birthDate: '2031-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 });
     expect(young.under18).toBe(true);
     expect(young.unknown).toContain('This birth date is under 18, so romantic and attraction readings are left out.');
     expect(JSON.stringify({ planets: young.planets, sun: young.sun, moon: young.moon, rising: young.rising, aspects: young.aspects, balance: young.balance })).not.toMatch(/\b(?:romance|romantic|attraction|intimacy|sexual|chemistry)\b/iu);

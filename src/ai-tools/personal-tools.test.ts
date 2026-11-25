@@ -193,4 +193,22 @@ describe('the personal tools switch on', () => {
       }
     }
   });
+
+  it('links to a tool\'s own page and share card only while that page\'s switch is on', async () => {
+    const pageOff = await serve(ON);
+    for (const tool of TOOLS.filter((entry) => entry.pageFlag !== undefined)) {
+      for (const value of [undefined, '', '0', 'true']) {
+        const host = value === undefined ? pageOff : await serve({ ...ON, [tool.pageFlag!]: value });
+        const off = await call(host, tool.name, tool.example);
+        expect(off.isError, tool.name).toBe(false);
+        // With the page off there is no page and no share card to open: neither is linked, from the data or the links.
+        for (const url of urlsIn([off.structuredContent, off.content])) expect(url, `${tool.name} with ${tool.pageFlag}=${JSON.stringify(value)}`).not.toMatch(/\/share\//u);
+        expect((off.structuredContent.data as { pageUrl?: unknown }).pageUrl ?? null, tool.name).toBeNull();
+      }
+      const on = await call(await serve({ ...ON, [tool.pageFlag!]: '1' }), tool.name, tool.example);
+      expect(on.isError, tool.name).toBe(false);
+      expect((on.structuredContent.data as { pageUrl?: unknown }).pageUrl, tool.name).toMatch(/^https:\/\/zodiacs\.org\//u);
+      expect(urlsIn(on.structuredContent).some((url) => url.includes('/share/')), tool.name).toBe(true);
+    }
+  }, 120_000);
 });

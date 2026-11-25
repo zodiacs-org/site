@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import type { CalendarChoice } from './BirthFields';
+import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } from './GatedBirthFields';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { CopyLinkButton, type CopyLinkState } from './CopyLinkButton';
 import type { City } from '../lib/geo/search';
@@ -10,6 +11,7 @@ import { yourDayShareUrl } from '../lib/personal-day/share';
 import type { DayContact, PersonalDayReading } from '../lib/personal-day/day';
 import type { TransitBody } from '../lib/engine/transit-scan-shared';
 import { SIGNS } from '../lib/signs';
+import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 /** How far from today a day may be read, either side, as the get_personal_day tool allows. */
@@ -32,12 +34,12 @@ const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)?.nam
 const hue = (planet: TransitBody) => `var(--sign-${BODY_SIGN[planet]})`;
 
 /** The browser's own clock: its zone and today's date there. */
-function deviceClock(): { zone: string; today: string } {
+export function deviceClock(at: Date = new Date()): { zone: string; today: string } {
   try {
     const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-    return { zone, today: dateOn(new Date(), zone) };
+    return { zone, today: dateOn(at, zone) };
   } catch {
-    return { zone: 'UTC', today: new Date().toISOString().slice(0, 10) };
+    return { zone: 'UTC', today: at.toISOString().slice(0, 10) };
   }
 }
 
@@ -93,7 +95,9 @@ export default function YourDay() {
     setDay((current) => current || now.today);
   }, []);
 
-  const ready = date !== '' && city !== null && (!timeKnown || time !== '') && day !== '' && clock !== null;
+  // The date is checked as it is entered; the time and birthplace open only once the converted date is accepted.
+  const check = useBirthDateCheck(date, calendar, yourDayRefusal);
+  const ready = birthDateOpen(check) && city !== null && (!timeKnown || time !== '') && day !== '' && clock !== null;
   const minDay = clock ? shiftDate(clock.today, -MAX_DAYS) : undefined;
   const maxDay = clock ? shiftDate(clock.today, MAX_DAYS) : undefined;
 
@@ -106,28 +110,27 @@ export default function YourDay() {
 
   async function read(target: string, scroll: boolean) {
     if (!ready || !clock || !city) return;
-    const now = deviceClock();
-    setClock(now);
     const request = ++revision.current;
+    // The device's clock as the form is sent, not as the page loaded: a tab left open past midnight, or moved to
+    // another zone, reads today and its bounds afresh. The day chosen stays as chosen.
+    const now = new Date();
+    const current = deviceClock(now);
+    setClock(current);
     setBusy(true);
     setError('');
     setCopy('idle');
     try {
-      let birthDate = date;
-      if (calendarInPlay(date, calendar)) {
-        const entry = await birthDateForChart('en', date, calendar);
-        if (request !== revision.current) return;
-        if ('error' in entry) { setError(entry.error); setShown(null); return; }
-        birthDate = entry.date;
-      }
-      const refusal = yourDayRefusal(birthDate);
-      if (refusal) { setError(refusal); setShown(null); return; }
-      if (Math.abs(daysBetween(now.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
+      // The shared policy (UTC-12) on the converted date, before the calculation loads.
+      const entry = await checkedBirthDate(date, calendar, yourDayRefusal);
+      if (request !== revision.current) return;
+      if ('error' in entry) { setError(entry.error); setShown(null); return; }
+      const birthDate = entry.date;
+      if (Math.abs(daysBetween(current.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
       const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
-        date: target, zone: now.zone, today: now.today,
+        date: target, zone: current.zone, today: current.today, now,
       });
       if (request !== revision.current) return;
       setDay(target);
@@ -136,7 +139,9 @@ export default function YourDay() {
     } catch (cause) {
       if (request !== revision.current) return;
       setShown(null);
-      setError(calculationError(cause, 'en', 'The day could not be read. Check the details and try again.'));
+      // A birth time or date the clock skipped gets its own sentence; anything else the general one.
+      setError(cause instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME : cause instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE
+        : calculationError(cause, 'en', 'The day could not be read. Check the details and try again.'));
     } finally {
       if (request === revision.current) setBusy(false);
     }
@@ -149,9 +154,9 @@ export default function YourDay() {
       <form class="calc__form shell" onSubmit={(event) => { event.preventDefault(); void read(day, true); }} aria-busy={busy}>
         <div class="core calc__core">
           <div class="calc__fields">
-            <BirthFields
+            <GatedBirthFields
               locale="en" dateId="yd-date" timeId="yd-time" placeId="yd-place"
-              date={date} time={time} timeKnown={timeKnown} city={city}
+              date={date} check={check} time={time} timeKnown={timeKnown} city={city}
               onDateChange={(value) => { clear(); setDate(value); }}
               calendar={calendar} onCalendarChange={(value) => { clear(); setCalendar(value); }}
               onTimeChange={(value) => { clear(); setTime(value); }}
@@ -164,7 +169,8 @@ export default function YourDay() {
               <label class="field__label" for="yd-day">Day to read</label>
               <input id="yd-day" class="field__input" type="date" required value={day} min={minDay} max={maxDay}
                 onInput={(event) => { clear(); setDay((event.target as HTMLInputElement).value); }} />
-              <p class="field__help yd__clock">Times are on this device’s clock{clock ? ` (${clock.zone.replaceAll('_', ' ')})` : ''}.</p>
+              {/* One text node: the zone is filled in after load, and nothing already drawn may move when it is (zero CLS). */}
+              <p class="field__help yd__clock">{`Times are on this device’s clock${clock ? ` (${clock.zone.replaceAll('_', ' ')})` : ''}.`}</p>
             </div>
           </div>
           <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy}><span>{busy ? 'Reading…' : 'Read my day'}</span><span class="orb" aria-hidden="true">↗</span></button>

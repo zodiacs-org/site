@@ -1,0 +1,21 @@
+---
+// Russian rising-sign profiles (src/content/learn-i18n/ru/rising/), built only when released or previewed.
+import { getCollection } from 'astro:content';
+import LocalizedRisingPage from '../../components/learn/LocalizedRisingPage.astro';
+import { isPathEnabled } from '../../lib/locale-expansion/policy.mjs';
+import { SIGNS } from '../../lib/signs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('learnLocalized', (e) => e.data.locale === 'ru' && e.data.kind === 'rising' && !e.data.draft);
+  for (const entry of entries) {
+    if (entry.id !== `ru/rising/${entry.data.sign}`) throw new Error(`Rising file ${entry.id}.mdx declares ru/${entry.data.sign}`);
+  }
+  const seen = new Set(entries.map((entry) => entry.data.sign));
+  for (const sign of SIGNS) if (!seen.has(sign.slug)) throw new Error(`Missing ru rising profile: ${sign.slug}`);
+  return entries
+    .filter((entry) => isPathEnabled('ru', `/rising-sign/${entry.data.sign}/`))
+    .map((entry) => ({ params: { sign: entry.data.sign }, props: { entry } }));
+}
+const { entry } = Astro.props;
+---
+<LocalizedRisingPage entry={entry} />

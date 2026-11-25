@@ -1,0 +1,77 @@
+{
+  "type": "object",
+  "required": [
+    "input",
+    "basis",
+    "ut1MinusUtc",
+    "leapSeconds"
+  ],
+  "properties": {
+    "input": {
+      "const": "utc"
+    },
+    "basis": {
+      "enum": [
+        "iers",
+        "continuous-utc",
+        "delta-t"
+      ]
+    },
+    "ut1MinusUtc": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "seconds",
+            "sigma",
+            "source"
+          ],
+          "properties": {
+            "seconds": {
+              "type": "number"
+            },
+            "sigma": {
+              "type": "number"
+            },
+            "source": {
+              "enum": [
+                "observed",
+                "predicted",
+                "fallback",
+                "model"
+              ]
+            }
+          },
+          "description": "UT1 − UTC in seconds as the engine used it, with its 1-sigma band and its source: observed or predicted by IERS, model after the table ends (TT − UTC, 69.184 s, less the ΔT model), or fallback in a receipt from an engine before 2.0.0; null before 1972."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "leapSeconds": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "taiMinusUtc",
+            "listed"
+          ],
+          "properties": {
+            "taiMinusUtc": {
+              "type": "number"
+            },
+            "listed": {
+              "type": "boolean"
+            }
+          },
+          "description": "TAI − UTC in seconds from the IERS leap-second list; listed is false after the list expires and its last value is carried."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "description": "How the engine read the instant, as a chart reports it. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis continuous-utc, after the table: TT is UTC plus 69.184 s, and UT1 comes from the ΔT model. basis delta-t, before 1972: the instant is read as UT1, and TT is UT1 plus the ΔT model."
+}

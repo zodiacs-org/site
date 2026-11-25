@@ -66,3 +66,19 @@ export function parseYourDayShare(params: URLSearchParams): YourDayShare | null 
   if (ref !== undefined && ref !== 'chatgpt' && ref !== 'assistant') return null;
   return { date, sun: sun as ShareSign, ref: (ref as ShareRef | undefined) ?? null };
 }
+
+/**
+ * The share page's own address for a query as it arrived: the share's keys, each once, in their fixed order, or
+ * nothing when the query is not a share. Every other key (a birth date, a Moon or rising sign, a place, a name, an
+ * app's tracking key) is left out, and nothing is read from it, echoed or logged.
+ */
+export function yourDayCleanQuery(params: URLSearchParams): string {
+  const kept = new URLSearchParams();
+  for (const key of YOUR_DAY_SHARE_KEYS) {
+    const values = params.getAll(key);
+    if (values.length > 1) return '';
+    if (values.length === 1) kept.set(key, values[0]);
+  }
+  const share = parseYourDayShare(kept);
+  return share ? yourDayQuery(share, true) : '';
+}

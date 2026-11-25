@@ -33,12 +33,16 @@ import type { ShareSign } from '../share-results';
 import { transitLine } from '../transits';
 import { localDaySpan, readsOnDate, type WallResolution } from '../time/local-day';
 import { MINOR_NOTE, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
+import { earliestToday } from '../birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
-import { clockTime, dayLabel, nextDate } from './clock';
+import { clockTime, dateOn, dayLabel, nextDate } from './clock';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock } from '../vedic-signs/clock';
 import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
 
 const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
+const SECOND = 1_000;
+const MINUTE = 60_000;
 /** The widest civil offset any clock has kept since 1800, rounded out to whole hours (src/ai-tools/personal/shared.ts). */
 const WIDEST_OFFSET_HOURS = 16;
 /** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
@@ -58,6 +62,11 @@ export interface DayNatal {
   timeKnown: boolean;
   placed: boolean;
   detail: ReadingDetail;
+  /**
+   * The sentence for a birth time the birthplace clock showed twice (REPEATED_BIRTH_TIME, src/lib/vedic-signs/clock.ts),
+   * listed first in the limits; null or absent otherwise. A skipped birth time or date is refused before this.
+   */
+  clockLimit?: string | null;
 }
 
 export interface DayContact {
@@ -71,7 +80,7 @@ export interface DayContact {
   applying: boolean;
   /** The exact moment, when it falls inside the local day. */
   exactAt: string | null;
-  /** The same moment on the person's clock, HH:MM. */
+  /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
   exactLocal: string | null;
   score: number;
   title: string;
@@ -112,8 +121,10 @@ const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.n
  * birthplace rounded to two decimals, local noon without a birth time, and
  * the angles only with a time and place. Await clock.prepareLocalTime first.
  * A date the birthplace clock never showed (Apia went from 29 to 31 December
- * 2011) throws a RangeError, which the page answers with its general message,
- * rather than being read as the next date.
+ * 2011) throws SkippedBirthDateError, and a birth time it skipped
+ * SkippedBirthTimeError (src/lib/vedic-signs/clock.ts), rather than being read
+ * as the next date or the time the clock jumped to; a time it showed twice is
+ * read at its first pass, and clockLimit says so.
  */
 export function castDayNatal(input: { birthDate: string; time?: string | undefined; zone: string; latitude?: number | undefined; longitude?: number | undefined }, clock: DayClock): DayNatal {
   const round = (value: number) => Math.round(value * 100) / 100;
@@ -122,11 +133,14 @@ export function castDayNatal(input: { birthDate: string; time?: string | undefin
   const timeKnown = input.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
   const wall = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(input.birthDate, time, input.zone, { longitude }) : clock.resolveLocalToUtc(input.birthDate, time, input.zone));
-  if (!readsOnDate(input.birthDate, wall('00:00'))) throw new RangeError('The birth date was not on the birthplace clock.');
-  const utc = wall(input.time ?? '12:00').utc;
+  if (!readsOnDate(input.birthDate, wall('00:00'))) throw new SkippedBirthDateError();
+  const birth = wall(input.time ?? '12:00');
+  const onClock = birthTimeOnClock(birth.flags, timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
+  const utc = birth.utc;
   const chart = computeChart({ utc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { bodies: chart.bodies, angles, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { bodies: chart.bodies, angles, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), clockLimit: onClock.limit };
 }
 
 /**
@@ -141,26 +155,39 @@ export function minorLeftOut(mover: TransitBody, point: NatalPoint): boolean {
 /** Under 18, the natal houses whose theme the Moon's line would read as pleasure: the fifth. */
 export const MINOR_LEFT_OUT_HOUSES: readonly number[] = [5];
 
-async function startOf(date: string, zone: string, clock: DayClock): Promise<Date> {
+/**
+ * The real time a local date covers on a zone's clock, as [start, end): from where the clock first reaches its
+ * 00:00, or jumps over it into the date, to where it last reaches the next date's 00:00 (src/lib/time/local-day.ts,
+ * as settledSunSign reads the birth day). Toronto's clocks went from 23:30 on 30 March 1919 to 00:30 on 31 March,
+ * so the 31st starts at the jump (04:30 UTC), not at the 00:30 the resolver moves a skipped midnight to. Null for a
+ * date the clock skipped.
+ */
+export async function localDayBounds(date: string, zone: string, clock: DayClock): Promise<[Date, Date] | null> {
   await clock.prepareLocalTime(date, zone);
-  return clock.resolveLocalToUtc(date, '00:00', zone).utc;
+  await clock.prepareLocalTime(nextDate(date), zone);
+  const span = localDaySpan(date, (day, time, fold) => clock.resolveLocalToUtc(day, time, zone, { fold }));
+  // The span's end is inclusive to the second; the day ends where the next one starts.
+  return span ? [span[0], new Date(span[1].getTime() + SECOND)] : null;
 }
 
 /**
  * One day's transits to one birth chart. `date` is the day on `zone`'s clock;
  * `today` is today's date on that clock, so the theme says "today" only for
- * today; `note` is a sentence about which clock was used, listed first in the
- * limits.
+ * today; `now` is the instant of the reading, for the under-18 rule; `note` is
+ * a sentence about which clock was used, listed first in the limits.
  */
-export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; today: string; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
+export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; now: Date; today?: string | undefined; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
   const { date, zone } = input;
-  // The local day: its two midnights on the person's clock, and the moment halfway between them.
-  const dayStart = await startOf(date, zone, clock);
-  const dayEnd = await startOf(nextDate(date), zone, clock);
-  // A day the clock skipped has no length: both midnights resolve to the same instant.
-  if (dayEnd.getTime() <= dayStart.getTime()) throw new RangeError('date must be a real date, such as 2026-11-12.');
+  // The local day as the clock showed it, and the moment halfway through it.
+  const bounds = await localDayBounds(date, zone, clock);
+  // A day the clock skipped has no length.
+  if (!bounds) throw new RangeError('date must be a real date, such as 2026-11-12.');
+  const [dayStart, dayEnd] = bounds;
   const midday = new Date((dayStart.getTime() + dayEnd.getTime()) / 2);
-  const later = new Date(midday.getTime() + HOUR);
+  // Applying or separating is the direction the orb is moving at midday itself: its rate of change there, read over a
+  // minute either side. An orb read an hour later can be past an exact moment that falls inside that hour.
+  const justBefore = new Date(midday.getTime() - MINUTE);
+  const justAfter = new Date(midday.getTime() + MINUTE);
 
   const points: NatalPoint[] = [...TRANSIT_BODY_ORDER.filter((body) => natal.timeKnown || body !== 'Moon'), ...(natal.angles ? ['ASC', 'MC'] as const : [])];
   const natalBodies = natal.bodies.filter((row) => (TRANSIT_BODY_ORDER as readonly string[]).includes(row.body)).map(({ body, lon }) => ({ body: body as TransitBody, lon }));
@@ -169,26 +196,35 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   const sky = new Map(computeBodies(midday).map((row) => [row.body, row.lon]));
 
   // Exact moments inside the local day, from the transit scanner: only with a birth time, which fixes the natal points to the minute.
+  // A clock that turned back over midnight shows the date before again after the next one has begun (Goose Bay, 25
+  // October 1987), so the spans of two neighbouring dates share that stretch; a contact there belongs only to the date
+  // the clock showed at its exact moment. From 1971 that is read from Intl, as the resolver reads it; up to 1970 the
+  // resolver reads the engine's zone history, and the span alone decides.
+  const onDate = (at: Date) => Number(date.slice(0, 4)) <= 1970 || dateOn(at, zone) === date;
   const exact = new Map<string, Date>();
   if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
+    if (!onDate(at)) continue;
     const held = exact.get(key);
     // Two passes in one day cannot happen for these bodies, but keep the one nearest midday if it ever did.
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key, at);
   }
 
-  // Age is taken on today, as the published tools take it, not on the day read, which can be up to a year ahead.
+  // Age is taken on today, not on the day read, which can be up to a year ahead, and today is the calendar date at
+  // UTC-12 (earliestToday), as the shared under-13 policy reads it: the clock the day is read on (the device's, the
+  // current zone's or the birthplace's) never moves it, so nobody is read as 18 before their birthday everywhere.
   // For someone under 18 the contacts whose line reads as love, appetite, longing or heat are left out (minorLeftOut),
   // and so is the Moon's line in the fifth house ("pleasure").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
   // isUnderAge keeps 29 February as the cutoff, so someone born on 1 March is still under 18 on that day.
-  const under18 = isUnderAge(input.birthDate, input.today, 18);
+  const under18 = isUnderAge(input.birthDate, earliestToday(input.now), 18);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {
     const moverLon = sky.get(mover)!;
-    const moverLater = bodyLongitude(mover, later);
+    const moverBefore = bodyLongitude(mover, justBefore);
+    const moverAfter = bodyLongitude(mover, justAfter);
     for (const point of points) {
       if (under18 && minorLeftOut(mover, point)) continue;
       const pointLon = natalLon.get(point)!;
@@ -196,7 +232,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
         const orb = orbOf(moverLon, pointLon, aspect);
         const at = exact.get(`${mover}|${point}|${aspect}`) ?? null;
         if (orb > maxOrb(mover, aspect) && !at) continue;
-        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverLater, pointLon, aspect) < orb;
+        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
         // A date-only chart is never tight: its contacts carry the plain date-only confidence.
         const tight = natal.timeKnown && (orb < 1 || at !== null);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
@@ -249,14 +285,14 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
 
   const top = contacts.find(({ group }) => group === 'today') ?? contacts[0];
   const label = dayLabel(midday, zone);
-  const isToday = input.today === date;
+  const isToday = (input.today ?? dateOn(input.now, zone)) === date;
   const lead = top?.group === 'background' ? 'In the background,'
     : isToday ? "Today's strongest contact is" : `The strongest contact on ${label} is`;
   const theme = top
     ? `${lead} ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? 'applying' : 'separating'}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).`
     : `No major contact to your chart is within orb ${isToday ? 'today' : 'that day'}, so the Moon in ${signName(moonSign)} sets the tone.`;
 
-  const limits: string[] = [];
+  const limits: string[] = natal.clockLimit ? [natal.clockLimit] : [];
   if (input.note) limits.push(input.note);
   if (under18) limits.push(MINOR_NOTE);
   if (!natal.timeKnown) limits.push(UNTIMED_LIMIT);

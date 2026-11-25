@@ -16,6 +16,9 @@ import { PERSONAL_DAY_LIMIT } from '../../lib/personal-day/score';
 import { YOUR_DAY_PAGE_PATH, yourDayShareUrl } from '../../lib/personal-day/share';
 import { SIGNS } from '../../lib/signs';
 import { parseCivilDate } from '../../lib/time/civil-date';
+import { readsOnDate } from '../../lib/time/local-day';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock } from '../../lib/vedic-signs/clock';
+import { roundCoordinate } from '../plain-text';
 import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, withCheckedZone, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export {
@@ -73,7 +76,7 @@ export const personalDayData = z.object({
     applying: z.boolean(),
     /** The exact moment, when it falls inside the local day. */
     exactAt: z.string().nullable(),
-    /** The same moment on the person's clock, HH:MM. */
+    /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
     exactLocal: z.string().nullable(),
     score: z.number().min(0),
     title: z.string(),
@@ -86,8 +89,12 @@ export const personalDayData = z.object({
   /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter, those of the moving Venus, Mars and Neptune, and the Moon's line in the fifth house. */
   under18: z.boolean(),
   limits: z.array(z.string()),
-  pageUrl: z.url(),
-  /** The share card for the day's reading: the day and the person's settled Sun sign. Never a birth detail. Null when the Sun sign is unsettled on an untimed cusp day. */
+  /** The /your-day/ page; null while the website's page is switched off (PUBLIC_YOUR_DAY_ENABLED). */
+  pageUrl: z.url().nullable(),
+  /**
+   * The share card for the day's reading: the day and the person's settled Sun sign. Never a birth detail. Null when
+   * the Sun sign is unsettled on an untimed cusp day, or while the website's page is switched off.
+   */
   shareUrl: z.url().nullable(),
 });
 export type PersonalDayData = z.infer<typeof personalDayData>;
@@ -96,7 +103,18 @@ export type PersonalDayData = z.infer<typeof personalDayData>;
 export async function personalDay(given: BirthArgs & { currentZone?: string | undefined; date?: string | undefined }, context: PersonalToolContext): Promise<{ data: PersonalDayData; links: { title: string; url: string }[] }> {
   // The birthplace zone is checked before any clock reads it; currentClock checks currentZone the same way.
   const args = await withCheckedZone(given, context);
+  // A birth date the birthplace clock skipped whole, or a birth time it skipped, is refused, never read as the next
+  // date or the time the clock jumped to; a time it showed twice is read at its first pass, and the limits say so first
+  // (src/lib/vedic-signs/clock.ts, as the /your-day/ page does).
+  if (args.zone) {
+    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
+    const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+    const midnight = longitude !== undefined ? context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone, { longitude }) : context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone);
+    if (!readsOnDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
+  }
   const natal = await castNatal(args, context.localTime);
+  const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const { zone, note } = await currentClock(args.currentZone, args.zone, context);
   const today = dateOn(context.now, zone);
   const date = args.date ?? today;
@@ -106,8 +124,9 @@ export async function personalDay(given: BirthArgs & { currentZone?: string | un
   if (date < args.birthDate) throw new RangeError('date is before the birth date; give a day on or after it.');
 
   const day = await readPersonalDay(
-    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail },
-    { birthDate: args.birthDate, date, zone, today, note },
+    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail, clockLimit: onClock.limit },
+    // The under-18 rule reads the UTC-12 date from now (readPersonalDay); `zone` and `today` are the reading's clock only.
+    { birthDate: args.birthDate, date, zone, today, now: context.now, note },
     context.localTime,
   );
   const sunSign = await settledSunSign(
@@ -115,17 +134,19 @@ export async function personalDay(given: BirthArgs & { currentZone?: string | un
     { birthDate: args.birthDate, zone: args.zone, longitude: natal.longitude },
     context.localTime,
   );
-  const pageUrl = `${context.origin}${YOUR_DAY_PAGE_PATH}`;
+  // The page and its share card are linked only while the website's page is on: with it off they would be a 404.
+  const pageOn = context.pageOn === true;
+  const pageUrl = pageOn ? `${context.origin}${YOUR_DAY_PAGE_PATH}` : null;
   return {
     data: {
       birthDate: args.birthDate, timeKnown: natal.timeKnown, placed: natal.placed,
       ...day,
       moon: day.moon as PersonalDayData['moon'],
       pageUrl,
-      shareUrl: yourDayShareUrl(context.origin, { date, sun: sunSign }),
+      shareUrl: pageOn ? yourDayShareUrl(context.origin, { date, sun: sunSign }) : null,
     },
     links: [
-      { title: 'Your day on Zodiacs', url: pageUrl },
+      ...(pageUrl ? [{ title: 'Your day on Zodiacs', url: pageUrl }] : []),
       { title: 'Transits on Zodiacs', url: `${context.origin}/transits/` },
       { title: "Today's sky on Zodiacs", url: `${context.origin}/today/` },
     ],
@@ -140,6 +161,7 @@ export const personalDayTool = definePersonalTool({
   input: personalDayInput,
   data: personalDayData,
   clockDependent: true,
+  pageFlag: 'PUBLIC_YOUR_DAY_ENABLED',
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, currentZone: 'Europe/Madrid' },
   run: (args, context) => personalDay(args, context),
 });

@@ -1,3 +1,4 @@
+import { CONTACT_CONFIDENCE_NOTE, READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { readFileSync } from 'node:fs';
 import { decode as decodeJpeg } from 'jpeg-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -66,6 +67,7 @@ import {
   skyEvents,
 } from './result-preview-model';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
+import { yourDayCleanQuery } from '../lib/personal-day/share';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
@@ -550,8 +552,13 @@ describe('share link pages', () => {
     expect(day).toContain('<a class="cta" href="/your-day/">Read your day</a>');
     expect(day).toContain('The day’s transits for a Taurus chart, ranked with exact times.');
     expect(day).not.toMatch(/way of loving|romance|attraction/u);
-    // A link that carries anything else opens the plain page.
-    const plainDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus&t=08:30'))).text();
+    // A link that carries a key the share does not use is sent to the day's own address; one that is no share
+    // opens the plain page.
+    const extraDay = await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus&t=08:30'));
+    expect(extraDay.status).toBe(303);
+    expect(extraDay.headers.get('location')).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus');
+    expect(await extraDay.text()).toBe('');
+    const plainDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/'))).text();
     expect(plainDay).toContain('<h1>Read your day</h1>');
     expect(plainDay).not.toContain('08:30');
     for (const page of [big, untimed, chinese, animal, invite, day, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[\u2014\u2013]/u);
@@ -585,8 +592,14 @@ describe('share link pages', () => {
     expect(compat).toContain(`content="https://zodiacs.org/api/og/compatibility-image?${COMPAT.replaceAll('&', '&amp;')}&amp;c=75"`);
     const date = await (await handleOccasionLinkRequest(new Request(`https://zodiacs.org/share/occasion/?${OCCASION}&c=70`))).text();
     expect(date).toContain('any planets in retrograde. Reading confidence 70%.');
+    expect(date).not.toContain(READING_CONFIDENCE_NOTE);
+    expect(date).not.toContain(`<summary>${READING_CONFIDENCE_FAQ.q}</summary>`);
     const day = await (await handleHoroscopeLinkRequest(new Request(`https://zodiacs.org/share/horoscope/?s=leo&d=${TODAY}`))).text();
     expect(day).toContain('Reading confidence 40%.');
+    for (const [html, note] of [[compat, CONTACT_CONFIDENCE_NOTE], [day, READING_CONFIDENCE_NOTE]]) {
+      expect(html.split(`</p><small>${note}</small>`)).toHaveLength(2);
+      expect(html).toContain(`<summary>${READING_CONFIDENCE_FAQ.q}</summary><p>${note}</p>`);
+    }
     expect(await (await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}`))).text()).not.toContain('Reading confidence');
   });
 
@@ -905,5 +918,56 @@ describe('story pictures', () => {
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
     expect((await handleYourDayStoryRequest(new Request('https://zodiacs.org/api/og/your-day-story?day=2026-11-09&s=taurus&lat=40.42'))).status).toBe(400);
+  });
+});
+
+describe('the Your day share page clears every key it does not use from the address, on the deployed entry', () => {
+  const SECRETS = ['1990-05-03', '08:30', 'Lisbon', 'Ada', '38.72', 'scorpio', 'leo'];
+  const holdsNone = (text: string) => { for (const value of SECRETS) expect(text).not.toContain(value); };
+  const deployed = async (route: 'your-day-link' | 'your-day-image' | 'your-day-story', query: Record<string, string | string[]>) => {
+    vi.stubEnv('PUBLIC_YOUR_DAY_ENABLED', '1');
+    const res = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+    return res;
+  };
+  afterEach(() => { vi.unstubAllEnvs(); });
+
+  it.each([
+    [{ day: '2026-11-09', s: 'taurus', birthDate: '1990-05-03' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    [{ day: '2026-11-09', s: 'taurus', moon: 'scorpio', rising: 'leo' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    [{ day: '2026-11-09', s: 'taurus', t: '08:30', city: 'Lisbon', n: 'Ada', lat: '38.72' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    [{ birthDate: '1990-05-03', s: 'taurus', day: '2026-11-09', ref: 'chatgpt' }, '/share/your-day/?day=2026-11-09&s=taurus&ref=chatgpt'],
+    [{ day: '2026-11-09', s: 'taurus', fbclid: 'IwAR0' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    // A repeated key, or a query that is no share, leaves nothing of the query: the plain page.
+    [{ day: ['2026-11-09', '1990-05-03'], s: 'taurus' }, '/share/your-day/'],
+    [{ day: '2026-11-09', s: 'ophiuchus', d: '1990-05-03' }, '/share/your-day/'],
+    [{ birthDate: '1990-05-03' }, '/share/your-day/'],
+  ] as const)('sends %j to %s', async (query, location) => {
+    const res = await deployed('your-day-link', query as Record<string, string | string[]>);
+    expect(res.statusCode).toBe(303);
+    expect(res.headers.get('location')).toBe(`https://zodiacs.org${location}`);
+    holdsNone(res.headers.get('location')!);
+    holdsNone(res.body.toString('utf8'));
+  });
+
+  it('opens the card at the clean address, and the plain page with no query', async () => {
+    const card = await deployed('your-day-link', { day: '2026-11-09', s: 'taurus' });
+    expect(card.statusCode).toBe(200);
+    expect(card.body.toString('utf8')).toContain('My day, 9 November 2026: Taurus Sun');
+    expect((await deployed('your-day-link', { day: '2026-11-09', s: 'taurus', ref: 'assistant' })).statusCode).toBe(200);
+    const plain = await deployed('your-day-link', {});
+    expect(plain.statusCode).toBe(200);
+    expect(plain.body.toString('utf8')).toContain('<h1>Read your day</h1>');
+  });
+
+  it('leaves the pictures as they were: only their own keys, else refused', async () => {
+    expect((await deployed('your-day-image', { day: '2026-11-09', s: 'taurus', birthDate: '1990-05-03' })).statusCode).toBe(400);
+    expect((await deployed('your-day-story', { day: '2026-11-09', s: 'taurus', fbclid: 'IwAR0' })).statusCode).toBe(400);
+  });
+
+  it('builds the clean query from the share keys alone', () => {
+    expect(yourDayCleanQuery(new URLSearchParams('s=leo&x=1&day=2026-11-09'))).toBe('day=2026-11-09&s=leo');
+    expect(yourDayCleanQuery(new URLSearchParams('day=2026-11-09&s=leo&ref=other'))).toBe('');
+    expect(yourDayCleanQuery(new URLSearchParams(''))).toBe('');
   });
 });
