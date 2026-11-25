@@ -4,7 +4,7 @@ import { eventTimes, localIso, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
-import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-api/endpoints';
+import { computeEvents, computePositions, computeSkyFact, refuseSplitDay } from '../lib/compute-api/endpoints';
 import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
 import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
 import type { LocalTimeModule } from '../lib/compute-api/local-time';
@@ -616,6 +616,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
+        await refuseSplitDay(request, { localTime: localTime() });
         const rawCalculation = await computeSkyFact(request, { localTime: localTime() });
         const zoneName = rawCalculation.result.fact.zone;
         const fixedZone = zoneName !== null && isFixedOffsetZone(zoneName);

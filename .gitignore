@@ -1,4 +1,6 @@
 .DS_Store
+# The AppleDouble file macOS keeps beside every file on an ExFAT volume.
+._*
 # Both forms: the directory, and a symlink named node_modules (a machine-local
 # one was tracked here once, and the trailing-slash rule doesn't match a link).
 node_modules

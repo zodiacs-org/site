@@ -83,3 +83,18 @@ casts a chart for now, submits the same recent date to the birth tool, and
 inspects the request URLs, returned links, counters and preview diagnostics.
 
 The combined hosted build retains both source changes. After applying the moment chart changes to the reproduced source, apply the numerology guidance to the same sources before compiling.
+
+## Split-day refusal for check_sky_fact
+
+Starting from the reproduced 0.6.9 + moment chart + gated numerology source
+(digest `861fa130487eade0784a989188c2f3a3541c2d88262259275c001b2ec8219f8c`),
+apply `runtimeSource.splitDayRefusalPatch`
+(`docs/platform/evidence/site-engine-1-1-0/split-day-refusal.patch`) with
+`patch -p1`. The patch adds the legacy-resolver-compatible
+`clockWentBackAcrossMidnight` and `refuseSplitDay` check before
+`computeSkyFact` across `src/lib/compute-api/{local-time,validate,endpoints}.ts`
+and `src/ai-tools/tools.ts`, while keeping all published tool definitions,
+directory fixtures, and the Astronomy Engine 1.1.0-rc.2 ephemeris unchanged.
+Rebuild `src/ai-tools/http.ts` with the original `scripts/build-ai-integrations.mjs`
+hosted settings and `addAiLifetimeBoundary`. Both the rebuilt bundle digest and
+the source patch digest are recorded in `publishedSha256`.
