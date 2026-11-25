@@ -15,7 +15,7 @@
  *    targets (data-entity), chords weight by orb and dash when separating,
  *    and everything not selected dims to the emphasis floor.
  */
-import type { ComponentChildren } from 'preact';
+import { Fragment, type ComponentChildren } from 'preact';
 import { SIGNS } from '../signs';
 import { PLANET_GLYPH } from '../glyphs/paths';
 import type { BodyName } from '../engine/types';
@@ -76,8 +76,8 @@ export interface WheelProps {
   cusps?: number[] | null;
   aspects?: { a: string; b: string; type: string }[];
   size?: number;
-  /** Draw-in animation on mount (respects reduced motion via CSS). */
-  animate?: boolean;
+  /** Stage the first result, or use the short whole-wheel entrance. */
+  animate?: boolean | 'fade';
   /** Server-rendered homepage layer hooks; omitted everywhere else. */
   preview?: boolean;
   /**
@@ -286,6 +286,13 @@ export default function Wheel({
   const houseMid = (lon: number, i: number) =>
     ix?.scene.houses ? ix.scene.houses[i].midLon : lon + 15;
 
+  // Rank the actual longitudes without changing SVG paint or hit-test order.
+  const staged = animate === true;
+  const Layer = staged ? 'g' : Fragment;
+  const revealOrder = staged ? [...bodies].sort((a, b) =>
+    Number(b.body === 'Sun') - Number(a.body === 'Sun') || a.lon - b.lon
+  ) : null;
+
   return (
     <svg
       viewBox={`${-pad} ${-pad} ${size + pad * 2} ${size + pad * 2}`}
@@ -298,78 +305,81 @@ export default function Wheel({
       aria-label={ix ? undefined : ariaLabel}
       class={[
         animate ? 'wheel wheel--animate' : 'wheel',
+        staged ? 'wheel--settle' : '',
         ix ? 'wheel--interactive' : '',
       ].filter(Boolean).join(' ')}
       onClick={resolveClick}
       onClickCapture={captureMarkerClick}
     >
-      {/* Ring backgrounds */}
-      <circle cx={cx} cy={cy} r={rSigns} fill="none" stroke="rgba(198,204,218,0.16)" stroke-width="1" />
-      <circle cx={cx} cy={cy} r={rSignsIn} fill="none" stroke="rgba(198,204,218,0.16)" stroke-width="1" />
-      <circle cx={cx} cy={cy} r={rAspects} fill="none" stroke="rgba(198,204,218,0.08)" stroke-width="1" />
+      <Layer class={staged ? 'wheel__sign-ring' : undefined}>
+        {/* Ring backgrounds */}
+        <circle cx={cx} cy={cy} r={rSigns} fill="none" stroke="rgba(198,204,218,0.16)" stroke-width="1" />
+        <circle cx={cx} cy={cy} r={rSignsIn} fill="none" stroke="rgba(198,204,218,0.16)" stroke-width="1" />
+        <circle cx={cx} cy={cy} r={rAspects} fill="none" stroke="rgba(198,204,218,0.08)" stroke-width="1" />
 
-      {/* Sign ring: pastel arcs + the pastel disc icons (the same icon set
-          as the homepage wheel). The disc <image> refs stay external for the
-          live wheel; the share-card renderer inlines them as data URIs before
-          rasterizing, so the serialized SVG is self-contained. */}
-      {SIGNS.map((s, i) => {
-        const from = i * 30;
-        const mid = from + 15;
-        const c = pt(mid, (rSigns + rSignsIn) / 2);
-        const disc = size * 0.068;
-        const signRef: EntityRef = { kind: 'sign', sign: s.slug as SignSlug };
-        const signId = entityId(signRef);
-        return (
-          <g key={s.slug} {...(ix ? { opacity: opacityOf(`sign:${s.slug}`), ...mark(signRef) } : {})}>
-            <path
-              d={arcPath(from + 1.5, from + 28.5, (rSigns + rSignsIn) / 2)}
-              fill="none"
-              stroke={s.hue}
-              stroke-opacity="0.12"
-              stroke-width={rSigns - rSignsIn - 6}
-            />
-            <path
-              d={arcPath(from + 1.5, from + 28.5, rSigns - 1)}
-              fill="none"
-              stroke={s.hue}
-              stroke-opacity="0.8"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <image
-              {...(deferIcons
-                ? { 'data-href': `/assets/zodiac-icons/128/${s.slug}.webp` }
-                : { href: `/assets/zodiac-icons/128/${s.slug}.webp` })}
-              x={(c.x - disc / 2).toFixed(2)}
-              y={(c.y - disc / 2).toFixed(2)}
-              width={disc.toFixed(2)}
-              height={disc.toFixed(2)}
-            >
-              <title>{s.name}</title>
-            </image>
-            {isSelected(signId) && (
-              <g key={spotlightKey(signId)} {...spotlightMark(signId, 'sign')}>
-                <path
-                  d={arcPath(from + 2, from + 28, rSigns - size * 0.012)}
-                  fill="none"
-                  stroke={s.hue}
-                  stroke-opacity="0.95"
-                  stroke-width={size * 0.011}
-                  stroke-linecap="round"
-                  pointer-events="none"
-                />
-              </g>
-            )}
-          </g>
-        );
-      })}
+        {/* Sign ring: pastel arcs + the pastel disc icons (the same icon set
+            as the homepage wheel). The disc <image> refs stay external for the
+            live wheel; the share-card renderer inlines them as data URIs before
+            rasterizing, so the serialized SVG is self-contained. */}
+        {SIGNS.map((s, i) => {
+          const from = i * 30;
+          const mid = from + 15;
+          const c = pt(mid, (rSigns + rSignsIn) / 2);
+          const disc = size * 0.068;
+          const signRef: EntityRef = { kind: 'sign', sign: s.slug as SignSlug };
+          const signId = entityId(signRef);
+          return (
+            <g key={s.slug} {...(ix ? { opacity: opacityOf(`sign:${s.slug}`), ...mark(signRef) } : {})}>
+              <path
+                d={arcPath(from + 1.5, from + 28.5, (rSigns + rSignsIn) / 2)}
+                fill="none"
+                stroke={s.hue}
+                stroke-opacity="0.12"
+                stroke-width={rSigns - rSignsIn - 6}
+              />
+              <path
+                d={arcPath(from + 1.5, from + 28.5, rSigns - 1)}
+                fill="none"
+                stroke={s.hue}
+                stroke-opacity="0.8"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <image
+                {...(deferIcons
+                  ? { 'data-href': `/assets/zodiac-icons/128/${s.slug}.webp` }
+                  : { href: `/assets/zodiac-icons/128/${s.slug}.webp` })}
+                x={(c.x - disc / 2).toFixed(2)}
+                y={(c.y - disc / 2).toFixed(2)}
+                width={disc.toFixed(2)}
+                height={disc.toFixed(2)}
+              >
+                <title>{s.name}</title>
+              </image>
+              {isSelected(signId) && (
+                <g key={spotlightKey(signId)} {...spotlightMark(signId, 'sign')}>
+                  <path
+                    d={arcPath(from + 2, from + 28, rSigns - size * 0.012)}
+                    fill="none"
+                    stroke={s.hue}
+                    stroke-opacity="0.95"
+                    stroke-width={size * 0.011}
+                    stroke-linecap="round"
+                    pointer-events="none"
+                  />
+                </g>
+              )}
+            </g>
+          );
+        })}
 
-      {/* Sign boundaries */}
-      {SIGNS.map((_, i) => {
-        const a = pt(i * 30, rSignsIn);
-        const b = pt(i * 30, rSigns);
-        return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="rgba(198,204,218,0.22)" stroke-width="1" />;
-      })}
+        {/* Sign boundaries */}
+        {SIGNS.map((_, i) => {
+          const a = pt(i * 30, rSignsIn);
+          const b = pt(i * 30, rSigns);
+          return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="rgba(198,204,218,0.22)" stroke-width="1" />;
+        })}
+      </Layer>
 
       {/* House cusps */}
       {cusps?.map((lon, i) => {
@@ -468,61 +478,63 @@ export default function Wheel({
         );
       })()}
 
-      {/* Aspect lines */}
-      {aspects.map((a, i) => {
-        const A = bodies.find((b) => b.body === a.a);
-        const B = bodies.find((b) => b.body === a.b);
-        if (!A || !B) return null;
-        const p1 = pt(A.lon, rAspects);
-        const p2 = pt(B.lon, rAspects);
-        if (!ix) {
+      <Layer class={staged ? 'wheel__aspect-lines' : undefined}>
+        {/* Aspect lines */}
+        {aspects.map((a, i) => {
+          const A = bodies.find((b) => b.body === a.a);
+          const B = bodies.find((b) => b.body === a.b);
+          if (!A || !B) return null;
+          const p1 = pt(A.lon, rAspects);
+          const p2 = pt(B.lon, rAspects);
+          if (!ix) {
+            return (
+              <line
+                key={i}
+                x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                stroke={ASPECT_COLOR[a.type] ?? 'rgba(198,204,218,0.3)'}
+                stroke-width="1"
+                class={preview ? 'wheel__aspect' : undefined}
+              />
+            );
+          }
+          const sceneAspect = ix.scene.aspects.find((sa) => sa.a === a.a && sa.b === a.b && sa.type === a.type);
+          const aspectRef: EntityRef = { kind: 'aspect', a: a.a as any, b: a.b as any, type: a.type as any };
+          const id = entityId(aspectRef);
           return (
-            <line
-              key={i}
-              x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-              stroke={ASPECT_COLOR[a.type] ?? 'rgba(198,204,218,0.3)'}
-              stroke-width="1"
-              class={preview ? 'wheel__aspect' : undefined}
-            />
+            <g key={i} opacity={opacityOf(id)} {...mark(aspectRef)}>
+              <line
+                x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                stroke={ASPECT_COLOR[a.type] ?? 'rgba(198,204,218,0.3)'}
+                stroke-width={ASPECT_STROKE[sceneAspect?.weight ?? 0]}
+                stroke-dasharray={sceneAspect && !sceneAspect.applying ? '3 3' : undefined}
+                pointer-events="none"
+              />
+              {isSelected(id) && (
+                <g key={spotlightKey(id)} {...spotlightMark(id, 'aspect')}>
+                  <line
+                    x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                    stroke={ASPECT_FOCUS_COLOR[a.type] ?? 'rgba(238,241,247,0.9)'}
+                    stroke-width={ASPECT_STROKE[sceneAspect?.weight ?? 0] + 2.2}
+                    stroke-linecap="round"
+                    class="wheel__focus-aspect"
+                    pointer-events="none"
+                  />
+                  <circle cx={p1.x} cy={p1.y} r={size * 0.018} class="wheel__focus-aspect-node" pointer-events="none" />
+                  <circle cx={p2.x} cy={p2.y} r={size * 0.018} class="wheel__focus-aspect-node" pointer-events="none" />
+                </g>
+              )}
+              {/* Wide invisible twin makes the 1px chord tappable. */}
+              <line
+                x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                stroke="transparent"
+                stroke-width={size * 0.028}
+                onClick={select(aspectRef)}
+                class="wheel__hit"
+              />
+            </g>
           );
-        }
-        const sceneAspect = ix.scene.aspects.find((sa) => sa.a === a.a && sa.b === a.b && sa.type === a.type);
-        const aspectRef: EntityRef = { kind: 'aspect', a: a.a as any, b: a.b as any, type: a.type as any };
-        const id = entityId(aspectRef);
-        return (
-          <g key={i} opacity={opacityOf(id)} {...mark(aspectRef)}>
-            <line
-              x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-              stroke={ASPECT_COLOR[a.type] ?? 'rgba(198,204,218,0.3)'}
-              stroke-width={ASPECT_STROKE[sceneAspect?.weight ?? 0]}
-              stroke-dasharray={sceneAspect && !sceneAspect.applying ? '3 3' : undefined}
-              pointer-events="none"
-            />
-            {isSelected(id) && (
-              <g key={spotlightKey(id)} {...spotlightMark(id, 'aspect')}>
-                <line
-                  x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-                  stroke={ASPECT_FOCUS_COLOR[a.type] ?? 'rgba(238,241,247,0.9)'}
-                  stroke-width={ASPECT_STROKE[sceneAspect?.weight ?? 0] + 2.2}
-                  stroke-linecap="round"
-                  class="wheel__focus-aspect"
-                  pointer-events="none"
-                />
-                <circle cx={p1.x} cy={p1.y} r={size * 0.018} class="wheel__focus-aspect-node" pointer-events="none" />
-                <circle cx={p2.x} cy={p2.y} r={size * 0.018} class="wheel__focus-aspect-node" pointer-events="none" />
-              </g>
-            )}
-            {/* Wide invisible twin makes the 1px chord tappable. */}
-            <line
-              x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-              stroke="transparent"
-              stroke-width={size * 0.028}
-              onClick={select(aspectRef)}
-              class="wheel__hit"
-            />
-          </g>
-        );
-      })}
+        })}
+      </Layer>
 
       {/* Bodies */}
       {bodies.map((b) => {
@@ -541,6 +553,7 @@ export default function Wheel({
           <g
             key={b.body}
             class={preview ? 'wheel__body wheel__planet' : 'wheel__body'}
+            style={revealOrder ? `--i:${revealOrder.indexOf(b)}` : undefined}
             data-preview-body={preview ? b.body : undefined}
             {...(ix ? { opacity: opacityOf(id), ...mark(bodyRef) } : {})}
           >

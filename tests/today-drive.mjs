@@ -4,7 +4,9 @@
  *   npm run build
  *   OUT_DIR=/tmp/today-shots npm run test:today:browser
  */
+import assert from 'node:assert/strict';
 import { chromium } from 'playwright-core';
+import { startStreamedPreview } from './visual/streamed-preview.mjs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
@@ -120,7 +122,7 @@ async function measuredCls(page) {
   return cls;
 }
 
-async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expectedContacts) {
+async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expectedContacts, scenario = state) {
   const page = await newTodayPage(browser, {
     // Tall enough that content after the card participates in the CLS impact
     // region; a placeholder collapse cannot hide below the fold.
@@ -176,18 +178,18 @@ async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expe
     const failureDir = OUT ?? 'tests/visual/artifacts/today';
     await mkdir(failureDir, { recursive: true });
     const shifts = await page.evaluate(() => globalThis.__zdxLayoutShiftDetails);
-    await writeFile(`${failureDir}/returning-${state}-360-layout-shifts.json`, JSON.stringify(shifts, null, 2));
+    await writeFile(`${failureDir}/returning-${scenario}-360-layout-shifts.json`, JSON.stringify(shifts, null, 2));
   }
-  check(`360px returning ${state}: hydration has exactly zero CLS`, evidence.cls === 0, JSON.stringify(evidence));
+  check(`360px returning ${scenario}: hydration has exactly zero CLS`, evidence.cls === 0, JSON.stringify(evidence));
   check(
-    `360px returning ${state}: resolved reading has no outer fallback reservation or dead tail`,
+    `360px returning ${scenario}: resolved reading has no outer fallback reservation or dead tail`,
     evidence.readingMinHeight === '0px'
       && evidence.bodyBottomGap <= 1
       && evidence.readingBottomGap <= 1,
     JSON.stringify(evidence),
   );
   check(
-    `360px returning ${state}: long saved-chart name stays inside its heading`,
+    `360px returning ${scenario}: long saved-chart name stays inside its heading`,
     evidence.chartNameTitle === LONG_CHART_NAME
       && evidence.chartNameOverflow === 'hidden'
       && evidence.chartNameTextOverflow === 'ellipsis'
@@ -195,26 +197,26 @@ async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expe
     JSON.stringify(evidence),
   );
   check(
-    `360px returning ${state}: page has no horizontal overflow`,
+    `360px returning ${scenario}: page has no horizontal overflow`,
     evidence.pageWidth <= evidence.viewportWidth,
     `${evidence.pageWidth}/${evidence.viewportWidth}`,
   );
   check(
-    `360px returning ${state}: a 365-day streak has a collision-free digit lane`,
+    `360px returning ${scenario}: a 365-day streak has a collision-free digit lane`,
     evidence.streakText === '365'
       && evidence.streakLabel === '365 day streak'
       && evidence.countRight <= evidence.unitLeft,
     JSON.stringify(evidence),
   );
   check(
-    `360px returning ${state}: expected contact state renders`,
+    `360px returning ${scenario}: expected contact state renders`,
     await page.locator('.today-lines li').count() === expectedContacts
       && (state === 'quiet'
         ? await page.locator('[data-today-quiet] .today-quiet__baseline').isVisible()
           && await page.getByText(`${QUIET_SUN.sign} Sun-sign baseline`, { exact: true }).isVisible()
         : true),
   );
-  if (OUT) await page.screenshot({ path: `${OUT}/today-returning-${state}-360.png`, fullPage: true });
+  if (OUT) await page.screenshot({ path: `${OUT}/today-returning-${scenario}-360.png`, fullPage: true });
   await page.close();
 }
 
@@ -618,6 +620,25 @@ async function drive(BASE, browser) {
 
   await inspectReturningMobile(BASE, browser, threeHitMobileProfile, 'active', 3);
   await inspectReturningMobile(BASE, browser, quietMobileProfile, 'quiet', 0);
+
+  const proxy = await startStreamedPreview(BASE, (path, html) => {
+    if (path !== '/today/') return [];
+    const start = html.indexOf('<figcaption class="today-legend"');
+    const end = html.indexOf('</figcaption>', start);
+    assert.ok(start > 0 && end > start);
+    const legend = html.slice(start, end);
+    // A packet can end between empty reservations, after an entry opens,
+    // or between its glyph and text. Exercise each of these parser states.
+    const boundaries = [...legend.matchAll(/data-slot="[^"]+"[^>]*><\/span>|data-entry="[^"]+"[^>]*>|<\/i>/g)];
+    assert.ok(boundaries.length >= 3);
+    return boundaries.map((match) => start + match.index + match[0].length);
+  }, 600);
+  try {
+    await inspectReturningMobile(proxy.origin, browser, threeHitMobileProfile, 'active', 3, 'active-streamed-legend');
+    await inspectReturningMobile(proxy.origin, browser, quietMobileProfile, 'quiet', 0, 'quiet-streamed-legend');
+  } finally {
+    await proxy.close();
+  }
 }
 
 await withPreview({ port: 4398 }, async (BASE) => {

@@ -150,7 +150,14 @@ describe('Monday Note builder', () => {
     ]);
     const signs = sections.get('YOUR SUN SIGN THIS WEEK')!;
     expect(signs.map((line) => line.split(':')[0])).toEqual(SIGNS.map((sign) => sign.name));
-    expect(signs[0]).toBe('Aries: The full Moon in Gemini falls in your third solar house: messages, errands and the people nearby. Answer the message you have been putting off. Reading confidence 40%');
+    // Assert the composed fallback line against an earlier week's program so this
+    // check stays valid during the week of 2026-11-23 when committedSources()
+    // carries published weekly readings for that week.
+    const composed = buildMondayNote(WEEK, sources({ program: syntheticProgram('2026-11-16', (sign) => `Other week for ${sign}.`) }));
+    expect(composed.signLineSource).toBe('composed');
+    expect(sectionsOf(composed.text).get('YOUR SUN SIGN THIS WEEK')![0]).toBe(
+      'Aries: The full Moon in Gemini falls in your third solar house: messages, errands and the people nearby. Answer the message you have been putting off. Reading confidence 40%',
+    );
     // The last section runs into the links and the footer, which follow it in the text part.
     expect(sections.get('A QUESTION FOR NEXT WEEK')!.slice(0, 3)).toEqual([
       'What did you finish or hand off at the full Moon?',

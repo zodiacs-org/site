@@ -9,6 +9,7 @@ import LevelSwitch from '../../components/LevelSwitch.astro';
 import SkyTicker from '../../islands/SkyTicker';
 import { PostChartDailyBrief } from '../../islands/PostChartDailyBrief';
 import EmailCapture from '../../components/EmailCapture.astro';
+import Motion from '../../components/Motion.astro';
 import Wheel from '../../lib/wheel/Wheel';
 import WheelExplain from '../../components/WheelExplain.astro';
 import { wheelExplainCopy } from '../../lib/wheel-explain/copy';
@@ -627,6 +628,11 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   </div>
 
   <!-- 02 · What the result looks like: the sample, laid out like a result page. -->
+  {/* Shared entrance motion (docs/MOTION.md). This is a tool page, so only
+      marks move: the numbered discs beside "What you get" and the round
+      icons in the birth time and privacy sections grow in once. The hero,
+      the form, the sample, every card and every word stay still. */}
+  <Motion />
   <section class="kwrap bc-section bc-what" data-sample-set>
     <div class="section-head">
       <span class="kicker">What you get</span>
@@ -697,10 +703,10 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
     </div>
 
     <ol class="bc-notes" role="list">
-      <li><span class="bc-notes__n" aria-hidden="true">1</span><h3 class="h-4">The signs</h3><p>The twelve signs ring the outside. Every planet sits in one of them.</p></li>
-      <li><span class="bc-notes__n" aria-hidden="true">2</span><h3 class="h-4">The houses</h3><p>Twelve areas of life, counted from your <a class="bc-inline" href="/learn/glossary/#rising-sign">rising sign</a>. With whole sign houses, each sign is one house.</p></li>
-      <li><span class="bc-notes__n" aria-hidden="true">3</span><h3 class="h-4">The planets</h3><p>Each one placed at its exact degree. Sun, Moon and rising carry most of the story.</p></li>
-      <li><span class="bc-notes__n" aria-hidden="true">4</span><h3 class="h-4">The aspects</h3><p>Lines between planets, read as <a class="bc-inline" href="/learn/glossary/#aspect">conversations</a>: trines flow, squares push, oppositions negotiate.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true" data-enter="disc">1</span><h3 class="h-4">The signs</h3><p>The twelve signs ring the outside. Every planet sits in one of them.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true" data-enter="disc">2</span><h3 class="h-4">The houses</h3><p>Twelve areas of life, counted from your <a class="bc-inline" href="/learn/glossary/#rising-sign">rising sign</a>. With whole sign houses, each sign is one house.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true" data-enter="disc">3</span><h3 class="h-4">The planets</h3><p>Each one placed at its exact degree. Sun, Moon and rising carry most of the story.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true" data-enter="disc">4</span><h3 class="h-4">The aspects</h3><p>Lines between planets, read as <a class="bc-inline" href="/learn/glossary/#aspect">conversations</a>: trines flow, squares push, oppositions negotiate.</p></li>
     </ol>
     <div class="bc-result-links">
       <a class="textlink" href="/learn/how-to-read-a-birth-chart/">How to read a birth chart <span class="arr" aria-hidden="true">→</span></a>
@@ -758,15 +764,15 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
       </div>
       <ul class="bc-opts" role="list">
         <li>
-          <span class="bc-ic" style="background:var(--sign-virgo)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span>
+          <span class="bc-ic" style="background:var(--sign-virgo)" data-enter="disc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span>
           <div><b>I know it</b><p>The full chart: rising sign, all twelve houses, and the Moon to the exact degree.</p></div>
         </li>
         <li>
-          <span class="bc-ic" style="background:var(--sign-sagittarius)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 10h14M6 7l-3 3 3 3M14 7l3 3-3 3" /></svg></span>
+          <span class="bc-ic" style="background:var(--sign-sagittarius)" data-enter="disc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 10h14M6 7l-3 3 3 3M14 7l3 3-3 3" /></svg></span>
           <div><b>I know it roughly</b><p>Enter your best guess. On the result, <em>Check a time window</em> shows which parts could change if the time is a little off.</p></div>
         </li>
         <li>
-          <span class="bc-ic" style="background:var(--sign-cancer)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M8 8a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.7M10 14h.01" /></svg></span>
+          <span class="bc-ic" style="background:var(--sign-cancer)" data-enter="disc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M8 8a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.7M10 14h.01" /></svg></span>
           <div><b>I don’t know it</b><p>You get your Sun, planets and aspects from a noon reference. We leave out the rising sign and houses, and if the Moon changed sign that day we show both options.</p></div>
         </li>
       </ul>
@@ -783,17 +789,17 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
         <a class="textlink" href="/methodology/">How charts are calculated <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <div class="bc-ti">
-        <span class="bc-ic" style="background:var(--sign-cancer)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="10" rx="2" /><path d="M7 17h6M10 14v3" /></svg></span>
+        <span class="bc-ic" style="background:var(--sign-cancer)" data-enter="disc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="10" rx="2" /><path d="M7 17h6M10 14v3" /></svg></span>
         <h3 class="h-4">Calculated in your browser</h3>
         <p>The whole chart is worked out on your device. There is no server-side chart service to send your details to.</p>
       </div>
       <div class="bc-ti">
-        <span class="bc-ic" style="background:var(--sign-pisces)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10v13l-5-3.2-5 3.2z" /></svg></span>
+        <span class="bc-ic" style="background:var(--sign-pisces)" data-enter="disc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10v13l-5-3.2-5 3.2z" /></svg></span>
         <h3 class="h-4">Saved on this device</h3>
         <p>Save a chart and it stays here. Account sync is a separate choice, and it only happens after you sign in.</p>
       </div>
       <div class="bc-ti">
-        <span class="bc-ic" style="background:var(--sign-virgo)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M6.8 10.2l2.2 2.2 4.3-4.6" /></svg></span>
+        <span class="bc-ic" style="background:var(--sign-virgo)" data-enter="disc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M6.8 10.2l2.2 2.2 4.3-4.6" /></svg></span>
         <h3 class="h-4">Checked against the sky</h3>
         <p>Positions are tested against NASA JPL reference data, with historical time zones and GeoNames place data. Every result lists its exact inputs.</p>
       </div>
