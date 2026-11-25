@@ -814,6 +814,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
   ['/big-three/', BIG_THREE_CARDS_LASTMOD] as const,
+  // Uniform three-era compute receipt timeScale convention and MCP adapter 0.1.0-rc.29.
+  ...['/developers/', '/developers/compute/', '/developers/conventions/', '/developers/mcp/'].map(
+    (loc) => [loc, '2026-11-25'] as const,
+  ),
 ]);
 
 function getLastmod(loc: string): string {
