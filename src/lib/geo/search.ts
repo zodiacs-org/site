@@ -1,6 +1,7 @@
 /**
  * Client-side birthplace search over the sharded GeoNames index.
- * Shards load on demand (first keystroke per letter) and stay cached.
+ * Shards load on demand (first keystroke per letter) and stay cached; the
+ * whole-index search loads every shard at once instead.
  */
 
 import { foldedQuery, queryRows, rankCities, shardKey, type City, type CityIndex, type Row } from './rank';
@@ -49,6 +50,36 @@ export async function searchCities(query: string, limit = 8): Promise<City[]> {
   if (!q) return [];
 
   const index = await preloadIndex();
+  const key = shardKey(q);
+  if (!index.shards.includes(key)) return [];
+  return rankCities(index, queryRows(index, await shard(key), key), q, limit);
+}
+
+let wholePromise: Promise<CityIndex> | null = null;
+
+/**
+ * The index and every shard it lists, in the index's order: the same requests whatever is typed, so not even the
+ * first letter of a place shows in a request address. For a page whose birthplace must not leave the device.
+ */
+export function preloadWholeIndex(): Promise<CityIndex> {
+  if (!wholePromise) {
+    const pending = preloadIndex().then(async (index) => {
+      await Promise.all(index.shards.map(shard));
+      return index;
+    });
+    wholePromise = pending;
+    void pending.catch(() => {
+      if (wholePromise === pending) wholePromise = null;
+    });
+  }
+  return wholePromise;
+}
+
+/** searchCities over the whole index (preloadWholeIndex), so the requests never depend on the query. */
+export async function searchWholeIndex(query: string, limit = 8): Promise<City[]> {
+  const index = await preloadWholeIndex();
+  const q = foldedQuery(query);
+  if (!q) return [];
   const key = shardKey(q);
   if (!index.shards.includes(key)) return [];
   return rankCities(index, queryRows(index, await shard(key), key), q, limit);

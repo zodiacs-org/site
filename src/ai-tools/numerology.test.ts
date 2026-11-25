@@ -130,10 +130,18 @@ describe('the numerology switch on', () => {
     expect((await post(host, REQUESTS.resourcesList[0])).text).toBe(FIXTURE.coverage.resourcesList.text);
     // get_capabilities says what it is and that it is not astrology.
     const capabilities = (await call(host, 'get_capabilities', {})).structuredContent.data;
+    expect(capabilities.limitations).toContain('For a numerology reading, use get_numerology, not explain_astrology.');
     expect(capabilities.coverage.tools.split(', ').at(-1)).toBe('get_numerology');
     expect(capabilities.limitations.join(' ')).toContain('With them Zodiacs offers 20 tools: the 13 in the tools field and these 7.');
     expect(capabilities.limitations.join(' ')).toContain('Numerology is a separate tradition from astrology');
     expect(capabilities.privacy).toContain('The numerology tool takes a birth date and, if given, a name, for that call only');
+  });
+
+  it.each([{}, { name: 'John Smith' }])('identifies a numerology reading without a confidence label', async (input) => {
+    const result = await call(await serveAt(ON), 'get_numerology', { birthDate: '1990-11-29', ...input });
+    expect(result.isError).toBe(false);
+    expect(result.structuredContent.data.separateFromAstrology).toContain('not astrology');
+    expect(JSON.stringify(result)).not.toMatch(/reading confidence/iu);
   });
 
   it('with every released tool on, lists get_numerology after sky events, year score and solar return', async () => {

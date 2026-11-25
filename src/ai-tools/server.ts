@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
-import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
+import { SAVED_PAGE_EXCEPTION, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
@@ -13,6 +13,8 @@ import { WATCH_SCOPES } from './watch/oauth';
 import { ACCOUNT_SCOPES, SAVE_DESCRIPTION, SAVE_OUTPUT_SCHEMA, SAVE_TITLE, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
 import { saveToZodiacs, type AccountPrincipal } from './accounts/save';
 import { signInChallenge, type AccountsService } from './accounts/service';
+import { MOMENT_CHART_TOOL, MOMENT_ROUTING } from './features/moment-chart-contract';
+import { PERSONAL_TOOL_NAMES, personalTool } from './personal/registry';
 
 /**
  * What every assistant reads first: what the server does, what its results hold and its limits, stated as facts
@@ -66,7 +68,7 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'get_numerology', 'find_good_days']);
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set<AiToolName>([MOMENT_CHART_TOOL, 'get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'get_numerology', 'find_good_days', ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -100,7 +102,7 @@ export interface AccountContext { service: AccountsService; principal: AccountPr
 export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
-    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies)),
+    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies)) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : ''),
   });
   // The current URI first; each earlier one is registered under its own name and serves the same panel.
   const versions = (name: string, uris: readonly string[]) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ''}` }));
@@ -147,9 +149,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: readingsPanel(panel.uri) ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
-      // A child's birth date gets the fixed refusal before anything is worked out.
-      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? new Date(), context.hostZone)
-        ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
+      const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result,
         ...(context.horoscopePanel ? { _meta: { 'zodiacs/horoscope': context.horoscopePanel } } : {}),

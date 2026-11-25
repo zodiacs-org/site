@@ -6,6 +6,7 @@
  */
 import { useMemo } from 'preact/hooks';
 import { formatLongitude, signForLongitude, signName, signPrepositional } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 import sky from '../data/sky.json';
 import daily from '../data/daily.json';
 import { normalizeCatalogLocale, t, tf, type CatalogLocale as Locale } from '../lib/i18n';
@@ -68,7 +69,9 @@ function TickerIcon({ kind }: { kind: IconKind }) {
  * Chart pages pass discs={false}: there every sign picture is asked for as
  * a whole zodiac-ordered set (audit finding F-18), and two discs are not one.
  */
-export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { locale?: Locale; discs?: boolean }) {
+export default function SkyTicker({
+  locale: rawLocale = 'en', discs = true, reserveLabels = false,
+}: { locale?: Locale; discs?: boolean; reserveLabels?: boolean }) {
   const locale = normalizeCatalogLocale(rawLocale);
   const receiptDate = formatShortDate(locale, `${daily.date}T12:00:00.000Z`);
   const compactReceiptDate = formatDate(locale, `${daily.date}T12:00:00.000Z`, {
@@ -87,7 +90,7 @@ export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { 
     out.push({ kind: 'sun', text: `${t(locale, 'sun')} ${formatLongitude(sunLon, locale)}`, hue: sunSign.hue, sign: sunSign.slug });
     out.push({
       kind: 'moon',
-      text: `${t(locale, 'moonIn')} ${locale === 'ru' ? signPrepositional(moonSign) : signName(moonSign, locale)}`,
+      text: `${locale === 'ru' ? `${t(locale, 'moonIn').replace(/(^| )в$/u, '')} ${signInRu(moonSign)}`.trimStart() : `${t(locale, 'moonIn')} ${signName(moonSign, locale)}`}`,
       hue: moonSign.hue,
       sign: moonSign.slug,
     });
@@ -136,7 +139,7 @@ export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { 
     <p class="skyticker" aria-label={tf(locale, 'skyTickerAria', { date: receiptDate })}>
       <span class="skyticker__label">{tf(locale, 'skyAsOf', { date: compactReceiptDate })}</span>
       {items.map((item) => (
-        <span class={`skyticker__item skyticker__item--${item.kind}`} key={item.text}>
+        <span class={`skyticker__item skyticker__item--${item.kind}`} data-label={reserveLabels ? item.text : undefined} key={item.text}>
           {item.sign && discs ? (
             <span class="skyticker__icon skyticker__icon--disc">
               <img src={`/assets/zodiac-icons/48/${item.sign}.webp`} width="18" height="18" alt="" decoding="async" />

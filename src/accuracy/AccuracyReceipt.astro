@@ -4,9 +4,14 @@ import type { Receipt, ReceiptHistory } from './receipt';
 interface Props {
   receipt: Receipt | null;
   history: ReceiptHistory[];
+  badge?: {
+    label: string;
+    markdown: string;
+    html: string;
+  } | null;
 }
 
-const { receipt, history } = Astro.props;
+const { receipt, history, badge = null } = Astro.props;
 const suite = receipt?.sets.suite;
 const rolling = receipt?.sets.rolling;
 const failed = !!receipt && (suite!.total !== suite!.within || rolling!.total !== rolling!.within);
@@ -126,6 +131,16 @@ const sets = receipt ? [
         </tbody>
       </table>
     </div>
+  </>}
+
+  {badge && <>
+    <h2 id="badge">Badge for your README</h2>
+    <p class="accuracy-badge-preview">
+      <a href="/developers/accuracy/"><img src="/badges/sky-check.svg" alt={badge.label} /></a>
+    </p>
+    <p>The image updates when we rerun the check. Copy the Markdown or HTML snippet below to link to this receipt page.</p>
+    <pre><code>{badge.markdown}</code></pre>
+    <pre><code>{badge.html}</code></pre>
   </>}
 
   <h2>Run the check</h2>

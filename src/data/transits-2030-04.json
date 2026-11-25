@@ -3,31 +3,31 @@
   "ingresses": [
     {
       "planet": "Mercury",
-      "at": "2030-04-01T04:46:55.159Z",
+      "at": "2030-04-01T04:46:55.605Z",
       "sign": "taurus",
       "retrograde": false
     },
     {
       "planet": "Venus",
-      "at": "2030-04-05T09:18:45.294Z",
+      "at": "2030-04-05T09:18:45.740Z",
       "sign": "pisces",
       "retrograde": false
     },
     {
       "planet": "Mars",
-      "at": "2030-04-08T05:26:53.444Z",
+      "at": "2030-04-08T05:26:53.893Z",
       "sign": "taurus",
       "retrograde": false
     },
     {
       "planet": "Sun",
-      "at": "2030-04-20T00:43:34.539Z",
+      "at": "2030-04-20T00:43:34.992Z",
       "sign": "taurus",
       "retrograde": false
     },
     {
       "planet": "Mercury",
-      "at": "2030-04-28T13:44:25.608Z",
+      "at": "2030-04-28T13:44:26.064Z",
       "sign": "aries",
       "retrograde": true
     }
@@ -35,24 +35,24 @@
   "lunations": [
     {
       "type": "new",
-      "at": "2030-04-02T22:02:32.955Z",
+      "at": "2030-04-02T22:02:33.450Z",
       "sign": "aries",
-      "degree": 13.207057354883773
+      "degree": 13.207064144409514
     },
     {
       "type": "full",
-      "at": "2030-04-18T03:20:01.930Z",
+      "at": "2030-04-18T03:20:02.343Z",
       "sign": "libra",
-      "degree": 28.152471103388848
+      "degree": 28.152464320528452
     }
   ],
   "stations": [
     {
       "planet": "Mercury",
-      "at": "2030-04-13T02:33:55.930Z",
+      "at": "2030-04-13T02:33:56.425Z",
       "type": "retrograde",
       "sign": "taurus",
-      "degree": 7.799272778609975
+      "degree": 7.799272778590478
     }
   ],
   "aspects": [
@@ -61,88 +61,88 @@
       "b": "Pluto",
       "type": "sextile",
       "orb": 0,
-      "at": "2030-04-01T08:43:29.993Z",
+      "at": "2030-04-01T08:43:30.487Z",
       "aSign": "aries",
-      "aDegree": 11.672425044919919,
+      "aDegree": 11.672425586179884,
       "bSign": "aquarius",
-      "bDegree": 11.672424667697669
+      "bDegree": 11.672424677642766
     },
     {
       "a": "Venus",
       "b": "Jupiter",
       "type": "square",
       "orb": 0,
-      "at": "2030-04-02T14:41:17.910Z",
+      "at": "2030-04-02T14:41:18.404Z",
       "aSign": "aquarius",
-      "aDegree": 27.015521533464153,
+      "aDegree": 27.015522115221188,
       "bSign": "scorpio",
-      "bDegree": 27.015521305226684
+      "bDegree": 27.01552127210823
     },
     {
       "a": "Sun",
       "b": "Uranus",
       "type": "sextile",
       "orb": 0,
-      "at": "2030-04-05T01:09:39.774Z",
+      "at": "2030-04-05T01:09:40.268Z",
       "aSign": "aries",
-      "aDegree": 15.307026306022465,
+      "aDegree": 15.307026833031216,
       "bSign": "gemini",
-      "bDegree": 15.307025945653663
+      "bDegree": 15.307025964708828
     },
     {
       "a": "Venus",
       "b": "Uranus",
       "type": "square",
       "orb": 0,
-      "at": "2030-04-19T19:56:21.783Z",
+      "at": "2030-04-19T19:56:22.195Z",
       "aSign": "pisces",
-      "aDegree": 15.904531037823972,
+      "aDegree": 15.904530514203543,
       "bSign": "gemini",
-      "bDegree": 15.904530274456988
+      "bDegree": 15.904530253477333
     },
     {
       "a": "Jupiter",
       "b": "Saturn",
       "type": "opposition",
       "orb": 0,
-      "at": "2030-04-24T01:56:26.396Z",
+      "at": "2030-04-24T01:56:26.891Z",
       "aSign": "scorpio",
-      "aDegree": 25.130261248074248,
+      "aDegree": 25.13026119526171,
       "bSign": "taurus",
-      "bDegree": 25.13026132295272
+      "bDegree": 25.130261382090453
     },
     {
       "a": "Mars",
       "b": "Pluto",
       "type": "square",
       "orb": 0,
-      "at": "2030-04-24T10:27:40.170Z",
+      "at": "2030-04-24T10:27:40.664Z",
       "aSign": "taurus",
-      "aDegree": 11.98217787105898,
+      "aDegree": 11.982178211622568,
       "bSign": "aquarius",
-      "bDegree": 11.98217771406064
+      "bDegree": 11.98217771799682
     },
     {
       "a": "Venus",
       "b": "Jupiter",
       "type": "trine",
       "orb": 0,
-      "at": "2030-04-27T15:34:12.601Z",
+      "at": "2030-04-27T15:34:13.095Z",
       "aSign": "pisces",
-      "aDegree": 24.725678181136573,
+      "aDegree": 24.725678696143632,
       "bSign": "scorpio",
-      "bDegree": 24.725677582058438
+      "bDegree": 24.72567752942564
     },
     {
       "a": "Venus",
       "b": "Saturn",
       "type": "sextile",
       "orb": 0,
-      "at": "2030-04-28T11:43:03.708Z",
+      "at": "2030-04-28T11:43:04.120Z",
       "aSign": "pisces",
-      "aDegree": 25.679891835835406,
+      "aDegree": 25.679891268591973,
       "bSign": "taurus",
-      "bDegree": 25.679891146334512
+      "bDegree": 25.679891083698465
     }
   ]
 }

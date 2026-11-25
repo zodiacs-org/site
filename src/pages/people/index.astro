@@ -3,6 +3,7 @@ import '../../styles/people.css';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import PeopleCard from '../../components/people/PeopleCard.astro';
+import Motion from '../../components/Motion.astro';
 import {
   DIRECTORY_PEOPLE,
   PEOPLE_DIRECTORY_INDEXABLE,
@@ -74,6 +75,8 @@ const jsonLd = [
   minimalNavFontPreloads
 >
   <section class="people-page">
+    <!-- Inside the section, so the section stays main's first child and keeps its top padding. -->
+    <Motion />
     <header class="people-page__hero">
       <h1 class="display">People</h1>
       <p class="people-page__lede">
@@ -147,7 +150,10 @@ const jsonLd = [
       <p class="people-count people-count--js" aria-live="polite" data-people-count></p>
 
       <div class="people-grid" data-people-grid>
-        {DIRECTORY_PEOPLE.map((person) => <PeopleCard person={person} />)}
+        {/* The first 6 cards never wait: they fill the first screen at every
+            width (1 column on phones, 2 from 700px, 3 from 1060px; 3 rows of 2
+            at 768x1024). Only cards further down rise once. */}
+        {DIRECTORY_PEOPLE.map((person, index) => <PeopleCard person={person} enter={index >= 6} />)}
       </div>
 
       <div class="people-empty" data-people-empty>
@@ -186,7 +192,18 @@ const jsonLd = [
           count.textContent = `${visible} of ${cards.length} people.`;
         });
       };
-      input.addEventListener('input', refresh);
+      // A search result gets no entrance: the first touch of the box shows
+      // every card at once and for good, and an entrance still running jumps
+      // to its end.
+      const still = () => {
+        (window as { zodiacsMotion?: { scan(root?: ParentNode, instant?: boolean): void } }).zodiacsMotion?.scan(directory, true);
+        for (const card of cards) {
+          if (card.classList.contains('is-in')) card.classList.add('is-done');
+          for (const animation of card.getAnimations()) animation.finish();
+        }
+      };
+      input.addEventListener('focus', still, { once: true });
+      input.addEventListener('input', () => { still(); refresh(); });
     }
   </script>
 </Base>

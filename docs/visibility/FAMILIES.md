@@ -63,11 +63,26 @@ Quality notes:
 ## 2. Keyword tables
 
 `node scripts/visibility/build-keywords.mjs` writes one CSV per locale in
-[keywords/](keywords/), plus `all-locales.csv`: 296 queries per locale, 2,664
+[keywords/](keywords/), plus `all-locales.csv`: 296 queries per locale, 4,144
 in all, written the way people search in each language (for example
 "horóscopo escorpio hoy", "affinità leone scorpione", "thème astral gratuit",
 "гороскоп лев на сегодня"), each with the target URL and whether a page in
 that language answers it.
+
+The files cover the site's nine locales and, since 2026-11-09, the five
+candidates for the next locale: German, Polish, Turkish, Japanese and Hindi
+(`de.csv`, `pl.csv`, `tr.csv`, `ja.csv`, `hi.csv`). Their volumes decide
+which candidate is built first (`docs/i18n/NEW-LOCALE-RUNBOOK.md`). Nothing
+is published in those languages, so every candidate row is `partial` and
+targets the English page. The query wording needs a native speaker's check
+before use. For Hindi, much astrology search is sidereal (Vedic) while the
+site is tropical.
+
+Coverage `held` marks a page the locale expansion has built in that
+language and holds until its release batch: the Spanish and Portuguese
+periods, the French and Italian horoscopes, the full and new Moon pages in
+all four, and the Russian horoscopes, pairs and sign guides. The target URL
+is the localized address the page will have.
 
 | Family | Queries per locale |
 |---|---|
@@ -109,8 +124,9 @@ which writes [RANKING.md](RANKING.md):
 
 `winnable = monthly volume x (1 - organic competition) x readiness`
 
-Readiness is 1 when a page in that language answers the query, 0.6 when
-only the English page does, 0.3 when nothing does. Organic competition is a
+Readiness is 1 when a page in that language answers the query or is built
+and held for its release batch, 0.6 when only the English page does, 0.3
+when nothing does. Organic competition is a
 0 to 1 score per family and locale in `competition.json`, set by looking at
 page one for 10 sample queries per cell: 0.9 when it is all national media
 and long-established astrology sites, 0.5 when mixed, 0.2 when thin or off

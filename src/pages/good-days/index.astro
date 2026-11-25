@@ -1,4 +1,5 @@
 ---
+import { READING_CONFIDENCE_FAQ } from '../../lib/reading-confidence-note';
 import Base from '../../layouts/Base.astro';
 import GoodDayFinder from '../../islands/GoodDayFinder.tsx';
 import { OG_EN } from '../../strings/seo.en.mjs';
@@ -15,6 +16,7 @@ const outcomesEnabled = launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')
   && (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
 
 const faq = [
+  READING_CONFIDENCE_FAQ,
   {
     q: 'How are the days chosen?',
     a: 'Each day in the window is read by the traditional rules of electional astrology for the goal you pick: the Moon’s phase and sign, whether the Moon is void of course, whether Mercury, Venus or Mars is retrograde or standing still, how close the day is to an eclipse, and the Moon’s contacts with the planets that day. The best days come first, spread through the window, each with its main reasons. A day with one heavy caution, such as Mercury retrograde for a contract or an eclipse a few days off, reads as a mixed day at most, whatever its score, and its reason names that caution.',
