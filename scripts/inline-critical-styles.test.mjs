@@ -27,8 +27,8 @@ afterEach(async () => {
 
 describe('inlineCriticalStyles', () => {
   it('pins the idempotent built-output shape for each entry-page strategy', () => {
-    expect(expectedStylesheetShape('index.html', true)).toEqual({
-      inlineCount: 1, deferredCount: 1, externalCount: 2, loaderCount: 1,
+    expect(expectedStylesheetShape('index.html', false)).toEqual({
+      inlineCount: 2, deferredCount: 0, externalCount: 0, loaderCount: 0,
     });
     expect(expectedStylesheetShape('birth-chart/index.html', true)).toEqual({
       inlineCount: 2, deferredCount: 2, externalCount: 4, loaderCount: 1,

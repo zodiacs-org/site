@@ -23,7 +23,7 @@ export async function runPersonalChartHandoff({ browser, baseURL, check, outDir 
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-      const card = page.locator('.wb-card');
+      const card = page.locator('.wb-chart').filter({ has: page.getByRole('heading', { name: new RegExp(own.name) }) });
       await card.waitFor({ state: 'visible' });
       check(`personal chart ${width}: homepage identifies the explicit owner`, (await card.locator('h2').textContent()).includes(own.name));
       check(`personal chart ${width}: homepage has no horizontal overflow`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -49,7 +49,7 @@ export async function runPersonalChartHandoff({ browser, baseURL, check, outDir 
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     const choose = page.getByRole('link', { name: 'Choose my chart', exact: true });
     await choose.waitFor({ state: 'visible' });
-    if (outDir) await page.locator('.wb-card').screenshot({ path: `${outDir}/personal-chart-choice-390.png` });
+    if (outDir) await page.locator('.wb-choose').screenshot({ path: `${outDir}/personal-chart-choice-390.png` });
     await choose.click();
     await page.locator('[data-living-self-chart]').waitFor({ state: 'visible' });
     check('personal chart: a missing owner choice reaches the existing explicit chooser', await page.locator('.today-reading--resolved').count() === 0);

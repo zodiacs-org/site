@@ -10,15 +10,18 @@ import Base from '../../layouts/Base.astro';
 import Faq from '../Faq.astro';
 import SignIcon from '../SignIcon.astro';
 import ChartCalculator from '../../islands/ChartCalculator.tsx';
-import { SIGNS, signBySlug, signName, formatLongitude, elementLabel, modalityLabel } from '../../lib/signs';
+import { SIGNS, signBySlug, signName, signPrepositional, formatLongitude, elementLabel, modalityLabel, type Sign } from '../../lib/signs';
+import { signInRu } from '../../lib/sign-ru';
 import { bodyLongitude } from '../../lib/engine/full';
 import type { BodyName } from '../../lib/engine/types';
 import { formatShortDate } from '../../lib/i18n/dates';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { englishOnlyCue, localizePath } from '../../lib/i18n';
+import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import '../../styles/calculator.css';
 
-type RisingLocale = 'es' | 'pt' | 'fr' | 'it';
+type RisingLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
 interface Props { entry: CollectionEntry<'learnLocalized'> }
 
 const { entry } = Astro.props;
@@ -29,7 +32,7 @@ const { Content } = await render(entry);
 
 interface Chrome {
   kicker: string;
-  heading: (sign: string) => string;
+  heading: (name: string, sign: Sign) => string;
   hub: string;
   rulerLabel: string;
   rulerText: string;
@@ -50,6 +53,9 @@ interface Chrome {
   chart: string;
   others: string;
 }
+
+/** Russian takes "во" before Льве and "в" before every other sign. */
+const ruIn = (sign: Sign) => signInRu(sign);
 
 const CHROME: Record<RisingLocale, Chrome> = {
   es: {
@@ -144,9 +150,53 @@ const CHROME: Record<RisingLocale, Chrome> = {
     chart: 'Il tuo tema natale',
     others: 'Altri ascendenti',
   },
+  ru: {
+    kicker: 'Асценденты',
+    heading: (_name, s) => `Асцендент ${ruIn(s)}`,
+    hub: 'Калькулятор асцендента',
+    rulerLabel: 'Управитель карты',
+    rulerText: 'планета, которая ведёт эту карту',
+    modern: (p) => ` (современная астрология добавляет ${p})`,
+    rulerNow: (p, d) => `${p}, ${d}`,
+    moonLabel: 'Ритм Луны',
+    moonText: 'один знак примерно за два с половиной дня; ваша натальная Луна остаётся устойчивой опорой',
+    elementLabel: 'Стихия · Крест',
+    turnoverLabel: 'Смена знаков',
+    turnoverText: 'асцендент меняет знак примерно каждые два часа: двенадцать асцендентов за сутки',
+    calcHeading: 'Узнайте свой асцендент',
+    calcLede: 'Дата, время и место рождения: асценденту нужны все три.',
+    noscript: 'Для расчёта асцендента нужен JavaScript. Включите его и перезагрузите страницу, затем введите дату, точное время и место рождения.',
+    faqHeading: 'Вопросы и ответы',
+    related: 'Связанные страницы',
+    keepReading: 'Читать дальше',
+    guide: (s) => `Гид по знаку ${s}`,
+    chart: 'Ваша натальная карта',
+    others: 'Другие асценденты',
+  },
 };
 const c = CHROME[locale];
 const prefix = `/${locale}`;
+const heading = c.heading(name, sign);
+
+/*
+ * Links. The older locales publish every page linked here. Russian pages
+ * join in batches, so a Russian link whose page is not built yet goes to
+ * the English page with hreflang="en" and the English-only cue.
+ */
+const ruCue = locale === 'ru' ? englishOnlyCue('ru') : undefined;
+const link = (path: string) => {
+  if (!ruCue) return { href: `${prefix}${path}`, attrs: {}, cue: '' };
+  const href = localizePath('ru', path);
+  return href.startsWith('/ru/')
+    ? { href, attrs: {}, cue: '' }
+    : { href, attrs: { hreflang: 'en', title: ruCue.aria }, cue: ruCue.suffix };
+};
+const hubLink = link('/rising-sign/');
+const guideLink = link(`/${sign.slug}/`);
+const chartLink = link('/birth-chart/');
+const risingLink = (s: Sign) => link(`/rising-sign/${s.slug}/`);
+// Only Russian copies can be review-only previews; the older locales are released.
+const noindex = locale === 'ru' ? isHeldPreview('ru', `/rising-sign/${sign.slug}/`) : undefined;
 const pagePath = `${prefix}/rising-sign/${sign.slug}/`;
 const pageUrl = `https://zodiacs.org${pagePath}`;
 
@@ -179,8 +229,9 @@ const jsonLd = [
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
     inLanguage: locale === 'pt' ? 'pt-BR' : locale,
+    // No Russian rising cards exist; every locale shares the English card.
     image: `https://zodiacs.org/assets/og/v2/rising/${sign.slug}.png`,
-    about: { '@type': 'Thing', name: c.heading(name) },
+    about: { '@type': 'Thing', name: heading },
     citation: entry.data.sources.map((source) => source.href
       ? { '@type': 'CreativeWork', name: source.label, url: source.href }
       : source.label),
@@ -189,8 +240,8 @@ const jsonLd = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${prefix}/` },
-      { '@type': 'ListItem', position: 2, name: c.hub, item: `https://zodiacs.org${prefix}/rising-sign/` },
-      { '@type': 'ListItem', position: 3, name: c.heading(name), item: pageUrl },
+      { '@type': 'ListItem', position: 2, name: c.hub, item: `https://zodiacs.org${hubLink.href}` },
+      { '@type': 'ListItem', position: 3, name: heading, item: pageUrl },
     ],
   },
   {
@@ -212,17 +263,18 @@ const jsonLd = [
   path={pagePath}
   locale={locale}
   image={`/assets/og/v2/rising/${sign.slug}.png`}
-  imageAlt={`${c.heading(name)} | Zodiacs.org`}
+  imageAlt={`${heading} | Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={entry.data.sources}
+  noindex={noindex}
 >
   <article class="container container--narrow learn-detail" style={`--sign:${sign.hue}`}>
     <header class="learn-detail__hero reveal">
-      <a class="crumb" href={`${prefix}/rising-sign/`}><span class="crumb__arrow" aria-hidden="true">←</span>{c.kicker}</a>
+      <a class="crumb" href={hubLink.href} {...hubLink.attrs}><span class="crumb__arrow" aria-hidden="true">←</span>{c.kicker}{hubLink.cue}</a>
       <div class="plc-lockup">
         <SignIcon sign={sign.slug} size={64} class="plc-disc" loading="eager" />
-        <h1 class="display">{c.heading(name)}</h1>
+        <h1 class="display">{heading}</h1>
       </div>
 
       <dl class="plc-panel mono">
@@ -275,19 +327,19 @@ const jsonLd = [
       <div class="plc-more__col">
         <span class="plc-more__head">{c.keepReading}</span>
         <div class="plc-more__chips">
-          <a class="plc-chip" href={`${prefix}/${sign.slug}/`}>{c.guide(name)}</a>
-          <a class="plc-chip" href={`${prefix}/rising-sign/`}>{c.hub}</a>
-          <a class="plc-chip" href={`${prefix}/birth-chart/`}>{c.chart}</a>
+          <a class="plc-chip" href={guideLink.href} {...guideLink.attrs}>{c.guide(name)}{guideLink.cue}</a>
+          <a class="plc-chip" href={hubLink.href} {...hubLink.attrs}>{c.hub}{hubLink.cue}</a>
+          <a class="plc-chip" href={chartLink.href} {...chartLink.attrs}>{c.chart}{chartLink.cue}</a>
         </div>
       </div>
       <div class="plc-more__col">
         <span class="plc-more__head">{c.others}</span>
         <div class="plc-more__chips">
-          <a class="plc-chip" href={`${prefix}/rising-sign/${prevSign.slug}/`}>← {signName(prevSign, locale)}</a>
+          <a class="plc-chip" href={risingLink(prevSign).href} {...risingLink(prevSign).attrs}>← {signName(prevSign, locale)}{risingLink(prevSign).cue}</a>
           {others.map((s) => (
-            <a class="plc-chip" href={`${prefix}/rising-sign/${s.slug}/`}>{signName(s, locale)}</a>
+            <a class="plc-chip" href={risingLink(s).href} {...risingLink(s).attrs}>{signName(s, locale)}{risingLink(s).cue}</a>
           ))}
-          <a class="plc-chip" href={`${prefix}/rising-sign/${nextSign.slug}/`}>{signName(nextSign, locale)} →</a>
+          <a class="plc-chip" href={risingLink(nextSign).href} {...risingLink(nextSign).attrs}>{signName(nextSign, locale)}{risingLink(nextSign).cue} →</a>
         </div>
       </div>
     </nav>

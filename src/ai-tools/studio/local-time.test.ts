@@ -24,7 +24,7 @@ describe('Chart Studio local-time entry', () => {
   it('retains historical subminute precision and removes stale wall-time provenance after a UTC step', async () => {
     const converted = await localStudioInput({ date: '1907-07-06', time: '08:30', zone: 'America/Mexico_City', latitude: '19.43', longitude: '-99.15' }, 'placidus');
     expect(converted.utc).toBe('1907-07-06T15:06:36.000Z');
-    expect(converted.input.local?.resolution).toMatchObject({ dataForm: 'main+backzone', tzdbVersion: '2025c' });
+    expect(converted.input.local?.resolution).toMatchObject({ dataForm: 'main+backzone', tzdbVersion: '2026f' });
     const shifted = shiftStudio(converted.input, 15);
     expect(calculateStudio(shifted).inputSnapshot.utc).toBe('1907-07-06T15:21:36.000Z');
     expect(shifted.local).toBeUndefined();

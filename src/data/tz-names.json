@@ -1,6 +1,6 @@
 {
-  "tzdb": "2025c",
-  "note": "The zone names of tzdata 2025c compiled with its backzone file, which @zodiacs/engine/geo ships; names only, for spelling a name given in any letter case as tzdb does (src/lib/time/zone-names.ts). Taken from the site's own copy of that release, which this list replaced; src/lib/time/zone-case.test.ts checks every name against the engine.",
+  "tzdb": "2026f",
+  "note": "The zone names of tzdata 2026f compiled with its backzone file, which @zodiacs/engine/geo ships; names only, for spelling a name given in any letter case as tzdb does (src/lib/time/zone-names.ts). Taken from the site's own copy of that release, which this list replaced; src/lib/time/zone-case.test.ts checks every name against the engine.",
   "names": [
     "Africa/Abidjan",
     "Africa/Accra",

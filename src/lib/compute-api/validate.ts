@@ -596,3 +596,13 @@ export function parseElectionsRequest(value: unknown): ElectionsRequest {
 
 /** The fixed sentences above, for the documentation and the tests. */
 export const VALIDATION_MESSAGES = TEXT;
+
+/**
+ * The fixed sentence for a date its zone lived in two pieces (refuseSplitDay
+ * in endpoints.ts). It is kept out of TEXT, which the MCP adapter's archive
+ * carries byte for byte as it was cut; that adapter reads no zone, so it never
+ * gives this refusal, and the annotation lets its bundle leave this out.
+ */
+export const LOCAL_DAY_MESSAGES = /* @__PURE__ */ Object.freeze({
+  splitDay: 'This date happened in two parts in this zone: its clocks went back across midnight, so no single window holds the whole day.',
+});

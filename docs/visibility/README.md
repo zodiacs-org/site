@@ -57,7 +57,7 @@ The program has two layers:
 | Input | Result | File |
 | --- | --- | --- |
 | Locales and families | en full in all five families; es and pt daily horoscope only; fr and it no horoscopes; ru calculators only; zh and ar nothing in these families | [baseline/2026-11-08/coverage.md](baseline/2026-11-08/coverage.md) |
-| Keyword tables | 2,664 queries across 9 languages, volumes TBD | [keywords/](keywords/) |
+| Keyword tables | 4,144 queries across 14 languages (9 site locales and 5 candidates), volumes TBD | [keywords/](keywords/) |
 | Search Console | Domain property verified 2026-11-08; no history before that date. This is missing data, not a measured zero: no family or phrase has a baseline until the first export | [baseline/2026-11-08/external.json](baseline/2026-11-08/external.json) |
 | AI and Google answers | zodiacs.org named in **0 of 100** answers (50 questions on Claude and Google). ChatGPT, Gemini and Grok not run | same |
 | Competitors named most | Cafe Astrology, Astro-Seek, Astro.com, CHANI, TimePassages, The Pattern, Co-Star; small sites Augurine, ZodiScope, ChartNova, ChartLune | same |

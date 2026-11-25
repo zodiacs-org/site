@@ -25,7 +25,12 @@ function siteFields(resolved: ReturnType<typeof packageResolveLocalToUtc>): Loca
     utc: resolved.utc,
     offsetMinutes: resolved.offsetMinutes,
     flags: [...resolved.flags],
+    ...(resolved.jump && resolved.transition ? {
+      jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes),
+      transitionAt: new Date(resolved.transition.at),
+    } : {}),
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
+    ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };
 }
 

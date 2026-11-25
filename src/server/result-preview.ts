@@ -1,8 +1,9 @@
 /**
- * Share links for eleven assistant cards: a compatibility score, a date's
+ * Share links for twelve assistant cards: a compatibility score, a date's
  * rating, a birthday, the sky calendar's next event, a horoscope (a day, a
  * week, a month or a year), chart twins, a famous chart, a life milestone,
- * the big three, the Chinese zodiac and an invitation to compare charts. Each has
+ * the big three, the Chinese zodiac, an invitation to compare charts, Vedic signs
+ * (src/lib/vedic-signs/share.ts) and retrogrades (src/lib/retrograde-for-you/share.ts). Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
@@ -23,6 +24,7 @@
  * only; a baby's arrival or a coming of age goes to the occasion page, and their
  * pictures to the default share picture.
  */
+import { CONTACT_CONFIDENCE_NOTE, READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note.js';
 import { readFile } from 'node:fs/promises';
 import { encode as encodeJpeg } from 'jpeg-js';
 import { PNG } from 'pngjs';
@@ -40,6 +42,8 @@ import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path.js';
 import {
   bigThreeCardModel,
   type BigThreeCardModel,
+  vedicSignsCardModel,
+  type VedicSignsCardModel,
   birthdayCardModel,
   type BirthdayCardModel,
   chineseZodiacCardModel,
@@ -55,6 +59,8 @@ import {
   type IndexedPerson,
   milestoneCardModel,
   type MilestoneCardModel,
+  retrogradeForYouCardModel,
+  type RetrogradeForYouCardModel,
   type BirthdayDay,
   type FamousBirthday,
   famousBirthdays,
@@ -76,9 +82,19 @@ import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PA
 import { figureTierSummary, scoreTier } from '../lib/year-score/tier.js';
 import { FIGURE_NOTE } from '../lib/year-score/people.js';
 import { figureYearScore } from './year-score-figure.js';
-import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
+import { BIRTHDAY_TRADITIONS_NOTE, BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
+import {
+  VEDIC_SIGNS_PAGE_PATH,
+  VEDIC_SIGNS_SHARE_IMAGE_PATH,
+  VEDIC_SIGNS_SHARE_KEYS,
+  VEDIC_SIGNS_SHARE_PATH,
+  VEDIC_SIGNS_SHARE_STORY_PATH,
+  parseVedicSignsShare,
+  vedicSignsCleanQuery,
+  vedicSignsQuery,
+} from '../lib/vedic-signs/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -128,6 +144,16 @@ import {
   SKY_CALENDAR_SHARE_PATH,
   skyCalendarQuery,
 } from '../ai-tools/share-links.js';
+import {
+  RETROGRADE_FOR_YOU_PAGE_PATH,
+  RETROGRADE_FOR_YOU_SHARE_IMAGE_PATH,
+  RETROGRADE_FOR_YOU_SHARE_KEYS,
+  RETROGRADE_FOR_YOU_SHARE_PATH,
+  RETROGRADE_FOR_YOU_SHARE_STORY_PATH,
+  parseRetrogradeForYouShare,
+  retrogradeForYouCleanQuery,
+  retrogradeForYouQuery,
+} from '../lib/retrograde-for-you/share.js';
 import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { LOCKUP_SIZE, tiltedRingSvg } from '../lib/brand-lockup.mjs';
@@ -213,6 +239,8 @@ export const RESULT_SHARE_ROUTES = [
   'year-score-link', 'year-score-image',
   'birthday-report-link', 'birthday-report-image',
   'solar-return-link', 'solar-return-image',
+  'vedic-signs-link', 'vedic-signs-image', 'vedic-signs-story',
+  'retrograde-for-you-link', 'retrograde-for-you-image', 'retrograde-for-you-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -774,6 +802,18 @@ export function milestoneCard(model: MilestoneCardModel, art: string[]) {
     h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '30px' } }, model.line)));
 }
 
+/** A retrograde in one person's chart: the Sky dial, the planet, the published window and, when the link carries it, the Sun sign; never the birth details. */
+export function retrogradeForYouCard(model: RetrogradeForYouCardModel, art: string[]) {
+  return frame(art, words({
+    discs: [],
+    kicker: 'Retrogrades in my chart',
+    hue: model.hue,
+    title: [titleBlock(model.title)],
+    line: `${model.span}. ${model.line}`,
+    confidence: model.confidence,
+  }));
+}
+
 /** One of the big three: its sign's disc and its name, or, for an undetermined Moon, an empty ring and the words in italic. */
 function bigThreeRow(row: { slug: ShareSign | null; text: string }, images: Map<ShareSign, string>, size: number, disc: number, gap: number) {
   const src = row.slug ? images.get(row.slug) : undefined;
@@ -794,6 +834,28 @@ export function bigThreeCard(model: BigThreeCardModel, images: Map<ShareSign, st
   return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue, marginBottom: '6px' } }, 'The big three'),
     ...model.rows.map((row) => bigThreeRow(row, images, size, 52, 14))), model.sun);
+}
+
+/** One Vedic sign: its disc, the rashi with the body, and the Western name of the same sign under it. */
+function vedicRow(row: VedicSignsCardModel['rows'][number], images: Map<ShareSign, string>, size: number, disc: number, gap: number) {
+  const src = row.slug ? images.get(row.slug) : undefined;
+  return h('div', { style: { display: 'flex', alignItems: 'center', marginTop: `${gap}px` } },
+    src
+      ? h('img', { src, width: disc, height: disc, style: { width: `${disc}px`, height: `${disc}px`, flexShrink: 0 } })
+      : h('div', { style: { display: 'flex', width: `${disc}px`, height: `${disc}px`, borderRadius: '999px', border: '2px solid rgba(198,204,218,0.3)', flexShrink: 0 } }),
+    h('div', { style: { display: 'flex', flexDirection: 'column', marginLeft: `${Math.round(disc * 0.42)}px` } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, lineHeight: 1.05,
+        ...(row.slug ? { fontWeight: 500, fontSize: size, color: INK } : { fontStyle: 'italic', fontWeight: 400, fontSize: Math.round(size * 0.78), color: INK_SOFT }) } }, row.text),
+      ...(row.western ? [h('div', { style: { display: 'flex', fontSize: Math.round(size * 0.42), lineHeight: 1.2, color: MUTED, marginTop: '2px' } }, row.western)] : [])));
+}
+
+/** The Vedic Sun sign: the Sun's panel, its row with its disc, and the ayanamsa it was read with. */
+export function vedicSignsCard(model: VedicSignsCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const size = fit(model.rows.map((row) => row.text), TEXT_WIDTH - 76, 52, 36);
+  return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '56px', width: `${TEXT_WIDTH}px` } },
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue, marginBottom: '2px' } }, 'Vedic Sun sign'),
+    ...model.rows.map((row) => vedicRow(row, images, size, 46, 10)),
+    h('div', { style: { display: 'flex', fontSize: 24, lineHeight: 1.3, color: INK_SOFT, marginTop: '18px' } }, `Read with the ${model.ayanamsa}.`)), model.sun);
 }
 
 const PLATE_LEFT = 480;
@@ -1032,6 +1094,17 @@ export async function handleMilestoneImageRequest(request: Request): Promise<Res
   return imageFor([], ['milestones-hero'], (_images, art) => milestoneCard(model, art));
 }
 
+export async function handleRetrogradeForYouImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseRetrogradeForYouShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = retrogradeForYouCardModel(share, data.skyEvents);
+  if (!model) return errorResponse(400);
+  return imageFor([], ['sky-calendar-hero'], (_images, art) => retrogradeForYouCard(model, art));
+}
+
 /** The big three's art: the Sun's panel facing the Moon's when the Moon is settled, else the Sun's alone. */
 const bigThreeArt = (share: { sun: ShareSign; moon: ShareSign | null }): ShareArt[] => (share.moon ? [share.sun, share.moon] : [share.sun]);
 const chineseArt = (slug: string) => `chinese-${slug}` as ChineseArt;
@@ -1042,6 +1115,14 @@ export async function handleBigThreeImageRequest(request: Request): Promise<Resp
   if (!share) return errorResponse(400);
   const model = bigThreeCardModel(share);
   return imageFor(model.signs, bigThreeArt(share), (images, art) => bigThreeCard(model, images, art));
+}
+
+export async function handleVedicSignsImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseVedicSignsShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = vedicSignsCardModel(share);
+  return imageFor(model.signs, [share.sun], (images, art) => vedicSignsCard(model, images, art));
 }
 
 export async function handleChineseZodiacImageRequest(request: Request): Promise<Response> {
@@ -1314,6 +1395,28 @@ export function famousChartStory(model: FamousChartCardModel, images: Map<ShareS
   ]), model.sign.slug);
 }
 
+/**
+ * The page's address as the retrograde story prints it, on the site the share was opened from: the request's origin
+ * is the validated one the share page links with (requestOrigin), so a staging share never points at production,
+ * where the page may be switched off.
+ */
+export function retrogradeForYouStoryAddress(requestUrl: string): string {
+  const host = new URL(requestUrl).host.toLowerCase();
+  return `${host === 'www.zodiacs.org' ? 'zodiacs.org' : host}/retrogrades/for-you`;
+}
+
+/** A retrograde in one person's chart (C, the keepsake): the Sky dial, the planet, the published window and what that retrograde means in general. */
+export function retrogradeForYouStory(model: RetrogradeForYouCardModel, art: string[], address = 'zodiacs.org/retrogrades/for-you') {
+  return storyFrame(art, storyColumn([
+    storyKicker('Retrogrades in my chart', model.hue),
+    storyTitle(model.title, storyFit([model.title], 112, 64)),
+    storyLine(model.span),
+    storyLine(model.line, 36),
+    ...storyConfidence(model.confidence),
+    storyAction('See your retrogrades', address),
+  ]));
+}
+
 /** A life milestone (C, the keepsake): the hourglass, the milestone, and the age kept small beside what the milestone is. No dates. */
 export function milestoneStory(model: MilestoneCardModel, art: string[]) {
   return storyFrame(art, storyColumn([
@@ -1334,6 +1437,17 @@ export function bigThreeStory(model: BigThreeCardModel, images: Map<ShareSign, s
     storyKicker('The big three', model.hue),
     h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '10px' } }, ...model.rows.map((row) => bigThreeRow(row, images, size, 84, 26))),
     storyAction('Find your big three', 'zodiacs.org/big-three'),
+  ]), model.sun, STORY_PAIR_FADE);
+}
+
+/** The Vedic Sun sign: the Sun's panel, its row with its disc, the ayanamsa and the way to find yours. */
+export function vedicSignsStory(model: VedicSignsCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const size = fit(model.rows.map((row) => row.text), STORY_WIDTH - 144 - 120, 84, 52);
+  return storyFrame(art, storyColumn([
+    storyKicker('Vedic Sun sign', model.hue),
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '6px' } }, ...model.rows.map((row) => vedicRow(row, images, size, 80, 22))),
+    storyLine(`Read with the ${model.ayanamsa}.`, 36),
+    storyAction('Find your Vedic signs', 'zodiacs.org/vedic-signs'),
   ]), model.sun, STORY_PAIR_FADE);
 }
 
@@ -1467,6 +1581,26 @@ export async function handleBigThreeStoryRequest(request: Request): Promise<Resp
   return storyFor(model.signs, bigThreeArt(share), (images, art) => bigThreeStory(model, images, art));
 }
 
+export async function handleVedicSignsStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseVedicSignsShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = vedicSignsCardModel(share);
+  return storyFor(model.signs, [share.sun], (images, art) => vedicSignsStory(model, images, art));
+}
+
+export async function handleRetrogradeForYouStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseRetrogradeForYouShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = retrogradeForYouCardModel(share, data.skyEvents);
+  if (!model) return errorResponse(400);
+  const address = retrogradeForYouStoryAddress(request.url);
+  return storyFor([], ['sky-calendar-hero'], (_images, art) => retrogradeForYouStory(model, art, address));
+}
+
 export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const retired = retiredFor('chinese-zodiac', request, true);
@@ -1505,6 +1639,7 @@ main{max-width:880px;margin:0 auto;padding:28px 16px 56px}
 .brand-tld{font-weight:500;color:var(--ink-2)}
 h1{font:500 clamp(30px,6vw,46px)/1.1 "EB Garamond",Georgia,serif;margin:28px 0 18px;letter-spacing:-.01em}
 .card{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--hairline);border-radius:18px;background:var(--void)}
+.lede + small{display:block;max-width:70ch;color:var(--ink-2)}
 .lede{margin:22px 0 0;color:var(--ink);max-width:62ch}
 .cta{display:inline-block;margin:26px 0 0;padding:14px 26px;border-radius:999px;background:var(--ink);color:var(--void);font-weight:600;text-decoration:none}
 .cta:focus-visible,.more:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
@@ -1529,6 +1664,7 @@ export interface SharePage {
   imageType: 'image/jpeg' | 'image/png';
   imageAlt: string;
   explanation: string;
+  confidenceNote?: string;
   action: { label: string; href: string };
   /** A second, quieter link beside the action, such as a famous birthday's chart. */
   more?: { label: string; href: string };
@@ -1539,7 +1675,11 @@ export interface SharePage {
 
 export function sharePageHtml(page: SharePage): string {
   const e = htmlEscape;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="${page.imageType}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/" aria-label="Zodiacs.org">${LOCKUP_SVG}<span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·</span><span class="brand-tld">org</span></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a>${page.more ? `<a class="more" href="${e(page.more.href)}">${e(page.more.label)}</a>` : ''}${page.story ? `<p class="story"><a href="${e(page.story.href)}" download="${e(page.story.filename)}">Save the picture for your story</a></p>` : ''}<p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
+  const note = page.confidenceNote ? `<small>${e(page.confidenceNote)}</small>` : '';
+  const faq = page.confidenceNote
+    ? `<details class="note"><summary>${e(READING_CONFIDENCE_FAQ.q)}</summary><p>${e(page.confidenceNote)}</p></details>`
+    : '';
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="${page.imageType}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/" aria-label="Zodiacs.org">${LOCKUP_SVG}<span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·</span><span class="brand-tld">org</span></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p>${note}<a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a>${page.more ? `<a class="more" href="${e(page.more.href)}">${e(page.more.label)}</a>` : ''}${page.story ? `<p class="story"><a href="${e(page.story.href)}" download="${e(page.story.filename)}">Save the picture for your story</a></p>` : ''}<p class="note">${e(page.note)}</p>${faq}</main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
 }
 
 function htmlResponse(html: string): Response {
@@ -1700,6 +1840,7 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
     story: { href: `${HOROSCOPE_SHARE_STORY_PATH}?${horoscopeQuery(share)}`, filename: `zodiacs-${share.sign}-horoscope-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.heading}: ${model.line}${confidence}`,
+    confidenceNote: model.confidence ? READING_CONFIDENCE_NOTE : undefined,
     explanation: model.passage ? `${model.passage}${confidence}` : 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky. This one is no longer kept here; today’s are on zodiacs.org.',
     action: { label: 'Read your own horoscope', href: '/horoscopes/' },
     ...(more ? { more } : {}),
@@ -1723,6 +1864,7 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
     story: { href: `${COMPATIBILITY_SHARE_STORY_PATH}?${compatibilityQuery(share)}`, filename: 'zodiacs-compatibility-story.jpg' },
     imageType: 'image/jpeg',
     imageAlt: `${model.first} and ${model.second}, ${model.score} out of 100. ${model.summary}${model.confidence ? ` ${model.confidence}.` : ''}`,
+    confidenceNote: model.confidence ? CONTACT_CONFIDENCE_NOTE : undefined,
     explanation: `${model.first} and ${model.second} compared their birth charts on Zodiacs: ${model.score} out of 100, ${model.verdict.charAt(0).toLowerCase()}${model.verdict.slice(1)}. The score reads the contacts between the two charts and their Sun signs’ elements.${model.confidence ? ` ${model.confidence}.` : ''}`,
     action: { label: 'Check your own compatibility', href: '/compatibility/' },
     note: SHARE_NOTE,
@@ -1924,7 +2066,7 @@ export async function handleBirthdayReportLinkRequest(request: Request): Promise
 }
 
 /** Astrology, numerology and tarot are separate traditions; the page says so instead of a reflection line. */
-export const BIRTHDAY_REPORT_SHARE_NOTE = 'Astrology, numerology and tarot are separate traditions; Zodiacs reads each on its own terms.';
+export const BIRTHDAY_REPORT_SHARE_NOTE = BIRTHDAY_TRADITIONS_NOTE;
 
 export async function handleSolarReturnLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
@@ -2050,6 +2192,48 @@ export async function handleBigThreeLinkRequest(request: Request): Promise<Respo
   }));
 }
 
+/** The Vedic signs page's own words: the reading of the sidereal zodiac, as Vedic astrology gives it. */
+const VEDIC_SIGNS_NOTE = 'Vedic astrology’s reading of the sidereal zodiac: tendencies to reflect on, not a prediction or a fixed destiny.';
+
+function defaultVedicSignsPage(origin: string): SharePage {
+  return {
+    title: 'Vedic signs on Zodiacs',
+    description: 'Your Moon sign and Moon nakshatra, then your Sun and rising signs, in the sidereal zodiac.',
+    heading: 'Your Vedic signs',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Zodiacs',
+    explanation: 'Zodiacs finds your Moon sign and the nakshatra your Moon was in, which Vedic astrology reads first, then your Sun and rising signs in the sidereal zodiac. A birth time is needed for your rising sign.',
+    action: { label: 'Find your Vedic signs', href: VEDIC_SIGNS_PAGE_PATH },
+    note: VEDIC_SIGNS_NOTE,
+  };
+}
+
+export async function handleVedicSignsLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
+  // has no script to do it, so the browser is sent to the share's own address (the Sun sign alone, or the plain page).
+  const clean = vedicSignsCleanQuery(url.searchParams);
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${VEDIC_SIGNS_SHARE_PATH}${clean ? `?${clean}` : ''}`);
+  const share = parseVedicSignsShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultVedicSignsPage(url.origin)));
+  const model = vedicSignsCardModel(share);
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: Vedic Sun sign on Zodiacs`,
+    description: model.about,
+    heading: model.title,
+    imageUrl: `${url.origin}${VEDIC_SIGNS_SHARE_IMAGE_PATH}?${vedicSignsQuery(share)}`,
+    story: { href: `${VEDIC_SIGNS_SHARE_STORY_PATH}?${vedicSignsQuery(share)}`, filename: `zodiacs-vedic-signs-${share.sun}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `Vedic Sun sign: ${model.title}, read with the ${model.ayanamsa}.`,
+    explanation: model.about,
+    action: { label: 'Find your Vedic signs', href: VEDIC_SIGNS_PAGE_PATH },
+    more: { label: 'Your Western big three', href: '/big-three/' },
+    note: VEDIC_SIGNS_NOTE,
+  }));
+}
+
 export async function handleChineseZodiacLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const retired = retiredFor('chinese-zodiac', request, false);
@@ -2094,9 +2278,60 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
   }));
 }
 
+/** The retrograde page's note: what the card is computed from, and what it never carries. */
+const RETROGRADE_FOR_YOU_NOTE = 'Retrograde dates computed from the planets’ real motion, read through whole-sign houses as astrology traditionally reads them. The link carries no birth details.';
+const RETROGRADE_FOR_YOU_ABOUT = 'Zodiacs shows whether Mercury, Venus or Mars is retrograde now or when it next turns, the shadow on either side, and the house in your own chart each retrograde falls in.';
+
+function defaultRetrogradeForYouPage(origin: string): SharePage {
+  return {
+    title: 'Retrogrades in your chart on Zodiacs',
+    description: 'Mercury, Venus and Mars retrogrades, with the house each one falls in for you.',
+    heading: 'Retrogrades in your chart',
+    imageUrl: `${origin}/assets/og/v2/tool/retrogrades.png`,
+    imageType: 'image/png',
+    imageAlt: 'Retrogrades on Zodiacs',
+    explanation: RETROGRADE_FOR_YOU_ABOUT,
+    action: { label: 'See your retrogrades', href: RETROGRADE_FOR_YOU_PAGE_PATH },
+    note: RETROGRADE_FOR_YOU_NOTE,
+  };
+}
+
+export async function handleRetrogradeForYouLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
+  // has no script to do it, so the browser is sent to the share's own address (the retrograde alone, or the plain page).
+  // The planet and the date are checked together against the published sky data before any address is built: a
+  // date that starts no published window of that planet (a birth date, say) is cleared too, never carried to the
+  // new address or left in the old one.
+  const kept = retrogradeForYouCleanQuery(url.searchParams);
+  const share = kept ? parseRetrogradeForYouShare(new URLSearchParams(kept)) : null;
+  const model = share ? retrogradeForYouCardModel(share, (await loadShareData().catch(() => null))?.skyEvents ?? []) : null;
+  const clean = model ? kept : '';
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${RETROGRADE_FOR_YOU_SHARE_PATH}${clean ? `?${clean}` : ''}`);
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultRetrogradeForYouPage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: retrogrades on Zodiacs`,
+    description: `${model.title}, ${model.span}. ${model.line}`,
+    heading: model.title,
+    imageUrl: `${url.origin}${RETROGRADE_FOR_YOU_SHARE_IMAGE_PATH}?${retrogradeForYouQuery(share)}`,
+    story: { href: `${RETROGRADE_FOR_YOU_SHARE_STORY_PATH}?${retrogradeForYouQuery(share)}`, filename: `zodiacs-${share.planet}-retrograde-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `${model.title}, ${model.span}. ${model.line}`,
+    explanation: `${model.span}. ${model.line}${model.confidence ? ` ${model.confidence}.` : ''}`,
+    action: { label: 'See your retrogrades', href: RETROGRADE_FOR_YOU_PAGE_PATH },
+    more: { label: 'Every retrograde through 2030', href: '/retrogrades/' },
+    note: RETROGRADE_FOR_YOU_NOTE,
+  }));
+}
+
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[] }>> = {
+/**
+ * `wholeQuery`: the page is handed the query as it arrived (without the route key), so it can clear keys it does
+ * not use from the address itself rather than have them skipped here and left in the browser's address bar.
+ */
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[]; wholeQuery?: true }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -2136,6 +2371,12 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
+  'vedic-signs-link': { path: VEDIC_SIGNS_SHARE_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsLinkRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', wholeQuery: true },
+  'vedic-signs-image': { path: VEDIC_SIGNS_SHARE_IMAGE_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsImageRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED' },
+  'vedic-signs-story': { path: VEDIC_SIGNS_SHARE_STORY_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsStoryRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED' },
+  'retrograde-for-you-link': { path: RETROGRADE_FOR_YOU_SHARE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouLinkRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', wholeQuery: true },
+  'retrograde-for-you-image': { path: RETROGRADE_FOR_YOU_SHARE_IMAGE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouImageRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
+  'retrograde-for-you-story': { path: RETROGRADE_FOR_YOU_SHARE_STORY_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouStoryRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
@@ -2182,6 +2423,11 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
       await writeNodeResponse(res, retired);
       return;
     }
+  }
+  if (target.wholeQuery) {
+    const raw = rawNodeQuery(query).toString();
+    await writeNodeResponse(res, await target.handle(new Request(`${requestOrigin(req)}${target.path}${raw ? `?${raw}` : ''}`, { method })));
+    return;
   }
   let params = new URLSearchParams();
   // A key the route refuses outright (the birthday report's old py), once or repeated, is checked before the

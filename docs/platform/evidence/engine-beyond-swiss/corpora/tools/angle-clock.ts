@@ -4,9 +4,11 @@
  * numbers the engine's angles are computed at. Since @zodiacs/engine
  * 0.1.1-rc.15 the engine reads an instant from 1972 to 2027-10-02 as UTC, with
  * TT from the IERS leap seconds and UT1 from IERS UT1 − UTC, and any other
- * instant as UT1 with its ΔT model; it then makes astronomy-engine's time at
- * that UT1 with the basis's ΔT held for the call. This does the same, with the
- * engine's own time basis (src/lib/engine/time-basis.mjs). The arbiter uses
+ * instant as UT1 with its ΔT model; since 2.0.0 it reads an instant after
+ * 2027-10-02 as continuous UTC, TT = UTC + 69.184 s, with UT1 from its ΔT
+ * model. It then makes astronomy-engine's time at that UT1 with the basis's ΔT
+ * held for the call. This does the same, with the engine's own time basis
+ * (timeBasis from @zodiacs/engine/time). The arbiter uses
  * the same two numbers, so its comparison with the engine measures the angle
  * model and not the clock. Run from the repository root:
  *
@@ -16,7 +18,7 @@ import { readFileSync } from 'node:fs';
 import { MakeTime, SetDeltaTFunction } from 'astronomy-engine';
 import { deltaT } from '@zodiacs/engine/deltat';
 import { ENGINE_VERSION } from '@zodiacs/engine';
-import { timeBasis } from '../../../../../../src/lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 
 const corpus = JSON.parse(readFileSync(new URL('../angle-grid-inputs.json', import.meta.url), 'utf8'));
 const clock = (rows: [string, number, number, string][]) => rows.map(([utc]) => {
