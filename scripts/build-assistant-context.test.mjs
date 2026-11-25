@@ -121,7 +121,7 @@ describe('assistant site context', () => {
       tools: 27,
     });
     for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
-      expect(context.includes(`- ${route} —`)).toBe(switchedRoutes(env).includes(route));
+      expect(context.includes(`- ${route} \u2014`)).toBe(switchedRoutes(env).includes(route));
     }
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
@@ -218,6 +218,19 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     }
   });
 
+  it('leaves the retrogrades-in-your-chart Guide line out of the deployed context, and the feature doc says how it joins', async () => {
+    // The site assistant serves the committed module (api/assistant.ts), which the build does not regenerate, so
+    // switching PUBLIC_RETROGRADES_FOR_YOU_ENABLED on adds no Guide line by itself; the doc names the step that does.
+    expect(LAUNCH_FLAGGED_ROUTES['/retrogrades/for-you/']).toBe('PUBLIC_RETROGRADES_FOR_YOU_ENABLED');
+    expect(ASSISTANT_CONTEXT).not.toContain('/retrogrades/for-you/');
+    const on = await generateAssistantContext({ env: { PUBLIC_RETROGRADES_FOR_YOU_ENABLED: '1' } });
+    expect(on.context.split('\n').filter((line) => line.startsWith('- /retrogrades/for-you/'))).toHaveLength(1);
+    const doc = (await readFile(new URL('../docs/platform/zodiacs-ai/PERSONAL_TOOLS.md', import.meta.url), 'utf8')).replace(/\s+/gu, ' ');
+    for (const step of ['api/_assistant/context.ts', 'LAUNCH_FLAGGED_ROUTES', "'/retrogrades/for-you/'", 'npm run data:assistant-context', 'Merge it only after the flag is on in production']) {
+      expect(doc, step).toContain(step);
+    }
+  });
+
   it('commits the switches-unset output, and a switch that is not exactly 1 adds nothing', async () => {
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
@@ -238,7 +251,7 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     const added = context.split('\n').filter((line) => !offLines.includes(line));
 
     expect(added).toHaveLength(on.length);
-    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} —`))).toHaveLength(1);
+    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} \u2014`))).toHaveLength(1);
     expect(context.split('\n').filter((line) => !added.includes(line))).toEqual(offLines);
     expect(counts.staticPages).toBe(off.counts.staticPages + on.length);
     expect(counts.consumerRoutes).toBe(off.counts.consumerRoutes + on.length);

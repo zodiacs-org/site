@@ -38,6 +38,7 @@ const PREPARED_BY: Record<string, string[]> = {
   'islands/lunar-return/compute.ts': ['islands/LunarReturnCalculator.tsx'],
   'islands/solar-return/compute.ts': ['islands/SolarReturnCalculator.tsx'],
   'islands/vedic-signs/compute.ts': ['islands/VedicSigns.tsx'],
+  'islands/retrograde-for-you/compute.ts': ['islands/RetrogradeForYou.tsx'],
 };
 
 function walk(directory: string): string[] {
