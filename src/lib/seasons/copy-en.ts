@@ -27,6 +27,7 @@ export interface SeasonCopy {
   guidePrompt: string;
 }
 
+import { READING_CONFIDENCE_FAQ } from '../reading-confidence-note';
 import type { Element, Modality } from '../signs';
 
 /** What a season page's head and FAQ are written from. */
@@ -144,7 +145,7 @@ export const SEASON_UI_EN: SeasonUi = {
   description: ({ title, sign, phase, start, end }) => (phase
     ? `${title} ${phase === 'under-way' ? 'is under way' : 'starts'}: the Sun enters ${sign} on ${start} and leaves on ${end}. What the season asks of all twelve signs.`
     : `${title}: when the Sun enters and leaves ${sign}, and what the season asks of all twelve signs.`),
-  faq: ({ sign, phase, start, end, days, confidence, value }) => [
+  faq: ({ sign, phase, start, end, days, value }) => [
     ...(phase ? [{
       q: `When does ${sign} season ${phase === 'under-way' ? 'end' : 'start'}?`,
       a: `The Sun enters ${sign} on ${start} and leaves on ${end}, about ${days} days later. The page shows both moments in your own time zone.`,
@@ -158,8 +159,8 @@ export const SEASON_UI_EN: SeasonUi = {
       a: 'Your Sun sign depends on the exact moment of your birth, not on the average dates. A birth chart with your birth time settles it.',
     },
     {
-      q: `What does “${confidence}” mean?`,
-      a: `It says how specific a reading is. A line written for a Sun sign alone, with no date or birth time, carries ${value}%. It is not the chance that something happens.`,
+      q: READING_CONFIDENCE_FAQ.q,
+      a: `A line written for a Sun sign alone carries ${value}%. ${READING_CONFIDENCE_FAQ.a}`,
     },
   ],
   quality: (modality, element) => `${modality.charAt(0).toUpperCase() + modality.slice(1)} ${element}`,

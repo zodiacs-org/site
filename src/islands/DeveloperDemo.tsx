@@ -12,6 +12,7 @@
  * it to that.
  */
 import { useState } from 'preact/hooks';
+import { CONTACT_CONFIDENCE_FAQ, CONTACT_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import demo from '../data/developer-demo.json';
 import type { City } from '../lib/geo/rank';
 import { PLAYGROUND_ENGINE_PATH, PLAYGROUND_PATH } from '../lib/developer-playground';
@@ -434,6 +435,7 @@ function CompatibilityQuestion() {
           Score: {data.score.overall} of 100 (attraction {data.score.areas.attraction}, communication{' '}
           {data.score.areas.communication}, stability {data.score.areas.stability}). {data.score.headline}
         </p>
+        <small class="demo__note">{CONTACT_CONFIDENCE_NOTE}</small>
         <h3>The closest contacts</h3>
         <ul class="demo__contacts">
           {data.contacts.slice(0, 4).map((contact: Json) => (
@@ -445,6 +447,10 @@ function CompatibilityQuestion() {
         <p class="demo__note">{data.note}</p>
         <p class="demo__note" data-source="build">Computed with the hosted get_compatibility tool&rsquo;s own code when this page was built, for two synthetic births.</p>
       </div>
+      <details class="demo__note">
+        <summary>{CONTACT_CONFIDENCE_FAQ.q}</summary>
+        <p>{CONTACT_CONFIDENCE_FAQ.a}</p>
+      </details>
       <JsonResponse value={result} label="The JSON result" />
 
       <h3>The same question as an MCP tool call</h3>
