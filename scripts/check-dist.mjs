@@ -1646,8 +1646,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-// Re-dated 2026-11-17: the restyle added the letter key and the emblem (rendered content).
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-17</lastmod>')) {
+// The calculator now identifies each numerology reading as a separate tradition.
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-23</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
