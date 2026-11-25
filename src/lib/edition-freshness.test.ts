@@ -15,6 +15,8 @@ import {
   type EditionLocale,
 } from './edition-freshness';
 import { dailyReadingForLocale } from './i18n/daily-reading';
+import { dailyReadingRu } from './locale-expansion/daily-ru';
+import { ru as russianDailyCopy } from './locale-expansion/daily-copy/ru';
 import { formatDate } from './i18n/dates';
 import { SIGNS, signName } from './signs';
 
@@ -161,7 +163,7 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
     for (const text of ['Hoje em dia, até hoje.', 'Hoje, Marte muda de signo.', 'Leia hoje o seu signo.']) {
       expect(datedEditionTextIn('pt', text, date)).toBe(text);
     }
-    for (const locale of ['ru', 'ar']) expect(editionRules(locale)).toBeNull();
+    expect(editionRules('ar')).toBeNull();
     // The held French and Italian daily editions (locale expansion) date every relative word.
     expect(datedEditionTextIn('fr', 'La Lune traverse aujourd’hui le Lion. Le ciel d’aujourd’hui.', '2026-11-08'))
       .toBe('Le 8 novembre 2026, la Lune traverse le Lion. Le ciel du 8 novembre 2026.');
@@ -243,7 +245,7 @@ describe('dated tab titles and the pt-BR first of the month', () => {
       expect(datedEditionTitleIn('pt', `Horóscopo de ${pt} hoje, 1º de novembro | Zodiacs.org`)).toBe(`Horóscopo de ${pt} de 1º de novembro | Zodiacs.org`);
     }
     expect(editionTitleRules('en')).toEqual([]);
-    expect(editionTitleRules('ru')).toEqual([]);
+    expect(editionTitleRules('ar')).toEqual([]);
     expect(datedEditionTitleIn('it', 'Oroscopo Leone oggi, 8 novembre | Zodiacs.org')).toBe('Oroscopo Leone dell’8 novembre | Zodiacs.org');
     expect(datedEditionTitleIn('fr', 'Horoscope Lion aujourd’hui, 8 novembre | Zodiacs.org')).toBe('Horoscope Lion du 8 novembre | Zodiacs.org');
   });
@@ -259,3 +261,109 @@ describe('dated tab titles and the pt-BR first of the month', () => {
   });
 });
 
+
+describe('dated wording on the held Russian daily pages', () => {
+  const date = '2026-11-09';
+  const label = '9 ноября 2026 года';
+  const TODAY_WORD = /сегодня/iu;
+
+  it('spells the year out, so a dated phrase can end a sentence', () => {
+    expect(editionDateLabel(date, 'ru')).toBe(label);
+    expect(editionDateLabel('2026-12-01', 'ru')).toBe('1 декабря 2026 года');
+    expect(formatDate('ru', `${date}T12:00:00Z`, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }))
+      .toBe('9 ноября 2026 г.');
+  });
+
+  it('dates each reviewed phrase', () => {
+    const pages: [string, string][] = [
+      ['Сегодня', `Небо на ${label}`],
+      ['\n  Лев сегодня\n', `\n  Лев, ${label}\n`],
+      ['Луна сегодня проходит ваш пятый дом: творчество, романтика, дети и удовольствия.',
+        `${label} Луна проходит ваш пятый дом: творчество, романтика, дети и удовольствия.`],
+      ['Марс сегодня входит в ваш шестой дом, и на первый план выходят текущая работа.',
+        `Марс ${label} входит в ваш шестой дом, и на первый план выходят текущая работа.`],
+      ['Сегодня небо спокойное.', `${label} небо спокойное.`],
+      ['Читать прогноз на сегодня →', `Читать прогноз на ${label} →`],
+      ['Небо сегодня', `Небо ${label}`],
+    ];
+    for (const [current, dated] of pages) expect(datedEditionTextIn('ru', current, date)).toBe(dated);
+    for (const sign of SIGNS) {
+      const name = signName(sign, 'ru');
+      expect(datedEditionTextIn('ru', `\n  ${name} сегодня\n`, date)).toBe(`\n  ${name}, ${label}\n`);
+    }
+  });
+
+  it('leaves no «сегодня» in any daily copy string or reading line once dated', () => {
+    // Every string the Russian daily copy can print, called with each sign's name.
+    const texts = new Set<string>();
+    const walk = (value: unknown, args: unknown[], depth = 0): void => {
+      if (depth > 6 || value == null) return;
+      if (typeof value === 'string') { texts.add(value); return; }
+      if (Array.isArray(value)) { value.forEach((item) => walk(item, args, depth + 1)); return; }
+      if (typeof value === 'function') {
+        try { walk((value as (...input: unknown[]) => unknown)(...args), args, depth + 1); } catch { /* a signature these args do not fit */ }
+        return;
+      }
+      if (typeof value === 'object') Object.values(value as Record<string, unknown>).forEach((item) => walk(item, args, depth + 1));
+    };
+    for (const sign of SIGNS) {
+      const name = signName(sign, 'ru');
+      walk(russianDailyCopy, [name, '9 ноября 2026 г.', 3, 2]);
+      walk(russianDailyCopy, ['9 ноября 2026 г.', name, name, 1]);
+    }
+    // Every reading line: the Moon in every house, every planet's ingress, stations, lunations and aspects.
+    const base = dailyData as Daily;
+    const planets = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+    const at = `${base.date}T08:00:00Z`;
+    const editions: Daily[] = [{ ...base, bodies: [], events: [] }];
+    for (const sign of SIGNS) {
+      editions.push({ ...base, events: [], bodies: base.bodies.map((body) => (body.body === 'Moon' ? { ...body, sign: sign.slug } : body)) });
+      for (const planet of planets) editions.push({ ...base, events: [{ kind: 'ingress', at, planet, sign: sign.slug, degree: 0 }] });
+      for (const type of ['retrograde', 'direct']) editions.push({ ...base, events: [{ kind: 'station', at, planet: 'Mercury', sign: sign.slug, type, degree: 12 }] });
+      for (const type of ['new', 'full']) editions.push({ ...base, events: [{ kind: 'lunation', at, sign: sign.slug, type, degree: 12 }] });
+    }
+    for (const type of ['conjunction', 'opposition', 'square', 'trine', 'sextile']) {
+      editions.push({ ...base, events: [{ kind: 'aspect', at, a: 'Sun', b: 'Saturn', type, orb: 0 }] });
+    }
+    for (const daily of editions) {
+      for (const sign of SIGNS) {
+        const reading = dailyReadingRu(sign.slug, daily);
+        for (const text of [reading.headline, ...reading.lines.map((line) => line.text)]) texts.add(text);
+      }
+    }
+    const withToday = [...texts].filter((text) => TODAY_WORD.test(text));
+    expect(withToday.length).toBeGreaterThan(20);
+    const survivors = withToday.map((text) => datedEditionTextIn('ru', text, date)).filter((text) => TODAY_WORD.test(text));
+    expect(survivors).toEqual([]);
+    // The browser applies the same rules to the same result.
+    const rules = inlineEditionRules('ru', date).map(([source, flags, replacement]) => [new RegExp(source, flags), replacement] as const);
+    for (const text of withToday) {
+      expect(rules.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), text)).toBe(datedEditionTextIn('ru', text, date));
+    }
+  });
+
+  it('keeps the Russian daily reading on the same receipts as every other locale', () => {
+    const daily = dailyData as Daily;
+    for (const sign of SIGNS) {
+      const ru = dailyReadingRu(sign.slug, daily).lines;
+      const es = dailyReadingForLocale(sign.slug, daily, 'es').lines;
+      expect(ru.map(({ templateId, scope, evidenceRefs, house, body }) => ({ templateId, scope, evidenceRefs, house, body })))
+        .toEqual(es.map(({ templateId, scope, evidenceRefs, house, body }) => ({ templateId, scope, evidenceRefs, house, body })));
+    }
+  });
+
+  it('dates the Russian tab titles', () => {
+    for (const sign of SIGNS) {
+      const name = signName(sign, 'ru');
+      expect(datedEditionTitleIn('ru', `${name}: гороскоп на сегодня, 9 ноября | Zodiacs.org`)).toBe(`${name}: гороскоп на 9 ноября | Zodiacs.org`);
+    }
+    expect(datedEditionTitleIn('ru', 'Небо на сегодня, 9 ноября 2026 г. | Zodiacs.org')).toBe('Небо на 9 ноября 2026 г. | Zodiacs.org');
+    expect(datedEditionTitleIn('ru', 'Гороскопы на сегодня, 9 ноября 2026 г. | Zodiacs.org')).toBe('Гороскопы на 9 ноября 2026 г. | Zodiacs.org');
+    const titles = [
+      russianDailyCopy.horoscope.title('Скорпион', '9 ноября'),
+      russianDailyCopy.today.title('9 ноября 2026 г.'),
+      russianDailyCopy.hub.title('9 ноября 2026 г.'),
+    ];
+    for (const title of titles) expect(datedEditionTitleIn('ru', title)).not.toMatch(/сегодня/iu);
+  });
+});
