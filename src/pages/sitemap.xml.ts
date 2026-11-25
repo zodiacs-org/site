@@ -736,6 +736,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED')
     ? ['/retrogrades/for-you/', '/retrogrades/', '/mercury-retrograde/', '/tools/'].map((loc) => [loc, '2026-11-09'] as const)
     : []),
+  // The Russian rising-sign calculator writes «во Льве» (2026-11-10), last so this date wins.
+  ['/ru/rising-sign/', '2026-11-10'] as const,
   // The privacy page's analytics paragraph names the arrival words a link can
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.
