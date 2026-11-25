@@ -19,6 +19,7 @@ interface Props {
   moonAmbiguous?: boolean;
   /** The civil birth date: the card of a chart without a birth time shows 12:00 UTC on it. */
   birthDate?: string;
+  prepareImage?: boolean;
 }
 
 type ShareState = 'preparing' | 'idle' | 'busy' | 'saved' | 'error';
@@ -71,6 +72,7 @@ export default function ApproachRead({
   locale = 'en',
   moonAmbiguous = false,
   birthDate,
+  prepareImage = true,
 }: Props) {
   const read = useMemo(
     () => approachRead(chart, { moonAmbiguous }),
@@ -86,6 +88,7 @@ export default function ApproachRead({
     let current = true;
     setPreparedCard(null);
     setShareState('preparing');
+    if (!prepareImage) return;
     void prepareChartCard(chart, {
       variant: 'approach',
       locale,
@@ -100,7 +103,7 @@ export default function ApproachRead({
       if (current) setShareState('error');
     });
     return () => { current = false; };
-  }, [chart, locale, moonAmbiguous, birthDate]);
+  }, [chart, locale, moonAmbiguous, birthDate, prepareImage]);
 
   function shareReading(): void {
     if (!preparedCard || shareState === 'preparing' || shareState === 'busy') return;
@@ -132,7 +135,8 @@ export default function ApproachRead({
           class="btn btn--ghost calc__approach-share"
           type="button"
           onClick={shareReading}
-          disabled={!preparedCard || shareState === 'preparing' || shareState === 'busy'}
+          aria-disabled={!preparedCard || shareState === 'busy'}
+          disabled={shareState === 'busy'}
           aria-busy={shareState === 'preparing' || shareState === 'busy'}
           data-card-state={shareState}
           data-approach-share

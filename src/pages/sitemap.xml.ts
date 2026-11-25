@@ -7,6 +7,7 @@
 import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
+import { READING_CONFIDENCE_UPDATED } from '../lib/reading-confidence-note';
 import type { APIRoute } from 'astro';
 import { ACCURACY_PATH, accuracyPublished } from '../accuracy/publication.mjs';
 import accuracyReceipt from '../data/accuracy/latest.json';
@@ -52,6 +53,8 @@ import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
 import { WINDOW_READING_IDS, WINDOW_READINGS_UPDATED } from '../lib/events/window-readings';
 import { launchFlagOn } from '../lib/launch-flags';
 
+// English explainer answers on four thin tool pages (src/lib/seo/tool-explainers.ts).
+const TOOL_EXPLAINERS_LASTMOD = '2026-11-16';
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
   generatedAt: string;
@@ -71,18 +74,17 @@ const researchLastmod = terminalResearchLastmod(
 const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
 const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
-// The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
-const REGISTRY_SIGN_LASTMOD = '2026-11-10';
-// The Registry roster changed on every sign page except Scorpio.
-const REGISTRY_ROSTER_LASTMOD = '2026-11-19';
-const THESIS_LASTMOD = '2026-11-14';
+// A missing saved price now shows as unavailable, not $0 (same change as the roster pages).
+const REGISTRY_SIGN_LASTMOD = '2026-11-22';
+// A missing saved price now shows as unavailable, not $0.
+const REGISTRY_ROSTER_LASTMOD = '2026-11-22';
+// The transmission figure became the eight-form timeline plate (rendered content).
+const THESIS_LASTMOD = '2026-11-24';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 const SKY_HEADS_UP_LASTMOD = '2026-11-12';
 // The sign-season pages and their hub were published together.
 const SEASON_PAGES_LASTMOD = '2026-11-05';
-// The sign season pages' year tables run through 2040 from 2026-11-06.
-const SEASON_SIGN_PAGES_LASTMOD = '2026-11-06';
 // The Spanish, Portuguese, French and Italian editions of Your 2027 sky, the Moon journal, the sign-season hub
 // and its twelve season pages, published together, and the translated tools hubs that list them. Their English
 // pages only gained hreflang alternates, which the rendered-content dates leave out.
@@ -216,6 +218,7 @@ const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/me
 // turned into back-links and datelines, tool discs added to the tools hubs, and
 // em and en dashes in the copy rewritten as commas, periods and range words.
 const DESIGN_SWEEP_LASTMOD = '2026-10-16';
+const ASTROCARTOGRAPHY_LASTMOD = '2026-11-09';
 const DESIGN_SWEEP_ROUTES = [
   '/',
   '/about/',
@@ -437,6 +440,18 @@ const CONNECTOR_PAGE_ROUTES = [
 
 // The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
 const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
+// The tool's icon was added beside the hero heading on these twelve tool pages (rendered content). The day of
+// the daily edition it was built with; listed last in EVERGREEN_LASTMOD so this date wins over older ones.
+const TOOL_MARKS_LASTMOD = '2026-11-24';
+const TOOL_MARKS_ROUTES = [
+  '/big-three/', '/moon-sign/', '/rising-sign/', '/solar-return/', '/lunar-return/', '/saturn-return/',
+  '/transits/', '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/mercury-retrograde/',
+  '/void-of-course-moon/',
+] as const;
+
+// The Big Three page gained its twelve share cards (src/components/share/); the
+// day of the daily edition it was built with, listed after TOOL_MARKS so it wins.
+const BIG_THREE_CARDS_LASTMOD = '2026-11-25';
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -476,7 +491,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/compare/', '2026-09-18'] as const,
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
-  ['/lunar-return/', '2026-09-06'] as const,
+  ['/lunar-return/', '2026-11-16'] as const,
+  // The Vedic signs page, first published 2026-11-09, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [['/vedic-signs/', '2026-11-09'] as const] : []),
+  // The personal day: one day's transits to your own chart, first published 2026-11-09, once PUBLIC_YOUR_DAY_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [['/your-day/', '2026-11-20'] as const] : []),
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -484,7 +503,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-09'] as const] : []),
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
-  ['/fomo/', '2026-09-01'] as const,
+  ['/fomo/', '2026-11-20'] as const,
   // Phase 4 re-exposes the already-reviewed Big Three share card from the
   // birth-chart result sheet.
   ['/birth-chart/', '2026-07-24'],
@@ -494,7 +513,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...LEGACY_URLS.map((url) => [url.path, '2026-07-10'] as const),
   ['/thesis/', THESIS_LASTMOD],
   // Astrofolio, the Terminal market desk, and the Registry's twelve plain-language token records.
-  ['/astrofolio/', AUDIT_REMEDIATION_LASTMOD],
+  ['/astrofolio/', '2026-11-20'],
   ['/terminal/', AUDIT_REMEDIATION_LASTMOD],
   ['/registry/', AUDIT_REMEDIATION_LASTMOD],
   ...[
@@ -557,14 +576,19 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ].map((loc) => [loc, AUDIT_REMEDIATION_LASTMOD] as const),
   ...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const),
   ...dailyEditions.flatMap((edition) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/${edition.day}/`, edition.ownerApproval.approvedAt.slice(0, 10)] as const)),
-  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)).sort().at(-1)!] as const) : []),
-  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-04'] as const)),
-  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-03'] as const)),
+  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, [...dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)), ...(locale === 'en' ? [TOOL_EXPLAINERS_LASTMOD] : [])].sort().at(-1)!] as const) : []),
+  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, locale === 'en' && path === '/your-sky-wrapped/' ? TOOL_EXPLAINERS_LASTMOD : '2026-10-04'] as const)),
+  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, locale === 'en' && (path === '/group-charts/' || path === '/chart-twins/') ? TOOL_EXPLAINERS_LASTMOD : '2026-10-03'] as const)),
   ...['/full-moon-calendar/2027/', '/eclipses/2027/', '/mercury-retrograde/2027/']
     .map((loc) => [loc, YEAR_PAGES_LASTMOD] as const),
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
   ...LIFE_PATH_PAGES.map((page) => [`/numerology/life-path/${page.number}/`, page.updated] as const),
   ['/void-of-course-moon/', VOID_OF_COURSE_LASTMOD] as const,
+  // The astrocartography map (2026-11-09), and the pages that link to it: the tools hub, the solar return's relocation answer and the rising sign's.
+  // Only while PUBLIC_ASTROCARTOGRAPHY_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED')
+    ? ['/astrocartography/', '/tools/', '/solar-return/', '/rising-sign/'].map((loc) => [loc, ASTROCARTOGRAPHY_LASTMOD] as const)
+    : []),
   // The ephemeris section now carries a measured comparison against Swiss
   // Ephemeris in place of the upstream library's own arcminute target. Last,
   // so it wins over the numerology cycle's date for the same page.
@@ -630,9 +654,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
-  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with,
-  // and links the per-assistant pages (three from 16 November, Claude Code from 17 November).
-  ['/apps/', '2026-11-17'] as const,
+  // The showcase reserves its caption and link text while the hero image loads.
+  ['/apps/', '2026-11-24'] as const,
   // One landing page per assistant: Claude, ChatGPT and Cursor first published on 16 November, Claude Code on
   // 17 November, when each page started linking the other three.
   ...['/apps/claude/', '/apps/chatgpt/', '/apps/cursor/', '/apps/claude-code/'].map((loc) => [loc, '2026-11-17'] as const),
@@ -721,6 +744,14 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
   // after the October design sweep dates above, so this wins.
   ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // Retrogrades in your chart, first published, with the retrograde pages' lines and the tools hub's card
+  // linking to it. After the entries above, so this date wins. Only while PUBLIC_RETROGRADES_FOR_YOU_ENABLED is
+  // on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED')
+    ? ['/retrogrades/for-you/', '/retrogrades/', '/mercury-retrograde/', '/tools/'].map((loc) => [loc, '2026-11-09'] as const)
+    : []),
+  // The Russian rising-sign calculator writes «во Льве» (2026-11-10), last so this date wins.
+  ['/ru/rising-sign/', '2026-11-10'] as const,
   // The privacy page's analytics paragraph names the arrival words a link can
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.
@@ -747,11 +778,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
   // From 19 November it says in words that the hosted server needs no account, sign-in or API key.
   ['/developers/ai/', '2026-11-19'] as const,
-  // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
-  // the daily edition it was built with, last so this date wins.
   // The Fortune 500 CEO Sun sign study, first published 17 November.
   ['/studies/fortune-500-ceo-signs/', '2026-11-17'] as const,
-  ['/', '2026-11-14'] as const,
+  // The home greeting now has server-rendered copy. Use the checked-in edition date.
+  ['/', '2026-11-20'] as const,
   // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
   ['/feeds/', '2026-11-17'] as const,
   ['/developers/', '2026-11-17'] as const,
@@ -769,9 +799,27 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // The English compatibility invite emblem gained its axis and disc entrances.
+  ['/compatibility/', '2026-11-22'] as const,
+  // The meaning of reading confidence and the numerology and tarot exception.
+  ...['/developers/demo/', '/your-2027-sky/', '/numerology/'].map((loc) => [loc, READING_CONFIDENCE_UPDATED] as const),
+  ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', READING_CONFIDENCE_UPDATED] as const] : []),
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-24'] as const] : []),
+  ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', READING_CONFIDENCE_UPDATED] as const] : []),
   // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
   // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
+  // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
+  ['/privacy/', '2026-11-22'] as const,
+  // Conformance scoreboard refreshed for @zodiacs/engine 2.1.0 (639/640, 140/140 L4) and verified PyEphem counts.
+  ['/developers/conformance/', '2026-11-23'] as const,
+  // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
+  ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
+  ['/big-three/', BIG_THREE_CARDS_LASTMOD] as const,
+  // Uniform three-era compute receipt timeScale convention and MCP adapter 0.1.0-rc.29.
+  ...['/developers/', '/developers/compute/', '/developers/conventions/', '/developers/mcp/'].map(
+    (loc) => [loc, '2026-11-25'] as const,
+  ),
 ]);
 
 function getLastmod(loc: string): string {
@@ -827,6 +875,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, priority: 0.7 })) : []),
     ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
     ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
+    ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? [{ loc: '/astrocartography/', priority: 0.8 }] : []),
     { loc: '/compatibility/', priority: 0.9 },
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
@@ -835,6 +884,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [{ loc: '/vedic-signs/', priority: 0.85 }] : []),
     { loc: '/numerology/', priority: 0.85 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
@@ -842,6 +892,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },
     { loc: '/transits/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [{ loc: '/your-day/', priority: 0.8 }] : []),
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
     { loc: '/your-2027-sky/', priority: 0.8 },
@@ -849,6 +900,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
     { loc: '/retrogrades/', priority: 0.8 },
+    ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') ? [{ loc: '/retrogrades/for-you/', priority: 0.75 }] : []),
     { loc: '/today/', priority: 0.8 },
     ...(eventsPublication.hub.indexEligible
       ? [{ loc: eventsPublication.hub.path, priority: 0.82 }]
@@ -930,7 +982,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
     { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
-    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_SIGN_PAGES_LASTMOD })),
+    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: READING_CONFIDENCE_UPDATED })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [
@@ -942,7 +994,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       loc: event.path,
       priority: 0.64,
       // A page written to the reading style guide prints this day as "Updated" and as dateModified (ZOD-211).
-      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD, READING_CONFIDENCE_UPDATED,
         EVERGREEN_LASTMOD.get(event.path) ?? '',
         STYLE_GUIDE_READING_IDS.includes(event.id) ? EVENT_READINGS_2027_UPDATED : '',
         // A solar eclipse page labels its degree as the Sun's, which is what eclipses.json keeps.
@@ -1110,6 +1162,40 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The tools hub's card for Astrocartography, the rising sign page's question on moving, and the solar return page's line linking to the map (2026-11-09).
+  // Only while PUBLIC_ASTROCARTOGRAPHY_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/rising-sign/' || url.loc === '/solar-return/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+  }
+  // The tools hub's card for Vedic signs and the big three and Moon sign pages' lines linking to it (2026-11-09), and
+  // the engine page's lines saying the site reads the sidereal entry point (re-dated 2026-11-19 when ZOD-63's engine
+  // page rewrite was merged in). Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages read as on main and
+  // keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/moon-sign/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+    if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-19');
+  }
+  // The tools hub's card for Your day, and the transits page's line linking to it (2026-11-09).
+  // Only while PUBLIC_YOUR_DAY_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/transits/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+  }
+  // The share cards (2026-11-10): each pair page offers its pair's card, and
+  // the big three pages offer one card per sign, in English and translated
+  // (the Russian pages carry no cards yet).
+  const SHARE_CARD_PAGES = new Set(['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => [
+    `${prefix}/big-three/`,
+    ...pairs.map((pair) => `${prefix}/compatibility/${pair.id}/`),
+  ]));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (SHARE_CARD_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-10');
+  }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
   // longer lists the article on a child's chart.
@@ -1144,10 +1230,9 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const url of urls) {
     if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
   }
-  // The privacy page says the calendar and RSS feed link events carry only
-  // fixed categories.
+  // The English privacy page describes which essay link clicks the site counts.
   for (const url of urls) {
-    if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+    if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-23');
   }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);

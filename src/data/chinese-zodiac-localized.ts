@@ -1,7 +1,7 @@
 import { isSectionLocale, type ReleasedLocale, type SectionLocale } from '../lib/i18n/core';
 import { additionFormat, additionText, localizedAdditionObject } from '../strings/additions';
 import { CHINESE_ZODIAC_ANIMALS, CHINESE_ZODIAC_COPY } from './chinese-zodiac';
-import { CHINESE_ZODIAC_ZH } from './chinese-zodiac-zh';
+import { CHINESE_ZODIAC_ZH, type ChineseZodiacCopyKey } from './chinese-zodiac-zh';
 
 /** The released locales plus the Chinese editions, which publish only this guide. */
 export type ChineseZodiacLocale = ReleasedLocale | SectionLocale;
@@ -13,9 +13,12 @@ function format(template: string, values: Record<string, string | number>): stri
   );
 }
 
+// The retired caption of the Western sign disc row has no translations (see chinese-zodiac-zh.ts).
+const { iconRailNote: _retiredCaption, ...PAGE_COPY } = CHINESE_ZODIAC_COPY;
+
 export function chineseZodiacCopy(locale: ChineseZodiacLocale) {
   if (isSectionLocale(locale)) return CHINESE_ZODIAC_ZH[locale].copy;
-  return localizedAdditionObject(locale, 'chineseZodiac', CHINESE_ZODIAC_COPY);
+  return localizedAdditionObject(locale, 'chineseZodiac', PAGE_COPY);
 }
 
 export function chineseZodiacAnimals(locale: ChineseZodiacLocale) {
@@ -33,7 +36,7 @@ export function chineseZodiacAnimals(locale: ChineseZodiacLocale) {
 
 export function chineseZodiacLocalizedText(
   locale: ChineseZodiacLocale,
-  key: keyof typeof CHINESE_ZODIAC_COPY,
+  key: ChineseZodiacCopyKey,
   values: Record<string, string | number> = {},
 ): string {
   if (isSectionLocale(locale)) return format(CHINESE_ZODIAC_ZH[locale].copy[key], values);

@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
+import DailyWheelLegend from '../../components/DailyWheelLegend.astro';
 import EditionText from '../../components/EditionText.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import AskGuideLine from '../../components/AskGuideLine.astro';
@@ -23,6 +24,7 @@ import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
 import { livingChartCaptureEnabled, livingChartSyncEnabled } from '../../lib/living-chart/feature-flags';
 import { NATAL_BODY_THEME } from '../../lib/natal-context';
 import { TOOLS_HUB } from '../../lib/nav-tools';
+import { launchFlagOn } from '../../lib/launch-flags';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import { signBySlug } from '../../lib/signs';
 import { refinePublishedAnchors, refineRetrogradeWindows, refineTransitMonth } from '../../lib/nasa-instants';
@@ -148,7 +150,8 @@ const retrogradeSummary = [
 const windowEndLabel = shortDate(new Date(Date.parse(timeline.to) - 86_400_000).toISOString(), true);
 const periodYear = (iso: string) => iso.slice(0, 4) !== publication.date.slice(0, 4);
 
-const goFurther = ['/transits/', '/moon-phase/', '/sky-calendar/', '/eclipses/']
+// Your day takes the eclipses' place only while PUBLIC_YOUR_DAY_ENABLED is on; off, the list is main's.
+const goFurther = (launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? ['/your-day/', '/transits/', '/moon-phase/', '/sky-calendar/'] : ['/transits/', '/moon-phase/', '/sky-calendar/', '/eclipses/'])
   .map((href) => TOOLS_HUB.find((tool) => tool.href === href))
   .filter((tool): tool is (typeof TOOLS_HUB)[number] => Boolean(tool));
 const monthDay = (iso: string) => ({
@@ -286,19 +289,17 @@ const monthDay = (iso: string) => ({
             {todayMoonPath && todayMoonPath !== 'full' && <path d={moonPath(daily.moon.illumination, waxing, 18)} fill="#E6E2D6" />}
           </svg>
         </div>
-        <figcaption class="today-legend">
-          <span><i class="today-legend__rx">Rx</i>Retrograde</span>
-          {(aspectTypes.has('trine') || aspectTypes.has('sextile')) && <span><i class="today-legend__line today-legend__line--easy"></i>Trine or sextile</span>}
-          {(aspectTypes.has('square') || aspectTypes.has('opposition')) && <span><i class="today-legend__line today-legend__line--tense"></i>Square or opposition</span>}
-          {aspectTypes.has('conjunction') && <span><i class="today-legend__line today-legend__line--joined"></i>Conjunction</span>}
-        </figcaption>
+        <DailyWheelLegend
+          aspectTypes={aspectTypes}
+          labels={{ rx: 'Retrograde', easy: 'Trine or sextile', tense: 'Square or opposition', joined: 'Conjunction' }}
+        />
       </figure>
     </header>
 
     <!-- 2. The sky in one line, the same line the home page shows. -->
     <div class="kwrap">
       <div class="ticker-band today-skyline">
-        <SkyTicker />
+        <SkyTicker reserveLabels />
       </div>
     </div>
 
@@ -722,14 +723,6 @@ const monthDay = (iso: string) => ({
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
   }
-  .today-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
-  .today-legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .today-legend i { font-style: normal; }
-  .today-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
-  .today-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
-  .today-legend__line--easy { color: rgba(182, 212, 228, 0.85); }
-  .today-legend__line--tense { color: rgba(222, 142, 121, 0.85); }
-  .today-legend__line--joined { color: rgba(238, 241, 247, 0.6); }
 
   /* ── 2. The sky line ──────────────────────────────────────────── */
   .today-skyline { margin-top: 18px; }
@@ -1410,7 +1403,6 @@ const monthDay = (iso: string) => ({
     .today-hero__lede { margin-top: 16px; font-size: 1.06rem; }
     .today-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
     .today-hero__actions .btn { width: 100%; }
-    .today-legend { gap: 6px 14px; font-size: 12px; }
     .today-skyline .skyticker { gap: 10px 18px; }
     .today-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .today-light__art .artframe { aspect-ratio: 16 / 9; }

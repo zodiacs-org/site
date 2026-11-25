@@ -36,6 +36,8 @@ export const SET_WRITERS = Object.freeze([
   { from: '0.1.1-rc.7', to: '0.1.1-rc.7' },
   { from: '0.1.1-rc.3', to: '0.1.1-rc.6' },
   { from: '1.1.0-rc.10', to: null },
+  { from: '2.0.0-rc.3', to: null },
+  { from: '2.0.0-rc.3', to: null },
 ] as const);
 
 /** What each key of a conventions set covers. Its value is the engine's own token. */
@@ -64,6 +66,9 @@ export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
   lmt: 'The local time given was read on a local mean time: the birthplace\'s own, from its longitude, where the record has one, otherwise the time zone\'s.',
   'no-time': 'No birth time was known: the instant is a reference, and angles and houses are absent.',
   'polar-fallback': 'The house system requested is undefined at this latitude, so whole sign was used.',
+  'polar-angles': 'The place is inside a polar circle, and the angles were computed there.',
+  'calendar-unknown': 'The date was skipped by a calendar change at the place, so its civil calendar is uncertain.',
+  'host-zone-data-differs': 'The time zone data of the computer that ran the calculation differs from the engine\'s near this time; its offset was used.',
   'outside-reference-span': 'The instant falls outside the engine\'s reference span, 1800 to 2200.',
   'delta-t-extrapolated': 'The result uses a time correction extrapolated beyond the table of observations.',
   'de440-unavailable': 'The engine could not open the DE440 pack and used astronomy engine.',
@@ -77,8 +82,10 @@ export function conventionsVocabulary() {
     conventions,
   }));
   const keys = Object.fromEntries(Object.entries(CONVENTION_KEYS).map(([key, covers]) => {
-    // The engine keeps the astronomy engine history in reverse order and appends DE440.
-    const earliest = sets.slice(0, -1).findLast((set) => key in set.conventions)
+    // The engine keeps the astronomy engine history in reverse order, then appends the DE440 set
+    // (1.1.0-rc.10) and the two continuous-UTC sets (2.0.0-rc.3).
+    const history = sets.slice(0, SET_WRITERS.findIndex(({ from }) => from === '1.1.0-rc.10'));
+    const earliest = history.findLast((set) => key in set.conventions)
       ?? sets.find((set) => key in set.conventions);
     return [key, { covers, recordedFrom: earliest?.writtenBy.from ?? null }];
   }));
@@ -113,7 +120,7 @@ const METHODOLOGY_SECTIONS = Object.freeze([
   `\`check_sky_fact\` answers \`true\`, \`false\` or \`depends\`, with the computed values that decide the answer. It never interprets. ${ANY_ZONE_DAY_TEXT}`,
   `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
   '## Local times and places',
-  '`resolve_birth_time` runs the compute API\'s time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place\'s own with its longitude, the zone reference city\'s without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime\'s own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone\'s offset at the same instant in the runtime\'s data, tzdb\'s default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms\' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas\'s reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb\'s. Pass the `utc` it returns to the other tools.',
+  '`resolve_birth_time` runs the compute API\'s time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place\'s own with its longitude, the zone reference city\'s without one. Up to 1970-01-01 the offsets are those of tzdb 2026f with its backzone file, which the engine ships; from then on, the runtime\'s own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone\'s offset at the same instant in the runtime\'s data, tzdb\'s default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms\' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas\'s reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb\'s. Pass the `utc` it returns to the other tools.',
   '`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site\'s birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population; a place is matched by its GeoNames name or its ASCII spelling, with accents, letter case and apostrophes set aside. Coordinates are rounded to 0.01°, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.',
   '## Dates',
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',

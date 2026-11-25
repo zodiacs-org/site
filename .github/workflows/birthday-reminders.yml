@@ -4,8 +4,10 @@ name: Birthday reminders
 # one email a year to people who asked for it and confirmed it. Runs only
 # where the repository variable BIRTHDAY_REMINDERS_SENDING or
 # BIRTHDAY_REMINDER_ENABLED is '1'. With BIRTHDAY_REMINDER_ENABLED alone it
-# only deletes unconfirmed requests older than 48 hours: keep that variable at
-# '1' while sign-ups are open and for two days after they close. It sends only
+# only deletes unconfirmed requests older than 48 hours. When sign-ups close,
+# keep the repository variable at '1' with storage and the token secret configured.
+# Disable cleanup only after a run that started more than 48 hours after closure
+# reports its count of expired requests deleted, which can be zero. It sends only
 # with BIRTHDAY_REMINDERS_SENDING at '1', and the script sends nothing unless
 # BIRTHDAY_REMINDER_ENABLED is '1' with its storage, sending and secret
 # configured. All are off until the owner switches them on. A send needs

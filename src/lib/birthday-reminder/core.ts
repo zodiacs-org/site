@@ -8,7 +8,8 @@
  * The sign-up asks the person to confirm they are 13 or older, and the site
  * offers it only after a score whose birth date passed the under-13 check.
  * Sign-ups are double opt-in: nothing is sent but the confirmation until the
- * link in it is followed, and an unconfirmed request is deleted after 48 hours.
+ * link in it is followed. The link expires after 48 hours. The next sweep
+ * deletes the expired request.
  * Unsubscribing deletes the row.
  *
  * Off unless BIRTHDAY_REMINDER_ENABLED=1 (src/lib/birthday-reminder/config.ts);

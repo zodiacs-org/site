@@ -1,4 +1,5 @@
 ---
+import { READING_CONFIDENCE_FAQ } from '../../lib/reading-confidence-note';
 import Base from '../../layouts/Base.astro';
 import YearScoreCalculator from '../../islands/YearScoreCalculator';
 import { ASPECT_ORB, PLANET_WEIGHT, POINT_WEIGHT } from '../../lib/year-score/core';
@@ -10,6 +11,7 @@ if (!launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED')) {
 }
 
 const faq = [
+  READING_CONFIDENCE_FAQ,
   {
     q: 'What does the score measure?',
     a: 'How the five slow planets, Jupiter, Saturn, Uranus, Neptune and Pluto, meet your birth chart over the next twelve months. Each day the calculator checks every major aspect they make to your Sun, Moon (with a birth time), Mercury, Venus and Mars. Supportive contacts add, pressing ones subtract, and the closer a contact is to exact, the more it counts.',
@@ -117,6 +119,7 @@ const jsonLd = [
   :global(.ys__time-note-space) { visibility: hidden; }
   :global(#ys-time-note) { color: var(--sign-aries); }
   :global(.ys__more) { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; cursor: pointer; font: inherit; justify-self: start; }
+  :global(.ys__pending) { min-height: 100svh; }
   :global(.ys) { display: grid; gap: 20px; }
   :global(.ys__score-core) { display: grid; gap: 6px; padding: clamp(20px, 4vw, 30px); }
   :global(.ys .tile) { padding: 16px 18px; }

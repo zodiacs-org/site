@@ -7,7 +7,9 @@ instant. The clock is the engine's (angle-clock.ts), so a comparison with the
 engine isolates the angle model. Since @zodiacs/engine 0.1.1-rc.15 that clock
 reads an instant from 1972 to 2027-10-02 as UTC, with TT from the IERS leap
 seconds and UT1 from IERS UT1 - UTC, and any other instant as UT1 with the
-engine's Delta T model; angle-clock.ts gives the UT1 and TT the engine uses.
+engine's Delta T model. Since 2.0.0 it reads an instant after 2027-10-02 as
+continuous UTC, TT = UTC + 69.184 s, with UT1 from the Delta T model;
+angle-clock.ts gives the UT1 and TT the engine uses.
 
   GAST = eraGst06a(UT1, TT), at the engine's UT1 and TT
   eps  = eraObl06(TT) + deps from eraNut06a(TT)
@@ -58,7 +60,7 @@ print(json.dumps({
     'what': 'ERFA ascendant and midheaven for grid A, and Placidus\'s limit (90 degrees minus the true obliquity) for grid L, of angle-grid-inputs.json',
     'corpus': {'file': 'angle-grid-inputs.json', 'sha256': hashlib.sha256(corpus_bytes).hexdigest()},
     'erfa': {'pyerfa': erfa.__version__, 'erfa': erfa.version.erfa_version},
-    'clock': 'UT1 and TT of the engine\'s own time basis (@zodiacs/engine %s: 1972 to 2027-10-02 read as UTC, TT from the IERS leap seconds and UT1 from IERS UT1 - UTC; otherwise read as UT1, TT from the engine\'s Delta T model), by tools/angle-clock.ts' % clock['engineVersion'],
+    'clock': 'UT1 and TT of the engine\'s own time basis (@zodiacs/engine %s: 1972 to 2027-10-02 read as UTC, TT from the IERS leap seconds and UT1 from IERS UT1 - UTC; after 2027-10-02 read as continuous UTC, TT = UTC + 69.184 s, UT1 from the engine\'s Delta T model; before 1972 read as UT1, TT from the engine\'s Delta T model), by tools/angle-clock.ts' % clock['engineVersion'],
     'construction': 'GAST = eraGst06a(UT1, TT); eps = eraObl06(TT) + deps of eraNut06a(TT); RAMC = GAST + east longitude; MC = atan2(sin RAMC, cos RAMC cos eps); ASC = atan2(cos RAMC, -(sin RAMC cos eps + tan lat sin eps))',
     'units': 'degrees, rounded to 1e-9',
     'A': grid_a,

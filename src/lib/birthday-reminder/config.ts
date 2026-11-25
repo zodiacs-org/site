@@ -22,7 +22,7 @@ export function birthdayReminderSecret(env: Environment = process.env): string {
 
 /**
  * The list can be reached: storage and the token secret are configured. The
- * way out (a stop link) and the 48-hour deletion of unconfirmed requests need
+ * way out (a stop link) and the cleanup of expired, unconfirmed requests need
  * only this, so they keep working while sign-ups or sending are switched off.
  */
 export function birthdayReminderStorageReady(env: Environment = process.env): boolean {

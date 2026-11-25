@@ -32,7 +32,7 @@ if (!birthdayReminderStorageReady()) {
   console.log('Birthday reminder storage is not configured. Nothing deleted, nothing sent.');
   process.exit(0);
 }
-// The 48-hour promise holds whether or not reminders are being sent.
+// Sweep expired requests before checking whether sending is enabled.
 const swept = dryRun ? 0 : await sweepExpiredRequests();
 console.log(`Birthday reminders: ${dryRun ? 'dry run, no' : swept} expired unconfirmed requests deleted.`);
 if (args.includes('--cleanup-only')) process.exit(0);

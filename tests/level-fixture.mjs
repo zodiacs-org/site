@@ -1,7 +1,7 @@
 /**
  * Reader levels (docs/LEVELS.md) open /birth-chart/ at Beginner for a first
  * visit, which hides houses, aspect lines, the entity picker, lenses, the 3D
- * view and the details table. Browser drives written for the full chart
+ * view and the technical receipt. Browser drives written for the full chart
  * explorer call withFullLevel() so every page they open starts at Advanced,
  * where the page shows everything, as it did before levels existed. The first
  * visit (Beginner and its question) is covered by the consumer experience
