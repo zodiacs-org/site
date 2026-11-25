@@ -1,0 +1,15 @@
+{
+  "readAt": "2026-11-23T15:49:20.149Z",
+  "package": "@zodiacs/engine",
+  "version": "2.1.0",
+  "distTags": {
+    "next": "2.0.0-rc.3",
+    "latest": "2.1.0"
+  },
+  "dist": {
+    "fileCount": 101,
+    "unpackedSize": 4781846,
+    "integrity": "sha512-Gf6OVAL3UJYDdOBqet5JKXd0Y4BTspndHvHyigmdb15jxlz9Hlah3kM+hVJpI1g5+/tG8gD4x3josmLtA3hkBg==",
+    "shasum": "6e1e9ff0b67b09c1f02e7f217b7325049e62bb70"
+  }
+}

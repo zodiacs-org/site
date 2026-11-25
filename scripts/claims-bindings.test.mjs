@@ -18,7 +18,7 @@ import { withBrowserEphemeris } from '../tests/helpers/browser-ephemeris.ts';
  * the figure it states still covers what was measured.
  */
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const measured = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/claims-horizons/results.json'));
+const measured = JSON.parse(read('docs/platform/evidence/site-engine-2-1-0/claims-horizons/results.json'));
 const historicalEclipses = JSON.parse(read('docs/platform/evidence/site-engine-rc16/station-alignment/events-vs-swiss.json')).summary.eclipse;
 const maximum = (rows) => Math.max(...rows.map(({ differenceSeconds }) => Math.abs(differenceSeconds)));
 const events = (family) => measured.events.filter((row) => row.family === family);

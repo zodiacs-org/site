@@ -21,7 +21,7 @@ import { loadProfile, updateChartSummaries } from './store';
  * named for the tzdb release the resolver reads before 1970 (the engine's
  * TZDB.version), so a new release checks every chart again.
  */
-const CHECKED_KEY = 'zodiacs.profile.birthplace-checks-2025c.v1';
+const CHECKED_KEY = 'zodiacs.profile.birthplace-checks-2026f.v1';
 
 let running: Promise<number> | null = null;
 

@@ -1,9 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 
 const faq = [
@@ -55,6 +58,8 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
+    <ToolHeroMark name="moon-sign" />
     <div class="tool-hero">
       <h1 class="display">Find your moon sign.</h1>
       <p>
@@ -85,6 +90,13 @@ const jsonLd = [
         <a href="/birth-chart/">get your birth chart</a>: sun, moon, and rising
         together are the real summary of you.
       </p>
+      {launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') && (
+        <p>
+          Vedic astrology reads the Moon sign first, and counts it from the stars
+          rather than the seasons, so it usually falls one sign earlier. See your{' '}
+          <a href="/vedic-signs/">Vedic Moon sign and nakshatra</a>.
+        </p>
+      )}
       <EvidenceDisclosure
         label="Why birth time can change the answer"
         description="Moon speed and historical clock changes"
@@ -160,4 +172,9 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (min-width: 321px) and (max-width: 387px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>

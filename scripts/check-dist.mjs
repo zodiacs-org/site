@@ -37,7 +37,7 @@ import {
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
 import { PUBLICATION_RECORD_MARKER, chunksWithPublicationRecord } from './publication-record-chunks.mjs';
-import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
+import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, enabledLocalesForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
@@ -84,6 +84,9 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
+  // Russian pages of the locale expansion, once released.
+  ...[...EXPANSION_FAMILY_IDS].flatMap((family) => expansionFamilyPaths(family)
+    .filter((path) => publishedLocalesForPath(path).includes('ru')).map((path) => `/ru${path}`)),
 ]);
 const LOCALIZED_404_PATHS = new Set([
   '/404.html', '/es/404/', '/pt/404/', '/fr/404/', '/it/404/', '/ru/404/',
@@ -1379,6 +1382,8 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// Vedic signs follows its launch flag (src/lib/launch-flags.ts) the same way.
+const vedicSignsIndexed = sitemapLocs.has('/vedic-signs/');
 // The good day finder follows its launch flag (src/lib/launch-flags.ts) the same way.
 const goodDaysIndexed = sitemapLocs.has('/good-days/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
@@ -1461,6 +1466,7 @@ const sitemapPolicy = {
   // +1 for /good-days/, the English-only good day finder, once PUBLIC_GOOD_DAYS_ENABLED is on.
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // +1 for /vedic-signs/, the English-only Vedic signs page, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
@@ -1468,7 +1474,7 @@ const sitemapPolicy = {
   // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
   // +1 for /support/, the support page, linked from /about/.
   total: 1539 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(goodDaysIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(vedicSignsIndexed) + Number(goodDaysIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1540,6 +1546,7 @@ const indexedFamilies = [
   { label: 'Good day finder', pattern: /^\/good-days\/$/, expected: Number(goodDaysIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
+  { label: 'Vedic signs', pattern: /^\/vedic-signs\/$/, expected: Number(vedicSignsIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
@@ -1595,7 +1602,9 @@ for (const file of files) {
   const rel = relative(root, file).split(sep).join('/');
   const pagePath = htmlFileToPath(rel);
   const localizedBirthday = /^\/(?:es|pt|fr|it)\/birthday\/[a-z]+-\d{1,2}\/$/u.test(pagePath);
-  const russianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath);
+  // Held Russian sign guides stay noindex until the locale expansion record releases them.
+  const russianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath)
+    && !publishedLocalesForPath(pagePath.slice(3)).includes('ru');
   const deferredPerson = /^\/people\/[a-z0-9-]+\/$/u.test(pagePath)
     && !indexablePeoplePaths.has(pagePath);
   if (!localizedBirthday && !russianSignGuide && !deferredPerson) continue;
@@ -1614,8 +1623,9 @@ for (const file of files) {
 if (packetFNoindexCounts.localizedBirthdays !== 1464) {
   fail(`Packet F: ${packetFNoindexCounts.localizedBirthdays}/1464 localized birthday previews are present`);
 }
-if (packetFNoindexCounts.russianSignGuides !== 12) {
-  fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/12 Russian sign-guide previews are present`);
+const heldRussianSignGuides = ZODIAC_SIGN_SLUGS.filter((sign) => !publishedLocalesForPath(`/${sign}/`).includes('ru')).length;
+if (packetFNoindexCounts.russianSignGuides !== heldRussianSignGuides) {
+  fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/${heldRussianSignGuides} Russian sign-guide previews are present`);
 }
 if (packetFNoindexCounts.people !== 516 - indexablePeoplePaths.size) {
   fail(`Packet F: ${packetFNoindexCounts.people}/${516 - indexablePeoplePaths.size} deferred People profiles are present`);
@@ -1634,7 +1644,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?lunar-return\/$/u.test(path))),
   new Set(['/lunar-return/']),
 );
-if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-09-06</lastmod>')) {
+// Re-dated 2026-11-24: the tool's icon was added beside the hero heading (rendered content).
+if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-11-24</lastmod>')) {
   fail('sitemap.xml: lunar-return modification date must match the reviewed source revision');
 }
 requireExactSet(
@@ -1642,8 +1653,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-// Re-dated 2026-11-17: the restyle added the letter key and the emblem (rendered content).
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-17</lastmod>')) {
+// The calculator now identifies each numerology reading as a separate tradition.
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-23</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
@@ -1715,9 +1726,13 @@ for (const file of files) {
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
     || LOCALIZED_404_PATHS.has(pagePath)
     || (hiddenChildPage && pagePath.startsWith('/ru/'));
+  // A family the locale expansion builds in Russian (released, or held in a
+  // preview build) may link its Russian twin; a normal build enables no held page.
+  const russianExpansionBuilt = enabledLocalesForPath(pagePath.replace(/^\/(?:es|pt|fr|it|ru)(?=\/)/u, '')).includes('ru');
   const russianRouteRenderable = russianRouteAvailable
     || hreflangRouteFamily(pagePath) === 'sign-guide'
-    || hiddenChildPage;
+    || hiddenChildPage
+    || russianExpansionBuilt;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }
@@ -1735,7 +1750,7 @@ for (const file of files) {
     fail(`${rel}: inactive Arabic Open Graph locale leaked into HTML`);
   }
   const isRussianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath);
-  if (!russianRouteAvailable && !isRussianSignGuide
+  if (!russianRouteAvailable && !isRussianSignGuide && !(russianExpansionBuilt && pagePath.startsWith('/ru/'))
       && /property=["']og:locale(?::alternate)?["'][^>]*content=["']ru_RU["']/.test(html)) {
     fail(`${rel}: Russian Open Graph locale leaked onto a deferred or programmatic page`);
   }

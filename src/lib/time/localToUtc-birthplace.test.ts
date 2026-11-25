@@ -239,8 +239,8 @@ describe('birthplace local mean time', () => {
 });
 
 describe('the engine\'s local mean time eras', () => {
-  it('ships tzdata 2025c with backzone', () => {
-    expect(TZDB).toMatchObject({ version: '2025c', form: 'main+backzone' });
+  it('ships tzdata 2026f with backzone', () => {
+    expect(TZDB).toMatchObject({ version: '2026f', form: 'main+backzone' });
     expect(TZDB.sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 

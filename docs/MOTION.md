@@ -19,32 +19,39 @@ bounces, shakes, parallax and infinite loops.
 ## The rule
 
 Marks always arrive. Cards, tiles and rows may rise once on pages people
-visit occasionally. Words, controls, heroes and results never wait, and the
-daily pages never move.
+visit occasionally, and on the horoscope pages. Words, controls, heroes and
+results never wait, and Today never moves.
 
 | Thing | Motion |
 | --- | --- |
 | Discs, rings, lines, wheels, figures, emblems (not the LCP element) | `draw` or `disc`, once, when first seen, on any page except the daily ones |
-| Cards, tiles and rows, including link cards (`<a>`) and list rows (`<li>`) | `rise`, once, on occasional pages only (list below) |
+| Cards, tiles and rows, including link cards (`<a>`) and list rows (`<li>`) | `rise`, once, on occasional pages and horoscope pages only (lists below) |
 | Paragraphs of reading text, headings | None. Present from the first frame |
 | Forms, form controls, buttons, `details` / `summary` | None. Present from the first frame |
 | Whole sections and articles | None. Mark the cards and marks inside them instead |
 | Hero pictures and hero headings (LCP) | None |
-| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. Big Three's result still marks its cards and discs: it merged before the guard and is listed in `KNOWN_ON_MAIN` in the guard test, to be fixed in its own PR. |
+| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. |
 | Keyboard-driven actions | None |
 | Daily pages | No entrance motion at all |
 
 Occasional pages, where cards, tiles and rows may rise: the tools hub, sign
 guides, learn pages, sky and event pages, people pages, birthday pages,
-compatibility pair pages, life path pages and the numerology page.
+compatibility pair pages, life path pages, the numerology page, the seasons
+hub, and the sample cards on group charts and chart twins.
+
+Horoscope pages (the horoscope hub and the sign horoscope pages: daily,
+weekly, monthly, yearly, love, career and their localized versions) follow
+the same rule as occasional pages, by the site owner's choice on 24 November
+2026. Their hero, period controls and reading stay still, since a period
+switch crossfades the reading in place; the rows, cards, wheel and discs
+around the reading may move once.
 
 Daily pages, where nothing is marked: Today (`/today/` and its localized
-versions), the horoscope hub and the sign horoscope pages (daily, weekly,
-monthly, yearly, love, career and their localized versions).
+versions).
 
 ## Before you mark anything
 
-1. Is the page a daily one (Today, the horoscope hub, a sign horoscope)? If so, stop.
+1. Is the page Today? If so, stop. On a horoscope page, keep the hero, the period controls and the reading still.
 2. Is it a mark (disc, ring, line, wheel, figure)? Use `draw` or `disc`.
 3. Is it a card, tile or row (a link card, a list row)? It may `rise`, once, on an occasional page.
 4. Is it a paragraph, a heading, a form or control, a button, a `details` / `summary`, or a whole section? If so, stop.
@@ -61,7 +68,8 @@ and the checks for marked tags, daily pages and result blocks.
 ## Not moving, on purpose
 
 - Home hero, sign page mastheads, pair page heroes, horoscope heroes: the picture or heading is the LCP element.
-- Today, the horoscope hub and sign horoscope pages: opened daily, a reader comes for a line of text. Nothing on them is marked, not even cards or discs.
+- Today: opened daily, a reader comes for a line of text. Nothing on it is marked, not even cards or discs.
+- Horoscope readings, heroes and period controls: the reading crossfades in place when the period changes, so it never also rises.
 - Paragraphs, headings, question rows' text, "On this page" lists: words people read.
 - Forms, buttons, place autocomplete, tabs, sign pickers, aspect chips, `details` / `summary`: controls people act on, often many times per visit.
 - Numerology result cards use the result container's 200 ms arrival. The
@@ -110,7 +118,6 @@ import Motion from '../components/Motion.astro';
   `--motion-delay` (extra delay).
 - An island that adds marks after the page loads (never a result the person
   asked for) can call `window.zodiacsMotion?.scan(root)` after rendering them.
-  Big Three still uses this call for its result entrances (see the rule above).
 
 ## Guarantees
 
@@ -147,5 +154,16 @@ import Motion from '../components/Motion.astro';
   chart explorer, so it is never used for this.
 - A marked element inside another marked element takes its parent's step
   (it inherits `--motion-i`), so a grid staggers by card, not by part.
+- Moon phase and the Moon journal: the Moon readout is a live answer inside an island.
+- Sky calendar: the calendar is a control.
+- Birthday hub: 366 day chips, too many to move.
+- Birthday date pages: the hero picture is the largest paint.
+- About, support, methodology, Learn articles and the glossary: reading text.
+- Occasions: a form.
+- Apps: its own designed landing page.
+- Ask: its three topic cards are whole `<section>`s of reading text, each with its heading.
+- Translated seasons hubs and every translated sharing page: only the English pages move.
+- Compatibility hub: the two ways to start a comparison are the page's main action; an entrance held them back about half a second on a throttled phone, so they paint with the page.
+
 - `.reveal` in `src/styles/base.css` stays as it is: the small heading
   entrance on pages that already use it.

@@ -50,7 +50,7 @@ describe('developer candidate documentation', () => {
     expect(lock.packages[`node_modules/${candidate.name}`].integrity)
       .toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     const files = readPackageArchive(archive);
-    const pack = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/npm-pack.json'));
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-2-1-0/npm-pack.json'));
     expect(files.size).toBe(pack.entryCount);
     for (const [path, bytes] of files) {
       // Buffer.equals checks length and every byte without walking a large
@@ -145,7 +145,7 @@ describe('developer candidate documentation', () => {
   });
 
   it('records the published npm release and retains the earlier candidate provenance', () => {
-    const pack = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/npm-pack.json'));
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-2-1-0/npm-pack.json'));
     expect(candidate.releaseStatus).toBe('published');
     expect(candidate.releaseLabel).toBe('On npm');
     expect(candidate.registryVersion).toBe(candidate.version);

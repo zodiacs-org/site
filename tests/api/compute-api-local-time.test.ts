@@ -21,7 +21,7 @@ describe("the compute API's local-time bundle", () => {
     expect(read(BUNDLE_PATH).equals(bytes), 'stale: run node scripts/build-compute-local-time.mjs').toBe(true);
     expect(read(TYPES_PATH).equals(types)).toBe(true);
     expect(inputs).toContain('node_modules/@zodiacs/engine/dist/geo.js');
-    expect(inputs.filter((input) => /^node_modules\/@zodiacs\/engine\/dist\/tzdb-2025c-\d{2}-/u.test(input))).toHaveLength(16);
+    expect(inputs.filter((input) => /^node_modules\/@zodiacs\/engine\/dist\/tzdb-2026f-\d{2}-/u.test(input))).toHaveLength(16);
     expect(inputs).toContain('src/lib/time/zone-names.ts');
     expect(inputs).toContain('src/data/tz-names.json');
     // The site's own resolver and tables are gone, from the bundle as from the site.

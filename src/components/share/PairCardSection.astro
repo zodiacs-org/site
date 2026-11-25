@@ -1,0 +1,15 @@
+---
+import CardShare from './CardShare.astro';
+import { CARD_SHARE_LABELS } from '../../lib/share-cards/labels';
+import { pairCardPath, pairPagePath, type CardLocale } from '../../lib/share-cards/cards';
+
+interface Props { locale: CardLocale; pair: string; title: string }
+const { locale, pair, title } = Astro.props;
+const l = CARD_SHARE_LABELS[locale];
+---
+<section class="ksection" aria-labelledby="card-share-title">
+  <div class="kwrap">
+    <div class="section-head"><h2 class="h-2" id="card-share-title">{l.pairHeading}</h2><p>{l.pairLede}</p></div>
+    <CardShare locale={locale} card={pairCardPath(locale, pair)} page={pairPagePath(locale, pair)} title={title} />
+  </div>
+</section>

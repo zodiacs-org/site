@@ -1,4 +1,4 @@
-import release from '../../docs/platform/evidence/site-engine-1-1-0/de440-receipt-conventions.json';
+import release from '../../docs/platform/evidence/site-engine-2-1-0/de440-receipt-conventions.json';
 
 /** Apply the measured engine identity to an otherwise byte exact capability fixture. */
 export function expectedCapabilityReply(text: string): string {

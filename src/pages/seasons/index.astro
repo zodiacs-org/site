@@ -4,6 +4,7 @@
  * src/components/seasons/SeasonsHubPage.astro, shared with the Spanish,
  * Portuguese, French and Italian hubs under src/pages/[releasedLocale]/seasons/.
  */
+import Motion from '../../components/Motion.astro';
 import SeasonsHubPage from '../../components/seasons/SeasonsHubPage.astro';
 ---
-<SeasonsHubPage locale="en" />
+<SeasonsHubPage locale="en"><Motion slot="motion" /></SeasonsHubPage>
