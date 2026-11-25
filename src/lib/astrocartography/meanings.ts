@@ -15,12 +15,22 @@
 import { NOTICEABLE_KM, type AcgAngle, type AcgBody, type BodyLines, type LineDistance } from './lines.js';
 import { readingConfidence, readingConfidenceText, readingDetail } from '../../ai-tools/reading-confidence.js';
 import { MINOR_NOTE, isUnderAge } from '../../ai-tools/features/reading-guards.js';
+import { earliestToday } from '../birth-date-policy.js';
 
 export { MINOR_NOTE };
 
 /** Compare civil birthdays so 29 February cannot promote a 1 March birthday a day early. */
 export function isUnder18(birthDate: string, today: string): boolean {
   return isUnderAge(birthDate, today, 18);
+}
+
+/**
+ * Under 18 at an instant, on the calendar date at UTC-12 (the earliest date anywhere, the day the shared under-13
+ * policy reads): the page and the get_astrocartography tool both read the age here, so the love and attraction
+ * readings stay left out until the 18th birthday has begun everywhere, whatever clock the person is on.
+ */
+export function under18At(birthDate: string, now: Date): boolean {
+  return isUnderAge(birthDate, earliestToday(now), 18);
 }
 
 export const ANGLE_NAME: Record<AcgAngle, string> = {
@@ -57,7 +67,7 @@ export const LINE_MEANING: Record<AcgBody, Record<AcgAngle, string>> = {
   },
   Venus: {
     ASC: 'Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.',
-    DSC: 'Traditionally one of the classic lines for love and partnership, and for agreements that go smoothly.',
+    DSC: 'Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.',
     MC: 'Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.',
     IC: 'Traditionally a place for a beautiful, comfortable home and warm family life.',
   },
@@ -69,7 +79,7 @@ export const LINE_MEANING: Record<AcgBody, Record<AcgAngle, string>> = {
   },
   Jupiter: {
     ASC: 'Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.',
-    DSC: 'Traditionally a place for generous partners, helpful advisers and agreements that work in your favour.',
+    DSC: 'Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.',
     MC: 'Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.',
     IC: 'Traditionally a place for a large, happy home, good for family, property and feeling well provided for.',
   },
@@ -143,7 +153,10 @@ export function lineSentence(body: AcgBody, angle: AcgAngle, minor = false): str
   return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]})${area ? `, for ${area}` : ''}.${meaning ? ` ${meaning}` : ''}`;
 }
 
-/** A birth time and place are always required here, so every reading of the map carries the same confidence. */
+/**
+ * The page always takes a birth time and a birthplace with its coordinates, so every reading it draws, and the line's
+ * share card, carries this confidence. The get_astrocartography tool reads its own from the details it is given.
+ */
 export const ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
 export const ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
 

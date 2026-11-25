@@ -1,11 +1,31 @@
 import { decode as decodeJpeg } from 'jpeg-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ACG_ANGLES, ACG_BODIES } from '../lib/astrocartography/lines';
-import { ASTROCARTOGRAPHY_SHARE_KEYS, astrocartographyShareUrl, parseAstrocartographyShare } from '../lib/astrocartography/share';
+import { ASTROCARTOGRAPHY_SHARE_KEYS, astrocartographyCleanQuery, astrocartographyShareUrl, parseAstrocartographyShare } from '../lib/astrocartography/share';
 import { forbiddenClaim } from '../ai-tools/personal/shared';
-import { astrocartographyCardModel, handleAstrocartographyImageRequest, handleAstrocartographyLinkRequest, handleAstrocartographyStoryRequest } from './result-preview';
+import { requestOrigin } from './chart-preview';
+import { astrocartographyCardModel, astrocartographyStory, astrocartographyStoryAddress, handleAstrocartographyImageRequest, handleAstrocartographyLinkRequest, handleAstrocartographyStoryRequest, handleResultShareNodeRequest, type ResultShareRoute } from './result-preview';
 
-afterEach(() => { vi.unstubAllGlobals(); });
+afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+
+function nodeResponse() {
+  const headers = new Map<string, string>();
+  return {
+    statusCode: 0,
+    headers,
+    body: Buffer.alloc(0) as Buffer,
+    setHeader(name: string, value: string) { headers.set(name.toLowerCase(), value); },
+    end(body?: Buffer) { this.body = body ?? Buffer.alloc(0); },
+  };
+}
+
+/** The deployed entry, as vercel.json's rewrite calls it: the route key joins the query as it arrived. */
+async function deployed(route: ResultShareRoute, query: Record<string, string | string[]>) {
+  vi.stubEnv('PUBLIC_ASTROCARTOGRAPHY_ENABLED', '1');
+  const res = nodeResponse();
+  await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+  return res;
+}
 
 describe('the astrocartography share link', () => {
   it('carries the planet and the angle alone, and reads back', () => {
@@ -40,11 +60,59 @@ describe('the astrocartography share page and pictures', () => {
     expect(html).toContain('href="/astrocartography/"');
     expect(html).toContain('/api/og/astrocartography-story?p=venus&amp;a=dsc');
     expect(html).not.toMatch(/[\u2013\u2014]/u);
+    // A link with a key the share does not use is sent to the line's own address, which keeps the card.
+    const extra = await handleAstrocartographyLinkRequest(new Request('https://zodiacs.org/share/astrocartography/?p=venus&a=dsc&city=Paris'));
+    expect(extra.status).toBe(303);
+    expect(extra.headers.get('location')).toBe('https://zodiacs.org/share/astrocartography/?p=venus&a=dsc');
+    expect(await extra.text()).toBe('');
     // A link that is not a share opens the plain page, which still leads to the map.
-    const plain = await (await handleAstrocartographyLinkRequest(new Request('https://zodiacs.org/share/astrocartography/?p=venus&a=dsc&city=Paris'))).text();
+    const plain = await (await handleAstrocartographyLinkRequest(new Request('https://zodiacs.org/share/astrocartography/'))).text();
     expect(plain).toContain('Your astrocartography map');
-    expect(plain).not.toContain('Paris');
     expect(plain).toContain('href="/astrocartography/"');
+  });
+
+  describe('clears every key the share does not use from the address, on the deployed entry', () => {
+    const SECRETS = ['1990-05-03', '08:30', 'Lisbon', 'Ada', '38.72'];
+    const holdsNone = (text: string) => { for (const value of SECRETS) expect(text).not.toContain(value); };
+
+    it.each([
+      [{ p: 'venus', a: 'dsc', birthDate: '1990-05-03' }, '/share/astrocartography/?p=venus&a=dsc'],
+      [{ p: 'venus', a: 'dsc', t: '08:30', city: 'Lisbon', n: 'Ada', lat: '38.72' }, '/share/astrocartography/?p=venus&a=dsc'],
+      [{ birthDate: '1990-05-03', a: 'dsc', p: 'venus', ref: 'chatgpt' }, '/share/astrocartography/?p=venus&a=dsc&ref=chatgpt'],
+      [{ p: 'venus', a: 'dsc', fbclid: 'IwAR0' }, '/share/astrocartography/?p=venus&a=dsc'],
+      // A repeated key, or a query that is no share, leaves nothing of the query: the plain page.
+      [{ p: ['venus', '1990-05-03'], a: 'dsc' }, '/share/astrocartography/'],
+      [{ p: 'chiron', a: 'mc', d: '1990-05-03' }, '/share/astrocartography/'],
+      [{ birthDate: '1990-05-03' }, '/share/astrocartography/'],
+    ] as const)('sends %j to %s', async (query, location) => {
+      const res = await deployed('astrocartography-link', query as Record<string, string | string[]>);
+      expect(res.statusCode).toBe(303);
+      expect(res.headers.get('location')).toBe(`https://zodiacs.org${location}`);
+      holdsNone(res.headers.get('location')!);
+      holdsNone(res.body.toString('utf8'));
+    });
+
+    it('opens the card at the clean address, and the plain page with no query', async () => {
+      const card = await deployed('astrocartography-link', { p: 'venus', a: 'dsc' });
+      expect(card.statusCode).toBe(200);
+      expect(card.body.toString('utf8')).toContain('My Venus Descendant line');
+      const withRef = await deployed('astrocartography-link', { p: 'venus', a: 'dsc', ref: 'assistant' });
+      expect(withRef.statusCode).toBe(200);
+      const plain = await deployed('astrocartography-link', {});
+      expect(plain.statusCode).toBe(200);
+      expect(plain.body.toString('utf8')).toContain('Your astrocartography map');
+    });
+
+    it('leaves the pictures as they were: only their own keys, else refused', async () => {
+      expect((await deployed('astrocartography-image', { p: 'venus', a: 'dsc', birthDate: '1990-05-03' })).statusCode).toBe(400);
+      expect((await deployed('astrocartography-story', { p: 'venus', a: 'dsc', fbclid: 'IwAR0' })).statusCode).toBe(400);
+    });
+
+    it('builds the clean query from the share keys alone', () => {
+      expect(astrocartographyCleanQuery(new URLSearchParams('a=mc&x=1&p=jupiter'))).toBe('p=jupiter&a=mc');
+      expect(astrocartographyCleanQuery(new URLSearchParams('p=jupiter&a=mc&ref=other'))).toBe('');
+      expect(astrocartographyCleanQuery(new URLSearchParams(''))).toBe('');
+    });
   });
 
   it.each([
@@ -63,6 +131,20 @@ describe('the astrocartography share page and pictures', () => {
     expect(jpeg.byteLength).toBeLessThan(size[0] === 1200 ? 300_000 : 900_000);
     expect(fetchSpy).not.toHaveBeenCalled();
   }, 30_000);
+
+  it('prints the map page on the site the share was opened from, so a staging story never sends people to production', () => {
+    const staging = 'https://site-git-acg-zodiacsofficial.vercel.app/api/og/astrocartography-story?p=moon&a=ic';
+    expect(astrocartographyStoryAddress(staging)).toBe('site-git-acg-zodiacsofficial.vercel.app/astrocartography');
+    expect(astrocartographyStoryAddress('https://zodiacs.org/api/og/astrocartography-story?p=moon&a=ic')).toBe('zodiacs.org/astrocartography');
+    expect(astrocartographyStoryAddress('https://www.zodiacs.org/api/og/astrocartography-story?p=moon&a=ic')).toBe('zodiacs.org/astrocartography');
+    // The deployed entry builds the request from the validated origin (requestOrigin): an unknown host is production's.
+    expect(astrocartographyStoryAddress(`${requestOrigin({ headers: { host: 'evil.example' } })}/api/og/astrocartography-story`)).toBe('zodiacs.org/astrocartography');
+    expect(astrocartographyStoryAddress(`${requestOrigin({ headers: { host: 'site-git-acg-zodiacsofficial.vercel.app' } })}/api/og/astrocartography-story`)).toBe('site-git-acg-zodiacsofficial.vercel.app/astrocartography');
+    const model = astrocartographyCardModel({ planet: 'Moon', angle: 'IC', ref: null });
+    const drawn = JSON.stringify(astrocartographyStory(model, new Map(), [], astrocartographyStoryAddress(staging)));
+    expect(drawn).toContain('site-git-acg-zodiacsofficial.vercel.app/astrocartography');
+    expect(drawn).not.toContain('"zodiacs.org/astrocartography"');
+  });
 
   it('refuses a picture for anything but a share', async () => {
     for (const url of ['https://zodiacs.org/api/og/astrocartography-image?p=jupiter&a=mc&d=1990-05-03', 'https://zodiacs.org/api/og/astrocartography-image?p=jupiter'])

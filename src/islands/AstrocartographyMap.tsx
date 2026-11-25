@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { BirthDateField, birthDateForChart, calendarInPlay, loadBirthCalendar, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
 import type { City } from '../lib/geo/search';
+import { placeDistinctions, placeId } from '../lib/geo/place-label';
 import type { AcgResult } from './astrocartography/compute';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, strengthOf, type AcgAngle, type AcgBody, type GeoPoint, type LineDistance } from '../lib/astrocartography/lines';
-import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, angleArea, ANGLE_NAME, MAP_PICTURE_HELP, MINOR_NOTE, clockChangeLimit, isUnder18, lineTable, placeLines } from '../lib/astrocartography/meanings';
+import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, angleArea, ANGLE_NAME, MAP_PICTURE_HELP, MINOR_NOTE, clockChangeLimit, lineTable, placeLines, under18At } from '../lib/astrocartography/meanings';
 import { loadModule } from '../lib/module-load';
 import { astrocartographyShareUrl } from '../lib/astrocartography/share';
 import CalculationReload, { calculationError } from './CalculationReload';
-import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText, earliestToday } from '../lib/birth-date-policy';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
+import { parseCivilDate } from '../lib/time/civil-date';
+import { t } from '../lib/i18n';
 
 /** Each planet drawn in the hue of the sign it rules, the only colour the site uses. */
 const HUE: Record<AcgBody, string> = {
@@ -42,7 +45,26 @@ function paths(points: readonly GeoPoint[]): string[] {
  * attraction and romance, and nobody leaves that care early in any time zone.
  */
 export function under18(birthDate: string, now = new Date()): boolean {
-  return isUnder18(birthDate, earliestToday(now));
+  return under18At(birthDate, now);
+}
+
+/** The converted birth date, the message for the date field, or null while there is no date to check. */
+export type DateCheck = { date: string } | { error: string } | null;
+
+/**
+ * The age check for a date the input already holds as a Gregorian date, at once; undefined when the date is
+ * written another way and has to be converted first (mapBirthDate).
+ */
+export function quickDateCheck(date: string, calendar: CalendarChoice, now = new Date()): DateCheck | undefined {
+  if (!date) return null;
+  // A day the calendar does not have (1990-02-30) is read by the calendar module, which names the problem.
+  return calendarInPlay(date, calendar) || !parseCivilDate(date) ? undefined : ageCheck(date, now);
+}
+
+/** Zodiacs is not directed at children under 13: a Gregorian birth date under 13, or still to come, draws nothing. */
+function ageCheck(birthDate: string, now: Date): { date: string } | { error: string } {
+  const refusal = birthDateRefusal(birthDate, now);
+  return refusal ? { error: birthDateRefusalText(refusal) } : { date: birthDate };
 }
 
 /**
@@ -56,14 +78,60 @@ export function under18(birthDate: string, now = new Date()): boolean {
  */
 export async function mapBirthDate(date: string, calendar: CalendarChoice, now = new Date()): Promise<{ date: string } | { error: string }> {
   let birthDate = date;
-  if (calendarInPlay(date, calendar)) {
-    const entry = await birthDateForChart('en', date, calendar);
+  if (calendarInPlay(date, calendar) || !parseCivilDate(date)) {
+    // A date that is not a real Gregorian day is read as written in the Gregorian calendar, so it is refused there.
+    const entry = calendarInPlay(date, calendar) ? await birthDateForChart('en', date, calendar) : (await loadBirthCalendar()).readChartBirthDate('en', date, 'gregorian');
     if ('error' in entry) return { error: entry.error };
     birthDate = entry.date;
   }
-  // Zodiacs is not directed at children under 13: such a birth date draws nothing.
-  const refusal = birthDateRefusal(birthDate, now);
-  return refusal ? { error: birthDateRefusalText(refusal) } : { date: birthDate };
+  return ageCheck(birthDate, now);
+}
+
+const TIME_HELP = 'A birth time is needed: the lines move about 110 km for every 4 minutes.';
+const LOCKED_HELP = 'Enter the birth date first.';
+
+interface AcgBirthFieldsProps {
+  date: string;
+  calendar: CalendarChoice;
+  check: DateCheck;
+  time: string;
+  city: City | null;
+  onDateChange: (date: string) => void;
+  onCalendarChange: (calendar: CalendarChoice) => void;
+  onTimeChange: (time: string) => void;
+  onCityChange: (city: City | null) => void;
+}
+
+/**
+ * The birth date, time and birthplace. The time and the birthplace open only once the date, converted to the
+ * Gregorian date the map is drawn for, has passed the age check: a date under 13 or still to come is refused at
+ * the date field, and the form never asks for, searches or holds a child's birth time or birthplace.
+ */
+export function AcgBirthFields({ date, calendar, check, time, city, onDateChange, onCalendarChange, onTimeChange, onCityChange }: AcgBirthFieldsProps) {
+  const open = check !== null && 'date' in check;
+  const refusal = check !== null && 'error' in check ? check.error : undefined;
+  return [
+    <BirthDateField
+      locale="en" id="acg-date" date={date} city={open ? city : null}
+      onDateChange={onDateChange} calendar={calendar} onCalendarChange={onCalendarChange} error={refusal}
+    />,
+    <div class="field">
+      <label class="field__label" for="acg-time">{t('en', 'birthTime')}</label>
+      <input
+        id="acg-time" class="field__input" type="time" required disabled={!open} value={open ? time : ''}
+        aria-describedby="acg-time-help"
+        onInput={(e) => onTimeChange((e.target as HTMLInputElement).value)}
+      />
+      <p id="acg-time-help" class="field__help">{open ? TIME_HELP : `${LOCKED_HELP} ${TIME_HELP}`}</p>
+    </div>,
+    <div class="field">
+      <label class="field__label" for="acg-place">{t('en', 'birthplace')}</label>
+      {open
+        ? <PlaceSearch id="acg-place" selected={city} onSelect={onCityChange} locale="en" selectionHint={t('en', 'placePickHint')} required wholeIndex distinctLabels />
+        : <input id="acg-place" class="field__input" type="text" disabled placeholder={t('en', 'placePlaceholder')} aria-describedby="acg-place-help" />}
+      <p id="acg-place-help" class="field__help">The birthplace sets the time zone of the birth time.</p>
+    </div>,
+  ];
 }
 
 export default function AstrocartographyMap() {
@@ -79,6 +147,35 @@ export default function AstrocartographyMap() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const revision = useRef(0);
+  // The calendar control and its conversion load with the page, whatever date is entered, so no request tells a date
+  // before 1924 from a later one. BirthDateField and birthDateForChart then reuse the module already loaded.
+  useEffect(() => { loadBirthCalendar().catch(() => {}); }, []);
+  // An edit to the birth details withdraws the map drawn for the old ones and any draw still running, so neither the
+  // map nor its place readings stay on screen for details the form now holds differently (or refuses).
+  function invalidate() {
+    ++revision.current;
+    setResult(null); setPlaces([]); setAdding(null); setMinor(false); setBusy(false); setError('');
+  }
+  const edit = <T,>(set: (value: T) => void) => (value: T) => { invalidate(); set(value); };
+  // The date is checked as it is entered: at once for a Gregorian date, after conversion for one written another way.
+  const dateKey = `${calendar}|${date}`;
+  const quick = quickDateCheck(date, calendar);
+  const [converted, setConverted] = useState<{ key: string; check: DateCheck } | null>(null);
+  useEffect(() => {
+    if (quick !== undefined) return;
+    let live = true;
+    mapBirthDate(date, calendar).then((entry) => { if (live) setConverted({ key: dateKey, check: entry }); }, () => { if (live) setConverted({ key: dateKey, check: null }); });
+    return () => { live = false; };
+  }, [dateKey]);
+  const check: DateCheck = quick !== undefined ? quick : converted?.key === dateKey ? converted.check : null;
+  const dateOpen = check !== null && 'date' in check;
+  const refused = check !== null && 'error' in check;
+  // A refused date clears a time and birthplace entered for an earlier date, so the form never holds them for it.
+  useEffect(() => {
+    if (!refused) return;
+    if (time) setTime('');
+    if (city) setCity(null);
+  }, [refused, time, city]);
   const nearest = useRef<((place: GeoPoint, result: AcgResult) => LineDistance[]) | null>(null);
   const frame = useRef<HTMLDivElement>(null);
   // On a phone the map is wider than the screen and pans inside its frame; it opens on the birthplace's longitude.
@@ -90,7 +187,7 @@ export default function AstrocartographyMap() {
 
   async function draw(event: Event) {
     event.preventDefault();
-    if (!date || !time || !city) return;
+    if (!dateOpen || !time || !city) return;
     const request = ++revision.current;
     setBusy(true); setError(''); setResult(null); setPlaces([]);
     try {
@@ -114,7 +211,7 @@ export default function AstrocartographyMap() {
   function addPlace(next: City | null) {
     setAdding(next);
     if (!next || !result || !nearest.current) return;
-    if (places.length >= MAX_PLACES || places.some((entry) => entry.city.name === next.name && entry.city.lat === next.lat)) { setAdding(null); return; }
+    if (places.length >= MAX_PLACES || places.some((entry) => placeId(entry.city) === placeId(next))) { setAdding(null); return; }
     setPlaces([...places, { city: next, lines: nearest.current({ lat: next.lat, lon: next.lon }, result) }]);
     setAdding(null);
   }
@@ -127,17 +224,12 @@ export default function AstrocartographyMap() {
       <form class="calc__form shell" onSubmit={draw} aria-busy={busy}>
         <div class="core calc__core">
           <div class="calc__fields">
-            <BirthFields
-              locale="en" dateId="acg-date" timeId="acg-time" placeId="acg-place"
-              date={date} time={time} timeKnown city={city}
-              onDateChange={setDate} calendar={calendar} onCalendarChange={setCalendar}
-              onTimeChange={setTime} onTimeKnownChange={() => {}} onCityChange={setCity}
-              showUnknownTime={false} requireKnownTime
-              timeHelp="A birth time is needed: the lines move about 110 km for every 4 minutes."
-              placeHelp="The birthplace sets the time zone of the birth time."
+            <AcgBirthFields
+              date={date} calendar={calendar} check={check} time={time} city={city}
+              onDateChange={edit(setDate)} onCalendarChange={edit(setCalendar)} onTimeChange={edit(setTime)} onCityChange={edit(setCity)}
             />
           </div>
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!date || !time || !city || busy}><span>{busy ? 'Drawing…' : 'Draw my map'}</span><span class="orb" aria-hidden="true">↗</span></button>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={!dateOpen || !time || !city || busy}><span>{busy ? 'Drawing…' : 'Draw my map'}</span><span class="orb" aria-hidden="true">↗</span></button>
           <p class="calc__privacy"><strong>Private by default.</strong> The map is calculated on this device; nothing is uploaded.</p>
           {error && <p class="calc__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale="en" />
@@ -155,7 +247,7 @@ export default function AstrocartographyMap() {
           </div>
           <figure class="acg__figure">
             <div class="acg__frame" ref={frame} tabIndex={0} aria-label="World map, scrolls sideways on small screens">
-            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines; the table under it lists where each line runs" class="acg__map">
+            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines" class="acg__map">
               <rect width={W} height={H} class="acg__sea" />
               <g class="acg__land">
                 {result.land.cells.map(([lat, lon]) => <circle key={`${lat}-${lon}`} cx={x(lon * result.land.cellDegrees - 180 + result.land.cellDegrees / 2)} cy={y(lat * result.land.cellDegrees - 90 + result.land.cellDegrees / 2)} r="1.3" />)}
@@ -198,14 +290,16 @@ export default function AstrocartographyMap() {
           <div class="acg__places">
             <div class="field">
               <label class="field__label" for="acg-check">Check a town or city</label>
-              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" />
+              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" wholeIndex distinctLabels />
               <p class="field__help">Up to {MAX_PLACES} places. Lines within about {STRONG_KM} km are read as strong; by about {NOTICEABLE_KM} km they fade.</p>
             </div>
-            {places.map(({ city: place, lines }) => {
+            {places.map(({ city: place, lines }, index) => {
               const reading = placeLines(lines, minor);
+              // Two places checked with the same name, region and country show their coordinates too.
+              const extra = placeDistinctions(places.map((entry) => entry.city))[index];
               return (
-              <article class="tile acg__place-card" key={`${place.name}${place.lat}`}>
-                <h3>{place.name}<span>{place.admin1 ? `${place.admin1}, ` : ''}{place.country}</span></h3>
+              <article class="tile acg__place-card" key={placeId(place)}>
+                <h3>{place.name}<span>{place.admin1 ? `${place.admin1}, ` : ''}{place.country}{extra ? ` (${extra})` : ''}</span></h3>
                 {reading.far && <p>{reading.far}</p>}
                 {reading.rows.length > 0 && <ul>
                   {reading.rows.map((row) => (

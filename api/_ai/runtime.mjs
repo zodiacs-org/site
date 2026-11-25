@@ -8621,7 +8621,7 @@ async function occasionCard(input, clock2) {
     evening = eveningSky({ latitude: place2.lat, longitude: place2.lon }, date3, offsetMinutes2);
   }
   const sign4 = (body3) => sky.bodies.find((row) => row.body === body3).sign;
-  const words = OCCASION_WORDS[input.occasion];
+  const words2 = OCCASION_WORDS[input.occasion];
   return {
     input,
     instant: instant3.toISOString(),
@@ -8629,9 +8629,9 @@ async function occasionCard(input, clock2) {
     moonSignChange,
     evening,
     words: {
-      title: words.title,
+      title: words2.title,
       interpretation: sunMoonLine(sign4("Sun"), sign4("Moon")),
-      closing: words.closing
+      closing: words2.closing
     }
   };
 }
@@ -28397,8 +28397,8 @@ var skyCalendarData = z3.object({
   note: z3.string()
 });
 var PLANET_ORDER = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
-function listWords(words) {
-  return words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} and ${words.at(-1)}`;
+function listWords(words2) {
+  return words2.length < 2 ? words2.join("") : `${words2.slice(0, -1).join(", ")} and ${words2.at(-1)}`;
 }
 var iso2 = (value) => new Date(value).toISOString();
 function feedContents() {
@@ -36584,8 +36584,8 @@ function signPairAnswer(query, a, b, friendship, origin) {
 }
 function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
   const keys = keysFor(options);
-  const words = clean(args.topic);
-  const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
+  const words2 = clean(args.topic);
+  const outside = OUT_OF_SCOPE.find((name) => ` ${words2} `.includes(` ${name} `));
   const pair = outside ? null : matchSignPair(args.topic);
   if (pair) return signPairAnswer(args.topic, pair.a, pair.b, pair.friendship, origin);
   const topic = outside ? null : matchTopic(args.topic, options);
@@ -36758,11 +36758,11 @@ function countryFold(hint) {
   return COUNTRY_ALIAS[folded2] ?? folded2;
 }
 function countryMatches(country, hint) {
-  const words = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
+  const words2 = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
   const wanted = countryFold(hint);
   const name = fold2(country);
-  if (!words(wanted).trim()) return name === wanted;
-  return words(name).includes(words(wanted)) || words(wanted).includes(words(name));
+  if (!words2(wanted).trim()) return name === wanted;
+  return words2(name).includes(words2(wanted)) || words2(wanted).includes(words2(name));
 }
 function queryVariants(place2) {
   const query = foldedQuery(place2);
@@ -43057,10 +43057,12 @@ function distanceToPolylineKm(place2, line) {
   });
   for (const neighbour of [at - 1, at + 1]) {
     const other = line[neighbour];
-    if (!other || Math.abs(other.lon - line[at].lon) > 180) continue;
+    if (!other) continue;
+    const from = line[at];
+    const otherLon = from.lon + wrapLongitude(other.lon - from.lon);
     let lo = 0;
     let hi = 1;
-    const at_ = (t) => distanceKm(place2, { lat: line[at].lat + (other.lat - line[at].lat) * t, lon: line[at].lon + (other.lon - line[at].lon) * t });
+    const at_ = (t) => distanceKm(place2, { lat: from.lat + (other.lat - from.lat) * t, lon: from.lon + (otherLon - from.lon) * t });
     for (let i = 0; i < 30; i += 1) {
       const m1 = lo + (hi - lo) * 0.382;
       const m2 = lo + (hi - lo) * 0.618;
@@ -43119,9 +43121,30 @@ function equatorialMoment(utc) {
   return { gast, bodies };
 }
 
+// src/lib/birth-date-policy.ts
+var HOUR_MS4 = 36e5;
+var CIVIL_DATE = /^(\d{4})-(\d{2})-(\d{2})$/u;
+var MINIMUM_AGE = 13;
+function civilDateAt(now, offsetHours) {
+  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+}
+function earliestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, -12);
+}
+function latestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, 14);
+}
+function birthDateRefusal(birthDate, now = /* @__PURE__ */ new Date()) {
+  if (typeof birthDate !== "string" || !CIVIL_DATE.test(birthDate)) return null;
+  if (birthDate > latestToday(now)) return "future_birth_date";
+  const today2 = earliestToday(now);
+  const thirteenYearsBefore = `${String(Number(today2.slice(0, 4)) - MINIMUM_AGE).padStart(4, "0")}${today2.slice(4)}`;
+  return birthDate > thirteenYearsBefore ? "under_13" : null;
+}
+
 // src/lib/astrocartography/meanings.ts
-function isUnder182(birthDate, today2) {
-  return isUnderAge(birthDate, today2, 18);
+function under18At(birthDate, now) {
+  return isUnderAge(birthDate, earliestToday(now), 18);
 }
 var ANGLE_NAME = {
   ASC: "rising",
@@ -43162,7 +43185,7 @@ var LINE_MEANING = {
   },
   Venus: {
     ASC: "Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.",
-    DSC: "Traditionally one of the classic lines for love and partnership, and for agreements that go smoothly.",
+    DSC: "Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.",
     MC: "Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.",
     IC: "Traditionally a place for a beautiful, comfortable home and warm family life."
   },
@@ -43174,7 +43197,7 @@ var LINE_MEANING = {
   },
   Jupiter: {
     ASC: "Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.",
-    DSC: "Traditionally a place for generous partners, helpful advisers and agreements that work in your favour.",
+    DSC: "Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.",
     MC: "Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.",
     IC: "Traditionally a place for a large, happy home, good for family, property and feeling well provided for."
   },
@@ -43265,6 +43288,43 @@ function astrocartographyQuery(share, withRef2 = false) {
 }
 function astrocartographyShareUrl(origin, line) {
   return `${origin}${ASTROCARTOGRAPHY_SHARE_PATH}?${astrocartographyQuery({ ...line, ref: null })}`;
+}
+
+// src/lib/geo/place-label.ts
+function hash53(text2) {
+  let h1 = 3735928559;
+  let h2 = 1103547991;
+  for (let i = 0; i < text2.length; i += 1) {
+    const code = text2.charCodeAt(i);
+    h1 = Math.imul(h1 ^ code, 2654435761);
+    h2 = Math.imul(h2 ^ code, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ h1 >>> 16, 2246822507) ^ Math.imul(h2 ^ h2 >>> 13, 3266489909);
+  h2 = Math.imul(h2 ^ h2 >>> 16, 2246822507) ^ Math.imul(h1 ^ h1 >>> 13, 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+}
+function placeId(place2) {
+  const key2 = [place2.name, place2.admin1, place2.country, Math.round(place2.lat * 100), Math.round(place2.lon * 100)].join("|");
+  return `p${hash53(key2).toString(36).padStart(11, "0")}`;
+}
+function rowPoint(index, row) {
+  return { name: row[0], admin1: index.admin1[row[2]] ?? "", country: index.countries[row[3]] ?? "", lat: row[4] / 100, lon: row[5] / 100 };
+}
+function coordinateText(lat, lon) {
+  const part = (value, positive, negative) => `${Math.abs(value).toFixed(2)}\xB0 ${value < 0 ? negative : positive}`;
+  return `${part(lat, "N", "S")}, ${part(lon, "E", "W")}`;
+}
+function placeLabelText(place2) {
+  return [place2.name, place2.admin1, place2.country].filter(Boolean).join(", ");
+}
+function placeDistinctions(places) {
+  const counts = /* @__PURE__ */ new Map();
+  for (const place2 of places) counts.set(placeLabelText(place2), (counts.get(placeLabelText(place2)) ?? 0) + 1);
+  return places.map((place2) => (counts.get(placeLabelText(place2)) ?? 0) > 1 ? coordinateText(place2.lat, place2.lon) : "");
+}
+function distinctPlaceLabels(places) {
+  const extra = placeDistinctions(places);
+  return places.map((place2, i) => extra[i] ? `${placeLabelText(place2)} (${extra[i]})` : placeLabelText(place2));
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43360,11 +43420,6 @@ function refineBirth(args, context) {
 function definePersonalTool(definition) {
   return definition;
 }
-function dateOn(at, timeZone) {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
-  const part = (type) => parts.find((entry) => entry.type === type).value;
-  return `${part("year")}-${part("month")}-${part("day")}`;
-}
 async function resolveBirth(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(BIRTH_DATE_REFUSAL);
@@ -43416,17 +43471,6 @@ async function birthDayEnds2(args, clock2) {
   if (!span2) throw new SkippedBirthDateError();
   return span2;
 }
-async function currentClock(currentZone, birthZone, context) {
-  if (currentZone) return { zone: await context.resolveZone(currentZone, "/currentZone"), note: null };
-  if (context.hostZone) {
-    try {
-      return { zone: await context.resolveZone(context.hostZone, "/currentZone"), note: null };
-    } catch {
-    }
-  }
-  if (birthZone) return { zone: birthZone, note: `Today is read on the birthplace clock (${birthZone}) because no current location was given.` };
-  return { zone: "UTC", note: "Today is read in UTC because no time zone was given." };
-}
 
 // src/ai-tools/personal/astrocartography.ts
 var ACG_MAX_CITIES = 5;
@@ -43438,9 +43482,11 @@ var astrocartographyInput = z16.strictObject({
   time: birthFields.time.unwrap().describe("The birth time on the local clock, such as 08:30. Required: the lines move about 1 degree of longitude for every 4 minutes of birth time. Never guess it. Needs zone."),
   zone: birthFields.zone.unwrap().describe("The birthplace's time zone, such as Europe/Madrid. Required."),
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude, with longitude: it matters only for births on local mean time, before standard time zones. Nothing is stored."),
-  currentZone: zoneField.optional().describe("Where the person is now, such as Asia/Bangkok, so their age is read on their own clock, as get_personal_day reads it."),
-  cities: z16.array(z16.string().trim().min(2).max(80)).max(ACG_MAX_CITIES).optional().describe(`Optional. Up to ${ACG_MAX_CITIES} towns or cities to check, such as "Lisbon" or "Paris, France" (a country after a comma when several places share the name). Names are matched against the place index bundled with Zodiacs and not sent anywhere or stored.`)
-}).superRefine(refineBirth);
+  cities: z16.array(z16.string().trim().min(2).max(80)).max(ACG_MAX_CITIES).optional().describe(`Optional. Up to ${ACG_MAX_CITIES} towns or cities to check, such as "Lisbon" or "Paris, France" (a country after a comma when several places share the name). Names are matched against the place index bundled with Zodiacs and not sent anywhere or stored.`),
+  placeIds: z16.array(z16.string().trim().min(2).max(40)).max(ACG_MAX_CITIES).optional().describe(`Optional. The id of a place listed under ambiguous or didYouMean in an earlier answer, to check exactly that place. Up to ${ACG_MAX_CITIES} places in all, with cities.`)
+}).superRefine(refineBirth).superRefine((args, context) => {
+  if ((args.cities?.length ?? 0) + (args.placeIds?.length ?? 0) > ACG_MAX_CITIES) context.addIssue({ code: "custom", path: ["placeIds"], message: `Up to ${ACG_MAX_CITIES} places in all, with cities.` });
+});
 var body = z16.enum(ACG_BODIES);
 var angle = z16.enum(ACG_ANGLES);
 var nearLine = z16.object({
@@ -43456,10 +43502,11 @@ var nearLine = z16.object({
   line: z16.string(),
   /**
    * A share card of this line alone: the planet and the angle, never the birth details or the place. Null while the
-   * website's page is switched off.
+   * website's page is switched off, and for a reading whose confidence is not the card's (no birthplace coordinates).
    */
   shareUrl: z16.url().nullable()
 });
+var placeChoice = z16.object({ id: z16.string(), name: z16.string(), region: z16.string(), country: z16.string(), label: z16.string() });
 var astrocartographyData = z16.object({
   birthDate: z16.string(),
   /** The birth instant the lines are for, UTC. */
@@ -43477,6 +43524,8 @@ var astrocartographyData = z16.object({
   })),
   cities: z16.array(z16.object({
     asked: z16.string(),
+    /** The place's id (placeIds reads it back). */
+    id: z16.string(),
     name: z16.string(),
     region: z16.string(),
     country: z16.string(),
@@ -43488,11 +43537,21 @@ var astrocartographyData = z16.object({
   })).max(ACG_MAX_CITIES),
   /** Names that matched no town or city in the index. */
   unmatched: z16.array(z16.string()).max(ACG_MAX_CITIES),
+  /** Names that match more than one place equally well, with the places they could be: ask which one is meant. */
+  ambiguous: z16.array(z16.object({
+    asked: z16.string(),
+    places: z16.array(placeChoice).min(2).max(5)
+  })).max(ACG_MAX_CITIES),
+  /** Names with a region or country that no place with the name is in, with the places of that name elsewhere: ask which one is meant. */
+  didYouMean: z16.array(z16.object({
+    asked: z16.string(),
+    places: z16.array(placeChoice).min(1).max(5)
+  })).max(ACG_MAX_CITIES),
   readings: z16.object({ ASC: z16.string(), DSC: z16.string(), MC: z16.string(), IC: z16.string() }),
   confidence: z16.number().int().min(40).max(95),
   confidenceLabel: z16.string(),
   limits: z16.array(z16.string()),
-  /** The map page, where the map is drawn in the person's browser. Null while the website's page is switched off. */
+  /** The /astrocartography/ page; null while the website's page is switched off (PUBLIC_ASTROCARTOGRAPHY_ENABLED). */
   pageUrl: z16.url().nullable()
 });
 function equatorialBodies(utc) {
@@ -43501,21 +43560,219 @@ function equatorialBodies(utc) {
 function greenwichSiderealDegrees(utc) {
   return equatorialMoment(utc).gast;
 }
-function splitCity(text2) {
-  const comma = text2.lastIndexOf(",");
-  if (comma <= 0) return { place: text2.trim() };
-  const place2 = text2.slice(0, comma).trim();
-  const country = text2.slice(comma + 1).trim();
-  return place2.length >= 2 && country.length >= 2 ? { place: place2, country } : { place: text2.trim() };
+var words = (text2) => ` ${fold2(text2).replace(/[^a-z0-9]+/gu, " ").trim()} `;
+var partKeys = (text2) => text2.split(",").map((part) => words(part).trim());
+function splitCity(text2, joined = []) {
+  const raw = text2.split(",").map((part) => part.trim());
+  const keys = raw.map((part) => words(part).trim());
+  const parts = [];
+  for (let at = 0; at < raw.length; ) {
+    const run2 = joined.find((name) => name.length <= raw.length - at && name.every((key2, offset) => keys[at + offset] === key2))?.length ?? 1;
+    parts.push(raw.slice(at, at + run2).join(", "));
+    at += run2;
+  }
+  const [place2, ...hints] = parts;
+  return place2.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place: place2, hints } : { place: parts.join(", "), hints: [] };
+}
+var labelIndexes = /* @__PURE__ */ new WeakMap();
+function labelIndex(table) {
+  let index = labelIndexes.get(table);
+  if (index) return index;
+  const labels = /* @__PURE__ */ new Map();
+  const add = (key2, row) => {
+    const list3 = labels.get(key2);
+    if (list3) list3.push(row);
+    else labels.set(key2, [row]);
+  };
+  const joined = /* @__PURE__ */ new Map();
+  for (const shard of Object.values(table.shards)) {
+    for (const row of shard) {
+      const point2 = rowPoint(table.index, row);
+      const label2 = placeLabelText(point2);
+      add(partKeys(label2).join(","), row);
+      add(partKeys(`${label2} (${coordinateText(point2.lat, point2.lon)})`).join(","), row);
+      for (const name of [point2.name, ...row[1] === 0 ? [] : [String(row[1])], point2.admin1, point2.country]) {
+        if (name.includes(",")) joined.set(partKeys(name).join(","), partKeys(name));
+      }
+    }
+  }
+  for (const list3 of labels.values()) list3.sort((a, b) => b[7] - a[7]);
+  index = { labels, joined: [...joined.values()].sort((a, b) => b.length - a.length) };
+  labelIndexes.set(table, index);
+  return index;
+}
+function placeByLabel(table, text2) {
+  if (PLACE_ID.test(text2.trim())) {
+    const place2 = placeById(table, text2);
+    if (place2) return { place: place2 };
+  }
+  const rows3 = labelIndex(table).labels.get(partKeys(text2).join(","));
+  if (!rows3?.length) return null;
+  return rows3.length === 1 ? { place: toPlace(table, rows3[0]) } : { choices: rows3.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+}
+var PLACE_ID = /^p[0-9a-z]{11}$/u;
+var REGION_NAMES = /* @__PURE__ */ new Set(["england", "scotland", "wales", "northern ireland"]);
+var isRegionName = (hint) => REGION_NAMES.has(words(hint).trim());
+function regionMatches(hint, region) {
+  return words(hint).trim() !== "" && words(region).trim() === words(hint).trim();
+}
+var countryKey = (text2) => words(text2).trim().replace(/^the /u, "");
+var COUNTRY_ALIASES = foldedAliases({
+  UK: "United Kingdom",
+  "U.K.": "United Kingdom",
+  Britain: "United Kingdom",
+  "Great Britain": "United Kingdom",
+  US: "United States",
+  "U.S.": "United States",
+  USA: "United States",
+  "U.S.A.": "United States",
+  America: "United States",
+  "United States of America": "United States",
+  "US Virgin Islands": "U.S. Virgin Islands",
+  UAE: "United Arab Emirates",
+  "U.A.E.": "United Arab Emirates",
+  Holland: "Netherlands",
+  Korea: "South Korea",
+  "Republic of Korea": "South Korea",
+  DPRK: "North Korea",
+  "Czech Republic": "Czechia",
+  Burma: "Myanmar",
+  Swaziland: "Eswatini",
+  Macedonia: "North Macedonia",
+  "Cape Verde": "Cabo Verde",
+  "C\xF4te d'Ivoire": "Ivory Coast",
+  "C\xF4te d Ivoire": "Ivory Coast",
+  "East Timor": "Timor-Leste",
+  "Russian Federation": "Russia",
+  "Viet Nam": "Vietnam",
+  Macau: "Macao",
+  T\u00FCrkiye: "Turkey",
+  Palestine: "Palestinian Territory",
+  "Vatican City": "Vatican",
+  "Holy See": "Vatican",
+  DRC: "Democratic Republic of the Congo",
+  "DR Congo": "Democratic Republic of the Congo",
+  "D.R. Congo": "Democratic Republic of the Congo",
+  "Congo-Kinshasa": "Democratic Republic of the Congo",
+  "Congo-Brazzaville": "Republic of the Congo"
+});
+function foldedAliases(aliases) {
+  const folded2 = /* @__PURE__ */ Object.create(null);
+  for (const [alias, country] of Object.entries(aliases)) {
+    const key2 = countryKey(alias);
+    if (key2 in folded2 && folded2[key2] !== countryKey(country)) throw new Error(`Country alias ${alias} folds to a key that names another country`);
+    folded2[key2] = countryKey(country);
+  }
+  return folded2;
+}
+var countryWanted = (hint) => COUNTRY_ALIASES[countryKey(hint)] ?? countryKey(hint);
+function countryNameMatches(country, hint) {
+  const wanted = countryWanted(hint);
+  return wanted !== "" && countryKey(country) === wanted;
+}
+function countryHintMatches(hint, region, country) {
+  return isRegionName(hint) ? regionMatches(hint, region) : countryNameMatches(country, hint);
+}
+function hintsMatch(hints, region, country) {
+  if (hints.length === 1) {
+    const [hint] = hints;
+    return regionMatches(hint, region) || countryHintMatches(hint, region, country);
+  }
+  return hints.every((hint, index) => index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region));
+}
+var Fit = { Whole: 0, Words: 1, Longer: 2, Contains: 3 };
+function fitOf(names, query) {
+  let best = null;
+  for (const name of names) {
+    let fit = null;
+    if (name === query) fit = Fit.Whole;
+    else if (name.startsWith(query)) fit = /[\p{L}\p{N}]/u.test(name[query.length] ?? "") ? Fit.Longer : Fit.Words;
+    else if (query[2] && name[0] === query[0] && name.includes(query)) fit = Fit.Contains;
+    if (fit !== null && (best === null || fit < best)) best = fit;
+  }
+  return best;
+}
+var MINOR_SHARE = 0.1;
+var ACG_CHOICES = 5;
+function toPlace(table, row) {
+  const point2 = rowPoint(table.index, row);
+  return { id: placeId(point2), name: point2.name, region: point2.admin1, country: point2.country, latitude: point2.lat, longitude: point2.lon };
+}
+var byId = /* @__PURE__ */ new WeakMap();
+function placeById(table, id) {
+  let rows3 = byId.get(table);
+  if (!rows3) {
+    rows3 = /* @__PURE__ */ new Map();
+    for (const shard of Object.values(table.shards)) for (const row2 of shard) rows3.set(placeId(rowPoint(table.index, row2)), row2);
+    byId.set(table, rows3);
+  }
+  const row = rows3.get(id.trim());
+  return row ? toPlace(table, row) : null;
+}
+function resolvePlace(table, text2) {
+  const labelled = placeByLabel(table, text2);
+  if (labelled) return labelled;
+  const { place: place2, hints } = splitCity(text2, labelIndex(table).joined);
+  const named2 = /* @__PURE__ */ new Map();
+  for (const query of queryVariants(place2)) {
+    const key2 = shardKey(query);
+    for (const row of queryRows(table.index, table.shards[key2] ?? [], key2)) {
+      const fit = fitOf(row[1] === 0 ? [fold2(row[0])] : [fold2(row[0]), fold2(row[1])], query);
+      if (fit === null) continue;
+      const known = named2.get(row);
+      if (known === void 0 || fit < known) named2.set(row, fit);
+    }
+  }
+  const found = new Map([...named2].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? "", table.index.countries[row[3]] ?? "")));
+  const rows3 = (from, fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
+  const best = (from) => {
+    for (const fit of [Fit.Whole, Fit.Words, Fit.Longer, Fit.Contains]) {
+      const list3 = rows3(from, fit);
+      if (list3.length) return list3;
+    }
+    return [];
+  };
+  if (!found.size) {
+    const elsewhere = best(named2);
+    return elsewhere.length ? { suggestions: elsewhere.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) } : null;
+  }
+  const choose = (list3) => list3.length === 1 ? { place: toPlace(table, list3[0]) } : { choices: list3.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+  const whole = rows3(found, Fit.Whole);
+  if (whole.length) {
+    if (hints.length) return choose(whole);
+    const [largest, next] = whole;
+    if (next && next[7] >= largest[7] * MINOR_SHARE) return choose(whole);
+    const larger = rows3(found, Fit.Words).filter((row) => row[7] > largest[7]);
+    return larger.length ? choose([...larger, largest]) : choose([largest]);
+  }
+  const inPlace = best(found);
+  const wholeElsewhere = rows3(named2, Fit.Whole).filter((row) => !found.has(row));
+  if (wholeElsewhere.length && found.get(inPlace[0]) > Fit.Words) return { suggestions: [...wholeElsewhere, ...inPlace].slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+  return choose(inPlace);
+}
+function placeLabel(place2) {
+  return placeLabelText({ name: place2.name, admin1: place2.region, country: place2.country });
+}
+function choiceList(places) {
+  const labels = distinctPlaceLabels(places.map((place2) => ({ name: place2.name, admin1: place2.region, country: place2.country, lat: place2.latitude, lon: place2.longitude })));
+  const foldedKey = (label2) => partKeys(label2).join(",");
+  const folded2 = /* @__PURE__ */ new Map();
+  for (const label2 of labels) folded2.set(foldedKey(label2), (folded2.get(foldedKey(label2)) ?? 0) + 1);
+  return places.map((place2, index) => {
+    const label2 = (folded2.get(foldedKey(labels[index])) ?? 0) > 1 ? `${placeLabel(place2)} (${coordinateText(place2.latitude, place2.longitude)})` : labels[index];
+    return { id: place2.id, name: place2.name, region: place2.region, country: place2.country, label: label2 };
+  });
 }
 async function getAstrocartography(args, context) {
-  const pageOn = context.pageOn === true;
   const natal = await castNatal(args, context.localTime);
+  const pageOn = context.pageOn === true;
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
-  const { zone: todayZone, note: todayNote } = await currentClock(args.currentZone, args.zone, context);
-  const under18 = isUnder182(args.birthDate, dateOn(context.now, todayZone));
+  const confidence = readingConfidence(natal.detail);
+  const confidenceLabel = readingConfidenceText(confidence);
+  const cardMatches = confidence === ACG_CONFIDENCE;
+  const under18 = under18At(args.birthDate, context.now);
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   const lines = bodies.map((entry) => {
     const mc = mcLongitude(entry, gast);
@@ -43527,9 +43784,8 @@ async function getAstrocartography(args, context) {
   });
   const cities = [];
   const unmatched = [];
+  const ambiguous = [];
   const limits2 = [
-    // Which clock "today" (and so the age) was read on, when it is not where the person is now.
-    ...todayNote ? [todayNote] : [],
     "Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.",
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`
   ];
@@ -43537,45 +43793,59 @@ async function getAstrocartography(args, context) {
   if (clockChange) limits2.push(clockChange);
   if (under18) limits2.push(MINOR_NOTE);
   const asked = args.cities ?? [];
-  if (asked.length) {
+  const ids = args.placeIds ?? [];
+  const didYouMean = [];
+  const readPlace = (text2, place2) => {
+    const point2 = { lat: place2.latitude, lon: place2.longitude };
+    const distances = lineDistances(point2, bodies, gast);
+    const far = farPlaceSummary(distances[0]);
+    const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
+    const closest = selected.map((row) => {
+      const distanceKm2 = roundedDistanceKm(row.km);
+      return {
+        planet: row.body,
+        angle: row.angle,
+        title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
+        distanceKm: distanceKm2,
+        distanceMiles: Math.round(distanceKm2 / KM_PER_MILE),
+        side: row.side,
+        strength: strengthOf(row.km),
+        line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
+        shareUrl: pageOn && cardMatches ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null
+      };
+    });
+    const strong = closest.filter((row) => row.strength === "strong");
+    const top = closest[0];
+    let summary = far;
+    if (!summary && strong.length) {
+      const meaning = lineMeaning(top.planet, top.angle, under18);
+      summary = `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}.${meaning ? ` ${guard(meaning)}` : ""}`;
+    }
+    summary ??= `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is still noticeable there.`;
+    cities.push({ asked: text2, id: place2.id, name: place2.name, region: place2.region, country: place2.country, latitude: roundCoordinate(place2.latitude), longitude: roundCoordinate(place2.longitude), closest, summary });
+  };
+  if (asked.length || ids.length) {
     if (!context.placeTable) throw new RangeError("Town and city lookup is not offered here; leave out cities for the lines alone.");
     const table = await context.placeTable();
+    const byIds = ids.map((id) => {
+      const place2 = placeById(table, id);
+      if (!place2) throw new RangeError("A place id is not in the index. Use an id from ambiguous or didYouMean, or name the place in cities.");
+      return [id, place2];
+    });
     for (const text2 of asked) {
-      const found = await findBirthplace(splitCity(text2), context.now, context.localTime, table);
-      const place2 = found.data.places[0];
-      if (!place2) {
-        unmatched.push(text2);
-        continue;
-      }
-      const point2 = { lat: place2.latitude, lon: place2.longitude };
-      const distances = lineDistances(point2, bodies, gast);
-      const far = farPlaceSummary(distances[0]);
-      const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
-      const closest = selected.map((row) => {
-        const distanceKm2 = roundedDistanceKm(row.km);
-        return {
-          planet: row.body,
-          angle: row.angle,
-          title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
-          distanceKm: distanceKm2,
-          distanceMiles: Math.round(distanceKm2 / KM_PER_MILE),
-          side: row.side,
-          strength: strengthOf(row.km),
-          line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${ACG_CONFIDENCE_TEXT}.`,
-          // The share card is linked only while the website's page is on: with it off it would be a 404.
-          shareUrl: pageOn ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null
-        };
-      });
-      const strong = closest.filter((row) => row.strength === "strong");
-      const top = closest[0];
-      let summary = far;
-      if (!summary && strong.length) {
-        const meaning = lineMeaning(top.planet, top.angle, under18);
-        summary = `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}.${meaning ? ` ${guard(meaning)}` : ""}`;
-      }
-      summary ??= `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is still noticeable there.`;
-      cities.push({ asked: text2, name: place2.name, region: place2.region, country: place2.country, latitude: roundCoordinate(place2.latitude), longitude: roundCoordinate(place2.longitude), closest, summary });
+      const resolved = resolvePlace(table, text2);
+      if (!resolved) unmatched.push(text2);
+      else if ("choices" in resolved) ambiguous.push({ asked: text2, places: choiceList(resolved.choices) });
+      else if ("suggestions" in resolved) didYouMean.push({ asked: text2, places: choiceList(resolved.suggestions) });
+      else readPlace(text2, resolved.place);
     }
+    for (const [id, place2] of byIds) readPlace(id, place2);
+    for (const entry of ambiguous) {
+      const labels = entry.places.map((place2) => place2.label).join("; ");
+      const shared = entry.places.some((place2) => place2.label !== placeLabel(place2));
+      limits2.push(shared ? `More than one town or city matches ${entry.asked}: ${labels}. Some share a name, region and country, so choose one by its id in placeIds.` : `More than one town or city matches ${entry.asked}: ${labels}. Add the region or country after a comma to choose one, such as ${entry.places[0].label}.`);
+    }
+    for (const entry of didYouMean) limits2.push(`No town or city in the index matches ${entry.asked}. Did you mean ${entry.places.map((place2) => place2.label).join("; ")}? Ask which one is meant, then give its id in placeIds.`);
     if (unmatched.length) limits2.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(", ")}. Try another spelling, or add the country after a comma.`);
   }
   return {
@@ -43586,9 +43856,11 @@ async function getAstrocartography(args, context) {
       lines,
       cities,
       unmatched,
+      ambiguous,
+      didYouMean,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
-      confidence: ACG_CONFIDENCE,
-      confidenceLabel: ACG_CONFIDENCE_TEXT,
+      confidence,
+      confidenceLabel,
       limits: limits2,
       pageUrl: pageOn ? `${context.origin}/astrocartography/` : null
     },
@@ -43603,13 +43875,13 @@ var astrocartographyTool = definePersonalTool({
   name: "get_astrocartography",
   title: "Your map lines",
   summary: "astrocartography lines, and the lines nearest named towns and cities",
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link when there is one, where the map is drawn in their own browser. A line near a place can carry a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13, and this tool refuses anyone under 13. Ask for the birth date alone first, with a four-digit year, and while that date does not yet show the person is 13 or older, ask for no birth time, time zone or birthplace and do not call find_birthplace. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. A name with a region or country that no place of that name is in comes back under didYouMean; ask which one is meant. To check a place listed under ambiguous or didYouMean, give its id in placeIds. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
-  clockDependent: false,
+  // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
+  clockDependent: true,
   pageFlag: "PUBLIC_ASTROCARTOGRAPHY_ENABLED",
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Europe/London", latitude: 51.51, longitude: -0.13, cities: ["Lisbon", "New York", "Tokyo"] },
-  // The zone is checked and spelled as tzdb spells it before any clock sees it, so an unknown one is never repeated back.
   run: async (args, context) => getAstrocartography(await withCheckedZone(args, context), context)
 });
 
@@ -44922,8 +45194,8 @@ function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
   const until = (index) => index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone10, date3)}` : "";
   const course = segments.map((segment, index) => `${signName7(segment.sign)}${until(index)}`).join(", then in ");
   const rated = segments.filter((segment) => moonSignWhy(goal, segment.sign));
-  const words = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
-  return { points, text: `The Moon is in ${course}${words}.`, clause: `the Moon in ${course}` };
+  const words2 = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
+  return { points, text: `The Moon is in ${course}${words2}.`, clause: `the Moon in ${course}` };
 }
 function eclipseFactor(day2) {
   const within = ECLIPSES2.filter((row) => row.at >= day2.start.getTime() && row.at < day2.end.getTime());
@@ -46816,13 +47088,49 @@ function guardPersonalWeek(week, birthDate, today2) {
   };
 }
 
-// src/lib/birth-date-policy.ts
-var HOUR_MS4 = 36e5;
-function civilDateAt(now, offsetHours) {
-  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+// src/ai-tools/birth-date-age-gate.ts
+var MONTH_NUMBERS = new Map(
+  ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"].flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...name === "september" ? [["sept", index + 1]] : []])
+);
+var SHORT_RUN = /^\d{1,2}$/u;
+function yearsOfRun(run2) {
+  if (/^\d{4}$/u.test(run2)) return [Number(run2)];
+  if (/^\d{2}$/u.test(run2)) return [1900 + Number(run2), 2e3 + Number(run2)];
+  return [];
 }
-function earliestToday(now = /* @__PURE__ */ new Date()) {
-  return civilDateAt(now, -12);
+function readingsOf(yearRun, monthRun, dayRun) {
+  if (!SHORT_RUN.test(monthRun) || !SHORT_RUN.test(dayRun)) return [];
+  return yearsOfRun(yearRun).map((year) => ({ year, month: Number(monthRun), day: Number(dayRun) }));
+}
+function writtenDateReadings(text2) {
+  const numeric = /^(\d+)\s*(?:[-/.]|\s)\s*(\d+)\s*(?:[-/.]|\s)\s*(\d+)$/u.exec(text2);
+  if (numeric) {
+    const [, a, b, c] = numeric;
+    return [...readingsOf(a, b, c), ...readingsOf(a, c, b), ...readingsOf(c, b, a), ...readingsOf(c, a, b)];
+  }
+  if (!/^[\p{L}\d].*[\p{L}\d]$/u.test(text2)) return [];
+  const words2 = text2.toLowerCase().split(/[\s,./-]+/u).filter((word) => word !== "of");
+  const monthAt = words2.findIndex((word) => MONTH_NUMBERS.has(word));
+  if (words2.length !== 3 || monthAt < 0) return [];
+  const month = String(MONTH_NUMBERS.get(words2[monthAt]));
+  const numbers = words2.filter((_, index) => index !== monthAt).map((word) => /^(\d+)(st|nd|rd|th)?$/u.exec(word));
+  if (numbers.some((match) => !match)) return [];
+  const [first2, second] = numbers;
+  const readings = [];
+  for (const [day2, year] of [[first2, second], [second, first2]]) if (!year[2]) readings.push(...readingsOf(year[1], month, day2[1]));
+  return readings;
+}
+function calendarDay({ year, month, day: day2 }) {
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  if (year < NATAL_MIN_YEAR || day2 > daysInMonth3) return null;
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
+}
+function birthDateAgeGate(value, now) {
+  if (typeof value !== "string" || value.length > 64) return "NEEDS_DATE";
+  const days = writtenDateReadings(value.trim()).filter(({ month, day: day2 }) => month >= 1 && month <= 12 && day2 >= 1 && day2 <= 31).map(calendarDay);
+  if (days.some((day2) => day2 !== null && birthDateRefusal(day2, now) !== null)) return "UNDER_13";
+  return days.length > 0 && days.every((day2) => day2 !== null) ? "ADULT" : "NEEDS_DATE";
 }
 
 // src/ai-tools/features/moment-chart.ts
@@ -46973,7 +47281,7 @@ function clockTime3(utc, zone10) {
   return { utc, local: zone10 ? local : `${local} UTC` };
 }
 var optionalClock = (utc, zone10) => utc ? clockTime3(utc, zone10) : null;
-var CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
+var CIVIL_DATE2 = /^\d{4}-\d{2}-\d{2}$/u;
 var fieldOf = (value, key2) => value && typeof value === "object" && !Array.isArray(value) ? value[key2] : void 0;
 var LATEST_CLOCK_MS = 14 * 36e5;
 function cardToday(now, zones) {
@@ -46996,11 +47304,22 @@ function birthDatesIn(tool, args, now, hostZone) {
     const windowDay = typeof from === "string" && typeof to === "string" && from <= today2 ? to < today2 ? to : today2 : void 0;
     dates = [date3, windowDay].filter((day2) => typeof day2 === "string" && day2 <= today2);
   }
-  return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE.test(date3));
+  return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE2.test(date3));
 }
 function childBirthDateRefusal(tool, args, now, hostZone) {
   const today2 = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
+}
+var AGE_FIRST_TOOLS = new Set(PERSONAL_TOOL_NAMES.filter((name) => {
+  const input = personalTool(name).input;
+  return input.shape !== void 0 && "birthDate" in input.shape;
+}));
+function ageFirstRefusal(tool, args, now) {
+  const birthDate = fieldOf(args, "birthDate");
+  const gate = birthDateAgeGate(birthDate, now);
+  if (gate === "UNDER_13") return failure(tool, "invalid-request", UNDER_13_SENTENCE);
+  if (gate === "NEEDS_DATE") return failure(tool, "invalid-request", birthDate === void 0 ? "birthDate is required." : `birthDate must be ${FIELD_FORMAT.birthDate}.`);
+  return null;
 }
 function occasionCardUrl(args) {
   if (BIRTH_OCCASIONS.has(args.occasion)) return null;
@@ -47066,6 +47385,10 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     if (OCCASION_TOOL_NAMES.includes(tool) && !dependencies.occasions) return failure(tool, "unavailable", "This tool is not offered here.");
     if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
+    if (AGE_FIRST_TOOLS.has(tool)) {
+      const child3 = ageFirstRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date());
+      if (child3) return child3;
+    }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) {
       const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents2, switches));
       if (refusal) return refusal;
@@ -47079,14 +47402,14 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     if (isPersonalTool(tool)) {
       const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
       const child3 = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed2.data, now, context.hostZone);
-      if (child3) return child3;
+      if (child3) return AGE_FIRST_TOOLS.has(tool) ? failure(tool, "invalid-request", UNDER_13_SENTENCE) : child3;
       const definition = personalTool(tool);
       const result2 = await feature(() => definition.run(definition.input.parse(input), {
         now,
         localTime: localTime2(),
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
-        origin: ORIGIN,
+        origin: dependencies.siteOrigin ?? ORIGIN,
         pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
@@ -48713,6 +49036,13 @@ function sanitizeProtocolMessage(message, refusal) {
   return message;
 }
 
+// src/lib/staging-host.ts
+var LABEL = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+function configuredStagingHost(env) {
+  const host = env.ZODIACS_MCP_STAGING_HOST;
+  return host && host.length <= 253 && host.includes(".") && host.split(".").every((label2) => LABEL.test(label2)) ? host : null;
+}
+
 // src/ai-tools/argument-hints.ts
 var shapeOf = (schema) => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : void 0);
 var unwrap = (schema) => {
@@ -48886,8 +49216,8 @@ function createAiNodeHandler(options = {}) {
     try {
       const method = req.method ?? "GET";
       const host = req.headers?.host;
-      const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
-      const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes(".") && stagingHost.split(".").every((label2) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label2));
+      const stagingHost = configuredStagingHost(env);
+      const validStagingHost = stagingHost !== null;
       const allowedHosts = options.allowedHosts ?? ["zodiacs.org", "www.zodiacs.org", ...validStagingHost ? [stagingHost] : []];
       if (typeof host !== "string" || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, "host-not-allowed");
       const origin = req.headers?.origin;
@@ -49046,7 +49376,8 @@ function createAiNodeHandler(options = {}) {
         if (changed) text2 = JSON.stringify(body3);
       }
       if (calledTool && normaliseCoverageCall(body3)) text2 = JSON.stringify(body3);
-      const refusal = calledTool ? argumentRefusal(calledTool, message.params.arguments, calledTool === SAVE_TOOL_NAME ? void 0 : inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : void 0;
+      const ageFirst = calledTool && AGE_FIRST_TOOLS.has(calledTool) ? ageFirstRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
+      const refusal = ageFirst ?? (calledTool ? argumentRefusal(calledTool, message.params.arguments, calledTool === SAVE_TOOL_NAME ? void 0 : inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : void 0);
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
@@ -49064,6 +49395,7 @@ function createAiNodeHandler(options = {}) {
         }
       } };
       if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
+      if (personal2 && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {
@@ -49082,6 +49414,10 @@ function createAiNodeHandler(options = {}) {
             const parsed2 = JSON.parse(text3);
             if (options.de440 && (message.method === "tools/list" || message.method === "server/discover")) {
               describeDe440Tools(parsed2.result);
+            }
+            if (ageFirst && (parsed2.error || parsed2.result?.isError && !parsed2.result?.structuredContent)) {
+              const { error: _refused, ...rest } = parsed2;
+              return JSON.stringify({ ...rest, result: { isError: true, content: [{ type: "text", text: JSON.stringify(ageFirst) }], structuredContent: ageFirst } });
             }
             const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || PERSONAL_TOOL_NAMES.includes(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });

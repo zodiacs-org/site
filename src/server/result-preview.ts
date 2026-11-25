@@ -83,7 +83,7 @@ import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_TRADITIONS_NOTE, BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
-import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
+import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyCleanQuery, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
 import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, ANGLE_NAME, angleArea, lineMeaning } from '../lib/astrocartography/meanings.js';
 import type { AcgBody } from '../lib/astrocartography/lines.js';
 import {
@@ -2261,7 +2261,17 @@ export function astrocartographyCard(model: AstrocartographyCardModel, images: M
   }));
 }
 
-export function astrocartographyStory(model: AstrocartographyCardModel, images: Map<ShareSign, string>, art: string[]) {
+/**
+ * The map page's address as the story prints it, on the site the share was opened from: the request's origin is the
+ * validated one the share page links with (requestOrigin), so a staging share never points at production, where the
+ * page may be switched off.
+ */
+export function astrocartographyStoryAddress(requestUrl: string): string {
+  const host = new URL(requestUrl).host.toLowerCase();
+  return `${host === 'www.zodiacs.org' ? 'zodiacs.org' : host}/astrocartography`;
+}
+
+export function astrocartographyStory(model: AstrocartographyCardModel, images: Map<ShareSign, string>, art: string[], address = 'zodiacs.org/astrocartography') {
   return storyFrame(art, storyColumn([
     ...storyDiscs([model.sign], images),
     storyKicker('Astrocartography', model.hue),
@@ -2269,7 +2279,7 @@ export function astrocartographyStory(model: AstrocartographyCardModel, images: 
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 46, lineHeight: 1.2, color: INK_SOFT, marginTop: '22px', textAlign: 'center' } }, model.detail),
     ...(model.line ? [storyLine(model.line)] : []),
     ...storyConfidence(model.confidence),
-    storyAction('Draw your own map', 'zodiacs.org/astrocartography'),
+    storyAction('Draw your own map', address),
   ]));
 }
 
@@ -2286,7 +2296,8 @@ export async function handleAstrocartographyStoryRequest(request: Request): Prom
   const share = parseAstrocartographyShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = astrocartographyCardModel(share);
-  return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => astrocartographyStory(model, images, art));
+  const address = astrocartographyStoryAddress(request.url);
+  return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => astrocartographyStory(model, images, art, address));
 }
 
 const ASTROCARTOGRAPHY_ABOUT = 'An astrocartography map shows where on Earth each planet was rising, setting, overhead or underfoot at the moment of birth. Zodiacs draws it in your browser from your birth date, time and place; nothing is uploaded.';
@@ -2308,6 +2319,10 @@ function defaultAstrocartographyPage(origin: string): SharePage {
 export async function handleAstrocartographyLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
+  // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
+  // has no script to do it, so the browser is sent to the share's own address (the line alone, or the plain page).
+  const clean = astrocartographyCleanQuery(url.searchParams);
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${ASTROCARTOGRAPHY_SHARE_PATH}${clean ? `?${clean}` : ''}`);
   const share = parseAstrocartographyShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultAstrocartographyPage(url.origin)));
   const model = astrocartographyCardModel(share);
@@ -2371,7 +2386,7 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
-  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
+  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', wholeQuery: true },
   'astrocartography-image': { path: ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyImageRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
   'astrocartography-story': { path: ASTROCARTOGRAPHY_SHARE_STORY_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyStoryRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
   'vedic-signs-link': { path: VEDIC_SIGNS_SHARE_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsLinkRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', wholeQuery: true },

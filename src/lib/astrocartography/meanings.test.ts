@@ -68,17 +68,23 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     expect(seen).toBeGreaterThan(300);
   });
 
-  it('take the age on the person\'s own clock, as get_personal_day does', async () => {
-    // 20:00 UTC on 9 Nov 2026 is already 10 Nov in Bangkok: an 18th birthday on 10 Nov has arrived there, not in London.
+  it('take the age on the calendar date at UTC-12, as the page does, whatever clock the person is on', async () => {
+    // 20:00 UTC on 9 Nov 2026 is already 10 Nov in Bangkok, but still 9 Nov at UTC-12: an 18th birthday on 10 Nov
+    // has not begun everywhere, so the under-18 readings stay. The tool takes no current zone at all.
     const late = { ...ON, now: () => new Date('2026-11-09T20:00:00Z') };
     const args = { birthDate: '2008-11-10', time: '08:30', zone: 'Europe/London' };
-    const there = await executeAiTool('get_astrocartography', { ...args, currentZone: 'Asia/Bangkok' }, late) as { ok: true; data: any };
-    expect(there.data.limits).not.toContain(MINOR_NOTE);
-    const home = await executeAiTool('get_astrocartography', args, late) as { ok: true; data: any };
-    expect(home.data.limits).toContain(MINOR_NOTE);
-    // Without a current location the answer says which clock today was read on, as get_personal_day does.
-    expect(home.data.limits).toContain('Today is read on the birthplace clock (Europe/London) because no current location was given.');
-    expect(there.data.limits.some((entry: string) => entry.startsWith('Today is read'))).toBe(false);
+    for (const call of [args, { ...args, zone: 'Asia/Bangkok' }, { ...args, zone: 'Pacific/Kiritimati' }]) {
+      const answer = await executeAiTool('get_astrocartography', call, late) as { ok: true; data: any };
+      expect(answer.data.limits, JSON.stringify(call)).toContain(MINOR_NOTE);
+      // The age no longer depends on a clock, so the answer names none.
+      expect(answer.data.limits.some((entry: string) => entry.startsWith('Today is read'))).toBe(false);
+    }
+    // From noon UTC on 10 Nov it is the 10th at UTC-12 too: the adult reading, wherever the person is.
+    const begun = { ...ON, now: () => new Date('2026-11-10T12:00:00Z') };
+    for (const call of [{ ...args, zone: 'Pacific/Pago_Pago' }, args]) {
+      const answer = await executeAiTool('get_astrocartography', call, begun) as { ok: true; data: any };
+      expect(answer.data.limits, JSON.stringify(call)).not.toContain(MINOR_NOTE);
+    }
   });
 
   it('keeps the under-18 reading until the birthday after leap day', async () => {
@@ -215,5 +221,14 @@ describe('astrocartography readings and money', () => {
     const answer = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['New York', 'Lisbon', 'Tokyo', 'Sydney', 'Lima'] }, ON);
     expect(answer.ok).toBe(true);
     expect(JSON.stringify(answer)).not.toMatch(MONEY);
+  });
+});
+
+describe('the Venus and Jupiter Descendant lines', () => {
+  it('read as reflection on partnership, never as how an agreement turns out', () => {
+    expect(LINE_MEANING.Venus.DSC).toBe('Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.');
+    expect(LINE_MEANING.Jupiter.DSC).toBe('Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.');
+    const OUTCOME = /\b(?:agreements?|contracts?|deals?|negotiations?)\b[^.]*\b(?:smooth\w*|favou?r\w*|succeed\w*|go(?:es)? well|win\w*|pay off)\b/iu;
+    for (const body of ACG_BODIES) for (const angle of ACG_ANGLES) expect(LINE_MEANING[body][angle], `${body} ${angle}`).not.toMatch(OUTCOME);
   });
 });

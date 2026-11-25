@@ -133,7 +133,11 @@ export function distanceToMeridianKm(place: GeoPoint, longitude: number): number
   return Math.asin(Math.min(1, Math.abs(Math.sin(dLon)) * Math.cos(place.lat * DEG))) * EARTH_RADIUS_KM;
 }
 
-/** Distance from a place to a polyline, km: the nearest sampled point, refined along its two neighbouring segments. */
+/**
+ * Distance from a place to a polyline, km: the nearest sampled point, refined along its two neighbouring segments.
+ * A segment that crosses the date line (one end near 180, the other near -180) is unwrapped first, so it is
+ * measured along its own short span and not across the whole map.
+ */
 export function distanceToPolylineKm(place: GeoPoint, line: readonly GeoPoint[]): number {
   if (!line.length) return Infinity;
   let best = Infinity;
@@ -141,11 +145,14 @@ export function distanceToPolylineKm(place: GeoPoint, line: readonly GeoPoint[])
   line.forEach((point, index) => { const d = distanceKm(place, point); if (d < best) { best = d; at = index; } });
   for (const neighbour of [at - 1, at + 1]) {
     const other = line[neighbour];
-    if (!other || Math.abs(other.lon - line[at].lon) > 180) continue;
+    if (!other) continue;
+    const from = line[at];
+    // The neighbour's longitude, taken the short way round from this point's (it may pass 180 or -180).
+    const otherLon = from.lon + wrapLongitude(other.lon - from.lon);
     // Golden-section search along the segment, in plate carrée, which is fine at half-degree spacing.
     let lo = 0;
     let hi = 1;
-    const at_ = (t: number) => distanceKm(place, { lat: line[at].lat + (other.lat - line[at].lat) * t, lon: line[at].lon + (other.lon - line[at].lon) * t });
+    const at_ = (t: number) => distanceKm(place, { lat: from.lat + (other.lat - from.lat) * t, lon: from.lon + (otherLon - from.lon) * t });
     for (let i = 0; i < 30; i += 1) {
       const m1 = lo + (hi - lo) * 0.382;
       const m2 = lo + (hi - lo) * 0.618;
