@@ -448,6 +448,10 @@ const TOOL_MARKS_ROUTES = [
   '/void-of-course-moon/',
 ] as const;
 
+// The Big Three page gained its twelve share cards (src/components/share/); the
+// day of the daily edition it was built with, listed after TOOL_MARKS so it wins.
+const BIG_THREE_CARDS_LASTMOD = '2026-11-25';
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -796,6 +800,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/conformance/', '2026-11-23'] as const,
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
+  ['/big-three/', BIG_THREE_CARDS_LASTMOD] as const,
 ]);
 
 function getLastmod(loc: string): string {

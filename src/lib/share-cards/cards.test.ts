@@ -70,9 +70,9 @@ describe('shareable cards', () => {
     const script = /<script is:inline>([\s\S]*?)<\/script>/u.exec(control)?.[1] ?? '';
     const card = '/cards/es/big-three/leo.jpg';
     const url = 'https://zodiacs.org/es/leo/';
-    const run = async (nav: Record<string, unknown>) => {
-      const calls: { fetched: string[]; shared: unknown[]; copied: string[]; opened: string[] } = { fetched: [], shared: [], copied: [], opened: [] };
-      let onClick: (event: { target: unknown }) => Promise<void> = async () => {};
+    const run = async (nav: Record<string, unknown>, { warm = true } = {}) => {
+      const calls: { fetched: string[]; shared: unknown[]; copied: string[]; opened: string[]; order: string[] } = { fetched: [], shared: [], copied: [], opened: [], order: [] };
+      const handlers: Record<string, (event: { target: unknown }) => unknown> = {};
       const status = { textContent: '' };
       const download = { hidden: true };
       const root = {
@@ -84,23 +84,35 @@ describe('shareable cards', () => {
       Object.setPrototypeOf(button, FakeElement.prototype);
       const navigator = {
         ...nav,
-        share: nav.share ? async (data: unknown) => { calls.shared.push(data); } : undefined,
+        share: nav.share ? async (data: unknown) => { calls.order.push('share'); calls.shared.push(data); } : undefined,
         clipboard: { writeText: async (text: string) => { calls.copied.push(text); } },
       };
       const window: Record<string, unknown> = { open: (href: string) => { calls.opened.push(href); } };
-      const document = { addEventListener: (_: string, handler: typeof onClick) => { onClick = handler; } };
-      const fetch = async (href: string) => { calls.fetched.push(href); return { blob: async () => new Blob(['x']) }; };
+      const document = { addEventListener: (type: string, handler: (event: { target: unknown }) => unknown) => { handlers[type] = handler; } };
+      const fetch = async (href: string) => { calls.order.push('fetch'); calls.fetched.push(href); return { blob: async () => new Blob(['x']) }; };
       new Function('window', 'document', 'navigator', 'fetch', 'Element', 'File', script)(window, document, navigator, fetch, FakeElement, File);
-      await onClick({ target: button });
+      if (warm) {
+        handlers.pointerover({ target: button });
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+      calls.order.push('tap');
+      await handlers.click({ target: button });
       return { calls, status, download };
     };
 
+    // Prepared before the tap: the card and the link go to the share sheet, and nothing is fetched after the tap.
     const sheet = await run({ share: true, canShare: () => true });
     expect(sheet.calls.fetched).toEqual([card]);
+    expect(sheet.calls.order).toEqual(['fetch', 'tap', 'share']);
     expect(sheet.calls.shared).toHaveLength(1);
     const shared = sheet.calls.shared[0] as { title: string; url: string; files: File[] };
     expect([shared.title, shared.url, shared.files.map((file) => file.name)]).toEqual(['Leo', url, ['leo.jpg']]);
     expect(sheet.download.hidden).toBe(true);
+
+    // Tapped before the card is ready: the sheet still opens straight from the tap, with the link alone.
+    const early = await run({ share: true, canShare: () => true }, { warm: false });
+    expect(early.calls.order.indexOf('share')).toBe(early.calls.order.indexOf('tap') + 2);
+    expect(early.calls.shared).toEqual([{ title: 'Leo', url }]);
 
     const fallback = await run({});
     expect(fallback.calls.copied).toEqual([url]);
