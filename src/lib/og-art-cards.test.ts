@@ -199,6 +199,6 @@ describe('the Spanish, French, Italian and Portuguese art cards', () => {
     }
     expect(read('src/components/programmatic/LocalizedBirthdayPage.astro')).toContain('const ogImage = signArtCard(heroSign!.slug, locale);');
     // es and pt have horoscope cards; the held fr and it daily editions (locale expansion) use their sign guide card.
-    expect(read('src/components/localized/LocalizedHoroscope.astro')).toContain("image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale)}");
+    expect(read('src/components/localized/LocalizedHoroscope.astro')).toContain("image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale === 'ru' ? 'en' : locale)}");
   });
 });
