@@ -20,7 +20,7 @@ export interface LocalTimeModule {
     date: string,
     time: string,
     timeZone: string,
-    options?: { longitude?: number; calendar?: CalendarName; country?: string },
+    options?: { longitude?: number; calendar?: CalendarName; country?: string; fold?: 'earlier' | 'later' },
   ): EngineLocalTimeResolution;
   /** The tzdb spelling of a zone name given in any letter case, or null (src/lib/time/zone-names.ts). */
   canonicalZoneName(name: string): Promise<string | null>;

@@ -261,6 +261,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
       } catch { return 'unavailable'; }
     } };
+    // A personal tool links to its website page, and that page's share card, only while the page's own switch is on.
+    if (personal) dependencies.sitePageOn = (flag: string) => env[flag] === '1';
     const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();

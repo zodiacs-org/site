@@ -31,6 +31,11 @@ export interface LocalTimeOptions {
    * local mean time era uses the zone reference city's mean time.
    */
   longitude?: number;
+  /**
+   * Which pass of a wall time the clock showed twice to take: "earlier", the
+   * default, or "later". It changes nothing for any other wall time.
+   */
+  fold?: 'earlier' | 'later';
 }
 
 export interface LocalTimeResolution {
@@ -45,6 +50,13 @@ export interface LocalTimeResolution {
    * zone alone would have applied.
    */
   localMeanTime?: { longitude: number; zoneOffsetMinutes: number };
+  /**
+   * Present on a skipped or repeated wall time: the clock change behind it,
+   * its instant (UTC, ISO 8601, to the millisecond) and the offsets either
+   * side, so a caller can find where a date starts or ends within a minute
+   * (./local-day.ts).
+   */
+  transition?: { at: string; offsetBeforeMinutes: number; offsetAfterMinutes: number };
 }
 
 /**
@@ -240,7 +252,8 @@ export function localDateContainsUtc(date: string, utc: Date, timeZone: string):
  * timezone, and the error never repeats the zone given.
  *
  * Ambiguous times (clocks fell back: two instants match) resolve to the
- * earlier instant with a `dst-fold` flag. Skipped times (clocks sprang
+ * earlier instant with a `dst-fold` flag, or the later one with
+ * `options.fold` "later". Skipped times (clocks sprang
  * forward: no instant matches) shift forward by the gap with a `dst-gap`
  * flag. A wall time read on a local mean time adds `lmt`: the birthplace's own
  * mean time with a longitude, the zone's reference city's without one. A legal
@@ -267,10 +280,12 @@ export function resolveLocalToUtc(
   // repeats the name given. Imported or stored inputs must select an explicit
   // zone, and the error must not carry a potentially private value.
   if (!intlAccepts(tz)) throw new RangeError('An explicit supported timezone is required.');
-  const { longitude } = options;
+  const { longitude, fold } = options;
   // A longitude the site cannot place is not a birthplace: as before, it is ignored.
-  const place = typeof longitude === 'number' && Number.isFinite(longitude) && Math.abs(longitude) <= 180
-    ? { longitude } : {};
+  const place = {
+    ...(typeof longitude === 'number' && Number.isFinite(longitude) && Math.abs(longitude) <= 180 ? { longitude } : {}),
+    ...(fold === 'later' ? { fold } : {}),
+  };
   if (!geo) {
     throw new Error('The local-time resolver is not loaded: await prepareLocalTime(date, timeZone) before resolving.');
   }
@@ -288,5 +303,6 @@ export function resolveLocalToUtc(
     offsetMinutes: resolved.offsetMinutes,
     flags: [...resolved.flags],
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
+    ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };
 }
