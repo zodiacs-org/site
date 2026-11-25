@@ -169,6 +169,7 @@ const webAnalyticsEnabled = Boolean(
 const accountAccessEager = accountSyncV2Enabled && profileAccessBootstrapEager(props.path);
 const accountAccessLoader = accountSyncV2Enabled && !accountAccessEager
   ? profileAccessLoaderScript({
+    notifyHome: props.path === '/',
     src: import.meta.env.DEV ? PROFILE_ACCESS_DEV_ENTRY : PROFILE_ACCESS_CHUNK_PLACEHOLDER,
     keys: profileAccessMarkerKeys({
       supabaseAuthKey: supabaseAuthStorageKeyName(import.meta.env.PUBLIC_SUPABASE_URL),

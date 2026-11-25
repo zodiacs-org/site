@@ -64,6 +64,10 @@ export async function editionLayoutStreaming(baseURL) {
   const caption = appsHTML.indexOf('<figcaption', figure);
   assert.ok(figure > 0 && caption > figure, 'The showcase caption must follow its image');
   pages.set('/apps/', { html: appsHTML, cuts: { image: caption, tools: afterTag(appsHTML, 'data-tools-toggle', '>') } });
+  const guideResponse = await fetch(new URL('/aries/', baseURL));
+  assert.equal(guideResponse.status, 200);
+  const guideHTML = await guideResponse.text();
+  pages.set('/aries/', { html: guideHTML, cuts: { title: afterTag(guideHTML, 'sg-hero__title"', '</h1>') } });
   const hubs = ['/es/horoscopes/', '/pt/horoscopes/'];
   for (const path of hubs) {
     const response = await fetch(new URL(path, baseURL));
@@ -87,7 +91,11 @@ export async function editionLayoutStreaming(baseURL) {
     } });
   }
 
-  const waitForPaint = (pause) => pause === 'tools' || pause === 'image';
+  const paintTargets = new Map([
+    ['tools', { first: '[data-tools-toggle]', box: '.nav__links' }],
+    ['image', { first: '.apps-hero__image img', box: '.apps-hero__visual' }],
+    ['title', { first: '.sg-hero__title', box: '.sg-hero' }],
+  ]);
   let resumeResponse;
   const server = createServer(async (req, res) => {
     try {
@@ -99,7 +107,7 @@ export async function editionLayoutStreaming(baseURL) {
         assert.ok(cut > 0, `Unknown pause on ${url.pathname}`);
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
         res.write(page.html.slice(0, cut));
-        if (waitForPaint(pause)) {
+        if (paintTargets.has(pause)) {
           await new Promise(resolve => { resumeResponse = resolve; });
         } else {
           await new Promise(resolve => setTimeout(resolve, 600));
@@ -125,6 +133,7 @@ export async function editionLayoutStreaming(baseURL) {
       { path: '/horoscopes/aries/', width: 1280, pause: 'brand' },
       ...[768, 1040].map(width => ({ path: '/apps/', width, pause: 'image' })),
       { path: '/apps/', width: 920, pause: 'tools' },
+      { path: '/aries/', width: 412, height: 823, pause: 'title' },
       { path: '/es/horoscopes/', width: 1040, pause: 'tools' },
       { path: '/pt/horoscopes/', width: 1280, pause: 'tools' },
       ...hubs.flatMap(path => [
@@ -174,14 +183,14 @@ export async function editionLayoutStreaming(baseURL) {
           }).observe({ type: 'layout-shift', buffered: true });
         }, { now: pause === 'ticker' ? editionClock : datedClock });
         const url = `http://127.0.0.1:${server.address().port}${path}?pause=${pause}`;
-        const reserved = page.locator(pause === 'tools' ? '.nav__links' : '.apps-hero__visual');
+        const target = paintTargets.get(pause);
+        const reserved = target && page.locator(target.box);
         let earlyBounds;
-        if (waitForPaint(pause)) {
+        if (target) {
           // Paint the partial response even when the CI browser starts slowly.
           try {
             await page.goto(url, { waitUntil: 'commit' });
-            const first = pause === 'tools' ? '[data-tools-toggle]' : '.apps-hero__image img';
-            await page.locator(first).waitFor({ state: 'visible' });
+            await page.locator(target.first).waitFor({ state: 'visible' });
             await page.screenshot();
             earlyBounds = await reserved.boundingBox();
             assert.ok(earlyBounds);
@@ -205,13 +214,17 @@ export async function editionLayoutStreaming(baseURL) {
         if (cls !== 0) failures.push(`${scenario}: ${cls}`);
         if (earlyBounds) {
           const finalBounds = await reserved.boundingBox();
-          if (!finalBounds || Object.keys(earlyBounds).some(key => earlyBounds[key] !== finalBounds[key])) {
+          // Later text can grow the sign hero. Its origin and side gutters must already be final.
+          const keys = pause === 'title' ? ['x', 'y', 'width'] : Object.keys(earlyBounds);
+          if (!finalBounds || keys.some(key => earlyBounds[key] !== finalBounds[key])) {
             failures.push(`${scenario}: bounds changed from ${JSON.stringify(earlyBounds)} to ${JSON.stringify(finalBounds)}`);
           }
         }
         if (path === '/horoscopes/aries/') {
           assert.equal(await page.locator('.hz-signrail a').count(), 12);
           assert.equal(await page.locator('.hz-signrail a[aria-current="page"]').count(), 1);
+        } else if (path === '/aries/') {
+          assert.equal(await page.locator('.sg-hero__title').innerText(), 'Aries');
         } else if (path === '/apps/') {
           const link = page.getByRole('link', { name: 'View the full example', exact: true });
           assert.equal(await link.count(), 1);
