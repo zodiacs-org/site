@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { positions, ENGINE_VERSION } from '@zodiacs/engine';
 import { computeEvents } from '../lib/compute-api/endpoints';
-import { parseEventsRequest } from '../lib/compute-api/validate';
+import { LOCAL_DAY_MESSAGES, parseEventsRequest } from '../lib/compute-api/validate';
 import { executeAiTool, namedRefusal, type AiCallContext } from './tools';
 import { moonPhase } from '@zodiacs/engine';
 import { moonPhaseNameFromAngle } from '../lib/engine/lite';
@@ -108,6 +108,14 @@ describe('public AI tools', () => {
       expect(zone).not.toBeNull();
       expect([...zone!.start.flags, ...zone!.end.flags]).toEqual([]);
     }
+  });
+  it('refuses a date its zone lived in two parts, rather than credit part of it to the next day', async () => {
+    // St. John's went from 00:01 back to 23:01 on 29 October 1989, so the 28th and the 29th each came in two parts.
+    for (const date of ['1989-10-28', '1989-10-29']) {
+      const refused = await executeAiTool('check_sky_fact', { kind: 'ingress', body: 'Moon', sign: 'scorpio', date, zone: 'America/St_Johns' }, dependencies);
+      expect(refused, date).toMatchObject({ ok: false, tool: 'check_sky_fact', error: { code: 'invalid-request', message: `date: ${LOCAL_DAY_MESSAGES.splitDay}` } });
+    }
+    expect((await executeAiTool('check_sky_fact', { kind: 'ingress', body: 'Moon', sign: 'scorpio', date: '1989-10-30', zone: 'America/St_Johns' }, dependencies)).ok).toBe(true);
   });
 });
 
