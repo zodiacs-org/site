@@ -796,6 +796,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/conformance/', '2026-11-23'] as const,
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
+  // Reader levels on the rising sign and Moon sign pages: the level switch, the first visit
+  // question and the data links for chart readers (docs/LEVELS.md), last so these dates win.
+  ...['/rising-sign/', '/moon-sign/'].map((loc) => [loc, '2026-11-25'] as const),
 ]);
 
 function getLastmod(loc: string): string {
