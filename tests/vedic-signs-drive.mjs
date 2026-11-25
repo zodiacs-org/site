@@ -15,7 +15,7 @@
  * The page with `privateRequests` is also held to files that do not depend on the birth: its birthplace search asks
  * for the whole city index, and it asks for all sixteen zone history files, for a 1990 birth and a 1915 one alike.
  *
- * This branch carries only its own page (Vedic signs); a page whose source is not in src/pages is skipped.
+ * A page whose source is not in src/pages is skipped.
  *
  *   npm run build && node tests/personal-pages-drive.mjs
  */
@@ -248,8 +248,9 @@ if (onPages.length) {
           const { selector, place } = await page.run(tab);
           await settle(tab);
           check(`${label}: the address bar is unchanged after the result`, tab.url() === before, tab.url());
-          const leaked = requests.filter((line) => line.includes(BIRTH.date) || line.includes('1990'));
-          check(`${label}: no request carries the birth date`, leaked.length === 0, leaked.join('\n'));
+          // Only a count, so a privacy regression cannot write a birth detail to the test log.
+          const leaked = requests.filter((line) => line.includes(BIRTH.date) || line.includes(BIRTH.date.slice(0, 4))).length;
+          check(`${label}: no request carries the birth date`, leaked === 0, `${leaked} request(s)`);
           if (page.privateRequests) {
             place.coordinates = placeCoordinates(cities, place);
             check(`${label}: the chosen birthplace's coordinates are known to the drive`, place.coordinates !== null, JSON.stringify(place));

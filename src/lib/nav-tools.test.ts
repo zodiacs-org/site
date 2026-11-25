@@ -192,6 +192,21 @@ describe('tools behind a launch switch', () => {
     }
   });
 
+  it("keeps main's nine unswitched menu entries, in main's order", () => {
+    expect(visibleNavMore(() => false).map((entry) => entry.href)).toEqual([
+      '/group-charts/',
+      '/chart-twins/',
+      '/big-three/',
+      '/compatibility/invite/',
+      '/solar-return/',
+      '/sky-calendar/',
+      '/chart-of-the-day/',
+      '/your-sky-wrapped/',
+      '/astrologer-kit/',
+    ]);
+    expect(MAIN_NAV_MORE_LENGTH).toBe(9);
+  });
+
   it('lists solar return in NAV_MORE and gates year-score and good-days behind their launch flags', () => {
     const moreHrefs = (on: boolean) => visibleNavMore(() => on).map((entry) => entry.href);
     expect(moreHrefs(false)).toContain('/solar-return/');

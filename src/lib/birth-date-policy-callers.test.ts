@@ -32,6 +32,7 @@ const ISLANDS = [
   'ReturnPersonal',
   'YearSky',
   'MiniBirthChartWidget',
+  'AstrocartographyMap',
   'VedicSigns',
   'RetrogradeForYou',
 ] as const;

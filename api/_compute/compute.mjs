@@ -11217,14 +11217,15 @@ var BACKEND = Object.freeze({
   ephemeris: activeEphemeris()
 });
 var statements = null;
+var receiptConventions = null;
 function engineStatements() {
   if (!statements) {
-    const chart = natalChart({ utc: "2000-01-01T12:00:00Z", timeKnown: false });
-    const { receipt } = createNatalEnvelope(chart);
-    const { model, table, tableDigest } = chart.deltaT;
+    const iersChart = natalChart({ utc: "2000-01-01T12:00:00Z", timeKnown: false });
+    const { model, table, tableDigest } = iersChart.deltaT;
     if (model !== "iers-utc/1" || table === null || tableDigest === null) {
       throw new Error("The engine's chart for 2000-01-01 no longer names the IERS table.");
     }
+    const { receipt } = createNatalEnvelope(iersChart);
     statements = {
       conventions: receipt.conventions,
       coverage: receipt.coverage,
@@ -11235,6 +11236,21 @@ function engineStatements() {
     };
   }
   return statements;
+}
+function computeReceiptConventions() {
+  if (!receiptConventions) {
+    const base = engineStatements().conventions;
+    const baseKeys = Object.keys(base);
+    const match = NATAL_RECEIPT_CONVENTION_SETS.find((set) => {
+      if (Object.keys(set).length !== baseKeys.length) return false;
+      return baseKeys.every((key) => key === "timeScale" ? set.timeScale !== base.timeScale && Boolean(set.timeScale?.includes("tt-utc-plus-69.184s")) : set[key] === base[key]);
+    });
+    if (!match) {
+      throw new Error("Missing continuous-UTC receipt convention set.");
+    }
+    receiptConventions = match;
+  }
+  return receiptConventions;
 }
 function computeConventionIds(receipt) {
   const ids = /* @__PURE__ */ new Set();
@@ -11261,7 +11277,8 @@ function computeConventionIds(receipt) {
   return [...ids].sort();
 }
 function computeReceipt(endpoint, extra = {}) {
-  const { conventions, coverage, deltaT: deltaT2 } = engineStatements();
+  const { coverage, deltaT: deltaT2 } = engineStatements();
+  const conventions = computeReceiptConventions();
   const receipt = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,

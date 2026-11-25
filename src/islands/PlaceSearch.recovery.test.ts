@@ -223,6 +223,50 @@ describe('birthplace search recovery and request ownership', () => {
     expect(view.some((node) => node.type === 'button' && node.props.role === 'option')).toBe(true);
   });
 
+  it('with distinctLabels, shows each same-named option with its coordinates and keeps them on the choice; without it, options read as before', async () => {
+    const udaipur: City = { name: 'Udaipur', admin1: 'Rajasthan', country: 'India', lat: 24.59, lon: 73.71, tz: 'Asia/Kolkata', pop: 451100 };
+    const tripura: City = { name: 'Udaipur', admin1: 'Tripura', country: 'India', lat: 23.53, lon: 91.48, tz: 'Asia/Kolkata', pop: 32758 };
+    const shekhawati: City = { name: 'Udaipur', admin1: 'Rajasthan', country: 'India', lat: 27.72, lon: 75.47, tz: 'Asia/Kolkata', pop: 30264 };
+    harness.wholeSearch.mockResolvedValue([udaipur, tripura, shekhawati]);
+    const view = (selected: City | null, distinctLabels: boolean) => {
+      harness.cursor = 0;
+      harness.effectCursor = 0;
+      const rendered = PlaceSearch({ onSelect, selected, wholeIndex: true, ...(distinctLabels ? { distinctLabels } : {}) });
+      flushEffects();
+      return nodes(rendered);
+    };
+    const text = (node: VNode<Record<string, any>>) => nodes(node.props.children).filter((child) => child.type === 'span').map((child) => [child.props.children].flat().join('')).join(' | ');
+    view(null, true).find((node) => node.props.role === 'combobox')!.props.onInput({ target: { value: 'Udaipur' } });
+    await vi.advanceTimersByTimeAsync(120);
+    await vi.dynamicImportSettled();
+    await flush();
+    const options = view(null, true).filter((node) => node.props.role === 'option');
+    expect(options.map(text)).toEqual([
+      'Udaipur | Rajasthan, India (24.59° N, 73.71° E)',
+      'Udaipur | Tripura, India',
+      'Udaipur | Rajasthan, India (27.72° N, 75.47° E)',
+    ]);
+    const items = view(null, true).filter((node) => node.type === 'li' && node.props.role === 'none');
+    const ids = items.map((node) => node.props['data-place-id']);
+    expect(ids.every((id) => /^p[0-9a-z]{11}$/u.test(id))).toBe(true);
+    expect(new Set(ids).size).toBe(3);
+    expect(items.map((node) => node.key)).toEqual(ids);
+    // The chosen Udaipur keeps the coordinates that told it apart.
+    options[2].props.onClick();
+    expect(onSelect).toHaveBeenLastCalledWith(shekhawati);
+    const chip = view(shekhawati, true).find((node) => node.type === 'input')!;
+    expect(chip.props.value).toBe('Udaipur · Rajasthan, India (27.72° N, 75.47° E)');
+    // Off (every other page): the same options and chip as before, with no coordinates and no place id.
+    harness.slots = [];
+    view(null, false).find((node) => node.props.role === 'combobox')!.props.onInput({ target: { value: 'Udaipur' } });
+    await vi.advanceTimersByTimeAsync(120);
+    await flush();
+    const plain = view(null, false);
+    expect(plain.filter((node) => node.props.role === 'option').map(text)).toEqual(['Udaipur | Rajasthan, India', 'Udaipur | Tripura, India', 'Udaipur | Rajasthan, India']);
+    expect(plain.filter((node) => node.type === 'li').every((node) => node.props['data-place-id'] === undefined)).toBe(true);
+    expect(view(shekhawati, false).find((node) => node.type === 'input')!.props.value).toBe('Udaipur · Rajasthan, India');
+  });
+
   it('with wholeIndex, loads the whole index on focus and searches it, never the letter-by-letter search', async () => {
     harness.wholeSearch.mockResolvedValue([paris]);
     const input = nodes(render(null, false, true)).find((node) => node.props.role === 'combobox')!;

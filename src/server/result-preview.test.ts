@@ -704,6 +704,7 @@ describe('the deployed entry', () => {
       ['/share/big-three/', 'big-three-link'], ['/api/og/big-three-image', 'big-three-image'], ['/api/og/big-three-story', 'big-three-story'],
       ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
       ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
+      ['/share/astrocartography/', 'astrocartography-link'], ['/api/og/astrocartography-image', 'astrocartography-image'], ['/api/og/astrocartography-story', 'astrocartography-story'],
       ['/share/vedic-signs/', 'vedic-signs-link'], ['/api/og/vedic-signs-image', 'vedic-signs-image'], ['/api/og/vedic-signs-story', 'vedic-signs-story'],
       ['/share/retrograde-for-you/', 'retrograde-for-you-link'], ['/api/og/retrograde-for-you-image', 'retrograde-for-you-image'], ['/api/og/retrograde-for-you-story', 'retrograde-for-you-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
