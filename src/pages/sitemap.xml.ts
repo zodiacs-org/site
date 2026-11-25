@@ -780,6 +780,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // The English compatibility invite emblem gained its axis and disc entrances.
+  ['/compatibility/', '2026-11-22'] as const,
   // The meaning of reading confidence and the numerology and tarot exception.
   ...['/developers/demo/', '/your-2027-sky/', '/numerology/'].map((loc) => [loc, READING_CONFIDENCE_UPDATED] as const),
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', READING_CONFIDENCE_UPDATED] as const] : []),
