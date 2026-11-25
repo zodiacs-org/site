@@ -1219,6 +1219,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-24');
     }
   }
+  // Main already dates methodology and the full moon calendar 24 November, so
+  // this branch's changes to both pages carry the next day.
+  for (const url of urls) {
+    if (url.loc === '/methodology/' || url.loc === '/full-moon-calendar/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-25');
+    }
+  }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);
     if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);
