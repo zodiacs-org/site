@@ -1,3 +1,4 @@
+import { MOMENT_CHART_TOOL, MOMENT_ROUTING } from './features/moment-chart-contract';
 import { moonPhase } from '@zodiacs/engine';
 import { eventTimes, localIso, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
@@ -41,6 +42,7 @@ import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
 import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, softenMinorAnswer, softenMinorPanel, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
+import { castMomentChart } from './features/moment-chart';
 import { PERSONAL_TOOL_NAMES, isPersonalTool, personalTool, type PersonalToolName } from './personal/registry';
 
 export interface AiDependencies {
@@ -56,6 +58,7 @@ export interface AiDependencies {
   occasions?: boolean;
   /** The 0.6.0 tools (ZODIACS_COVERAGE_ENABLED=1), offered only with the occasion tools. */
   coverage?: boolean;
+  momentChart?: boolean;
   /**
    * search_sky_events, the natal chart's house system and nodes, and explain_astrology's event and house topics
    * (ZODIACS_SKY_EVENTS_ENABLED=1), in effect only with the coverage and occasion tools (skyEventsOn).
@@ -203,7 +206,7 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   // get_numerology comes after get_solar_return, so every entry before it keeps its place.
   // find_good_days comes after them all, so every entry before it keeps its place.
   // The personal tools come after everything else, so every entry before them keeps its place.
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : []), ...(personalOn(dependencies) ? PERSONAL_TOOL_NAMES : [])];
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : []), ...(dependencies.momentChart ? [MOMENT_CHART_TOOL] as const : []), ...(personalOn(dependencies) ? PERSONAL_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
@@ -425,12 +428,14 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
+    const child = childBirthDateRefusal(tool, parsed.data, dependencies.now?.() ?? new Date(), context.hostZone);
+    if (child) return child;
     let data: unknown;
     let links: { title: string; url: string }[] = [methodLink];
     if (isPersonalTool(tool)) {
@@ -491,6 +496,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes('find_birthplace') ? ' a town or city named instead of coordinates, find_birthplace;' : ''} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
           if (skyEvents) capabilities.limitations.push('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet\'s next retrograde, when a planet changes sign, every full Moon next year or this week\'s void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.');
           // Numerology is a separate tradition from astrology, and the line says so.
+          if (dependencies.momentChart) capabilities.limitations.push(MOMENT_ROUTING);
           if (numerologyOn(dependencies)) capabilities.limitations.push(
             'get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.',
             'For a numerology reading, use get_numerology, not explain_astrology.',
@@ -521,6 +527,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.privacy += ' Sky Watch preview saves public-sky filters, owner, expiration and encrypted callback credentials. Stopping or expiring a watch clears its credentials; subscription metadata is retained for up to 30 days afterward. Public event records and delivery status are retained for up to 30 days. No birth details are accepted.';
           capabilities.limitations[2] = 'Sky Watch delivers selected public-sky events through verified callbacks. Delivery can be delayed or repeated. Eclipses are listed by get_sky_calendar. No personal predictions or birth-time rectification.';
         }
+        break;
+      }
+      case MOMENT_CHART_TOOL: {
+        data = castMomentChart(INPUT_SCHEMAS.get_moment_chart.parse(input), dependencies.now?.() ?? new Date());
+        links = [{ title: 'The sky today', url: `${ORIGIN}/today/` }];
         break;
       }
       case 'get_sky': {
