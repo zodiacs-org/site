@@ -30,7 +30,11 @@ import {
 } from '@zodiacs/engine';
 import { conventionId } from '@zodiacs/engine/conventions';
 import { DE440_EPHEMERIS_NAME } from '@zodiacs/engine/de440';
-import { createNatalEnvelope, type NatalReceipt } from '@zodiacs/engine/receipt';
+import {
+  createNatalEnvelope,
+  NATAL_RECEIPT_CONVENTION_SETS,
+  type NatalReceipt,
+} from '@zodiacs/engine/receipt';
 import {
   COMPUTE_RECEIPT_SCHEMA,
   computeDocsUrl,
@@ -94,19 +98,28 @@ export function engineStatements(): EngineStatements {
 }
 
 /**
- * Conventions for compute receipts, read from a post-table chart (2030-01-01)
- * so every compute receipt states @zodiacs/engine 2.1.0's complete three-era
- * timeScale rule (before 1972, 1972 through table end, and continuous-UTC after)
- * without encoding which era a request asked for or altering hosted capability
- * fixtures.
+ * Conventions for compute receipts, selected from `@zodiacs/engine/receipt`'s
+ * exported convention sets to match the active ephemeris with the complete
+ * three-era continuous-UTC `timeScale` rule (before 1972, 1972 through table
+ * end, and continuous UTC after) without depending on a fixed future probe
+ * date or altering hosted capability fixtures.
  */
 function computeReceiptConventions(): NatalReceipt['conventions'] {
   if (!receiptConventions) {
-    const continuousChart = natalChart({ utc: '2030-01-01T12:00:00Z', timeKnown: false });
-    if (continuousChart.timeScale.basis !== 'continuous-utc') {
-      throw new Error('The engine\'s chart for 2030-01-01 no longer uses continuous-utc.');
+    const base = engineStatements().conventions;
+    const baseKeys = Object.keys(base);
+    const match = NATAL_RECEIPT_CONVENTION_SETS.find((set) => {
+      if (Object.keys(set).length !== baseKeys.length) return false;
+      return baseKeys.every((key) => (
+        key === 'timeScale'
+          ? set.timeScale !== base.timeScale && Boolean(set.timeScale?.includes('tt-utc-plus-69.184s'))
+          : (set as Record<string, string | undefined>)[key] === (base as Record<string, string | undefined>)[key]
+      ));
+    });
+    if (!match) {
+      throw new Error('Missing continuous-UTC receipt convention set.');
     }
-    receiptConventions = createNatalEnvelope(continuousChart).receipt.conventions;
+    receiptConventions = match as NatalReceipt['conventions'];
   }
   return receiptConventions;
 }

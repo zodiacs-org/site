@@ -6969,11 +6969,16 @@ function engineStatements() {
 }
 function computeReceiptConventions() {
   if (!receiptConventions) {
-    const continuousChart = natalChart({ utc: "2030-01-01T12:00:00Z", timeKnown: false });
-    if (continuousChart.timeScale.basis !== "continuous-utc") {
-      throw new Error("The engine's chart for 2030-01-01 no longer uses continuous-utc.");
+    const base = engineStatements().conventions;
+    const baseKeys = Object.keys(base);
+    const match = NATAL_RECEIPT_CONVENTION_SETS.find((set) => {
+      if (Object.keys(set).length !== baseKeys.length) return false;
+      return baseKeys.every((key) => key === "timeScale" ? set.timeScale !== base.timeScale && Boolean(set.timeScale?.includes("tt-utc-plus-69.184s")) : set[key] === base[key]);
+    });
+    if (!match) {
+      throw new Error("Missing continuous-UTC receipt convention set.");
     }
-    receiptConventions = createNatalEnvelope(continuousChart).receipt.conventions;
+    receiptConventions = match;
   }
   return receiptConventions;
 }
