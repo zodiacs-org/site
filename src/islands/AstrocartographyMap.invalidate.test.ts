@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VNode } from 'preact';
 import type { City } from '../lib/geo/search';
+import { SKIPPED_BIRTH_DATE, SkippedBirthDateError } from '../lib/vedic-signs/clock';
 
 /**
  * The map drawn for one set of birth details is withdrawn as soon as the details change, and a draw still running
@@ -72,6 +73,7 @@ function render() {
   return {
     fields,
     submit: () => (form.props.onSubmit as (event: { preventDefault: () => void }) => Promise<void>)({ preventDefault: () => {} }),
+    alert: tree.find((node) => node.props.role === 'alert')?.props.children,
     mapShown: tree.some((node) => node.props.class === 'acg__result'),
     busy: !!form.props['aria-busy'],
   };
@@ -91,6 +93,15 @@ beforeEach(() => {
 afterEach(() => { vi.restoreAllMocks(); });
 
 describe('the astrocartography map after the birth details change', () => {
+  it('shows the plain refusal when the birthplace clock skipped a whole day', async () => {
+    harness.compute.mockRejectedValue(new SkippedBirthDateError());
+    await (await filledIn()).submit();
+    const after = render();
+    expect(after.alert).toBe(SKIPPED_BIRTH_DATE);
+    expect(after.mapShown).toBe(false);
+  });
+
+
   it('withdraws the drawn map and its place readings when the date is edited to one the form refuses', async () => {
     harness.compute.mockResolvedValue(DRAWN);
     await (await filledIn()).submit();

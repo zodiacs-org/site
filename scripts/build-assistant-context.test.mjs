@@ -218,6 +218,19 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     }
   });
 
+  it('leaves the retrogrades-in-your-chart Guide line out of the deployed context, and the feature doc says how it joins', async () => {
+    // The site assistant serves the committed module (api/assistant.ts), which the build does not regenerate, so
+    // switching PUBLIC_RETROGRADES_FOR_YOU_ENABLED on adds no Guide line by itself; the doc names the step that does.
+    expect(LAUNCH_FLAGGED_ROUTES['/retrogrades/for-you/']).toBe('PUBLIC_RETROGRADES_FOR_YOU_ENABLED');
+    expect(ASSISTANT_CONTEXT).not.toContain('/retrogrades/for-you/');
+    const on = await generateAssistantContext({ env: { PUBLIC_RETROGRADES_FOR_YOU_ENABLED: '1' } });
+    expect(on.context.split('\n').filter((line) => line.startsWith('- /retrogrades/for-you/'))).toHaveLength(1);
+    const doc = (await readFile(new URL('../docs/platform/zodiacs-ai/PERSONAL_TOOLS.md', import.meta.url), 'utf8')).replace(/\s+/gu, ' ');
+    for (const step of ['api/_assistant/context.ts', 'LAUNCH_FLAGGED_ROUTES', "'/retrogrades/for-you/'", 'npm run data:assistant-context', 'Merge it only after the flag is on in production']) {
+      expect(doc, step).toContain(step);
+    }
+  });
+
   it('leaves the astrocartography Guide line out of the deployed context, and the feature doc says how it joins', async () => {
     // The site assistant serves the committed module (api/assistant.ts), which the build does not regenerate, so
     // switching PUBLIC_ASTROCARTOGRAPHY_ENABLED on adds no Guide line by itself; the doc names the step that does.

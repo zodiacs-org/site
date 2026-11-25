@@ -12,6 +12,7 @@ import CalculationReload, { calculationError } from './CalculationReload';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { parseCivilDate } from '../lib/time/civil-date';
 import { t } from '../lib/i18n';
+import { SKIPPED_BIRTH_DATE, SkippedBirthDateError } from '../lib/vedic-signs/clock';
 
 /** Each planet drawn in the hue of the sign it rules, the only colour the site uses. */
 const HUE: Record<AcgBody, string> = {
@@ -204,7 +205,9 @@ export default function AstrocartographyMap() {
       setMinor(under18(birthDate));
       setResult(drawn);
     } catch (cause) {
-      if (request === revision.current) setError(calculationError(cause, 'en', 'The map could not be drawn. Check the details and try again.'));
+      if (request === revision.current) {
+        setError(cause instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE : calculationError(cause, 'en', 'The map could not be drawn. Check the details and try again.'));
+      }
     } finally { if (request === revision.current) setBusy(false); }
   }
 

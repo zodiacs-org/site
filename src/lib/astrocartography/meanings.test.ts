@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SKIPPED_BIRTH_DATE } from '../vedic-signs/clock';
 import { computeAstrocartography, nearestLines } from '../../islands/astrocartography/compute';
 import { under18 } from '../../islands/AstrocartographyMap';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
@@ -18,6 +19,30 @@ const ROMANCE = /love|attract|romant/iu;
 const MINOR_CHECK = /love|attract|romant|relationship|partner/iu;
 const CLOCK_FOLD_LIMIT = clockFoldLimit(60);
 const NEW_YORK = { tz: 'America/New_York', lon: -74.01 };
+
+describe('a birthplace clock that skipped a whole day', () => {
+  const place = { tz: 'Pacific/Kwajalein', lon: 167.73 };
+  it('refuses a whole skipped date on the map and tool without exposing the submitted details', async () => {
+    const birthDate = '1993-08-21';
+    const time = '12:34';
+    const reply = await executeAiTool('get_astrocartography', { birthDate, time, zone: place.tz }, ON);
+    expect(reply).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_DATE } });
+    const wire = JSON.stringify(reply);
+    expect([birthDate, time, place.tz].some((value) => wire.includes(value))).toBe(false);
+    const pageMessage = await computeAstrocartography({ birthDate, birthTime: time, place }).then(
+      () => null, (error: unknown) => error instanceof Error ? error.message : null,
+    );
+    expect(pageMessage).toBe(SKIPPED_BIRTH_DATE);
+  });
+
+  it.each(['1993-08-20', '1993-08-22'])('draws the map and tool reading for the real day %s', async (birthDate) => {
+    const time = '12:34';
+    const map = await computeAstrocartography({ birthDate, birthTime: time, place });
+    const reply = await executeAiTool('get_astrocartography', { birthDate, time, zone: place.tz }, ON);
+    expect(map.bodies).toHaveLength(10);
+    expect(reply).toMatchObject({ ok: true, data: { instantUtc: map.utc.toISOString() } });
+  });
+});
 
 describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
   it('leave out love, attraction and romance on every line, on the page and in the tool sentence', () => {

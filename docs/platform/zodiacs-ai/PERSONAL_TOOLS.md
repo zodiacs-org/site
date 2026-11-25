@@ -56,8 +56,8 @@ does not add the page to the Guide, and
 `scripts/build-assistant-context.test.mjs` holds the committed module to the
 switches-unset output. To put a launched page in the Guide, a pull request
 removes its route from `LAUNCH_FLAGGED_ROUTES` in
-`scripts/build-assistant-context.mjs` (for astrocartography,
-`'/astrocartography/'`), runs `npm run data:assistant-context` with no
+`scripts/build-assistant-context.mjs` (for example, `'/retrogrades/for-you/'`
+or `'/astrocartography/'`), runs `npm run data:assistant-context` with no
 switch set, and commits the regenerated `api/_assistant/context.ts`, which
 gains exactly that page's one line. Merge it only after the flag is on in
 production, so the Guide never names a page that is not live. Until then the

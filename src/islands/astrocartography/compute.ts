@@ -9,6 +9,8 @@ import { lineDistances, mapLines, type BodyLines, type EquatorialBody, type GeoP
 import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { prepareLocalTime, resolveLocalToUtc, type LocalTimeResolution } from '../../lib/time/localToUtc';
 import { prepareEveryZoneHistory } from '../../lib/time/every-zone-history';
+import { readsOnDate } from '../../lib/time/local-day';
+import { SkippedBirthDateError } from '../../lib/vedic-signs/clock';
 
 type LocalTimeFlag = LocalTimeResolution['flags'][number];
 import land from '../../data/astrocartography-land.json';
@@ -31,6 +33,8 @@ export async function computeAstrocartography(input: AcgInput): Promise<AcgResul
   // all, would tell the host the birthplace's zone group and that the birth is from 1970 or before.
   await prepareEveryZoneHistory();
   await prepareLocalTime(input.birthDate, input.place.tz);
+  const midnight = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: input.place.lon });
+  if (!readsOnDate(input.birthDate, midnight)) throw new SkippedBirthDateError();
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime, input.place.tz, { longitude: input.place.lon });
   const utc = resolved.utc;
   const { gast, bodies } = equatorialMoment(utc);

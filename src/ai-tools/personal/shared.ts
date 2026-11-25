@@ -14,11 +14,12 @@
  * be imported by contracts without a cycle.
  */
 import { z } from 'zod';
-import type { LocalTimeModule } from '../../lib/compute-api/local-time';
+import type { LocalTimeFlag, LocalTimeModule } from '../../lib/compute-api/local-time';
 import { computeChart } from '../../lib/engine/full.js';
 import type { Chart } from '../../lib/engine/types';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
-import { localDaySpan, readsOnDate, type WallResolver } from '../../lib/time/local-day';
+import { birthDaySpan } from '../../lib/time/birth-day-span';
+import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import type { PlaceTable } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { readingDetail, type ReadingDetail } from '../reading-confidence';
@@ -132,8 +133,8 @@ export interface BirthMoment {
    * The resolver's flags for the birth's wall time: dst-gap when the clock skipped it (moved forward by the jump),
    * dst-fold when it showed it twice (the earlier pass is used), lmt for local mean time. Empty without a zone.
    */
-  flags: readonly string[];
-  /** With dst-gap or dst-fold: the size of the clock change, minutes, from the offsets on either side of it. */
+  flags: readonly LocalTimeFlag[];
+  /** Size of a repeated or skipped clock interval, in minutes. */
   jumpMinutes: number | null;
 }
 
@@ -157,7 +158,7 @@ export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['
   const timeKnown = args.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
   let birthUtc: Date;
-  let flags: readonly string[] = [];
+  let flags: readonly LocalTimeFlag[] = [];
   let jumpMinutes: number | null = null;
   if (args.zone) {
     await clock.prepareLocalTime(args.birthDate, args.zone);
@@ -189,9 +190,9 @@ function onBirthClock(args: BirthArgs, clock: PersonalToolContext['localTime']) 
  * args.zone) covers them, since the engine loads a zone's whole history for
  * any date up to 1970.
  */
-function wallOnBirthplaceClock(args: BirthArgs, clock: PersonalToolContext['localTime']): (...wall: Parameters<WallResolver>) => ReturnType<PersonalToolContext['localTime']['resolveLocalToUtc']> {
+function wallOnBirthplaceClock(args: BirthArgs, clock: PersonalToolContext['localTime']) {
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
-  return (date, time, fold) => clock.resolveLocalToUtc(date, time, args.zone!, {
+  return (date: string, time: string, fold: 'earlier' | 'later') => clock.resolveLocalToUtc(date, time, args.zone!, {
     ...(longitude !== undefined ? { longitude } : {}),
     ...(fold === 'later' ? { fold } : {}),
   });
@@ -203,10 +204,10 @@ function wallOnBirthplaceClock(args: BirthArgs, clock: PersonalToolContext['loca
  * local noon (UTC noon without a zone) with no angles, as get_natal_chart and
  * get_personal_transits cast it.
  */
-export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<NatalCast> {
+export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime'], chartOf: (input: Parameters<typeof computeChart>[0]) => Chart = computeChart): Promise<NatalCast> {
   const moment = await resolveBirth(args, clock);
   const { birthUtc, timeKnown, placed, latitude, longitude } = moment;
-  const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
+  const chart = chartOf({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { ...moment, chart, angles };
 }
@@ -244,6 +245,16 @@ export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['
   const span = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock));
   if (!span) throw new SkippedBirthDateError();
   return span;
+}
+
+/** Read the same birth-day span as the Retrogrades page, including a repeated last minute. */
+export async function retrogradeBirthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
+  // Before 1970 a birthplace clock could lie outside the modern civil offsets.
+  if (!args.zone && args.birthDate < '1970-01-01') return birthDayEnds(args, clock);
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59.999Z`) + 12 * HOUR)];
+  await clock.prepareLocalTime(args.birthDate, args.zone);
+  const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+  return birthDaySpan(args.birthDate, args.zone, longitude, (date, time, zone, options) => clock.resolveLocalToUtc(date, time, zone, options));
 }
 
 /**

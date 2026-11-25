@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { handleResultShareNodeRequest, type ResultShareRoute } from './result-preview';
 
 /** The launch switches the share routes follow (src/lib/launch-flags.ts), read from process.env at run time. */
-const FLAGS = ['PUBLIC_YEAR_SCORE_ENABLED', 'PUBLIC_YEAR_PEOPLE_ENABLED', 'PUBLIC_BIRTHDAY_REPORT_ENABLED', 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', 'PUBLIC_VEDIC_SIGNS_ENABLED'] as const;
+const FLAGS = ['PUBLIC_YEAR_SCORE_ENABLED', 'PUBLIC_YEAR_PEOPLE_ENABLED', 'PUBLIC_BIRTHDAY_REPORT_ENABLED', 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', 'PUBLIC_VEDIC_SIGNS_ENABLED', 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', 'PUBLIC_ASTROCARTOGRAPHY_ENABLED'] as const;
 
 /** Each switched route, its switch and a query its handler accepts. */
 const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]; query: Record<string, string> }[] = [
@@ -18,6 +18,9 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'vedic-signs-link', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
   { route: 'vedic-signs-image', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
   { route: 'vedic-signs-story', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
+  { route: 'retrograde-for-you-link', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'retrograde-for-you-image', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'retrograde-for-you-story', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
 ];
 
 function nodeResponse() {
