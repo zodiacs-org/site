@@ -104,9 +104,11 @@ describe('the /vedic-signs/ form', () => {
 });
 
 describe('the personal pages drive on this branch', () => {
-  const drive = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
+  const drive = readFileSync(new URL('../../tests/vedic-signs-drive.mjs', import.meta.url), 'utf8');
+  const runner = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
   const workflow = readFileSync(new URL('../../.github/workflows/site-check.yml', import.meta.url), 'utf8');
   it('drives Vedic signs, its age gate and share link, and runs in the flag-on job', () => {
+    expect(runner).toContain("'./vedic-signs-drive.mjs'");
     expect(drive).toContain("path: '/vedic-signs/'");
     expect(drive).toContain("check('an under-13 date locks the birth time'");
     const job = workflow.slice(workflow.indexOf('  vedic-signs-flag-on:'));

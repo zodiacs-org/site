@@ -46,6 +46,7 @@ export type ToolIconName =
   | 'year-sky'
   | 'eclipses'
   | 'retrogrades'
+  | 'retrogrades-for-you'
   | 'full-moon-calendar'
   | 'sky-calendar'
   | 'sky-events'
@@ -53,7 +54,8 @@ export type ToolIconName =
   | 'guide'
   | 'privacy'
   | 'year-score'
-  | 'birthday-report';
+  | 'birthday-report'
+  | 'astrocartography';
 
 export interface ToolIconDrawing {
   /** The sign whose pastel hue paints the disc. */
@@ -66,6 +68,11 @@ export interface ToolIconDrawing {
 const RETURN_ARROW = '<path d="M20.3 12a8.3 8.3 0 1 1-2.43-5.87L20.3 8.5"/><path d="M20.3 4.4v4.1h-4.1"/>';
 
 export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
+  // A globe with its equator, one meridian, and a planet's rising line curving across it.
+  astrocartography: {
+    hue: 'sagittarius',
+    body: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5a4.2 8.5 0 0 1 0 17"/><path d="M5.4 6.6c3.4 1.2 5.6 5.4 13.2 10.8"/>',
+  },
   // A chart wheel: the circle, the inner ring and the six house spokes.
   'birth-chart': {
     hue: 'aries',
@@ -205,6 +212,11 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
     hue: 'gemini',
     body: '<path d="M3.5 17.4C9.2 17.4 14.6 13.3 14.6 9.1c0-2.4-1.7-3.7-3.1-3.7-1.6 0-2.7 1.4-2.7 3.1 0 4.3 5.2 7.3 11.6 7.3"/><path d="M18.2 13.5l2.3 2.3-2.3 2.3"/>',
   },
+  // A birth chart's circle and horizon, with a retrograde loop turning above it: Mercury's Gemini, as on Retrogrades.
+  'retrogrades-for-you': {
+    hue: 'gemini',
+    body: '<circle cx="12" cy="12" r="8.3"/><path d="M3.9 14.6h16.2"/><path d="M7.2 11.8c2.6 0 5.3-1.7 5.3-3.6 0-1.1-.8-1.7-1.5-1.7-.8 0-1.3.6-1.3 1.4 0 2 2.3 3.9 5.7 3.9"/><path d="M14.2 10.4l1.4 1.4-1.4 1.4"/>',
+  },
   // A full moon with its maria.
   'full-moon-calendar': {
     hue: 'pisces',
@@ -251,6 +263,7 @@ export const TOOL_ICON_NAMES = Object.keys(TOOL_ICONS) as ToolIconName[];
 
 /** Each tool route (English path) and the icon it wears wherever it is listed. */
 export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
+  '/astrocartography/': 'astrocartography',
   '/birth-chart/': 'birth-chart',
   '/moon-sign/': 'moon-sign',
   '/rising-sign/': 'rising-sign',
@@ -280,6 +293,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/your-2027-sky/': 'year-sky',
   '/eclipses/': 'eclipses',
   '/retrogrades/': 'retrogrades',
+  '/retrogrades/for-you/': 'retrogrades-for-you',
   '/full-moon-calendar/': 'full-moon-calendar',
   '/sky-calendar/': 'sky-calendar',
   '/events/': 'sky-events',

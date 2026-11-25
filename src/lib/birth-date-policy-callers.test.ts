@@ -32,7 +32,9 @@ const ISLANDS = [
   'ReturnPersonal',
   'YearSky',
   'MiniBirthChartWidget',
+  'AstrocartographyMap',
   'VedicSigns',
+  'RetrogradeForYou',
 ] as const;
 
 const YEAR_SKY_TWINS = ['YearSkyEs', 'YearSkyFr', 'YearSkyIt', 'YearSkyPt'] as const;
@@ -69,6 +71,17 @@ describe('the birth date policy reaches every chart form', () => {
     expect(refusal).toBeGreaterThan(entry.indexOf("birthDateForChart(locale, entry.date, entry.calendar)"));
     expect(refusal).toBeLessThan(entry.indexOf('prepareLocalTime('));
     expect(refusal).toBeLessThan(entry.indexOf('engine.computeChart('));
+  });
+
+  it('checks the retrograde page\'s calculation module before it resolves a birth time or builds a chart', () => {
+    const compute = read('islands/retrograde-for-you/compute.ts');
+    expect(compute).toMatch(POLICY_IMPORT);
+    const body = compute.slice(compute.indexOf('export function computeRetrogradeForYou('));
+    const refusal = body.indexOf('retrogradeForYouRefusal(input.birthDate, input.now)');
+    expect(refusal).toBeGreaterThan(0);
+    expect(refusal).toBeLessThan(body.indexOf('resolveLocalToUtc('));
+    expect(refusal).toBeLessThan(body.indexOf('computeChart('));
+    expect(compute).toMatch(/birthDateRefusal\(birthDate, now\)/u);
   });
 
   it('leaves the Moon phase lookup exempt (a date-only sky reader)', () => {
