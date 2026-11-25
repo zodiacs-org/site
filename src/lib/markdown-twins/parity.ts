@@ -130,6 +130,8 @@ export function visibleSourceText(source: string): string {
     .replace(/<style\b[\s\S]*?<\/style>/gu, ' ')
     .replace(/<script\b[\s\S]*?<\/script>/gu, ' ')
     .replace(/\{\/\*[\s\S]*?\*\/\}/gu, ' ')
+    // Text shown only when a launch flag is on: twins state the default page, with every flag off.
+    .replace(/\{launchFlagOn\(['"][A-Z0-9_]+['"]\)\s*&&\s*\([\s\S]*?\)\}/gu, '')
     .replace(/<AstroTerm\b[^>]*\blabel="([^"]*)"[^>]*\/>/gu, '$1')
     .replace(/\{\s*(['"])\s\1\s*\}/gu, ' ');
   // The raw template last, for text held in attributes: a description, a heading or a label prop.
