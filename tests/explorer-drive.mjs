@@ -664,7 +664,9 @@ try {
     const events = window.__detailEvents.filter((event) => event.name === 'comm_read_view');
     return events.length === 1 && Object.keys(events[0].props ?? {}).length === 0;
   }));
-  check('plain-first: detail is closed by default', !(await detail.evaluate((node) => node.open)));
+  check('placements are accessible by default', await detail.getByRole('table').isVisible());
+  check('the default does not record a disclosure choice', await page.evaluate(() =>
+    !localStorage.getItem('zodiacs.detail.v1') && !window.__detailEvents.some((event) => event.name === 'detail_toggle')));
   check('plain-first: EN summary is exact with mono counts',
     await detailSummary.textContent() === `See exact chart data: ${placementCount} placements · ${aspectCount} aspects`
     && await detailSummary.locator('.mono').count() === 2,
@@ -673,6 +675,8 @@ try {
     await detail.locator('details').count() === 0
     && await detail.locator('section.calc__aspects > h3 + ul').count() === 1);
 
+  await detailSummary.click();
+  await page.waitForFunction(() => localStorage.getItem('zodiacs.detail.v1') === 'closed');
   await detailSummary.click();
   await page.waitForFunction(() => document.querySelector('[data-detail]')?.hasAttribute('open')
     && localStorage.getItem('zodiacs.detail.v1') === 'open'

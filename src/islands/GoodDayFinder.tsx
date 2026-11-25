@@ -27,11 +27,13 @@
  * never move anything on screen.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { GOAL_RULES, GOOD_DAY_GOALS, type GoodDayGoal } from '../lib/good-days/goals';
 import type { GoodDaysResult } from '../lib/good-days/find';
 import { followUpLink, type PickedDay } from '../lib/good-days/outcomes';
 import { deviceStorage, duePicks, finishPick, rememberPick } from '../lib/good-days/outcome-memory';
 import { pickCalendar } from '../lib/good-days/calendar';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText, earliestToday } from '../lib/birth-date-policy';
 
 const loadFinder = () => Promise.all([import('../lib/good-days/find'), import('../lib/occasions/site-clock')]);
 /** The label the site's forecasts carry for a dated reading (src/ai-tools/reading-confidence.ts). */
@@ -55,12 +57,11 @@ export function localToday(zone: string, now: Date = new Date()): string {
   return ['year', 'month', 'day'].map((type) => parts.find((part) => part.type === type)!.value).join('-');
 }
 /**
- * The today the age checks use: the earliest of the picked zone's, the device's and UTC's, so a zone far east of the
- * person never lets a birth date through a day early. The hosted tools check against UTC's today, and before the zone
- * could be picked the page checked against the device's; this is never later than either.
+ * The today the age checks use: UTC-12, the earliest calendar date anywhere on Earth
+ * (src/lib/birth-date-policy.ts), so nobody is accepted before their 13th birthday in any time zone.
  */
-export function ageCheckToday(zone: string, deviceZone: string, now: Date = new Date()): string {
-  return [localToday(zone, now), localToday(deviceZone, now), now.toISOString().slice(0, 10)].sort()[0];
+export function ageCheckToday(_zone: string, _deviceZone: string, now: Date = new Date()): string {
+  return earliestToday(now);
 }
 const addDays = (date: string, days: number) => new Date(Date.parse(`${date}T00:00:00Z`) + days * DAY).toISOString().slice(0, 10);
 /** The latest birth date that is 13 today, for the field's max. */
@@ -151,6 +152,14 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
   const resultRef = useRef<HTMLDivElement>(null);
 
   async function run(input: { goal: GoodDayGoal; from: string; to: string; zone: string; birth: string | null }, focus: boolean) {
+    if (input.birth) {
+      const refusal = birthDateRefusal(input.birth);
+      if (refusal) {
+        setResult(null);
+        setError(birthDateRefusalText(refusal));
+        return;
+      }
+    }
     setBusy(true);
     setReserved(true);
     setError(null);
@@ -293,12 +302,16 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
       </form>
 
       <div class="good-days__slot" data-reserved={reserved ? 'true' : undefined} aria-live="polite">
-        {error && <p class="calc__error" role="alert">{error}</p>}
+        {error && <p class="calc__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
         {busy && !result && <p class="good-days__busy">Reading every day in the window…</p>}
         {result && (
           <div class="calc__result good-days__result" ref={resultRef} tabIndex={-1} aria-label={`Good days: ${result.goalLabel}`}>
             <h2 class="good-days__title">{result.goalLabel}: the best days</h2>
-            <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.</p>
+            <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.
+              {result.personal && (
+                <small class="good-days__confidence-note">{READING_CONFIDENCE_NOTE}</small>
+              )}
+            </p>
             <ol class="good-days__list">
               {result.best.map((day, index) => (
                 <li class="tile good-days__day" key={day.date}>

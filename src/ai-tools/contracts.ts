@@ -17,7 +17,9 @@ import { skyEventsData, skyEventsInput } from './features/sky-events';
 import { yearScoreData, yearScoreInput, yearScoreSelfInput } from './features/year-score';
 import { solarReturnData, solarReturnInput } from './features/solar-return';
 import { numerologyData, numerologyInput } from './features/numerology';
+import { PERSONAL_TOOL_NAMES, personalRecord, type PersonalToolName } from './personal/registry';
 import { goodDaysData, goodDaysInput } from './features/good-days';
+import { MOMENT_CHART_TOOL, MOMENT_ROUTING, momentChartData, momentChartInput } from './features/moment-chart-contract';
 
 export const AI_VERSION = '0.6.9';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
@@ -106,11 +108,15 @@ export const EVERY_SWITCHED_TOOL = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE
  * place and bytes (src/ai-tools/good-days.test.ts).
  */
 export const GOOD_DAYS_TOOL_NAMES = ['find_good_days'] as const;
-/** Every tool name the hosted server knows, in tools/list order, with every switch on. */
-export const EVERY_TOOL_NAME = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES] as const;
-/** The same list, under the name the good days tests use. */
-export const EVERY_TOOL_WITH_GOOD_DAYS = EVERY_TOOL_NAME;
-export type AiToolName = typeof EVERY_TOOL_NAME[number];
+/** The hosted roster through find_good_days, before the optional moment chart and personal tools. */
+export const EVERY_TOOL_WITH_GOOD_DAYS = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES] as const;
+export const EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_GOOD_DAYS, MOMENT_CHART_TOOL] as const;
+/**
+ * The personal tools (src/ai-tools/personal/registry.ts): offered only where ZODIACS_PERSONAL_TOOLS_ENABLED=1 joins the
+ * coverage and occasion switches, after every other tool (find_good_days included), so with the switch off every entry keeps its place and bytes.
+ */
+export { PERSONAL_TOOL_NAMES, type PersonalToolName };
+export type AiToolName = typeof EVERY_TOOL_NAME[number] | PersonalToolName;
 export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
 export type PlaceToolName = typeof PLACE_TOOL_NAMES[number];
 export type SkyEventsToolName = typeof SKY_EVENTS_TOOL_NAMES[number];
@@ -136,6 +142,8 @@ export const SOLAR_RETURN_SWITCH_ENV = 'ZODIACS_SOLAR_RETURN_ENABLED';
 export const NUMEROLOGY_SWITCH_ENV = 'ZODIACS_NUMEROLOGY_ENABLED';
 /** Off unless exactly '1', and only with the occasion and coverage switches: find_good_days. */
 export const GOOD_DAYS_SWITCH_ENV = 'ZODIACS_GOOD_DAYS_ENABLED';
+/** Off unless exactly '1', and only with the coverage and occasion switches: the personal tools. */
+export const PERSONAL_SWITCH_ENV = 'ZODIACS_PERSONAL_TOOLS_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
@@ -173,6 +181,7 @@ export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorld
 /** What people see on the tool-call line and in the plugin's details. */
 export const TOOL_TITLES: Record<AiToolName, string> = {
   get_capabilities: 'What Zodiacs can do',
+  get_moment_chart: 'Sky chart for a moment',
   get_sky: 'Sky right now',
   get_upcoming_events: 'Sky calendar',
   check_sky_fact: 'Check a sky fact',
@@ -196,6 +205,7 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   get_solar_return: 'Your solar return',
   get_numerology: 'Numerology numbers',
   find_good_days: 'Find good days',
+  ...personalRecord((tool) => tool.title),
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).');
@@ -207,6 +217,7 @@ const wallClock = z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 export const INPUT_SCHEMAS = {
   get_capabilities: z.strictObject({}),
   open_chart_studio: z.strictObject({}),
+  get_moment_chart: momentChartInput,
   get_sky: z.strictObject({ instant: instant.optional(), zone: zone.optional(), bodies: z.array(z.enum(POSITION_BODIES)).min(1).max(12).optional() }),
   get_upcoming_events: z.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone.optional(), bodies: z.array(z.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z.array(z.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
     // Native sidebar/thread entrypoints invoke the tool with exactly {}.
@@ -256,6 +267,7 @@ export const INPUT_SCHEMAS = {
   get_solar_return: solarReturnInput,
   get_numerology: numerologyInput,
   find_good_days: goodDaysInput,
+  ...personalRecord((tool) => tool.input),
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -282,8 +294,24 @@ const publishedBackendSchema = {
     },
   },
 };
-const connectorComputeSchema = (name: string) =>
-  name === 'Backend' ? publishedBackendSchema : COMPUTE_SCHEMAS[name];
+// Engine 2.0.0 adds the continuous-utc basis, the model source and three chart flags to the compute API. The
+// connector's time schema follows the compute API's, with continuous-utc and model, as Dias approved on 23 November 2026
+// (src/ai-tools/published-tools.ts, asContinuousUtc). The three new chart flags keep the published list until a
+// connector release may change it; at run time flags are checked only as objects (computeValue below).
+const publishedChartFlagSchema = { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span'] };
+const publishedLocalResolutionSchema = {
+  ...COMPUTE_SCHEMAS.LocalResolution,
+  properties: {
+    ...(COMPUTE_SCHEMAS.LocalResolution.properties as Record<string, unknown>),
+    flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+  },
+};
+const PUBLISHED_COMPUTE_SCHEMAS: Readonly<Record<string, unknown>> = {
+  Backend: publishedBackendSchema,
+  ChartFlag: publishedChartFlagSchema,
+  LocalResolution: publishedLocalResolutionSchema,
+};
+const connectorComputeSchema = (name: string) => PUBLISHED_COMPUTE_SCHEMAS[name] ?? COMPUTE_SCHEMAS[name];
 
 /** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */
 function inlined(schema: unknown): unknown {
@@ -393,6 +421,7 @@ export const OCCASION_NOTE = occasionNote;
 const dataSchemas = {
   open_chart_studio: z.object({ title: z.literal('Chart Studio'), calculation: z.literal('browser-local'), initialChart: z.literal('birth-details'), sharing: z.literal('user-reviewed-selection-only') }),
   get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: computeValue('Backend'), tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements, coverage: statements, privacy: z.string(), limitations: z.array(z.string()) }),
+  get_moment_chart: momentChartData,
   get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculationOf(positionResult), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
   get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation: calculationOf(computeValue('EventsResult')), completeness: z.literal('tested-not-proven') }),
   check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation: calculationOf(computeValue('SkyFactResult')), interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
@@ -432,6 +461,8 @@ export const YEAR_SCORE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SC
 export const NUMEROLOGY_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(NUMEROLOGY_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 /** find_good_days names only itself, as search_sky_events does. */
 export const GOOD_DAYS_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(GOOD_DAYS_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** A personal tool's refusal names only itself, so no published error enum changes. */
+const personalErrorSchema = (tool: string) => z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.literal(tool), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
   const error = (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool)
     ? COVERAGE_ERROR_SCHEMA
@@ -440,14 +471,16 @@ function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: 
         : (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool) ? YEAR_SCORE_ERROR_SCHEMA
           : (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA
             : (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool) ? NUMEROLOGY_ERROR_SCHEMA
-              : (GOOD_DAYS_TOOL_NAMES as readonly string[]).includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : ERROR_SCHEMA;
+              : (GOOD_DAYS_TOOL_NAMES as readonly string[]).includes(tool) ? GOOD_DAYS_ERROR_SCHEMA
+                : (PERSONAL_TOOL_NAMES as readonly string[]).includes(tool) ? personalErrorSchema(tool) : ERROR_SCHEMA;
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
-    error,
+    tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z.literal(MOMENT_CHART_TOOL) }) : error,
   ]);
 }
 export const OUTPUT_SCHEMAS = {
   open_chart_studio: outputSchema('open_chart_studio', dataSchemas.open_chart_studio),
+  get_moment_chart: outputSchema(MOMENT_CHART_TOOL, momentChartData),
   get_capabilities: outputSchema('get_capabilities', dataSchemas.get_capabilities), get_sky: outputSchema('get_sky', dataSchemas.get_sky),
   get_upcoming_events: outputSchema('get_upcoming_events', dataSchemas.get_upcoming_events), check_sky_fact: outputSchema('check_sky_fact', dataSchemas.check_sky_fact),
   get_horoscope: outputSchema('get_horoscope', dataSchemas.get_horoscope),
@@ -469,12 +502,14 @@ export const OUTPUT_SCHEMAS = {
   get_solar_return: outputSchema('get_solar_return', dataSchemas.get_solar_return),
   get_numerology: outputSchema('get_numerology', dataSchemas.get_numerology),
   find_good_days: outputSchema('find_good_days', dataSchemas.find_good_days),
+  ...personalRecord((tool) => outputSchema(tool.name as PersonalToolName, tool.data)),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
 export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   open_chart_studio: "Opens Chart Studio, an interactive birth chart that the person fills in themselves with a birth date, a place and, if known, a time. The chart is calculated inside the panel. It takes no input, so it opens before any birth detail is given. It fits a request for a birth chart, a rising sign or a Moon sign when no birth date is in the conversation, and someone who wants to explore their own chart: the person enters the details in the panel, so nothing has to be asked for beforehand. The assistant sees only the parts of the chart the person chooses to share.",
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
+  get_moment_chart: MOMENT_ROUTING,
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
   get_upcoming_events: "Lists changes in the sky over a window of up to 92 days: planets changing sign, planets turning retrograde or direct, and new and full Moons. With no input it covers the next seven days. It fits a question about what is coming up in the sky over the next days or weeks. It does not list eclipses or every aspect. It lists dates and makes no prediction. A request to set a reminder or an alert, or to schedule anything, is not a request for this tool, not even to look the date up first: Zodiacs sets no reminders and schedules nothing. Nor is a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee. The window is at most 92 days, within 1800 to 2199. Without a time zone its times are in UTC. Its times for a slow planet's sign change come from the engine and can differ from NASA JPL Horizons by hours: for Neptune entering Aries on 26 January 2026 it gives 14:32 UTC, where Horizons gives 17:35 UTC.",
   check_sky_fact: "Checks one claim about the sky and answers yes, no, or that it depends on the time zone when the answer changes during that day. It checks four kinds of claim: a body's sign, whether a planet is retrograde, a sign change on a date, and a Moon phase on a date. It fits a question such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?'. It is astronomy only and cannot check a prediction. Whether a retrograde, a sign or a Moon phase makes a good time to buy, sell, bet or invest is not a claim about the sky. A request for a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee is not a request for this tool, not even as a first step: Zodiacs does not do this, and no sky fact is checked for it. Dates run from 1800 to 2199. Its times for a slow planet's sign change carry the same limit as get_upcoming_events: it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026, where NASA JPL Horizons gives 17:35 UTC. API documentation: https://zodiacs.org/developers/compute/.",
@@ -497,6 +532,7 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_solar_return: "Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. The themes come with their limits, the return's time on the person's clock and a \"Reading confidence NN%\" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. Money, career, wellbeing and legal themes are read as astrology traditionally reads them; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.",
   get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. It gives no timing for surgery, medical procedures or treatment, and a goal that asks for one gets that answer; do not call it for those. Make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything.",
+  ...personalRecord((tool) => tool.description),
 };
 
 /**

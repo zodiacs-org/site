@@ -1,0 +1,70 @@
+diff --git a/src/ai-tools/tools.ts b/src/ai-tools/tools.ts
+index b45fb32..b1a08f1 100644
+--- a/src/ai-tools/tools.ts
++++ b/src/ai-tools/tools.ts
+@@ -5,3 +5,3 @@ import { ComputeApiError } from '../lib/compute-api/errors';
+ import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
+-import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-api/endpoints';
++import { computeEvents, computePositions, computeSkyFact, refuseSplitDay } from '../lib/compute-api/endpoints';
+ import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
+@@ -504,2 +504,3 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
+         }
++        await refuseSplitDay(request, { localTime: localTime() });
+         const calculation = await computeSkyFact(request, { localTime: localTime() });
+diff --git a/src/lib/compute-api/endpoints.ts b/src/lib/compute-api/endpoints.ts
+index a83b902..15306e2 100644
+--- a/src/lib/compute-api/endpoints.ts
++++ b/src/lib/compute-api/endpoints.ts
+@@ -56,2 +56,3 @@ import { budgetExhausted, invalidRequest } from './errors.js';
+ import {
++  clockWentBackAcrossMidnight,
+   resolveLocal,
+@@ -71,2 +72,3 @@ import {
+ import {
++  LOCAL_DAY_MESSAGES,
+   VALIDATION_MESSAGES,
+@@ -496,2 +498,12 @@ async function dayWindow(day: FactDay, dependencies: ComputeDependencies): Promi
+  */
++export async function refuseSplitDay(request: SkyFactRequest, dependencies: ComputeDependencies): Promise<void> {
++  const day = 'day' in request ? request.day : 'instant' in request.when ? null : request.when;
++  if (day === null || day.zone === null) return;
++  for (const date of [day.date, nextDate(day.date)]) {
++    if (await clockWentBackAcrossMidnight(dependencies.localTime, date, day.zone)) {
++      throw invalidRequest('/date', LOCAL_DAY_MESSAGES.splitDay);
++    }
++  }
++}
++
+ function searchSpan(window: DayWindow): { from: Date; to: Date } {
+diff --git a/src/lib/compute-api/local-time.ts b/src/lib/compute-api/local-time.ts
+index 2a55dc8..31f9108 100644
+--- a/src/lib/compute-api/local-time.ts
++++ b/src/lib/compute-api/local-time.ts
+@@ -106,2 +106,16 @@ export async function resolveLocal(
+  */
++/**
++ * Whether the zone's clock went back across the midnight that begins `date`:
++ * it read 00:00 on `date`, went back to a time on the day before, and read
++ * 00:00 on `date` again later. Compatible with the pinned 1.1.0-rc.2 resolver,
++ * which returns the earlier reading of a fold with its transition.
++ */
++export async function clockWentBackAcrossMidnight(module: LocalTimeModule, date: string, zone: string): Promise<boolean> {
++  await module.prepareLocalTime(date, zone);
++  const first = module.resolveLocalToUtc(date, '00:00', zone);
++  if (first.jump?.kind !== 'fold' || first.transition === null) return false;
++  const wallMs = wallMilliseconds({ date, time: '00:00' });
++  return Date.parse(first.transition.at) + Math.round(first.transition.offsetAfterMinutes * 60_000) < wallMs;
++}
++
+ export function zoneHistoriesDisagree(local: LocalResolution): boolean {
+diff --git a/src/lib/compute-api/validate.ts b/src/lib/compute-api/validate.ts
+index 061d736..3ac3813 100644
+--- a/src/lib/compute-api/validate.ts
++++ b/src/lib/compute-api/validate.ts
+@@ -598 +598,6 @@ export function parseElectionsRequest(value: unknown): ElectionsRequest {
+ export const VALIDATION_MESSAGES = TEXT;
++
++/** The fixed sentence for a date its zone lived in two pieces (refuseSplitDay in endpoints.ts). */
++export const LOCAL_DAY_MESSAGES = /* @__PURE__ */ Object.freeze({
++  splitDay: 'This date happened in two parts in this zone: its clocks went back across midnight, so no single window holds the whole day.',
++});

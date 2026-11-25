@@ -11,6 +11,7 @@ import { planetLabel } from '../../../lib/i18n/astrology';
 import { russianGuideFor } from '../../../data/ru-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { publishedLocalesForPath } from '../../../lib/locale-expansion/policy.mjs';
 
 export function getStaticPaths() {
   return SIGN_SLUGS.map((sign) => ({ params: { sign } }));
@@ -92,7 +93,7 @@ const jsonLd = [
   imageAlt={`${signName(sign, 'ru')}, гид по знаку на Zodiacs.org`}
   type="article"
   locale="ru"
-  noindex
+  noindex={!publishedLocalesForPath(`/${sign.slug}/`).includes('ru')}
   jsonLd={jsonLd}
 >
   <article style={`--sign:${sign.hue}`}>

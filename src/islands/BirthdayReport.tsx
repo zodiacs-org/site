@@ -15,7 +15,7 @@ import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import type { City } from '../lib/geo/search';
 import { createModuleLoader } from '../lib/module-load';
 import { dayName, monthName, scoreTier } from '../lib/year-score/reading';
-import { birthdayReportShareUrl } from '../lib/birthday-report/share';
+import { BIRTHDAY_TRADITIONS_NOTE, birthdayReportShareUrl } from '../lib/birthday-report/share';
 import { NUMBER_MEANINGS, PERSONAL_YEAR_MEANINGS, type CoreNumber, type SingleDigit } from '../data/numerology-meanings';
 import type { BirthdayReport as Report, BirthdayYear } from '../lib/birthday-report/report';
 
@@ -149,7 +149,7 @@ export function ReportResult({ state, yearScoreLink, headingRef }: { state: Repo
         <p class="br__note">The year card adds your birthday’s month and day to {data.calendarYear} and reduces the total to a Major Arcana card, as tarot readers do.</p>
       </section>
 
-      <p class="br__note">Astrology, numerology and tarot are separate traditions; this page reads each on its own terms.</p>
+      <p class="br__note">{BIRTHDAY_TRADITIONS_NOTE}</p>
       <div class="calc__actions">
         {state.share && <a class="btn btn--primary" href={state.share}><span>Share my birthday report</span><span class="orb">↗</span></a>}
       </div>

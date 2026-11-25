@@ -1,6 +1,8 @@
 import { DE440_PACK } from '@zodiacs/engine/de440/pack';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { checkRateLimit } from '@vercel/firewall';
 import {
@@ -36,7 +38,7 @@ import {
 } from '../../src/lib/compute-api/constants';
 import { computeApiRateLimit, createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import * as localTime from '../../src/lib/compute-api/local-time-source';
-import { VALIDATION_MESSAGES } from '../../src/lib/compute-api/validate';
+import { LOCAL_DAY_MESSAGES, VALIDATION_MESSAGES } from '../../src/lib/compute-api/validate';
 import { ATLAS_SOURCE, atlasReading } from '../../src/lib/time-atlas/index';
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
 import { run, type HarnessRequest } from '../../scripts/lib/compute-api-harness';
@@ -484,6 +486,74 @@ describe('compute API validation', () => {
     }
   });
 
+  it('refuses a fact about a date its zone lived in two parts, rather than credit part of it to the next day', async () => {
+    // St. John's went from 00:01 back to 23:01 on 29 October 1989. The Moon entered Scorpio at 02:55:51 UTC,
+    // 23:25:51 on the 28th by the clock that had gone back: the 28th resumed after the 29th had begun.
+    // Juneau went back a whole day across midnight on 19 October 1867, when Alaska moved to the American side of the date line.
+    const ingress = '1989-10-29T02:55:51.131Z';
+    for (const date of ['1989-10-28', '1989-10-29']) {
+      const anyZone = (await call('sky-fact', { kind: 'ingress', body: 'Moon', sign: 'scorpio', date })).json.result;
+      expect(anyZone.facts.ingresses.map((crossing: { at: string }) => crossing.at), date).toContain(ingress);
+    }
+    for (const [date, zone] of [
+      ['1989-10-28', 'America/St_Johns'], ['1989-10-29', 'America/St_Johns'], ['1867-10-18', 'America/Juneau'], ['1867-10-19', 'America/Juneau'],
+    ] as const) {
+      for (const body of [
+        { kind: 'ingress', body: 'Moon', sign: 'scorpio', date, zone },
+        { kind: 'sign', body: 'Moon', sign: 'scorpio', date, zone },
+        { kind: 'retrograde', body: 'Sun', date, zone },
+        { kind: 'phase', phase: 'full', date, zone },
+        { kind: 'aspect', body: 'Sun', other: 'Moon', aspect: 'square', date, zone },
+      ]) {
+        expect(await refusal('sky-fact', body)).toEqual({ code: 'invalid-request', pointer: '/date', message: LOCAL_DAY_MESSAGES.splitDay });
+      }
+      // An instant needs no day, and is answered.
+      expect((await call('sky-fact', { kind: 'sign', body: 'Moon', sign: 'scorpio', instant: ingress })).status).toBe(200);
+    }
+    // The dates beyond each change are whole. A clock that went back to a midnight keeps its dates whole too:
+    // Apia went from the end of 4 July 1892 back to its start, one day of 48 hours. Clocks that roll back at
+    // midnight from 24:00 to 23:00 of the same day (Sao Paulo, Santiago, Tehran) keep a single 25-hour span
+    // and never split either date. And a change inside a day leaves it one span: New York's 25 hours on
+    // 1 November 2026, Lord Howe's 23.5 on 7 October 2012 and 24.5 on 1 April 2012.
+    for (const [date, zone, from, to] of [
+      ['1989-10-27', 'America/St_Johns', '1989-10-27T02:30:00.000Z', '1989-10-28T02:30:00.000Z'],
+      ['1989-10-30', 'America/St_Johns', '1989-10-30T03:30:00.000Z', '1989-10-31T03:30:00.000Z'],
+      ['1867-10-17', 'America/Juneau', '1867-10-16T08:57:41.000Z', '1867-10-17T08:57:41.000Z'],
+      ['1867-10-20', 'America/Juneau', '1867-10-20T08:57:41.000Z', '1867-10-21T08:57:41.000Z'],
+      ['1892-07-03', 'Pacific/Apia', '1892-07-02T11:26:56.000Z', '1892-07-03T11:26:56.000Z'],
+      ['1892-07-04', 'Pacific/Apia', '1892-07-03T11:26:56.000Z', '1892-07-05T11:26:56.000Z'],
+      ['1892-07-05', 'Pacific/Apia', '1892-07-05T11:26:56.000Z', '1892-07-06T11:26:56.000Z'],
+      ['2019-02-16', 'America/Sao_Paulo', '2019-02-16T02:00:00.000Z', '2019-02-17T03:00:00.000Z'],
+      ['2019-02-17', 'America/Sao_Paulo', '2019-02-17T03:00:00.000Z', '2019-02-18T03:00:00.000Z'],
+      ['2019-04-06', 'America/Santiago', '2019-04-06T03:00:00.000Z', '2019-04-07T04:00:00.000Z'],
+      ['2019-04-07', 'America/Santiago', '2019-04-07T04:00:00.000Z', '2019-04-08T04:00:00.000Z'],
+      ['2022-09-21', 'Asia/Tehran', '2022-09-20T19:30:00.000Z', '2022-09-21T20:30:00.000Z'],
+      ['2022-09-22', 'Asia/Tehran', '2022-09-21T20:30:00.000Z', '2022-09-22T20:30:00.000Z'],
+      ['2026-11-01', 'America/New_York', '2026-11-01T04:00:00.000Z', '2026-11-02T05:00:00.000Z'],
+      ['2012-10-07', 'Australia/Lord_Howe', '2012-10-06T13:30:00.000Z', '2012-10-07T13:00:00.000Z'],
+      ['2012-04-01', 'Australia/Lord_Howe', '2012-03-31T13:00:00.000Z', '2012-04-01T13:30:00.000Z'],
+    ] as const) {
+      const response = await call('sky-fact', { kind: 'phase', phase: 'full', date, zone });
+      expect(response.status, `${date} ${zone}`).toBe(200);
+      expect(response.json.result.window, `${date} ${zone}`).toEqual({ from, to });
+    }
+  });
+
+  it('runs the split-day refusal wherever a sky fact can name a zone', () => {
+    // computeSkyFact does not run it itself: the MCP adapter's archive carries computeSkyFact as it was cut,
+    // and that adapter's check_sky_fact takes no zone (src/mcp/sky-tools.ts).
+    const root = new URL('../../', import.meta.url);
+    const callers = readdirSync(new URL('src/', root), { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile() && /\.tsx?$/u.test(entry.name) && !/\.test\.tsx?$/u.test(entry.name))
+      .map((entry) => relative(fileURLToPath(root), join(entry.parentPath, entry.name)).split(sep).join('/'))
+      .filter((path) => path !== 'src/lib/compute-api/endpoints.ts' && /\bcomputeSkyFact\(/u.test(readFileSync(new URL(path, root), 'utf8')));
+    expect(callers.sort()).toEqual(['src/ai-tools/tools.ts', 'src/lib/compute-api/handler.ts', 'src/lib/compute-api/playground.ts', 'src/mcp/sky-tools.ts']);
+    for (const path of callers.filter((candidate) => !candidate.startsWith('src/mcp/'))) {
+      expect(readFileSync(new URL(path, root), 'utf8'), path).toMatch(/\bawait refuseSplitDay\(request, /u);
+    }
+    expect(readFileSync(new URL('src/mcp/sky-tools.ts', root), 'utf8')).toContain('computeSkyFact(await parseSkyFactRequest(args, NO_ZONE_NAMES), NO_ZONES)');
+  });
+
   it('flags a local time or a day at the ends of the accepted dates that reaches past the instant span', async () => {
     // Without a longitude Tokyo's own mean time reads the time, from the history the engine ships, and lmt says so.
     const tokyo = await call('time', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' } });
@@ -630,7 +700,7 @@ describe('compute API receipts, backend and citation', () => {
   it("lists the engine's own house systems, bodies and pinned tzdb release", () => {
     expect([...HOUSE_SYSTEM_NAMES]).toEqual([...HOUSE_SYSTEMS]);
     expect(positions('2026-09-29T12:00:00Z').map((row) => row.body)).toEqual([...POSITION_BODIES]);
-    expect(localTime.TZDB).toMatchObject({ version: '2025c', form: 'main+backzone' });
+    expect(localTime.TZDB).toMatchObject({ version: '2026f', form: 'main+backzone' });
   });
 });
 
@@ -688,14 +758,14 @@ describe('compute API parity with the engine and the site resolver', () => {
       const at = new Date(instants[index]);
       expect(row.instant).toBe(at.toISOString());
       expect(row.bodies).toEqual(JSON.parse(JSON.stringify(positions(at).filter((body) => ['Sun', 'Moon', 'South Node'].includes(body.body))
-        .map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body))));
+        .map(({ ephemeris: _ephemeris, fallback: _fallback, flags: _flags, ...body }) => body))));
       const chart = natalChart({ utc: at, timeKnown: false });
       expect(row.deltaT).toEqual(chart.deltaT);
       expect(row.timeScale).toEqual(chart.timeScale);
       expect(row.flags).toEqual(outsideReferenceSpan(at) ? ['outside-reference-span'] : []);
     });
-    // Before 1972 and after the UT1 table the instant is read as UT1; between, on IERS UT1 − UTC.
-    expect(json.result.instants.map((row: any) => row.timeScale.basis)).toEqual(['delta-t', 'delta-t', 'iers', 'delta-t']);
+    // Before 1972 the instant is read as UT1; to the end of the UT1 table, on IERS UT1 − UTC; after it, on continuous UTC.
+    expect(json.result.instants.map((row: any) => row.timeScale.basis)).toEqual(['delta-t', 'delta-t', 'iers', 'continuous-utc']);
     const all = (await call('positions', { instants: ['2026-09-29T12:00:00Z'] })).json;
     expect(all.result.instants[0].bodies.map((row: any) => row.body)).toEqual([...POSITION_BODIES]);
   });
