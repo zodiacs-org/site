@@ -436,6 +436,9 @@ const discoveryGraph = new Map();
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const sourcePath = builtPageByFile.get(file);
+  if (/^\/(?:es|pt|fr|it)\/horoscopes\/[a-z]+\/2026\/$/u.test(sourcePath)) {
+    fail(`locale expansion: unexpected localized 2026 yearly page ${sourcePath}`);
+  }
   discoveryGraph.set(sourcePath, renderedLinks(sourcePath, html));
   if (!accuracyPublished) {
     for (const path of renderedLinks(sourcePath, html, { discoveryOnly: false })) {
