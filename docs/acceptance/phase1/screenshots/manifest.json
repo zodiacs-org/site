@@ -6,7 +6,7 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-25T01:26:20.690Z",
+  "capturedAt": "2026-11-25T01:59:11.984Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-25",
   "publicationCanonicalSha256": "d53ae30d7183e4a9486bdfb48b1bf05882be79ad824213b0f19c1d74e280ad77",
@@ -19,7 +19,7 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-25T01:25:43.675Z",
+    "builtAt": "2026-11-25T01:58:31.444Z",
     "templateSourceSha256": "386cb24e43cfd804f4e6b62b2016f03c6c11dec52831dcf2a03570841ecf06be",
     "dailyDate": "2026-11-25",
     "publicationCanonicalSha256": "d53ae30d7183e4a9486bdfb48b1bf05882be79ad824213b0f19c1d74e280ad77",
