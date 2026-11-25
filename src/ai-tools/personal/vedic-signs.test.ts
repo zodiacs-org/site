@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { NAKSHATRAS } from '@zodiacs/engine/vedic';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
-import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData } from './vedic-signs';
+import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData, vedicSignsTool } from './vedic-signs';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../../lib/vedic-signs/clock';
 import { birthDayEnds, forbiddenClaim } from './shared';
 import { localDaySpan } from '../../lib/time/local-day';
 import tzNames from '../../data/tz-names.json';
@@ -15,8 +16,9 @@ vi.mock('../../lib/engine/full', async (importOriginal) => {
 });
 
 const clock = createLocalTimeModule();
-const run = (args: Parameters<typeof vedicSigns>[0]) => vedicSigns(args, clock, 'https://zodiacs.org').then((result) => result.data);
-const ON = { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z') };
+const run = (args: Parameters<typeof vedicSigns>[0]) => vedicSigns(args, clock, 'https://zodiacs.org', true).then((result) => result.data);
+const PAGE_FLAG = 'PUBLIC_VEDIC_SIGNS_ENABLED';
+const ON = { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z'), sitePageOn: (flag: string) => flag === PAGE_FLAG };
 
 describe('get_vedic_signs against known answers', () => {
   it('gives the Lahiri ayanamsa at J2000 as published (23 degrees 51 minutes) and the J2000 Sun and Moon', async () => {
@@ -136,7 +138,7 @@ describe('get_vedic_signs without a birth time', () => {
   it('covers the whole of a date the clock showed twice (Apia lived 4 July 1892 twice, moving to the American date)', async () => {
     // Its first 00:00 was 1892-07-03T11:26:56Z on UTC+12:33:04; its second 23:59 ended 1892-07-05T11:26:55Z on UTC−11:26:56.
     const [first, last] = await birthDayEnds({ birthDate: '1892-07-04', zone: 'Pacific/Apia' }, clock);
-    expect([first.toISOString(), last.toISOString()]).toEqual(['1892-07-03T11:26:56.000Z', '1892-07-05T11:26:55.000Z']);
+    expect([first.toISOString(), last.toISOString()]).toEqual(['1892-07-03T11:26:56.000Z', '1892-07-05T11:26:55.999Z']);
     // The Moon was in Chitra at the first 00:00, in Swati at the first 23:59 and in Vishakha by the second.
     expect((await run({ birthDate: '1892-07-04', time: '00:00', zone: 'Pacific/Apia' })).moonNakshatra!.name).toBe('Chitra');
     expect((await run({ birthDate: '1892-07-04', time: '23:59', zone: 'Pacific/Apia' })).moonNakshatra!.name).toBe('Swati');
@@ -148,10 +150,22 @@ describe('get_vedic_signs without a birth time', () => {
     expect((await run({ birthDate: '1892-07-04', zone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76 })).nakshatraCandidates).toEqual(['Chitra', 'Swati', 'Vishakha']);
   });
 
+  it('reads an untimed date through its last second, to the millisecond (London, 1 June 1906: the Moon entered Hasta at 23:59:59.422 UTC)', async () => {
+    const [first, last] = await birthDayEnds({ birthDate: '1906-06-01', zone: 'Europe/London' }, clock);
+    expect([first.toISOString(), last.toISOString()]).toEqual(['1906-06-01T00:00:00.000Z', '1906-06-01T23:59:59.999Z']);
+    expect((await run({ birthDate: '1906-06-01', time: '23:59', zone: 'Europe/London' })).moonNakshatra!.name).toBe('Uttara Phalguni');
+    const untimed = await run({ birthDate: '1906-06-01', zone: 'Europe/London' });
+    expect(untimed.moonNakshatra).toBeNull();
+    expect(untimed.nakshatraCandidates).toContain('Hasta');
+    // Through the hosted tool call as well.
+    const hosted = await executeAiTool('get_vedic_signs', { birthDate: '1906-06-01', zone: 'Europe/London' }, ON);
+    expect(JSON.stringify(hosted)).toContain('Hasta');
+  });
+
   it('ends a date where the clock left it (St. John\'s went from 23:00 on 2 May 1920 straight to 00:00 on 3 May)', async () => {
     // Its 23:59 never happened: read forward by the jump it would fall at 03:29:52 UTC on 3 May, an hour into that date.
     const [first, last] = await birthDayEnds({ birthDate: '1920-05-02', zone: 'America/St_Johns' }, clock);
-    expect([first.toISOString(), last.toISOString()]).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    expect([first.toISOString(), last.toISOString()]).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.999Z']);
     // The Moon stayed in Swati the whole local date and reached Vishakha only in the hour the old span ran on into.
     expect((await run({ birthDate: '1920-05-02', time: '00:00', zone: 'America/St_Johns' })).moonNakshatra!.name).toBe('Swati');
     expect((await run({ birthDate: '1920-05-02', time: '22:59', zone: 'America/St_Johns' })).moonNakshatra!.name).toBe('Swati');
@@ -166,18 +180,48 @@ describe('get_vedic_signs without a birth time', () => {
     }
   });
 
+  it('refuses a birth time the clock skipped, never reading it at the time the clock jumped to (St. John\'s, 2 May 1920)', async () => {
+    // 23:00 on 2 May became 00:00 on 3 May: 23:59 never showed, and read forward it would be 00:59 on 3 May, in
+    // Vishakha, though the Moon stayed in Swati all of 2 May.
+    for (const time of ['23:00', '23:30', '23:59']) {
+      for (const extra of [{}, { latitude: 47.56, longitude: -52.71 }]) {
+        const args = { birthDate: '1920-05-02', time, zone: 'America/St_Johns', ...extra };
+        await expect(run(args)).rejects.toThrow(SkippedBirthTimeError);
+        const refused = await executeAiTool('get_vedic_signs', args, ON);
+        expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_TIME } });
+        expect(JSON.stringify(refused)).not.toMatch(/1920|05-02|23:|St_Johns|Vishakha|Swati|47\.56|52\.71/u);
+      }
+    }
+    // The minute before the jump is read, with no clock limit.
+    const before = await run({ birthDate: '1920-05-02', time: '22:59', zone: 'America/St_Johns' });
+    expect(before.moonNakshatra!.name).toBe('Swati');
+    expect(before.limits).not.toContain(REPEATED_BIRTH_TIME);
+  });
+
+  it('says which pass it reads for a birth time the clock showed twice: the first (Madrid, 30 September 1990, 02:10)', async () => {
+    // Madrid's clocks went back from 03:00 to 02:00, so 02:10 came twice; the reading is at the first, 00:10 UTC.
+    const repeated = await run({ birthDate: '1990-09-30', time: '02:10', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 });
+    expect(repeated.limits[0]).toBe(REPEATED_BIRTH_TIME);
+    const ordinary = await run({ birthDate: '1990-09-30', time: '04:10', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 });
+    expect(ordinary.limits).not.toContain(REPEATED_BIRTH_TIME);
+    // Untimed, the day is read whole, so no pass is chosen.
+    expect((await run({ birthDate: '1990-09-30', zone: 'Europe/Madrid' })).limits).not.toContain(REPEATED_BIRTH_TIME);
+    const tool = await executeAiTool('get_vedic_signs', { birthDate: '1990-09-30', time: '02:10', zone: 'Europe/Madrid' }, ON);
+    expect(tool.ok && (tool.data as { limits: string[] }).limits[0]).toBe(REPEATED_BIRTH_TIME);
+  });
+
   it('starts a date where the clock reached it partway through a jump (Toronto went from 23:30 on 30 March 1919 to 00:30 on 31 March)', async () => {
     const [first] = await birthDayEnds({ birthDate: '1919-03-31', zone: 'America/Toronto' }, clock);
     expect(first.toISOString()).toBe('1919-03-31T04:30:00.000Z');
     const [, last] = await birthDayEnds({ birthDate: '1919-03-30', zone: 'America/Toronto' }, clock);
-    expect(last.toISOString()).toBe('1919-03-31T04:29:59.000Z');
+    expect(last.toISOString()).toBe('1919-03-31T04:29:59.999Z');
   });
 
   it('starts and ends a date at a clock change within a minute (Accra left local mean time at 00:00:52 UTC on 2 November 1915)', async () => {
     // At 0.25 degrees west the birthplace clock went from 23:59:52 on 1 November to 00:00:52 on 2 November.
     const ends = async (birthDate: string) => (await birthDayEnds({ birthDate, zone: 'Africa/Accra', latitude: 5.55, longitude: -0.25 }, clock)).map((at) => at.toISOString());
-    expect(await ends('1915-11-02')).toEqual(['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.000Z']);
-    expect(await ends('1915-11-01')).toEqual(['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.000Z']);
+    expect(await ends('1915-11-02')).toEqual(['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.999Z']);
+    expect(await ends('1915-11-01')).toEqual(['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.999Z']);
   });
 
   it('refuses a date the clock never showed (Apia went from 29 to 31 December 2011) without repeating it, timed or not', async () => {
@@ -208,8 +252,8 @@ describe('get_vedic_signs without a birth time', () => {
         if (span) expect(span[0] >= first && span[1] <= last, `${birthDate} ${zone}`).toBe(true);
       }
     }
-    // 00:00 at UTC+16 to 23:59:59 at UTC−16.
-    expect((await birthDayEnds({ birthDate: '2026-11-09' }, clock)).map((at) => at.toISOString())).toEqual(['2026-11-08T08:00:00.000Z', '2026-11-10T15:59:59.000Z']);
+    // 00:00 at UTC+16 to the date's last millisecond at UTC−16.
+    expect((await birthDayEnds({ birthDate: '2026-11-09' }, clock)).map((at) => at.toISOString())).toEqual(['2026-11-08T08:00:00.000Z', '2026-11-10T15:59:59.999Z']);
   }, 60_000);
 });
 
@@ -222,6 +266,20 @@ describe('get_vedic_signs privacy and refusals', () => {
     const text = JSON.stringify(result);
     for (const url of text.match(/https:\/\/[^"]+/gu) ?? []) expect(url).not.toMatch(/1990|08:30|28\.61|77\.21|Kolkata/u);
     expect(forbiddenClaim(text)).toBeNull();
+  });
+
+  it('repeats no birth date back to the assistant, in the result or its schema', async () => {
+    expect(Object.keys(vedicSignsData.shape)).not.toContain('birthDate');
+    for (const args of [
+      { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 },
+      { birthDate: '1990-05-03' },
+    ]) {
+      const result = await executeAiTool('get_vedic_signs', args, ON);
+      expect(result.ok).toBe(true);
+      if (!result.ok) continue;
+      expect(result.data).not.toHaveProperty('birthDate');
+      expect(JSON.stringify(result)).not.toMatch(/1990-05-03|3 May 1990|May 3, 1990/u);
+    }
   });
 
   it('refuses a time without a zone, naming the field rule, and an unknown ayanamsa', async () => {
@@ -237,6 +295,32 @@ describe('get_vedic_signs privacy and refusals', () => {
     const exact = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata' }, ON);
     expect(lower.ok).toBe(true);
     expect(lower).toEqual(exact);
+  });
+});
+
+describe('get_vedic_signs links to its page only while the website page is switched on', () => {
+  const args = { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 };
+  const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
+    if (!result.ok) throw new Error('refused');
+    return { data: result.data as { pageUrl: string | null; shareUrl: string | null }, urls: JSON.stringify(result).match(/https:\/\/[^"]+/gu) ?? [] };
+  };
+
+  it('with the MCP switches on and the page on, and with the page off', async () => {
+    expect(vedicSignsTool.pageFlag).toBe(PAGE_FLAG);
+    const on = linked(await executeAiTool('get_vedic_signs', args, ON));
+    expect(on.data.pageUrl).toBe('https://zodiacs.org/vedic-signs/');
+    expect(on.data.shareUrl).toBe('https://zodiacs.org/share/vedic-signs/?s=aries&a=lahiri');
+    expect(on.urls).toContain('https://zodiacs.org/vedic-signs/');
+    for (const dependencies of [{ ...ON, sitePageOn: () => false }, { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z') }]) {
+      const off = linked(await executeAiTool('get_vedic_signs', args, dependencies));
+      expect(off.data.pageUrl).toBeNull();
+      expect(off.data.shareUrl).toBeNull();
+      expect(off.urls.filter((url) => url.includes('/vedic-signs/'))).toEqual([]);
+      expect(off.urls).toContain('https://zodiacs.org/birth-chart/');
+    }
+    const direct = await vedicSigns(args, clock, 'https://zodiacs.org');
+    expect(direct.data.pageUrl).toBeNull();
+    expect(direct.links.map((link) => link.url)).not.toContain('https://zodiacs.org/vedic-signs/');
   });
 });
 

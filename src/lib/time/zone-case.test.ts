@@ -135,12 +135,13 @@ describe('the zone names the site spells', () => {
     expect(tzNames.names.filter((name) => !shipped.has(name))).toEqual(['Asia/Hanoi']);
   });
 
-  it("leave the host's history to sixteen names and two stations before 1970, none of them in the city index", () => {
+  it("leave the host's history to fourteen names and two stations before 1970, none of them in the city index", () => {
     const zones = engineZones();
     // Records that differ after 1970 too: the default build's form, so the
-    // hand-over at 1970 cannot jump.
+    // hand-over at 1970 cannot jump. tzdata 2026f's backzone no longer has
+    // Europe/Uzhgorod or Europe/Zaporozhye, so they left this list with engine 2.0.0.
     const defaultForm = zones.filter((zone) => zone.h).map((zone) => zone.n).sort();
-    expect(defaultForm).toHaveLength(16);
+    expect(defaultForm).toHaveLength(14);
     expect(defaultForm).toEqual(expect.arrayContaining(['Asia/Harbin', 'Pacific/Enderbury', 'WET']));
     // No local time before 1970 at all, so the host answers throughout.
     const noLocalTime = zones.filter((zone) => zone.y.every(([offset]) => offset === null)).map((zone) => zone.n).sort();

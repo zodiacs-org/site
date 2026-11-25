@@ -1,0 +1,8 @@
+Public chart, receipt and crossing example from a separate consumer directory.
+Installed vendor/zodiacs-engine-2.1.0.tgz into an empty package with TypeScript 5 on v22.23.4; public-consumer-example.ts (synthetic birth) type-checked with tsc --strict, then compiled and run: {"version":"2.1.0","sun":"pisces","crossings":1}
+{
+  "version": "2.1.0",
+  "sha256": "272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc",
+  "publicExamples": "passed",
+  "types": "passed"
+}

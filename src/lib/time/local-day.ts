@@ -40,7 +40,8 @@ export interface WallResolution {
  */
 export type WallResolver = (date: string, time: string, fold: 'earlier' | 'later') => WallResolution;
 
-const SECOND = 1_000;
+/** The last instant a span reads, one millisecond before the clock reaches the next date. */
+const LAST_MS = 1;
 const MINUTE = 60_000;
 const DAY = 86_400_000;
 
@@ -101,16 +102,18 @@ function lastReach(date: string, resolve: WallResolver): number {
 
 /**
  * The real-time extent of a local date (YYYY-MM-DD), both ends inclusive to
- * the second: from where the clock first reaches its 00:00 (or jumps over it
- * into the date) to the second before it last reaches the next date's 00:00
- * (or jumps over it), so a date the clock turned back into after midnight is
- * covered to its last pass; null when the clock skipped the date.
+ * the millisecond: from where the clock first reaches its 00:00 (or jumps
+ * over it into the date) to the millisecond before it last reaches the next
+ * date's 00:00 (or jumps over it), so the whole of the last second counts (the
+ * Moon entered Hasta at 23:59:59.422 UTC on 1 June 1906, still that date in
+ * London) and a date the clock turned back into after midnight is covered to
+ * its last pass; null when the clock skipped the date.
  */
 export function localDaySpan(date: string, resolve: WallResolver): [Date, Date] | null {
   const midnight = resolve(date, '00:00', 'earlier');
   if (!readsOnDate(date, midnight)) return null;
   // The clock first reaches the date's 00:00 at its first pass, or where it jumped over it.
   const start = skipped(midnight) ? changeBehind(midnight).at : midnight.utc.getTime();
-  const end = lastReach(dateAfter(date), resolve) - SECOND;
+  const end = lastReach(dateAfter(date), resolve) - LAST_MS;
   return [new Date(start), new Date(end)];
 }

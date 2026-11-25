@@ -61,3 +61,19 @@ export function parseVedicSignsShare(params: URLSearchParams): VedicSignsShare |
   if (!isSign(sun) || !isAyanamsa(ayanamsa) || ref === undefined) return null;
   return { sun, ayanamsa, ref };
 }
+
+/**
+ * The share page's own address for a query as it arrived: the share's keys, each once, in their fixed order, or
+ * nothing when the query is not a share. Every other key (a birth date, a Moon or rising sign, a nakshatra, a place,
+ * a name, an app's tracking key) is left out, and nothing is read from it, echoed or logged.
+ */
+export function vedicSignsCleanQuery(params: URLSearchParams): string {
+  const kept = new URLSearchParams();
+  for (const key of VEDIC_SIGNS_SHARE_KEYS) {
+    const values = params.getAll(key);
+    if (values.length > 1) return '';
+    if (values.length === 1) kept.set(key, values[0]);
+  }
+  const share = parseVedicSignsShare(kept);
+  return share ? vedicSignsQuery(share, true) : '';
+}

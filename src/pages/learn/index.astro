@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { editorialDates } from '../../lib/editorial-metadata.mjs';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
+import Motion from '../../components/Motion.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import LearningPath, { type LessonDecor, type StepId } from '../../islands/LearningPath';
@@ -396,6 +397,7 @@ const jsonLd = [
       </ul>
     </div>
 
+    <Motion />
     <div class="grp" id="placements">
       <div class="grp__head">
         <h3 class="h-3">{placementsTopic.title}</h3>
@@ -406,7 +408,7 @@ const jsonLd = [
       <ul class="plcs" role="list">
         {placements.map((item) => (
           <li>
-            <a class="plc" href={item.href}>
+            <a class="plc" href={item.href} data-enter="rise">
               <span class="plc__pair" aria-hidden="true">
                 {item.kind === 'planet'
                   ? <PlanetGlyph body={item.body} size={18} disc hue={`var(--sign-${RULER_SIGN[item.body]})`} class="plc__glyph" />
@@ -427,7 +429,7 @@ const jsonLd = [
       </div>
       <div class="reads">
         {reads.map((read) => (
-          <a class="rd" href={read.topic.route}>
+          <a class="rd" href={read.topic.route} data-enter="rise">
             <figure class="rd__art">
               <img
                 src={heroCropSrc(read.art, 560)}

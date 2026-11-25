@@ -9,6 +9,11 @@ import { engineVersionFromDependency, skyCheckBadge } from '../../../accuracy/sk
 import { engineInstallBlock } from '../../../lib/engine-install-block';
 import { ENGINE_DEMO_SOURCE, ENGINE_DEMO_OUTPUT } from '../../../lib/engine-demo';
 import { ENGINE_LICENSES, FREE_OFFER, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+import { launchFlagOn } from '../../../lib/launch-flags';
+
+// Whether the site reads @zodiacs/engine/vedic: only while the Vedic signs page is switched on. Off, the page says
+// what main says.
+const vedicInUse = launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED');
 
 const install = engineInstallBlock(candidate);
 const siteEngineVersion = engineVersionFromDependency(packageDocument.dependencies['@zodiacs/engine']);
@@ -38,7 +43,9 @@ const api = [
   ['findConfiguredAspects(bodies, policy)', 'Aspects under a policy you set with createAspectPolicy: major, minor or custom angles, and orbs per aspect, per body and for applying or separating motion.'],
   ['chartDeclinations(chart)', 'Right ascension and declination of each body, parallels and contraparallels, and each body\'s signed margin to the out-of-bounds limit, in arcseconds.'],
   ['@zodiacs/engine/timing', 'Hellenistic timing, a separate import: annual profections, firdaria, zodiacal releasing and solar arc directions. This site uses none of it.'],
-  ['@zodiacs/engine/vedic', 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site\'s Vedic signs page and its get_vedic_signs tool read the ayanamsa, sidereal longitudes and nakshatras from it, and nothing else.'],
+  ['@zodiacs/engine/vedic', vedicInUse
+    ? 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site\'s Vedic signs page and its get_vedic_signs tool read the ayanamsa, sidereal longitudes and nakshatras from it, and nothing else.'
+    : 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site uses none of it.'],
   ['@zodiacs/engine/time', 'The engine\'s own time basis, a separate import: the UT1 and TT of an instant with the ΔT and time scale a chart records, the nutation and frame of date that turn its positions, and first-order time bands. This site\'s server ephemeris and compute API take their time basis from it.'],
   ['@zodiacs/engine/lite', 'Declinations and parallels, sect, composite midpoints and essential dignities, a separate import that loads no ephemeris. This site\'s three-dimensional view, relationship page and chart take theirs from it.'],
 ];
@@ -291,7 +298,9 @@ const jsonLd = [
         reads an instant from 1972 to 2 October 2027 as UTC: atomic time comes
         from the IERS leap seconds, and the Earth's rotation from the IERS
         values of UT1 − UTC, which its table reproduces within 0.79
-        milliseconds on every day. Other instants it reads as UT1 and takes
+        milliseconds on every day. Since 2.0.0 it reads a later instant as
+        UTC too, with Terrestrial Time a fixed 69.184 seconds ahead and the
+        Earth's rotation from its ΔT model. Earlier instants it reads as UT1 and takes
         ΔT, the gap between atomic time and the Earth's rotation, from its
         model, as it has since 0.1.1-rc.8: Stephenson, Morrison and
         Hohenkerk's 2016 reconstruction before 1941, US Naval Observatory and
@@ -300,8 +309,8 @@ const jsonLd = [
         returns the ΔT it used with its one-sigma uncertainty, and says which
         way it read its instant. From 2100 to 2199, the engine's clock and
         Horizons' fixed future UTC offset put the same calendar labels
-        9.7 to 57.1 seconds apart. From 2150 to 2199 the maximum Moon difference
-        was 0.53 arcseconds at matched Terrestrial Time and 35.65 arcseconds
+        within 0.01 seconds of each other. From 2150 to 2199 the maximum Moon difference
+        was 0.53 arcseconds at matched Terrestrial Time and 0.53 arcseconds
         at the same input time. Until rc.8 the clock was a fixed formula.
         On 22 September 2026 it read 75.5 seconds where the IERS value is 69.2,
         which on its own moved the Moon about 3.5 arcseconds.
@@ -329,7 +338,7 @@ const jsonLd = [
     <h2 id="limits">What it does not do</h2>
     <div class="prose">
       <ul>
-        <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> and <code>/calc</code> entry points, which this site does not use. The core has no topocentric parallax; <code>/calc</code> offers a topocentric center.</li>
+        <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> and <code>/calc</code> entry points{vedicInUse ? '' : ', which this site does not use'}. The core has no topocentric parallax; <code>/calc</code> offers a topocentric center.</li>
         <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>

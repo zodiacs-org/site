@@ -12,9 +12,12 @@ import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
 import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
-import { roundCoordinate } from '../../lib/geo/coordinates';
+import { roundPlace } from '../../lib/vedic-signs/place';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { untimedInstant } from '../../lib/vedic-signs/untimed';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
+export { prepareEveryZoneHistory } from '../../lib/time/every-zone-history';
 
 export interface VedicFormInput {
   birthDate: string;
@@ -28,21 +31,25 @@ export interface VedicFormInput {
 /**
  * Call only after `await prepareLocalTime(input.birthDate, input.place.tz)`.
  * A date the birthplace clock never showed (Apia went from 29 to 31 December
- * 2011) rejects with a RangeError, which the page answers with its general
- * message, rather than being read as the next date.
+ * 2011) rejects with SkippedBirthDateError, which the page answers with its
+ * own sentence, rather than being read as the next date.
  */
 export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReading> {
   const timeKnown = input.birthTime !== null;
   // The birthplace rounded to two decimals, as every tool rounds a place it is
-  // given (get_vedic_signs through roundCoordinate), before any clock reads
+  // given (get_vedic_signs through roundCoordinate; roundPlace is the same), before any clock reads
   // it: before a zone's local mean time era ended, the clock is the
   // longitude's own (240 s per degree), so the raw longitude would move the
   // birth instant by up to 1.2 seconds and a rising degree on a sign boundary
   // with it (New York, 11 May 1880, 03:34 at 74.006 degrees west).
-  const rounded = { lat: roundCoordinate(input.place.lat), lon: roundCoordinate(input.place.lon) };
+  const rounded = { lat: roundPlace(input.place.lat), lon: roundPlace(input.place.lon) };
   const dayStart = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: rounded.lon });
-  if (!readsOnDate(input.birthDate, dayStart)) return Promise.reject(new RangeError('The birth date was not on the birthplace clock.'));
-  const birthUtc = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: rounded.lon }).utc;
+  if (!readsOnDate(input.birthDate, dayStart)) return Promise.reject(new SkippedBirthDateError());
+  const birth = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: rounded.lon });
+  // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
+  // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as get_vedic_signs does).
+  const onClock = birthTimeOnClock(birth.flags, timeKnown);
+  if (onClock.skipped) return Promise.reject(new SkippedBirthTimeError());
   // An untimed birth is read at local noon, and a placement holds only if both
   // ends of the local date keep it: from where the clock first reaches its
   // 00:00 to where it last leaves the date, so a date the clock showed twice
@@ -52,11 +59,14 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   // covers: the engine loads a zone's whole history for any date up to 1970.
   const dayEnds = timeKnown ? undefined : localDaySpan(input.birthDate,
     (date, time, fold) => resolveLocalToUtc(date, time, input.place.tz, { longitude: rounded.lon, fold })) ?? undefined;
+  // Untimed, local noon only when the clock showed it on the date (not skipped, not moved off it); else the middle of
+  // the date (src/lib/vedic-signs/untimed.ts).
+  const birthUtc = dayEnds ? untimedInstant(birth.utc, dayEnds, birth.flags) : birth.utc;
   return import('../../lib/vedic-signs/tropical').then(({ tropicalMoments }) => {
     const moments = tropicalMoments({ birthUtc, timeKnown, latitude: rounded.lat, longitude: rounded.lon, dayEnds });
     const wire = (moment: TropicalMoment) => ({ ...moment, utc: moment.utc.toISOString() });
     return inWorker({ ...moments, at: wire(moments.at), ends: moments.ends ? moments.ends.map(wire) : null, ayanamsa: input.ayanamsa });
-  });
+  }).then((reading) => withClockLimit(reading, onClock.limit));
 }
 
 function inWorker(message: object): Promise<VedicReading> {

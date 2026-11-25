@@ -2,6 +2,7 @@
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import { sharingText } from '../../lib/sharing/copy';
 import Base from '../../layouts/Base.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { SHARING_COPY } from '../../lib/sharing/copy';
 import BigThreeQuick from '../../islands/BigThreeQuick';
@@ -56,6 +57,8 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
+    <ToolHeroMark name="big-three" />
     <div class="tool-hero">
       <h1 class="display">{sharingText('en', 'bigTitle')}</h1>
       <p>
@@ -65,7 +68,6 @@ const jsonLd = [
       </p>
     </div>
 
-    <Motion />
     <BigThreeQuick copy={SHARING_COPY.en} client:load />
     <SharingToolLinks current="/big-three/" />
   </section>
@@ -112,4 +114,9 @@ const jsonLd = [
   :global(.big-three__result) { margin-top: clamp(24px, 4vw, 40px); scroll-margin-top: 24px; }
   :global(.big-three__next) { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
   :global(.big-three__note) { margin: 12px 0 0; color: var(--muted); font-size: var(--text-sm); max-width: 62ch; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (min-width: 397px) and (max-width: 453px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>

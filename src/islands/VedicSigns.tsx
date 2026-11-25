@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import type { CalendarChoice } from './BirthFields';
+import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } from './GatedBirthFields';
+import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 import type { City } from '../lib/geo/search';
 import type { VedicReading, VedicSign } from '../lib/vedic-signs/reading';
 import { UNDER_13_MESSAGE, listOr } from '../lib/vedic-signs/reading';
@@ -34,10 +36,13 @@ export function vedicFormRefusal(birthDate: string, now: Date = new Date()): str
   return refusal === 'under_13' ? UNDER_13_MESSAGE : birthDateRefusalText(refusal);
 }
 
-function degrees(value: number): string {
-  const whole = Math.floor(value);
-  const minutes = Math.floor((value - whole) * 60);
-  return `${whole}°${String(minutes).padStart(2, '0')}′`;
+/**
+ * Degrees and whole arcminutes, such as 2°09′ for 2.15. The value is made whole arcminutes first (to a hundredth of
+ * one, then cut), so a degree held in binary just under its decimal (2.15 is 2.1499...) is not cut a minute short.
+ */
+export function formatDegrees(value: number): string {
+  const arcminutes = Math.floor(Math.round(value * 6000) / 100);
+  return `${Math.floor(arcminutes / 60)}°${String(arcminutes % 60).padStart(2, '0')}′`;
 }
 
 function Placement({ title, sign, missing }: { title: string; sign: VedicSign | null; missing: string }) {
@@ -56,7 +61,7 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
       <p class="vedic__body">{title}</p>
       <img class="vedic__disc" src={signIcon(128, sign.sign)} width={56} height={56} alt="" decoding="async" />
       <h3 class="vedic__sign">{sign.rashi} <span>{signName(sign.sign)}</span></h3>
-      <p class="vedic__facts">{sign.degree !== null && <><span class="mono">{degrees(sign.degree)}</span> in {sign.rashi}. </>}Western sign: {sign.tropicalSign ? signName(sign.tropicalSign) : listOr(sign.tropicalCandidates.map(signName))}.</p>
+      <p class="vedic__facts">{sign.degree !== null && <><span class="mono">{formatDegrees(sign.degree)}</span> in {sign.rashi}. </>}Western sign: {sign.tropicalSign ? signName(sign.tropicalSign) : listOr(sign.tropicalCandidates.map(signName))}.</p>
       <p class="vedic__line">{sign.line.slice(sign.line.indexOf(':') + 2)}</p>
     </article>
   );
@@ -115,7 +120,9 @@ export default function VedicSigns() {
   const [shared, setShared] = useState<'idle' | 'copied' | 'failed'>('idle');
   const revision = useRef(0);
   const resultRef = useRef<HTMLElement>(null);
-  const ready = date !== '' && city !== null && (!timeKnown || time !== '');
+  // The date is checked as it is entered; the time and birthplace open only once the converted date is accepted.
+  const check = useBirthDateCheck(date, calendar, vedicFormRefusal);
+  const ready = birthDateOpen(check) && city !== null && (!timeKnown || time !== '');
 
   function reset() { revision.current += 1; setResult(null); setError(''); setShared('idle'); setBusy(false); }
 
@@ -127,25 +134,24 @@ export default function VedicSigns() {
     const request = ++revision.current;
     setBusy(true); setError(''); setResult(null); setShared('idle');
     try {
-      let birthDate = date;
-      if (calendarInPlay(date, calendar)) {
-        const entry = await birthDateForChart('en', date, calendar);
-        if (request !== revision.current) return;
-        if ('error' in entry) { setError(entry.error); return; }
-        birthDate = entry.date;
-      }
-      // Under 13, or still to come: say so, and work nothing out.
-      const refusal = vedicFormRefusal(birthDate);
-      if (refusal) { setError(refusal); return; }
-      const { computeVedicFromForm, prepareLocalTime } = await loadModule(() => import('./vedic-signs/compute'));
+      // Under 13, or still to come, on the converted date: say so, and work nothing out.
+      const entry = await checkedBirthDate(date, calendar, vedicFormRefusal);
+      if (request !== revision.current) return;
+      if ('error' in entry) { setError(entry.error); return; }
+      const birthDate = entry.date;
+      const { computeVedicFromForm, prepareEveryZoneHistory, prepareLocalTime } = await loadModule(() => import('./vedic-signs/compute'));
       const input = { birthDate, birthTime: timeKnown ? time : null, place: { tz: city.tz, lat: city.lat, lon: city.lon }, ayanamsa };
+      // All sixteen zone history files first, whatever the birth: which file a birth needs, and whether it needs one at
+      // all, would tell the host the birthplace's zone group and that the birth is from 1970 or before.
+      await prepareEveryZoneHistory();
       await prepareLocalTime(input.birthDate, input.place.tz);
       if (request !== revision.current) return;
       const reading = await computeVedicFromForm(input);
       if (request !== revision.current) return;
       setResult(reading);
     } catch (cause) {
-      if (request === revision.current) setError(calculationError(cause, 'en', 'Your Vedic signs could not be worked out. Check the details and try again.'));
+      // A birth time the clock skipped gets its own sentence; anything else the general one.
+      if (request === revision.current) setError(cause instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME : cause instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE : calculationError(cause, 'en', 'Your Vedic signs could not be worked out. Check the details and try again.'));
     } finally {
       if (request === revision.current) setBusy(false);
     }
@@ -169,9 +175,9 @@ export default function VedicSigns() {
       <form class="calc__form shell" onSubmit={calculate} aria-busy={busy}>
         <div class="core calc__core">
           <div class="calc__fields">
-            <BirthFields
+            <GatedBirthFields
               locale="en" dateId="vedic-date" timeId="vedic-time" placeId="vedic-place"
-              date={date} time={time} timeKnown={timeKnown} city={city}
+              date={date} check={check} time={time} timeKnown={timeKnown} city={city}
               onDateChange={(value) => { reset(); setDate(value); }}
               calendar={calendar} onCalendarChange={(value) => { reset(); setCalendar(value); }}
               onTimeChange={(value) => { reset(); setTime(value); }}

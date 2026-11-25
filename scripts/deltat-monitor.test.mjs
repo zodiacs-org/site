@@ -405,7 +405,23 @@ describe('the time zone release rule', () => {
     }
   });
 
-  it('writes separate statuses and the recorded release notes through the CLI', async () => {
+  it('writes the recorded release notes for an engine behind IANA', async () => {
+    const fetchImpl = async (url) => {
+      if (url === `${tzdbUrl}/version`) return new Response('2026f\r\n');
+      if (url === `${tzdbUrl}/NEWS`) return new Response(await readFile(newsPath));
+      throw new Error(`unexpected URL ${url}`);
+    };
+    const body = renderTzdbReport(await runTzdbMonitor({ installed: '2025c', fetchImpl, pause: async () => {} }));
+    expect(body).toContain('The engine ships 2025c. IANA reports 2026f.');
+    expect(body).toContain('In 1925 Ireland fell back on 09-20 not 10-04');
+    expect(body).toContain('Cuba will not fall back');
+    expect(body).toContain('Since 2022 Moldova has observed EU transition times');
+    expect(body.match(/^### 2026[a-f]$/gmu)).toHaveLength(6);
+    expect(body).not.toMatch(/### 2025c|Changes to code|Changes to commentary|Other data changes/u);
+  });
+
+  it('writes separate statuses through the CLI', async () => {
+    // The engine ships 2026f since 2.0.0, so IANA's 2026f leaves the time zone rule quiet.
     const directory = await mkdtemp(resolve(tmpdir(), 'weekly-data-monitor-'));
     try {
       const summary = resolve(directory, 'summary.md');
@@ -413,10 +429,8 @@ describe('the time zone release rule', () => {
       const tzIssue = resolve(directory, 'tzdb.md');
       const output = resolve(directory, 'output');
       const preload = `data:text/javascript,${encodeURIComponent(`
-        import { readFile } from 'node:fs/promises';
         globalThis.fetch = async (url) => {
           if (url === '${tzdbUrl}/version') return new Response('2026f\\r\\n');
-          if (url === '${tzdbUrl}/NEWS') return new Response(await readFile(${JSON.stringify(newsPath)}));
           throw new Error('unexpected URL ' + url);
         };
       `)}`;
@@ -425,16 +439,10 @@ describe('the time zone release rule', () => {
         '--date', replayDate, '--finals', finalsPath, '--summary', summary,
         '--issue-body', issue, '--tz-issue-body', tzIssue, '--github-output', output,
       ], { timeout: 4_000 });
-      const body = await readFile(tzIssue, 'utf8');
-      expect(body).toContain('The engine ships 2025c. IANA reports 2026f.');
-      expect(body).toContain('In 1925 Ireland fell back on 09-20 not 10-04');
-      expect(body).toContain('Cuba will not fall back');
-      expect(body).toContain('Since 2022 Moldova has observed EU transition times');
-      expect(body.match(/^### 2026[a-f]$/gmu)).toHaveLength(6);
-      expect(body).not.toMatch(/### 2025c|Changes to code|Changes to commentary|Other data changes/u);
       expect(await readFile(summary, 'utf8')).toContain('UT1 span: 324 days compared.');
       await expect(readFile(issue, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
-      expect(await readFile(output, 'utf8')).toBe('status=quiet\ntz_status=fired\n');
+      await expect(readFile(tzIssue, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+      expect(await readFile(output, 'utf8')).toBe('status=quiet\ntz_status=quiet\n');
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
