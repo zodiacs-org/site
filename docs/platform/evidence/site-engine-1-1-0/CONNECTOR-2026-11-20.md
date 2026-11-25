@@ -59,11 +59,36 @@ Starting from the reproduced 0.6.9 source, apply the changes to
 Build the hosted entry with the same settings and lifetime boundary. The
 resulting digest is recorded in `publishedSha256`.
 
+## Moment charts (ZOD-62)
+
+The proposed hosted tool is available on both routes when
+`ZODIACS_MOMENT_CHART_ENABLED=1` and the existing occasion and coverage
+switches are on. `get_moment_chart` accepts the event latitude and longitude,
+an optional ISO timestamp with an offset, and an optional house system.
+Omitting the timestamp uses the server clock. The result identifies itself
+as a moment chart and links to the general sky page.
+
+The recut started by reproducing the 0.6.9 hash above, retaining its original
+TypeScript configuration, Chart Studio address and legacy addresses. The
+`momentChart` source commit in `connector-transition.json` contains the two
+new feature modules and the changes to the hosted tool registry, dispatcher,
+HTTP options and account save caller. Apply those changes to that reproduced
+source, appending the tool after numerology in the pinned roster and after
+good days in the DE440 roster. Compile with the same hosted settings and
+lifetime boundary. The current digest is in `publishedSha256`.
+
+`tests/api/mcp-moment-chart.test.ts` exercises both built handlers with the
+switch on and off. It checks that existing definitions keep their values,
+casts a chart for now, submits the same recent date to the birth tool, and
+inspects the request URLs, returned links, counters and preview diagnostics.
+
+The combined hosted build retains both source changes. After applying the moment chart changes to the reproduced source, apply the numerology guidance to the same sources before compiling.
+
 ## Split-day refusal for check_sky_fact
 
-Starting from the reproduced 0.6.9 + gated numerology source (verified to
-reproduce `9d35569a7007193d7e9467e582d82e906363e86ed838f80383d1b2b53901d333`
-byte for byte), apply `runtimeSource.splitDayRefusalPatch`
+Starting from the reproduced 0.6.9 + moment chart + gated numerology source
+(digest `861fa130487eade0784a989188c2f3a3541c2d88262259275c001b2ec8219f8c`),
+apply `runtimeSource.splitDayRefusalPatch`
 (`docs/platform/evidence/site-engine-1-1-0/split-day-refusal.patch`) with
 `patch -p1`. The patch adds the legacy-resolver-compatible
 `clockWentBackAcrossMidnight` and `refuseSplitDay` check before
