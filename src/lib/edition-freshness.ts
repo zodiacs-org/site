@@ -1,14 +1,14 @@
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u;
 
 /** The locales whose daily pages carry an edition, each with its dated wording below. */
-export type EditionLocale = 'en' | 'es' | 'pt' | 'fr' | 'it';
+export type EditionLocale = 'en' | 'es' | 'pt' | 'fr' | 'it' | 'ru';
 
 /**
  * The same Intl locales as LOCALE_META in src/lib/i18n/core.ts, so a dated
  * label reads exactly like the date the page already prints. Kept here
  * rather than imported: the drives load this file in plain Node.
  */
-const EDITION_INTL_LOCALE: Record<EditionLocale, string> = { en: 'en-US', es: 'es-419', pt: 'pt-BR', fr: 'fr-FR', it: 'it-IT' };
+const EDITION_INTL_LOCALE: Record<EditionLocale, string> = { en: 'en-US', es: 'es-419', pt: 'pt-BR', fr: 'fr-FR', it: 'it-IT', ru: 'ru-RU' };
 
 function parsedUtcDate(value: string): Date | null {
   if (!ISO_DATE.test(value)) return null;
@@ -42,6 +42,9 @@ export function editionDateLabel(editionDate: string, locale: EditionLocale = 'e
   // French and Italian write the first of a month as an ordinal: "1er novembre", "1° novembre".
   if (locale === 'fr') return label.replace(/^1 (?=\p{L})/u, '1er ');
   if (locale === 'it') return label.replace(/^1 (?=\p{L})/u, '1° ');
+  // Russian spells out the year ("9 ноября 2026 года") where Intl abbreviates
+  // it to "г.", so a dated phrase can end a sentence without a double stop.
+  if (locale === 'ru') return label.replace(/ г\.$/u, ' года');
   return label;
 }
 
@@ -130,8 +133,33 @@ const ITALIAN_RULES: readonly EditionRule[] = [
   [/\boggi\b/gu, 'il {date}'],
 ];
 
+// The Russian daily pages (the 2026-11 locale expansion, held until
+// released) say «сегодня» in their copy and in the reading templates of
+// src/lib/locale-expansion/daily-ru.ts, and never the adjective
+// «сегодняшний». A date stands where «сегодня» stood ("Луна 9 ноября 2026
+// года проходит", "на 9 ноября 2026 года"), so after the reviewed phrases a
+// last rule dates every other occurrence. JavaScript's \b does not see
+// Cyrillic letters, so the rules use letter lookarounds instead.
+const RUSSIAN_SIGNS = 'Овен|Телец|Близнецы|Рак|Лев|Дева|Весы|Скорпион|Стрелец|Козерог|Водолей|Рыбы';
+
+const RUSSIAN_RULES: readonly EditionRule[] = [
+  [/^(\s*)Сегодня(\s*)$/gu, '$1Небо на {date}$2'],
+  [new RegExp(`^(\\s*)(${RUSSIAN_SIGNS}) сегодня(\\s*)$`, 'gu'), '$1$2, {date}$3'],
+  [/^(\s*)Луна сегодня проходит(?!\p{L})/gu, '$1{date} Луна проходит'],
+  [/^(\s*)Сегодня небо спокойное\./gu, '$1{date} небо спокойное.'],
+  [/(?<!\p{L})на сегодня(?!\p{L})/gu, 'на {date}'],
+  [/(?<!\p{L})Сегодня(?!\p{L})/gu, '{date}'],
+  [/(?<!\p{L})сегодня(?!\p{L})/gu, '{date}'],
+];
+
 const FRENCH_TITLE_RULES: readonly EditionRule[] = [
   [/\baujourd’hui, /gu, 'du '],
+];
+
+// The Russian tab titles say "на сегодня" beside the edition's date; dated,
+// the title keeps the date: "Лев: гороскоп на 9 ноября | Zodiacs.org".
+const RUSSIAN_TITLE_RULES: readonly EditionRule[] = [
+  [/ на сегодня, /gu, ' на '],
 ];
 
 const ITALIAN_TITLE_RULES: readonly EditionRule[] = [
@@ -191,6 +219,7 @@ export function editionRules(locale: string): readonly EditionRule[] | null {
   if (locale === 'pt') return PORTUGUESE_RULES;
   if (locale === 'fr') return FRENCH_RULES;
   if (locale === 'it') return ITALIAN_RULES;
+  if (locale === 'ru') return RUSSIAN_RULES;
   return null;
 }
 
@@ -215,6 +244,7 @@ export function editionTitleRules(locale: string): readonly EditionRule[] {
   if (locale === 'pt') return PORTUGUESE_TITLE_RULES;
   if (locale === 'fr') return FRENCH_TITLE_RULES;
   if (locale === 'it') return ITALIAN_TITLE_RULES;
+  if (locale === 'ru') return RUSSIAN_TITLE_RULES;
   return [];
 }
 
