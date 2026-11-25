@@ -43,6 +43,11 @@ import {
   handleVedicSignsImageRequest,
   handleVedicSignsLinkRequest,
   handleVedicSignsStoryRequest,
+  handleRetrogradeForYouImageRequest,
+  handleRetrogradeForYouLinkRequest,
+  handleRetrogradeForYouStoryRequest,
+  retrogradeForYouStory,
+  retrogradeForYouStoryAddress,
   RESULT_SHARE_ROUTE_KEY,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
@@ -64,9 +69,12 @@ import {
   longDate,
   NEUTRAL_HUE,
   occasionCardModel,
+  retrogradeForYouCardModel,
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
+import { parseRetrogradeForYouShare, retrogradeForYouCleanQuery } from '../lib/retrograde-for-you/share';
+import { requestOrigin } from './chart-preview';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import { parseVedicSignsShare, vedicSignsCleanQuery } from '../lib/vedic-signs/share';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
@@ -697,6 +705,7 @@ describe('the deployed entry', () => {
       ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
       ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
       ['/share/vedic-signs/', 'vedic-signs-link'], ['/api/og/vedic-signs-image', 'vedic-signs-image'], ['/api/og/vedic-signs-story', 'vedic-signs-story'],
+      ['/share/retrograde-for-you/', 'retrograde-for-you-link'], ['/api/og/retrograde-for-you-image', 'retrograde-for-you-image'], ['/api/og/retrograde-for-you-story', 'retrograde-for-you-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
@@ -889,6 +898,8 @@ describe('share preview images', () => {
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
     ['Vedic signs', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=sagittarius&a=lahiri'))],
     ['Vedic signs read with another ayanamsa', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=aries&a=raman'))],
+    ['retrograde for Sun sign', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&sun=taurus'))],
+    ['retrograde without Sun sign', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mars&s=2027-01-10'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -934,6 +945,9 @@ describe('share preview images', () => {
       [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
       [handleVedicSignsImageRequest, 'https://zodiacs.org/api/og/vedic-signs-image?s=leo&m=aries&n=10&a=lahiri'],
       [handleVedicSignsImageRequest, 'https://zodiacs.org/api/og/vedic-signs-image?s=leo&a=lahiri&lat=28.61'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-25&sun=taurus'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&sun=taurus&d=1990-05-03'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -959,6 +973,7 @@ describe('story pictures', () => {
     ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
     ['Vedic signs', () => handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=sagittarius&a=lahiri'))],
+    ['retrograde for Sun sign', () => handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&sun=taurus'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -986,5 +1001,115 @@ describe('story pictures', () => {
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
     expect((await handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=leo&a=lahiri&d=1990-08-01'))).status).toBe(400);
+    expect((await handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&h=5&b=sun&c=70'))).status).toBe(400);
+  });
+});
+
+describe('a retrograde in one person’s chart', () => {
+  const events = skyEvents({ moons: [], retrogrades: json<{ retrogrades: { planet: string; from: string; to: string }[] }>('../data/sky.json').retrogrades, eclipses: [] });
+
+  it('draws the planet, the published window and optional Sun sign, and nothing personal beyond the Sun sign', () => {
+    const model = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&sun=taurus'))!, events)!;
+    expect(model).toMatchObject({
+      title: 'Mercury retrograde for Taurus Sun',
+      span: 'Sat 24 Oct 2026 to Fri 13 Nov 2026',
+      confidence: null,
+    });
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2027-01-10'))!, events)!.title).toBe('Mars retrograde');
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2026-10-24'))!, events)).toBeNull();
+  });
+
+  it('prints on the story the site the share was opened from, as the share page links, never production from staging', () => {
+    const staging = 'https://site-git-retro-zodiacsofficial.vercel.app/api/og/retrograde-for-you-story?p=mercury&s=2026-10-24';
+    expect(retrogradeForYouStoryAddress(staging)).toBe('site-git-retro-zodiacsofficial.vercel.app/retrogrades/for-you');
+    expect(retrogradeForYouStoryAddress('https://zodiacs.org/api/og/retrograde-for-you-story?p=mercury&s=2026-10-24')).toBe('zodiacs.org/retrogrades/for-you');
+    expect(retrogradeForYouStoryAddress('https://www.zodiacs.org/api/og/retrograde-for-you-story?p=mercury&s=2026-10-24')).toBe('zodiacs.org/retrogrades/for-you');
+    // The deployed entry builds the request from requestOrigin: an untrusted host falls back to production.
+    expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: 'evil.example' } })}/api/og/retrograde-for-you-story`)).toBe('zodiacs.org/retrogrades/for-you');
+    expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: 'site-git-retro-zodiacsofficial.vercel.app' } })}/api/og/retrograde-for-you-story`)).toBe('site-git-retro-zodiacsofficial.vercel.app/retrogrades/for-you');
+    const model = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24'))!, events)!;
+    const drawn = JSON.stringify(retrogradeForYouStory(model, [], retrogradeForYouStoryAddress(staging)));
+    expect(drawn).toContain('site-git-retro-zodiacsofficial.vercel.app/retrogrades/for-you');
+    expect(drawn).not.toContain('"zodiacs.org/retrogrades/for-you"');
+  });
+
+  it('opens a page whose action leads back to the retrogrades page', async () => {
+    const page = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&sun=taurus&ref=chatgpt'))).text();
+    expect(page).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&amp;s=2026-10-24&amp;sun=taurus">');
+    expect(page).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
+    expect(page).toContain('Mercury retrograde for Taurus Sun');
+    expect(page).not.toMatch(/[\u2013\u2014]/u);
+    // A link with a key the share does not use is sent to the retrograde's own address, which keeps the card.
+    const extra = await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&d=1990-05-03'));
+    expect(extra.status).toBe(303);
+    expect(extra.headers.get('location')).toBe('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24');
+    expect(await extra.text()).toBe('');
+    // A date that starts no published window is checked before the redirect, so it is not carried to the new address.
+    for (const query of ['p=mercury&s=1990-05-03&d=2026-10-24', 'p=venus&s=1990-05-03&sun=taurus', 'p=mars&s=2026-10-24']) {
+      const unpublished = await handleRetrogradeForYouLinkRequest(new Request(`https://zodiacs.org/share/retrograde-for-you/?${query}`));
+      expect(unpublished.status, query).toBe(303);
+      expect(unpublished.headers.get('location'), query).toBe('https://zodiacs.org/share/retrograde-for-you/');
+    }
+    // A link that is not a share opens the plain page, which still leads to the retrogrades page.
+    const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/'))).text();
+    expect(plain).toContain('content="https://zodiacs.org/assets/og/v2/tool/retrogrades.png"');
+    expect(plain).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
+  });
+
+  describe('clears every key the share does not use from the address, on the deployed entry', () => {
+    const SECRETS = ['1990-05-03', '08:30', 'Lisbon', 'Ada', '38.72', 'scorpio', 'leo'];
+    const holdsNone = (text: string) => { for (const value of SECRETS) expect(text).not.toContain(value); };
+    const deployed = async (route: 'retrograde-for-you-link' | 'retrograde-for-you-image' | 'retrograde-for-you-story', query: Record<string, string | string[]>) => {
+      vi.stubEnv('PUBLIC_RETROGRADES_FOR_YOU_ENABLED', '1');
+      const res = nodeResponse();
+      await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+      return res;
+    };
+    afterEach(() => { vi.unstubAllEnvs(); });
+
+    it.each([
+      [{ p: 'mercury', s: '2026-10-24', sun: 'taurus', birthDate: '1990-05-03' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24&sun=taurus'],
+      [{ p: 'mercury', s: '2026-10-24', sun: 'taurus', moon: 'scorpio', rising: 'leo', h: '7' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24&sun=taurus'],
+      [{ p: 'mercury', s: '2026-10-24', t: '08:30', city: 'Lisbon', n: 'Ada', lat: '38.72' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24'],
+      [{ d: '1990-05-03', s: '2026-10-24', p: 'mercury', ref: 'chatgpt' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24&ref=chatgpt'],
+      [{ p: 'mercury', s: '2026-10-24', b: 'rising', c: '70', fbclid: 'IwAR0' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24'],
+      // A repeated key, or a query that is no share, leaves nothing of the query: the plain page.
+      [{ p: 'mercury', s: ['2026-10-24', '1990-05-03'] }, '/share/retrograde-for-you/'],
+      [{ p: 'jupiter', s: '2026-10-24', d: '1990-05-03' }, '/share/retrograde-for-you/'],
+      [{ birthDate: '1990-05-03' }, '/share/retrograde-for-you/'],
+      // A well-formed date that starts no published window of that planet is cleared with the rest, whether the link
+      // carries another key or is otherwise clean: no full date the sky data does not list reaches an address.
+      [{ p: 'mercury', s: '1990-05-03', d: '2026-10-24' }, '/share/retrograde-for-you/'],
+      [{ p: 'mercury', s: '1990-05-03', sun: 'taurus', fbclid: 'IwAR0' }, '/share/retrograde-for-you/'],
+      [{ p: 'mercury', s: '1990-05-03' }, '/share/retrograde-for-you/'],
+      [{ p: 'mars', s: '2026-10-24', ref: 'chatgpt' }, '/share/retrograde-for-you/'],
+    ] as const)('sends %j to %s', async (query, location) => {
+      const res = await deployed('retrograde-for-you-link', query as Record<string, string | string[]>);
+      expect(res.statusCode).toBe(303);
+      expect(res.headers.get('location')).toBe(`https://zodiacs.org${location}`);
+      holdsNone(res.headers.get('location')!);
+      holdsNone(res.body.toString('utf8'));
+    });
+
+    it('opens the card at the clean address, and the plain page with no query', async () => {
+      const card = await deployed('retrograde-for-you-link', { p: 'mercury', s: '2026-10-24', sun: 'taurus' });
+      expect(card.statusCode).toBe(200);
+      expect(card.body.toString('utf8')).toContain('Mercury retrograde for Taurus Sun');
+      expect((await deployed('retrograde-for-you-link', { p: 'mercury', s: '2026-10-24', ref: 'assistant' })).statusCode).toBe(200);
+      const plain = await deployed('retrograde-for-you-link', {});
+      expect(plain.statusCode).toBe(200);
+      expect(plain.body.toString('utf8')).toContain('Retrogrades in your chart');
+    });
+
+    it('leaves the pictures as they were: only their own keys, else refused', async () => {
+      expect((await deployed('retrograde-for-you-image', { p: 'mercury', s: '2026-10-24', birthDate: '1990-05-03' })).statusCode).toBe(400);
+      expect((await deployed('retrograde-for-you-story', { p: 'mercury', s: '2026-10-24', fbclid: 'IwAR0' })).statusCode).toBe(400);
+    });
+
+    it('builds the clean query from the share keys alone', () => {
+      expect(retrogradeForYouCleanQuery(new URLSearchParams('sun=leo&x=1&s=2026-10-24&p=venus'))).toBe('p=venus&s=2026-10-24&sun=leo');
+      expect(retrogradeForYouCleanQuery(new URLSearchParams('p=venus&s=2026-10-24&ref=other'))).toBe('');
+      expect(retrogradeForYouCleanQuery(new URLSearchParams(''))).toBe('');
+    });
   });
 });

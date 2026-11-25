@@ -37,6 +37,8 @@ import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
 import { earliestToday } from '../lib/birth-date-policy';
+import { birthDateAgeGate } from './birth-date-age-gate';
+import { UNDER_13_SENTENCE as AGE_FIRST_UNDER_13 } from '../lib/good-days/find';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -89,6 +91,11 @@ export interface AiDependencies {
    * definition names a pageFlag links to its page and share card only then; unset, it links to neither.
    */
   sitePageOn?: (flag: string) => boolean;
+  /**
+   * The site a personal tool's links go to, when it is not zodiacs.org: the staging host the call came in on, whose
+   * page switches sitePageOn reads. Unset, ORIGIN.
+   */
+  siteOrigin?: string;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -342,6 +349,33 @@ export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date
 }
 
 /**
+ * The tools whose child refusal comes before any other sentence: every personal tool that takes a birth date (its
+ * input names birthDate), so a call that carries a child's birth date, alone or with a birth time, zone, place or
+ * field this tool cannot use, is refused for the age and is never asked for a birth time or birthplace. The hosted
+ * server reads this set too (./server.ts, ./http.ts); every other tool keeps its replies.
+ */
+export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<string>(PERSONAL_TOOL_NAMES.filter((name) => {
+  const input = personalTool(name).input as { shape?: Record<string, unknown> };
+  return input.shape !== undefined && 'birthDate' in input.shape;
+}));
+
+/**
+ * The reply for a tool in AGE_FIRST_TOOLS before any other field is read, from the one age gate
+ * (./birth-date-age-gate.ts): UNDER_13 gets the plain under-13 refusal (src/lib/good-days/find.ts), never the
+ * birthday card wording of UNDER_13_REFUSAL; NEEDS_DATE gets the birth date asked for alone, "birthDate is required."
+ * when it is missing and the date's form otherwise, never a birth time, zone or place; ADULT gets null, and the call
+ * goes on, read as sent. The tool (executeAiTool) and the hosted server (./server.ts, and ./http.ts before the SDK's
+ * schema check can name another field) reply with this.
+ */
+export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date) {
+  const birthDate = fieldOf(args, 'birthDate');
+  const gate = birthDateAgeGate(birthDate, now);
+  if (gate === 'UNDER_13') return failure(tool, 'invalid-request', AGE_FIRST_UNDER_13);
+  if (gate === 'NEEDS_DATE') return failure(tool, 'invalid-request', birthDate === undefined ? 'birthDate is required.' : `birthDate must be ${FIELD_FORMAT.birthDate}.`);
+  return null;
+}
+
+/**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
  * zone only with the place's coordinates, so a zone without them gets no link rather than one that
  * opens on a different card. A birthday, a baby's arrival, or a coming of age gets no card link: the
@@ -431,6 +465,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
+    // A tool that refuses a child's birth date before naming any missing field (AGE_FIRST_TOOLS).
+    if (AGE_FIRST_TOOLS.has(tool)) { const child = ageFirstRefusal(tool, input, dependencies.now?.() ?? new Date()); if (child) return child; }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
@@ -441,11 +477,13 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     if (isPersonalTool(tool)) {
       // A personal tool: computed by its own module from the engine and pre-written wording, for this call only.
       const now = dependencies.now?.() ?? new Date();
-      const child = childBirthDateRefusal(tool, input, now, context.hostZone);
-      if (child) return child;
+      // The age is read on the birth date as given and as the tool will read it, so a date its schema rewrites is checked too.
+      const child = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed.data, now, context.hostZone);
+      // A tool in AGE_FIRST_TOOLS refuses with its own plain sentence, the same as its age gate's.
+      if (child) return AGE_FIRST_TOOLS.has(tool) ? failure(tool, 'invalid-request', AGE_FIRST_UNDER_13) : child;
       const definition = personalTool(tool);
       const result = await feature(() => definition.run(definition.input.parse(input) as never, {
-        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: ORIGIN,
+        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: dependencies.siteOrigin ?? ORIGIN,
         pageOn: definition.pageFlag === undefined || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
         ...(dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}),

@@ -45,6 +45,14 @@ export interface LocalTimeResolution {
   /** The engine's flags; engine 2.0.0 added calendar-unknown and host-zone-data-differs. */
   flags: ('dst-gap' | 'dst-fold' | 'lmt' | 'calendar-unknown' | 'host-zone-data-differs')[];
   /**
+   * With dst-gap or dst-fold: the size of the clock change, minutes (60 for
+   * most daylight saving changes, 30 on Lord Howe Island), from the offsets on
+   * either side of it.
+   */
+  jumpMinutes?: number;
+  /** With dst-gap or dst-fold: the instant the clock changed, which need not fall on a whole minute. */
+  transitionAt?: Date;
+  /**
    * Present when the birthplace's own mean time read the wall time (also in
    * the gap at the end of its era): the longitude used, and the offset the
    * zone alone would have applied.
@@ -302,6 +310,10 @@ export function resolveLocalToUtc(
     utc: resolved.utc,
     offsetMinutes: resolved.offsetMinutes,
     flags: [...resolved.flags],
+    ...(resolved.jump && resolved.transition ? {
+      jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes),
+      transitionAt: new Date(resolved.transition.at),
+    } : {}),
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
     ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };
