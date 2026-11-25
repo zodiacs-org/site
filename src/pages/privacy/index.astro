@@ -93,12 +93,12 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         Every chart you calculate here is computed on your own device. When you
         enter a birth date, time, and place, that information is used by code
         running in your browser to calculate the chart. It is not transmitted to
-        our servers, logged, or stored by us as part of that calculation.
+        our servers, logged, or stored by us as part of that calculation.{' '}
         {accountSyncV2Enabled ? (
           <>It is not sent anywhere unless you share it or choose to sync it. Signing in to an account does not send your saved charts.</>
         ) : (
           <>It is not sent anywhere unless you share it. Chart sync is paused: signing in to an account does not send your saved charts, and nothing new is sent to your account.</>
-        )}
+        )}{' '}
         This is a
         deliberate design choice, described in
         full on our <a href="/methodology/">methodology page</a>.
