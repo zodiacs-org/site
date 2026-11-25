@@ -1,6 +1,6 @@
 {
   "recorded": "2026-10-06",
-  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching. On 2026-11-18 the 45 header sources for the 15 owner-authorized protected living profiles were added in the same three shapes the official compiler produced for the 2026-08-16 protected profiles (exact page, asset prefix, share card).",
+  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching. On 2026-11-18 the 45 header sources for the 15 owner-authorized protected living profiles were added in the same three shapes the official compiler produced for the 2026-08-16 protected profiles (exact page, asset prefix, share card). On 2026-11-23 the 12 exact header sources for the consumer Markdown twins (/{page}.md) were added in the exact-path shape the compiler produced for /sky-calendar.ics.",
   "vercelConfigSha256": "8058f44ed6ccc4d684b4827780f2768abd8df5deca8e9118770c146b84330952",
   "platformHeaders": [
     {
@@ -28,6 +28,54 @@
     {
       "source": "/feeds/events/:sign([a-z]+).json",
       "src": "^/feeds/events(?:/([a-z]+))\\.json$"
+    },
+    {
+      "source": "/birth-chart.md",
+      "src": "^/birth-chart\\.md$"
+    },
+    {
+      "source": "/compatibility.md",
+      "src": "^/compatibility\\.md$"
+    },
+    {
+      "source": "/moon-sign.md",
+      "src": "^/moon-sign\\.md$"
+    },
+    {
+      "source": "/rising-sign.md",
+      "src": "^/rising-sign\\.md$"
+    },
+    {
+      "source": "/saturn-return.md",
+      "src": "^/saturn-return\\.md$"
+    },
+    {
+      "source": "/mercury-retrograde.md",
+      "src": "^/mercury-retrograde\\.md$"
+    },
+    {
+      "source": "/full-moon-calendar.md",
+      "src": "^/full-moon-calendar\\.md$"
+    },
+    {
+      "source": "/eclipses.md",
+      "src": "^/eclipses\\.md$"
+    },
+    {
+      "source": "/horoscopes.md",
+      "src": "^/horoscopes\\.md$"
+    },
+    {
+      "source": "/methodology.md",
+      "src": "^/methodology\\.md$"
+    },
+    {
+      "source": "/privacy.md",
+      "src": "^/privacy\\.md$"
+    },
+    {
+      "source": "/about.md",
+      "src": "^/about\\.md$"
     },
     {
       "source": "/sky-calendar.ics",

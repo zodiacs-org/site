@@ -25,8 +25,8 @@ const oauthProviders = enabledOAuthProviders({
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
-const updated = '13 November 2026';
-const modifiedAt = '2026-11-13T00:00:00.000Z';
+const updated = '24 November 2026';
+const modifiedAt = '2026-11-24T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -93,9 +93,13 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         Every chart you calculate here is computed on your own device. When you
         enter a birth date, time, and place, that information is used by code
         running in your browser to calculate the chart. It is not transmitted to
-        our servers, logged, or stored by us as part of that calculation. It
-        leaves the device only if you share a link that carries it or put it in
-        an assistant message. This is a
+        our servers, logged, or stored by us as part of that calculation.{' '}
+        {accountSyncV2Enabled ? (
+          <>It is not sent anywhere unless you share it or choose to sync it. Signing in to an account does not send your saved charts.</>
+        ) : (
+          <>It is not sent anywhere unless you share it. Chart sync is paused: signing in to an account does not send your saved charts, and nothing new is sent to your account.</>
+        )}{' '}
+        This is a
         deliberate design choice, described in
         full on our <a href="/methodology/">methodology page</a>.
       </p>
@@ -110,6 +114,31 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         chart, it first requests the pictures of all twelve signs, in the same
         order for every chart, so those requests do not show which signs the
         chart has.
+      </p>
+
+      <h2>How to check this yourself</h2>
+      <p>
+        You can watch this in your own browser. Open the developer tools, choose the
+        Network tab, and calculate a chart on the birth chart page. The page
+        downloads files from zodiacs.org: a city file named by the first letter you
+        type, for a birth before 1970 a file of historical clock changes, and the
+        pictures of all twelve signs. None of these requests carries your birth
+        date, time or place, and the page sends nothing to our servers while it
+        works out your chart.
+      </p>
+      <p>
+        Birth details leave your device only when you choose an action that sends
+        them: syncing a chart to your account, sharing a link that carries them, or
+        typing them into an assistant message. A calendar file you download from the
+        Transits page is built in your browser from your chart as calculated there,
+        not from the chart code, and its times are exact. Anyone you share it with,
+        or any online calendar you import it into, can work out from them your birth
+        date and time, and your birthplace from those for your ascendant or midheaven.
+        If you are signed in and create a compatibility invitation from a synced
+        chart, our server stores the chart's name (up to 24 characters), its Sun
+        sign, its positions-only chart code, and whether the birth time is known.
+        A program that uses the compute API sends the birth details it chooses in
+        the body of its request; the site's own calculators do not use that API.
       </p>
 
       <h2>Guide</h2>

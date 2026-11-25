@@ -1,0 +1,17 @@
+{
+  "totals": [
+    { "bot_name": "ClaudeBot", "count": 40 },
+    { "bot_name": "", "count": 20 },
+    { "bot_name": "GPTBot", "count": 10 },
+    { "bot_name": "Googlebot", "count": 7 }
+  ],
+  "paths": [
+    { "bot_name": "ClaudeBot", "request_path": "/llms.txt", "count": 30 },
+    { "bot_name": "", "request_path": "/llms.txt", "count": 10 },
+    { "bot_name": "GPTBot", "request_path": "/birth-chart.md", "count": 5 },
+    { "bot_name": "", "request_path": "/birth-chart.md", "count": 5 },
+    { "bot_name": "Googlebot", "request_path": "/birth-chart/", "count": 7 },
+    { "bot_name": "ClaudeBot", "request_path": "/full-moon/2026-07-29/", "count": 10 },
+    { "bot_name": "", "request_path": "/mystery.md?date=1990-01-01", "count": 99 }
+  ]
+}

@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  CONSUMER_DATA_HANDLING,
   READ_ONLY_POSTURE,
   extractConsumerFragments,
   findConsumerBoundaryViolations,
@@ -288,7 +289,11 @@ const description = 'A free astrology calculator.';
     expect(llms.split(pointer)).toHaveLength(2);
     const consumerLead = llms.slice(0, llms.indexOf(pointer));
     expect(consumerLead).not.toMatch(/Astrofolio|Terminal|official Zodiac token|market desk|simple guide to buying/iu);
-    expect(llms.split(READ_ONLY_POSTURE)).toHaveLength(2);
+    // The Registry posture moved to llms-full.txt (2026-11-23); its consumer sentences stay in llms.txt.
+    expect(llms).not.toContain(READ_ONLY_POSTURE);
+    expect(llms).not.toMatch(/financial advice|wallet/iu);
+    expect(llmsFull.split(READ_ONLY_POSTURE)).toHaveLength(2);
+    expect(llms.split(CONSUMER_DATA_HANDLING)).toHaveLength(2);
 
     expect(llmsFull).toContain('a simple guide to buying');
     expect(llmsFull).toContain('a "{sign} token" or "{sign} coin"');

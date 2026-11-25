@@ -206,11 +206,14 @@ describe('the NASA JPL Horizons figure', () => {
     }
     expect(largest.where).toBe('Neptune 2020');
     expect(largest.arcseconds.toFixed(1)).toBe('14.8');
-    for (const path of ['public/llms.txt', 'public/llms-full.txt', 'src/lib/sky-api/meta.ts',
-      'src/pages/developers/engine/index.astro']) {
+    for (const path of ['src/lib/sky-api/meta.ts', 'src/pages/developers/engine/index.astro']) {
       expect(read(path), path).toContain('the largest difference is 14.8 arcseconds');
     }
     expect(read('src/pages/developers/index.astro').replace(/\s+/g, ' ')).toContain('the largest difference is 14.8 arcseconds');
+    const de440 = 'the median disagreement in longitude was 0.05 arcseconds, the 95th percentile was 0.52 arcseconds, and the largest was 0.53 arcseconds (Pluto in 1801)';
+    for (const path of ['public/llms.txt', 'public/llms-full.txt']) {
+      expect(read(path), path).toContain(de440);
+    }
   }));
 });
 
