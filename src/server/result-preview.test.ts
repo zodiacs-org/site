@@ -40,11 +40,15 @@ import {
   handleInviteImageRequest,
   handleInviteLinkRequest,
   handleInviteStoryRequest,
+  handleVedicSignsImageRequest,
+  handleVedicSignsLinkRequest,
+  handleVedicSignsStoryRequest,
   RESULT_SHARE_ROUTE_KEY,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
 import {
   bigThreeCardModel,
+  vedicSignsCardModel,
   chineseZodiacCardModel,
   inviteCardModel,
   type PublishedMonths,
@@ -64,6 +68,7 @@ import {
   skyEvents,
 } from './result-preview-model';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
+import { parseVedicSignsShare, vedicSignsCleanQuery } from '../lib/vedic-signs/share';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
@@ -253,6 +258,90 @@ describe('month and year horoscope share models', () => {
       for (const month of Object.keys(MONTHS.months)) expect(model(`s=${sign}&m=${month}`)?.confidence, `${sign} ${month}`).toBe('Reading confidence 40%');
       for (const y of ['2026', '2027']) expect(model(`s=${sign}&y=${y}`)?.confidence, `${sign} ${y}`).toBe('Reading confidence 40%');
     }
+  });
+});
+
+describe('the Vedic signs share', () => {
+  it('shows the sidereal Sun sign with its Western name and the ayanamsa, and nothing else', () => {
+    const sun = vedicSignsCardModel(parseVedicSignsShare(new URLSearchParams('s=sagittarius&a=lahiri'))!);
+    expect(sun).toMatchObject({
+      rows: [{ slug: 'sagittarius', text: 'Dhanu Sun', western: 'Sagittarius' }],
+      signs: [{ slug: 'sagittarius', label: 'Dhanu Sun' }],
+      title: 'Dhanu Sun', ayanamsa: 'Lahiri (Chitrapaksha) ayanamsa',
+      about: 'The Sun sign in the sidereal zodiac, read with the Lahiri (Chitrapaksha) ayanamsa.',
+    });
+    expect(JSON.stringify(sun)).not.toMatch(/Moon|rising|nakshatra/iu);
+    expect(parseVedicSignsShare(new URLSearchParams('s=sagittarius&m=libra&r=leo&n=15&a=lahiri'))).toBeNull();
+  });
+
+  it('gets its own page, preview, story and a way back to the page', async () => {
+    const page = await (await handleVedicSignsLinkRequest(new Request('https://zodiacs.org/share/vedic-signs/?s=sagittarius&a=lahiri&ref=chatgpt'))).text();
+    expect(page).toContain('<h1>Dhanu Sun</h1>');
+    expect(page).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/vedic-signs-image?s=sagittarius&amp;a=lahiri">');
+    expect(page).toContain('<a class="cta" href="/vedic-signs/">Find your Vedic signs</a>');
+    expect(page).toContain('href="/api/og/vedic-signs-story?s=sagittarius&amp;a=lahiri" download="zodiacs-vedic-signs-sagittarius-story.jpg"');
+    expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    // A key the share does not use is cleared from the address: the browser is sent to the Sun sign's own address.
+    for (const query of ['s=leo&a=lahiri&d=1990-08-01', 'a=lahiri&s=leo&m=libra&r=leo&n=15']) {
+      const extra = await handleVedicSignsLinkRequest(new Request(`https://zodiacs.org/share/vedic-signs/?${query}`));
+      expect(extra.status).toBe(303);
+      expect(extra.headers.get('location')).toBe('https://zodiacs.org/share/vedic-signs/?s=leo&a=lahiri');
+      expect(await extra.text()).toBe('');
+    }
+    const plain = await (await handleVedicSignsLinkRequest(new Request('https://zodiacs.org/share/vedic-signs/'))).text();
+    expect(plain).toContain('<h1>Your Vedic signs</h1>');
+    expect(plain).toContain('<a class="cta" href="/vedic-signs/">Find your Vedic signs</a>');
+  });
+
+  describe('clears every key the share does not use from the address, on the deployed entry', () => {
+    const SECRETS = ['1990-05-03', '08:30', 'Lisbon', 'Ada', '38.72', 'libra', 'Swati', 'scorpio'];
+    const holdsNone = (text: string) => { for (const value of SECRETS) expect(text).not.toContain(value); };
+    const deployed = async (route: 'vedic-signs-link' | 'vedic-signs-image' | 'vedic-signs-story', query: Record<string, string | string[]>) => {
+      vi.stubEnv('PUBLIC_VEDIC_SIGNS_ENABLED', '1');
+      const res = nodeResponse();
+      await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+      return res;
+    };
+    afterEach(() => { vi.unstubAllEnvs(); });
+
+    it.each([
+      [{ s: 'sagittarius', a: 'lahiri', birthDate: '1990-05-03' }, '/share/vedic-signs/?s=sagittarius&a=lahiri'],
+      [{ s: 'sagittarius', a: 'lahiri', m: 'libra', r: 'scorpio', n: 'Swati' }, '/share/vedic-signs/?s=sagittarius&a=lahiri'],
+      [{ s: 'sagittarius', a: 'lahiri', t: '08:30', city: 'Lisbon', name: 'Ada', lat: '38.72' }, '/share/vedic-signs/?s=sagittarius&a=lahiri'],
+      [{ birthDate: '1990-05-03', a: 'lahiri', s: 'sagittarius', ref: 'chatgpt' }, '/share/vedic-signs/?s=sagittarius&a=lahiri&ref=chatgpt'],
+      [{ s: 'sagittarius', a: 'lahiri', fbclid: 'IwAR0' }, '/share/vedic-signs/?s=sagittarius&a=lahiri'],
+      // A repeated key, or a query that is no share, leaves nothing of the query: the plain page.
+      [{ s: ['sagittarius', 'libra'], a: 'lahiri' }, '/share/vedic-signs/'],
+      [{ s: 'ophiuchus', a: 'lahiri', d: '1990-05-03' }, '/share/vedic-signs/'],
+      [{ birthDate: '1990-05-03' }, '/share/vedic-signs/'],
+    ] as const)('sends %j to %s', async (query, location) => {
+      const res = await deployed('vedic-signs-link', query as Record<string, string | string[]>);
+      expect(res.statusCode).toBe(303);
+      expect(res.headers.get('location')).toBe(`https://zodiacs.org${location}`);
+      holdsNone(res.headers.get('location')!);
+      holdsNone(res.body.toString('utf8'));
+    });
+
+    it('opens the card at the clean address, and the plain page with no query', async () => {
+      const card = await deployed('vedic-signs-link', { s: 'sagittarius', a: 'lahiri' });
+      expect(card.statusCode).toBe(200);
+      expect(card.body.toString('utf8')).toContain('<h1>Dhanu Sun</h1>');
+      expect((await deployed('vedic-signs-link', { s: 'sagittarius', a: 'lahiri', ref: 'assistant' })).statusCode).toBe(200);
+      const plain = await deployed('vedic-signs-link', {});
+      expect(plain.statusCode).toBe(200);
+      expect(plain.body.toString('utf8')).toContain('<h1>Your Vedic signs</h1>');
+    });
+
+    it('leaves the pictures as they were: only their own keys, else refused', async () => {
+      expect((await deployed('vedic-signs-image', { s: 'sagittarius', a: 'lahiri', birthDate: '1990-05-03' })).statusCode).toBe(400);
+      expect((await deployed('vedic-signs-story', { s: 'sagittarius', a: 'lahiri', fbclid: 'IwAR0' })).statusCode).toBe(400);
+    });
+
+    it('builds the clean query from the share keys alone', () => {
+      expect(vedicSignsCleanQuery(new URLSearchParams('a=raman&x=1&s=leo'))).toBe('s=leo&a=raman');
+      expect(vedicSignsCleanQuery(new URLSearchParams('s=leo&a=lahiri&ref=other'))).toBe('');
+      expect(vedicSignsCleanQuery(new URLSearchParams(''))).toBe('');
+    });
   });
 });
 
@@ -607,6 +696,7 @@ describe('the deployed entry', () => {
       ['/share/big-three/', 'big-three-link'], ['/api/og/big-three-image', 'big-three-image'], ['/api/og/big-three-story', 'big-three-story'],
       ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
       ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
+      ['/share/vedic-signs/', 'vedic-signs-link'], ['/api/og/vedic-signs-image', 'vedic-signs-image'], ['/api/og/vedic-signs-story', 'vedic-signs-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
@@ -797,6 +887,8 @@ describe('share preview images', () => {
     ['Chinese zodiac', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=rabbit'))],
     ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
+    ['Vedic signs', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=sagittarius&a=lahiri'))],
+    ['Vedic signs read with another ayanamsa', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=aries&a=raman'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -840,6 +932,8 @@ describe('share preview images', () => {
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image'],
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image?s=taurus&n=Ana'],
       [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
+      [handleVedicSignsImageRequest, 'https://zodiacs.org/api/og/vedic-signs-image?s=leo&m=aries&n=10&a=lahiri'],
+      [handleVedicSignsImageRequest, 'https://zodiacs.org/api/og/vedic-signs-image?s=leo&a=lahiri&lat=28.61'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -864,6 +958,7 @@ describe('story pictures', () => {
     ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
     ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
+    ['Vedic signs', () => handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=sagittarius&a=lahiri'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -890,5 +985,6 @@ describe('story pictures', () => {
     expect((await handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&d=1990-08-01'))).status).toBe(400);
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
+    expect((await handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=leo&a=lahiri&d=1990-08-01'))).status).toBe(400);
   });
 });

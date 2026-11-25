@@ -15,6 +15,8 @@ interface Props {
   validationError?: string;
   selectionHint?: string;
   required?: boolean;
+  /** Load the whole index on focus and search it, so no request depends on what is typed (src/lib/geo/search.ts). */
+  wholeIndex?: boolean;
 }
 
 export default function PlaceSearch({
@@ -25,6 +27,7 @@ export default function PlaceSearch({
   validationError,
   selectionHint,
   required = false,
+  wholeIndex = false,
 }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<City[]>([]);
@@ -80,9 +83,9 @@ export default function PlaceSearch({
 
     debounce.current = setTimeout(async () => {
       try {
-        const { searchCities } = await loadSearch();
+        const search = await loadSearch();
         if (token !== requestToken.current) return;
-        const cities = await searchCities(value);
+        const cities = await (wholeIndex ? search.searchWholeIndex(value) : search.searchCities(value));
         if (token === requestToken.current) {
           setResults(cities);
           setActive(0);
@@ -155,7 +158,7 @@ export default function PlaceSearch({
         autocomplete="off"
         // Leave an empty first render alone so hydration preserves early input.
         value={query || undefined}
-        onFocus={() => { void loadSearch().then(({ preloadIndex }) => { void preloadIndex(); }, () => {}); }}
+        onFocus={() => { void loadSearch().then((search) => { void (wholeIndex ? search.preloadWholeIndex() : search.preloadIndex()); }, () => {}); }}
         onInput={(e) => onInput((e.target as HTMLInputElement).value)}
         onKeyDown={onKeyDown}
       />

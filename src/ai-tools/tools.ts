@@ -84,6 +84,11 @@ export interface AiDependencies {
    * coverage and occasion tools (personalOn).
    */
   personal?: boolean;
+  /**
+   * Whether a website page's own switch (its PUBLIC_*_ENABLED variable, exactly '1') is on. A personal tool whose
+   * definition names a pageFlag links to its page and share card only then; unset, it links to neither.
+   */
+  sitePageOn?: (flag: string) => boolean;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -441,6 +446,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       const definition = personalTool(tool);
       const result = await feature(() => definition.run(definition.input.parse(input) as never, {
         now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: ORIGIN,
+        pageOn: definition.pageFlag === undefined || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
         ...(dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}),
       }));
