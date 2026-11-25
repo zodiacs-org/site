@@ -146,7 +146,6 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
         words: {
           seasons: shown.seasons.map((_, i) => tf(locale, 'saturnReturnHeading', { ordinal: ordinal[i] ?? String(i + 1) })),
           retrograde: t(locale, 'retrogradePass'),
-          approximate: t(locale, 'returnApprox'),
         },
       }), calendar.saturnReturnCalendarFilename(shown));
     } catch (cause) {

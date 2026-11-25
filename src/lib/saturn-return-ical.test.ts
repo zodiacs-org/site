@@ -6,6 +6,7 @@ import { downloadCalendarFile } from './ical-download';
 import { formatLongitude } from './signs';
 import {
   SATURN_RETURN_ALARM,
+  SATURN_RETURN_APPROXIMATE_NOTE,
   buildSaturnReturnCalendar,
   saturnReturnCalendarFilename,
   type SaturnReturnCalendarOptions,
@@ -14,12 +15,11 @@ import {
 const GENERATED = '2026-11-25T08:00:00Z';
 const ORDINALS = ['first', 'second', 'third', 'fourth'] as const;
 
-/** The words the page passes: its own headings, retrograde mark and noon note. */
+/** The words the page passes: its own headings and retrograde mark. */
 function words(locale: CatalogLocale): SaturnReturnCalendarOptions['words'] {
   return {
     seasons: ORDINALS.map((key) => tf(locale, 'saturnReturnHeading', { ordinal: t(locale, key) })),
     retrograde: t(locale, 'retrogradePass'),
-    approximate: t(locale, 'returnApprox'),
   };
 }
 const options = (locale: CatalogLocale = 'en', approximate = false): SaturnReturnCalendarOptions => ({
@@ -100,9 +100,9 @@ describe('Saturn return calendar', () => {
     expect(field(found[3], 'DESCRIPTION')).toBe('DESCRIPTION:Saturn is back where it was at your birth\\, at about 29\\, 58 and 88. The oldest milestone in astrology: a time to take stock and build what lasts.');
   });
 
-  it('says the dates can move only when they come from a noon reading', () => {
+  it('says the dates and pass counts can change only when they come from a noon reading', () => {
     const approximate = field(events(buildSaturnReturnCalendar(RESULT, options('en', true)))[3], 'DESCRIPTION');
-    expect(approximate).toContain('\\n\\nDates computed from a noon reading. With a birth time and place they can shift by a few days either way.');
+    expect(approximate).toContain('\\n\\nDates computed from a noon reading. With an exact birth time and place\\, these dates can shift and retrograde passes can be added or removed.');
     expect(buildSaturnReturnCalendar(RESULT, options())).not.toContain('noon reading');
   });
 
@@ -145,7 +145,7 @@ describe('Saturn return calendar', () => {
     const summary = field(events(calendar)[1], 'SUMMARY')!;
     expect(summary).toContain(t(locale, 'retrogradePass'));
     expect(summary).toContain(tf(locale, 'saturnReturnHeading', { ordinal: t(locale, 'first') }));
-    expect(unfolded(calendar).join('\n').replace(/\\([,;\\])/g, '$1')).toContain(t(locale, 'returnApprox'));
+    expect(unfolded(calendar).join('\n').replace(/\\([,;\\])/g, '$1')).toContain(SATURN_RETURN_APPROXIMATE_NOTE[locale]);
   });
 
   it('is the same file for the same result and receipt time', () => {

@@ -99,8 +99,9 @@ describe('Saturn return calendar download', () => {
     expect(filename).toBe('zodiacs-saturn-return.ics');
     expect(calendar).toContain('DTSTART;VALUE=DATE:20190812');
     expect(calendar).toContain('SUMMARY:Saturn return · First return · 2/3 · retrograde pass');
-    // A date alone is a noon reading, and the file says so.
+    // A date alone is a noon reading, and the file warns that dates and pass counts can change.
     expect(calendar.replace(/\r\n /g, '')).toContain('Dates computed from a noon reading.');
+    expect(calendar.replace(/\r\n /g, '')).toContain('retrograde passes can be added or removed');
     expect(calendar).not.toMatch(/1990|286\.1|Capricorn/);
     expect(fetch).not.toHaveBeenCalled();
     expect(button()!.props.disabled).toBe(false);

@@ -14,14 +14,24 @@ const ORIGIN = 'https://zodiacs.org';
 /** A heads-up at 09:00 three days before each pass: 2 days and 15 hours before its midnight. */
 export const SATURN_RETURN_ALARM = '-P2DT15H';
 
+/** Calendar-specific noon caveat when birth time and place are not both known. */
+export const SATURN_RETURN_APPROXIMATE_NOTE: Readonly<Record<CatalogLocale, string>> = Object.freeze({
+  en: 'Dates computed from a noon reading. With an exact birth time and place, these dates can shift and retrograde passes can be added or removed.',
+  es: 'Fechas calculadas con una lectura de mediodía. Con una hora y un lugar de nacimiento exactos, estas fechas pueden cambiar y pueden añadirse o quitarse pasadas retrógradas.',
+  pt: 'Datas calculadas com uma leitura ao meio-dia. Com uma hora e um local de nascimento exatos, essas datas podem mudar e passagens retrógradas podem ser adicionadas ou removidas.',
+  fr: 'Dates calculées à partir d’une lecture à midi. Avec une heure et un lieu de naissance exacts, ces dates peuvent se décaler et des passages rétrogrades peuvent apparaître ou disparaître.',
+  it: 'Date calcolate da una lettura di mezzogiorno. Con un’ora e un luogo di nascita esatti, queste date possono spostarsi e i passaggi retrogradi possono aggiungersi o scomparire.',
+  ru: 'Даты рассчитаны для полудня. При точном времени и месте рождения эти даты могут сдвинуться, а число ретроградных проходов может измениться.',
+});
+
 /** The page's own words, in its language. */
 export interface SaturnReturnCalendarWords {
   /** Each return's heading by its number, from 1: "First return". */
   seasons: readonly string[];
   /** The mark on a crossing made in retrograde: "retrograde pass". */
   retrograde: string;
-  /** The note on dates read from noon, shown when no birth time and place were given. */
-  approximate: string;
+  /** Optional override for the noon-reading note shown when no birth time and place were given. */
+  approximate?: string;
 }
 
 export interface SaturnReturnCalendarOptions {
@@ -109,10 +119,11 @@ export function buildSaturnReturnCalendar(result: Seasons, options: SaturnReturn
     const count = season.crossings.length;
     const summary = [name, heading, ...(count > 1 ? [`${position + 1}/${count}`] : []),
       ...(crossing.retrograde ? [options.words.retrograde] : [])].join(' · ');
+    const approximateNote = options.words.approximate ?? SATURN_RETURN_APPROXIMATE_NOTE[options.locale];
     const description = [
       about,
       ...(count > 1 ? [fill(personal.pass, { pass: position + 1, count })] : []),
-      ...(options.approximate ? [options.words.approximate] : []),
+      ...(options.approximate ? [approximateNote] : []),
     ].join('\n\n');
     return {
       uid,
