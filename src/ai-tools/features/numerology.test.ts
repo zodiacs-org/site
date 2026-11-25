@@ -131,7 +131,7 @@ describe('the numerology copy', () => {
 
   it('says in every answer that numerology is separate from astrology', () => {
     const { data } = run({ birthDate: '1990-11-29' });
-    expect(data.separateFromAstrology).toMatch(/separate tradition from astrology/u);
+    expect(data.separateFromAstrology).toContain('Numerology is not astrology.');
     // The mandatory reflection line is gone (the rule of 9 November 2026); the note says what is exact and whose meanings these are.
     expect(data.note).not.toMatch(/reflection/u);
     expect(data.note).toContain('The arithmetic is exact and repeatable.');
