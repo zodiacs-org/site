@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
-import { birthDayEnds } from '../../ai-tools/personal/shared';
+import { retrogradeBirthDayEnds } from '../../ai-tools/personal/shared';
 import { birthDaySpan, type WallReading } from './birth-day-span';
 import { prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 
@@ -12,8 +12,8 @@ async function pageSpan(date: string, zone: string, longitude?: number): Promise
   return birthDaySpan(date, zone, longitude, resolveLocalToUtc).map((at) => at.toISOString());
 }
 
-/** The tool's reader: the compute API's resolver, through birthDayEnds (src/ai-tools/personal/shared.ts). */
-const toolSpan = async (date: string, zone: string, longitude?: number) => (await birthDayEnds({ birthDate: date, zone, ...(longitude === undefined ? {} : { longitude }) }, clock)).map((at) => at.toISOString());
+/** The tool's reader: the compute API's resolver, through retrogradeBirthDayEnds (src/ai-tools/personal/shared.ts). */
+const toolSpan = async (date: string, zone: string, longitude?: number) => (await retrogradeBirthDayEnds({ birthDate: date, zone, ...(longitude === undefined ? {} : { longitude }) }, clock)).map((at) => at.toISOString());
 
 describe('the whole span of an untimed birth date on the birthplace clock', () => {
   it.each([
@@ -41,7 +41,7 @@ describe('the whole span of an untimed birth date on the birthplace clock', () =
     expect(await toolSpan('1972-05-20', 'Africa/Lagos')).toEqual(span);
     expect(Date.parse(span[1])).toBeGreaterThan(Date.parse('1972-05-20T22:59:28Z'));
     // Without a zone the date runs to the instant before midnight at UTC-12.
-    expect((await birthDayEnds({ birthDate: '1972-05-20' }, clock)).map((at) => at.toISOString())).toEqual(['1972-05-19T10:00:00.000Z', '1972-05-21T11:59:59.999Z']);
+    expect((await retrogradeBirthDayEnds({ birthDate: '1972-05-20' }, clock)).map((at) => at.toISOString())).toEqual(['1972-05-19T10:00:00.000Z', '1972-05-21T11:59:59.999Z']);
   });
 
   it('starts and ends at a clock change that falls between whole minutes, so adjacent days meet', async () => {

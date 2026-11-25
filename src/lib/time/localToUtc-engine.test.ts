@@ -30,6 +30,7 @@ function siteFields(resolved: ReturnType<typeof packageResolveLocalToUtc>): Loca
       transitionAt: new Date(resolved.transition.at),
     } : {}),
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
+    ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };
 }
 

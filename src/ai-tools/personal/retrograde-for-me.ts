@@ -39,10 +39,10 @@ import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYou
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import sky from '../../data/sky.json';
-import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, skippedWholeDate, withClockLimit } from '../../lib/vedic-signs/clock';
-import { roundCoordinate } from '../plain-text';
+import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { isGeographicPole } from '../../lib/geo/coordinates';
 import { pageChart, pageLongitudes } from './page-ephemeris';
-import { birthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
+import { retrogradeBirthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export { RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, type RetrogradeLoop, type RetrogradePlanet };
 
@@ -194,13 +194,6 @@ export function toolLoops(planet: RetrogradePlanet, now: Date, rowsAt = position
 export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   // The birth zone goes through the same check as currentZone, whose refusal names the field and never the value given.
   if (args.zone !== undefined) args = { ...args, zone: await context.resolveZone(args.zone, '/zone') };
-  // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
-  if (args.time === undefined && args.zone) {
-    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
-    const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
-    const midnight = longitude !== undefined ? context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone, { longitude }) : context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone);
-    if (skippedWholeDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
-  }
   // The natal chart, the day's ends and turns, and the published loops' degrees on the page's ephemeris
   // (./page-ephemeris.ts), so the page and this tool give the same Sun sign, houses and contacts for the same birth.
   const natal = await castNatal(args, context.localTime, pageChart);
@@ -220,7 +213,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   let turns: Parameters<typeof natalBasis>[0]['dayTurns'];
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon);
-    const ends = await birthDayEnds(args, context.localTime);
+    const ends = await retrogradeBirthDayEnds(args, context.localTime);
     const rows = ends.map((end) => POINT_NAMES.map((body) => ({ body: body as string, lon: pageLon(body, end) })));
     dayEnds = [rows[0], rows[1]];
     // A planet that stationed that day can leave a loop's degrees between the two ends: where it turned counts too.
@@ -232,7 +225,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     ? pageChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 60_000), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
     : null;
   const basis = natalBasis({
-    timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
+    timeKnown: natal.timeKnown, placed: natal.placed, atGeographicPole: natal.latitude !== undefined && isGeographicPole(natal.latitude), angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
     // The under-18 rule reads the UTC-12 calendar date from `now` (natalBasis), never the clock the dates are shown on.
     birthDate: args.birthDate, now, dayEnds, dayTurns: turns, foldAsc,
   });

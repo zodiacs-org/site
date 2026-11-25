@@ -1379,6 +1379,8 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// Vedic signs follows its launch flag (src/lib/launch-flags.ts) the same way.
+const vedicSignsIndexed = sitemapLocs.has('/vedic-signs/');
 // Retrogrades for you follows its launch flag (src/lib/launch-flags.ts) the same way.
 const retrogradesForYouIndexed = sitemapLocs.has('/retrogrades/for-you/');
 // The good day finder follows its launch flag (src/lib/launch-flags.ts) the same way.
@@ -1463,6 +1465,7 @@ const sitemapPolicy = {
   // +1 for /good-days/, the English-only good day finder, once PUBLIC_GOOD_DAYS_ENABLED is on.
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // +1 for /vedic-signs/, the English-only Vedic signs page, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
   // +1 for /retrogrades/for-you/, the English-only retrogrades-in-your-chart page, once PUBLIC_RETROGRADES_FOR_YOU_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
@@ -1471,7 +1474,7 @@ const sitemapPolicy = {
   // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
   // +1 for /support/, the support page, linked from /about/.
   total: 1539 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(retrogradesForYouIndexed) + Number(goodDaysIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(vedicSignsIndexed) + Number(retrogradesForYouIndexed) + Number(goodDaysIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1543,6 +1546,7 @@ const indexedFamilies = [
   { label: 'Good day finder', pattern: /^\/good-days\/$/, expected: Number(goodDaysIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
+  { label: 'Vedic signs', pattern: /^\/vedic-signs\/$/, expected: Number(vedicSignsIndexed), localized: false },
   { label: 'Retrogrades for you', pattern: /^\/retrogrades\/for-you\/$/, expected: Number(retrogradesForYouIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },

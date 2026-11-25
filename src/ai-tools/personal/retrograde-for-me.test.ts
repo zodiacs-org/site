@@ -149,6 +149,19 @@ describe('get_retrograde_for_me in the birth chart', () => {
     expect(data.periods[2].contacts.map((entry) => entry.point)).toContain('Moon');
   });
 
+  it('withholds Sun houses and the shared sign when a historical birthplace can span an ingress', async () => {
+    // Manila kept the American date in 1801. This local day continued after the Sun entered Taurus.
+    for (const zone of [undefined, 'Asia/Manila']) {
+      const data = await run({ birthDate: '1801-04-19', zone, currentZone: 'UTC', planets: ['Mercury'] });
+      expect(data.periods).toHaveLength(1);
+      const [period] = data.periods;
+      expect(period.housesCountedFrom).toBeNull();
+      expect(period.houses).toHaveLength(0);
+      expect(period.shareUrl).not.toBeNull();
+      expect(new URL(period.shareUrl!).searchParams.has('sun')).toBe(false);
+    }
+  });
+
   it('counts the houses from the Sun sign without a birth time, says so, and gives a lower confidence', async () => {
     const data = await run({ birthDate: '1990-05-03' });
     const [mercury] = data.periods;

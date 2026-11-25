@@ -9,8 +9,9 @@
  */
 import { retrogradeForMeTool } from './retrograde-for-me';
 import type { PersonalToolDefinition } from './shared';
+import { vedicSignsTool } from './vedic-signs';
 
-export const PERSONAL_TOOLS = [retrogradeForMeTool] as const satisfies readonly PersonalToolDefinition[];
+export const PERSONAL_TOOLS = [vedicSignsTool, retrogradeForMeTool] as const satisfies readonly PersonalToolDefinition[];
 
 export type PersonalToolName = typeof PERSONAL_TOOLS[number]['name'];
 /** The same list, read as definitions (an empty registry's element type is never). */

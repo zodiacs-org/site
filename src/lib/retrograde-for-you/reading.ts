@@ -235,6 +235,7 @@ export function foldRisingLimit(earlier: string, later: string): string {
 export function natalBasis(input: {
   timeKnown: boolean;
   placed: boolean;
+  atGeographicPole?: boolean;
   angles: { asc: number; mc: number } | null;
   bodies: readonly { body: string; lon: number }[];
   sunHeld: boolean;
@@ -253,19 +254,24 @@ export function natalBasis(input: {
 }): NatalBasis {
   const lonOf = (name: string) => input.bodies.find((row) => row.body === name)!.lon;
   const limits: string[] = [];
+  const angles = input.atGeographicPole ? null : input.angles;
   let countedFrom: HouseBasis | null = null;
   let baseSign: string | null = null;
-  if (input.angles) {
+  if (angles) {
     countedFrom = 'rising sign';
-    baseSign = SIGNS[signIndexForLongitude(input.angles.asc)].slug;
+    baseSign = SIGNS[signIndexForLongitude(angles.asc)].slug;
     const later = input.foldAsc == null ? null : SIGNS[signIndexForLongitude(input.foldAsc)];
     if (later && later.slug !== baseSign) limits.push(foldRisingLimit(signBySlug(baseSign).name, later.name));
   } else if (input.sunHeld) {
     countedFrom = 'Sun sign';
     baseSign = SIGNS[signIndexForLongitude(lonOf('Sun'))].slug;
-    limits.push(input.timeKnown
-      ? 'No birthplace coordinates were given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses.'
-      : 'No birth time was given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses.');
+    if (input.timeKnown && input.atGeographicPole) {
+      limits.push('The rising sign and Midheaven are undefined at a geographic pole. The houses are counted from your Sun sign as a rough guide.');
+    } else {
+      limits.push(input.timeKnown
+        ? 'No birthplace coordinates were given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses.'
+        : 'No birth time was given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses.');
+    }
   } else limits.push('No birth time was given and the Sun changed sign on the birth day, so there are no houses. A birth time settles it.');
 
   // The Moon only with a birth time (it moves about 13 degrees a day), the angles only with a place too.
@@ -279,7 +285,7 @@ export function natalBasis(input: {
       ...(turns.length > 0 ? { turned: true } : {}),
     };
   });
-  if (input.angles) points.push({ name: 'Ascendant', lon: input.angles.asc }, { name: 'Midheaven', lon: input.angles.mc });
+  if (angles) points.push({ name: 'Ascendant', lon: angles.asc }, { name: 'Midheaven', lon: angles.mc });
   if (!input.timeKnown) limits.push('Without a birth time the natal Moon is left out of the points each loop passes over.');
 
   return {

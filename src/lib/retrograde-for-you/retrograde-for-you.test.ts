@@ -28,14 +28,14 @@ async function both(birth: { birthDate: string; time?: string }, now: Date, zone
   return { mcp: mcp.data, page };
 }
 
-async function bothWithLinks(birth: { birthDate: string; time?: string }, now: Date, zone: string) {
+async function bothWithLinks(birth: { birthDate: string; time?: string }, now: Date, zone: string, place = MADRID) {
   const mcp = await retrogradeForMe(
-    { birthDate: birth.birthDate, ...(birth.time ? { time: birth.time } : {}), zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon, currentZone: zone },
+    { birthDate: birth.birthDate, ...(birth.time ? { time: birth.time } : {}), zone: place.tz, latitude: place.lat, longitude: place.lon, currentZone: zone },
     { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true },
   );
   if ('refused' in mcp) throw new Error(mcp.refused);
-  await prepareLocalTime(birth.birthDate, MADRID.tz);
-  const input: RetrogradeForYouInput = { birthDate: birth.birthDate, birthTime: birth.time ?? null, place: MADRID, planets: ['Mercury', 'Venus', 'Mars'], now, zone };
+  await prepareLocalTime(birth.birthDate, place.tz);
+  const input: RetrogradeForYouInput = { birthDate: birth.birthDate, birthTime: birth.time ?? null, place, planets: ['Mercury', 'Venus', 'Mars'], now, zone };
   const page = computeRetrogradeForYou(input);
   if (page.refused) throw new Error('refused');
   return { mcp, page };
@@ -350,6 +350,20 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     expect(JSON.stringify(page)).toContain('routines, craft, and the shape of the day');
   });
 
+  it.each([90, -90, 89.999, -89.999, 89.99, -89.99])('uses only defined angles at latitude %s on the page and in the tool', async (lat) => {
+    const place = { lat, lon: 45, tz: 'UTC' };
+    const { page, mcp } = await bothWithLinks({ birthDate: '1990-01-01', time: '12:11' }, new Date('2026-11-09T09:00:00Z'), 'UTC', place);
+    const atPole = Math.abs(lat) > 89.99;
+    for (const result of [page, mcp.data]) {
+      expect(result.limits.some((line) => line.includes('geographic pole'))).toBe(atPole);
+      expect(result.periods.length).toBeGreaterThan(0);
+      for (const period of result.periods) {
+        expect(period.housesCountedFrom).toBe(atPole ? 'Sun sign' : 'rising sign');
+        if (atPole) expect(period.contacts.some(({ point }) => point === 'Ascendant' || point === 'Midheaven')).toBe(false);
+      }
+    }
+  });
+
   it('adds a limit for a birth time the clocks showed twice only when the rising sign differs between the passes', async () => {
     const now = new Date('2026-11-09T09:00:00Z');
     // Madrid, 30 Sep 1990: clocks went back from 03:00 to 02:00. At 02:10 the passes give Cancer and Leo rising.
@@ -401,19 +415,19 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     }
   });
 
-  it('refuses a birth date the birthplace clock skipped whole on the page and in the tool, never reading the next day', async () => {
+  it.each([null, '12:00'])('refuses a whole skipped birth date on the page and in the tool with birth time %s', async (birthTime) => {
     // Kwajalein went from 23:59:59 on 20 August 1993 (UTC-12) straight to 00:00 on 22 August (UTC+12): 21 August never
     // showed there. Read at local noon, the resolver would move the birth onto 22 August.
     const KWAJALEIN = { lat: 9.19, lon: 167.42, tz: 'Pacific/Kwajalein' };
     const now = new Date('2026-11-09T09:00:00Z');
     const ON = { occasions: true, coverage: true, personal: true, now: () => now };
     await prepareLocalTime('1993-08-21', KWAJALEIN.tz);
-    expect(() => computeRetrogradeForYou({ birthDate: '1993-08-21', birthTime: null, place: KWAJALEIN, planets: ['Mercury'], now, zone: 'UTC' })).toThrow(SkippedBirthDateError);
+    expect(() => computeRetrogradeForYou({ birthDate: '1993-08-21', birthTime, place: KWAJALEIN, planets: ['Mercury'], now, zone: 'UTC' })).toThrow(SkippedBirthDateError);
     for (const placed of [{ latitude: KWAJALEIN.lat, longitude: KWAJALEIN.lon }, {}]) {
-      const args = { birthDate: '1993-08-21', zone: KWAJALEIN.tz, ...placed, currentZone: 'UTC' };
+      const args = { birthDate: '1993-08-21', zone: KWAJALEIN.tz, ...(birthTime ? { time: birthTime } : {}), ...placed, currentZone: 'UTC' };
       await expect(retrogradeForMe(args, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true })).rejects.toThrow(SkippedBirthDateError);
       const refused = await executeAiTool('get_retrograde_for_me', args, ON);
-      expect(refused, JSON.stringify(placed)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_DATE } });
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_DATE } });
       expect(JSON.stringify(refused)).not.toMatch(/1993|08-21|Kwajalein|9\.19|167/u);
     }
     // The days either side showed, and are read on the page and in the tool alike.

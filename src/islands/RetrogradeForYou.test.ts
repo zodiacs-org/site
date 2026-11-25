@@ -90,8 +90,10 @@ describe('the Retrogrades for you form', () => {
 });
 
 describe('the personal pages drive on this branch', () => {
-  const drive = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
+  const drive = readFileSync(new URL('../../tests/retrogrades-for-you-drive.mjs', import.meta.url), 'utf8');
+  const runner = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
   it('drives only Retrogrades for you, including its age gate', () => {
+    expect(runner).toContain("'./retrogrades-for-you-drive.mjs'");
     expect(drive).toContain("path: '/retrogrades/for-you/'");
     expect(drive).not.toMatch(/astrocartography/iu);
     expect(drive).toContain("check('an under-13 date locks the birth time'");

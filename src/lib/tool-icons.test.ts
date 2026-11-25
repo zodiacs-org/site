@@ -42,6 +42,7 @@ describe('tool icon set', () => {
     expect(TOOL_ICONS['solar-return'].hue).toBe('leo');
     expect(TOOL_ICONS['saturn-return'].hue).toBe('capricorn');
     expect(TOOL_ICONS.compatibility.hue).toBe('libra');
+    expect(TOOL_ICONS['vedic-signs'].hue).toBe('pisces');
   });
 
   it('maps every listed route to a page that exists, and every icon to one route', () => {

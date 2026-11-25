@@ -491,6 +491,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-11-16'] as const,
+  // The Vedic signs page, first published 2026-11-09, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [['/vedic-signs/', '2026-11-09'] as const] : []),
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -869,6 +871,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [{ loc: '/vedic-signs/', priority: 0.85 }] : []),
     { loc: '/numerology/', priority: 0.85 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
@@ -1144,6 +1147,16 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const loc of EVENTS_2030) {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
+  }
+  // The tools hub's card for Vedic signs and the big three and Moon sign pages' lines linking to it (2026-11-09), and
+  // the engine page's lines saying the site reads the sidereal entry point (re-dated 2026-11-19 when ZOD-63's engine
+  // page rewrite was merged in). Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages read as on main and
+  // keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/moon-sign/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+    if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-19');
   }
   // The share cards (2026-11-10): each pair page offers its pair's card, and
   // the big three pages offer one card per sign, in English and translated
