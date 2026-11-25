@@ -37,7 +37,7 @@ import {
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
 import { PUBLICATION_RECORD_MARKER, chunksWithPublicationRecord } from './publication-record-chunks.mjs';
-import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
+import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, enabledLocalesForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
@@ -84,6 +84,9 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
+  // Russian pages of the locale expansion, once released.
+  ...[...EXPANSION_FAMILY_IDS].flatMap((family) => expansionFamilyPaths(family)
+    .filter((path) => publishedLocalesForPath(path).includes('ru')).map((path) => `/ru${path}`)),
 ]);
 const LOCALIZED_404_PATHS = new Set([
   '/404.html', '/es/404/', '/pt/404/', '/fr/404/', '/it/404/', '/ru/404/',
@@ -1596,7 +1599,9 @@ for (const file of files) {
   const rel = relative(root, file).split(sep).join('/');
   const pagePath = htmlFileToPath(rel);
   const localizedBirthday = /^\/(?:es|pt|fr|it)\/birthday\/[a-z]+-\d{1,2}\/$/u.test(pagePath);
-  const russianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath);
+  // Held Russian sign guides stay noindex until the locale expansion record releases them.
+  const russianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath)
+    && !publishedLocalesForPath(pagePath.slice(3)).includes('ru');
   const deferredPerson = /^\/people\/[a-z0-9-]+\/$/u.test(pagePath)
     && !indexablePeoplePaths.has(pagePath);
   if (!localizedBirthday && !russianSignGuide && !deferredPerson) continue;
@@ -1615,8 +1620,9 @@ for (const file of files) {
 if (packetFNoindexCounts.localizedBirthdays !== 1464) {
   fail(`Packet F: ${packetFNoindexCounts.localizedBirthdays}/1464 localized birthday previews are present`);
 }
-if (packetFNoindexCounts.russianSignGuides !== 12) {
-  fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/12 Russian sign-guide previews are present`);
+const heldRussianSignGuides = ZODIAC_SIGN_SLUGS.filter((sign) => !publishedLocalesForPath(`/${sign}/`).includes('ru')).length;
+if (packetFNoindexCounts.russianSignGuides !== heldRussianSignGuides) {
+  fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/${heldRussianSignGuides} Russian sign-guide previews are present`);
 }
 if (packetFNoindexCounts.people !== 516 - indexablePeoplePaths.size) {
   fail(`Packet F: ${packetFNoindexCounts.people}/${516 - indexablePeoplePaths.size} deferred People profiles are present`);
@@ -1717,9 +1723,13 @@ for (const file of files) {
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
     || LOCALIZED_404_PATHS.has(pagePath)
     || (hiddenChildPage && pagePath.startsWith('/ru/'));
+  // A family the locale expansion builds in Russian (released, or held in a
+  // preview build) may link its Russian twin; a normal build enables no held page.
+  const russianExpansionBuilt = enabledLocalesForPath(pagePath.replace(/^\/(?:es|pt|fr|it|ru)(?=\/)/u, '')).includes('ru');
   const russianRouteRenderable = russianRouteAvailable
     || hreflangRouteFamily(pagePath) === 'sign-guide'
-    || hiddenChildPage;
+    || hiddenChildPage
+    || russianExpansionBuilt;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }
@@ -1737,7 +1747,7 @@ for (const file of files) {
     fail(`${rel}: inactive Arabic Open Graph locale leaked into HTML`);
   }
   const isRussianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath);
-  if (!russianRouteAvailable && !isRussianSignGuide
+  if (!russianRouteAvailable && !isRussianSignGuide && !(russianExpansionBuilt && pagePath.startsWith('/ru/'))
       && /property=["']og:locale(?::alternate)?["'][^>]*content=["']ru_RU["']/.test(html)) {
     fail(`${rel}: Russian Open Graph locale leaked onto a deferred or programmatic page`);
   }
