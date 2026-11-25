@@ -1,4 +1,5 @@
 ---
+import BigThreeCardSection from '../share/BigThreeCardSection.astro';
 import Base from '../../layouts/Base.astro';
 import { ruOgImageForPath } from '../../strings/seo.ru.mjs';
 import BigThreeQuick from '../../islands/BigThreeQuick';
@@ -77,4 +78,5 @@ const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), descript
     {explainerKind && <ToolExplainer kind={explainerKind} />}
     <SharingToolLinks locale={locale} current={path} />
   </section>
+  {kind === 'big' && locale !== 'en' && locale !== 'ru' && <BigThreeCardSection locale={locale as 'es' | 'pt' | 'fr' | 'it'} />}
 </Base>

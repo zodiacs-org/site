@@ -448,6 +448,10 @@ const TOOL_MARKS_ROUTES = [
   '/void-of-course-moon/',
 ] as const;
 
+// The Big Three page gained its twelve share cards (src/components/share/); the
+// day of the daily edition it was built with, listed after TOOL_MARKS so it wins.
+const BIG_THREE_CARDS_LASTMOD = '2026-11-25';
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -797,6 +801,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/conformance/', '2026-11-23'] as const,
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
+  ['/big-three/', BIG_THREE_CARDS_LASTMOD] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -1145,6 +1150,16 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-09');
     }
     if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-19');
+  }
+  // The share cards (2026-11-10): each pair page offers its pair's card, and
+  // the big three pages offer one card per sign, in English and translated
+  // (the Russian pages carry no cards yet).
+  const SHARE_CARD_PAGES = new Set(['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => [
+    `${prefix}/big-three/`,
+    ...pairs.map((pair) => `${prefix}/compatibility/${pair.id}/`),
+  ]));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (SHARE_CARD_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-10');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
