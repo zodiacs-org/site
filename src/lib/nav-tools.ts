@@ -321,6 +321,10 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     href: '/horoscopes/',
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },
+  {
+    href: '/astrocartography/', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
+    hub: { order: 6.5, title: 'Astrocartography', promise: 'Where each planet sat on an angle when you were born.', group: 'you' },
+  },
 ];
 
 /** The catalog a build shows: an entry behind a switch that is off is left out everywhere. */
@@ -386,6 +390,7 @@ export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
   { href: '/retrogrades/for-you/', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', label: { en: 'Retrogrades for you', es: 'Tus retrógrados', pt: 'Seus retrógrados', fr: 'Tes rétrogrades', it: 'I tuoi retrogradi', ru: 'Ваши ретрограды', 'zh-hans': '你的逆行', 'zh-hant': '你的逆行' } },
+  { href: '/astrocartography/', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', label: { en: 'Astrocartography map', es: 'Mapa de astrocartografía', pt: 'Mapa de astrocartografia', fr: 'Carte d’astrocartographie', it: 'Mappa di astrocartografia', ru: 'Астрокартография', 'zh-hans': '占星地图', 'zh-hant': '占星地圖' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
 /** The menu a build shows: an entry behind a switch that is off is left out. */

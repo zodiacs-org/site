@@ -225,12 +225,12 @@ var ASPECT_BODY_NAMES = /* @__PURE__ */ Object.freeze([
 var ASPECT_BODY_SET = /* @__PURE__ */ new Set(ASPECT_BODY_NAMES);
 var ASPECT_BODIES = /* @__PURE__ */ new Set(ASPECT_BODY_NAMES);
 var STATIONARY_RELATIVE_SPEED = 1e-9;
-function aspectMotion(a, b, angle) {
+function aspectMotion(a, b, angle2) {
   const relative = a.speed - b.speed;
   if (!(Math.abs(relative) >= STATIONARY_RELATIVE_SPEED)) return "stationary";
   const wrapped = ((a.lon - b.lon) % 360 + 360) % 360;
   const signed = wrapped > 180 ? wrapped - 360 : wrapped;
-  const deviation = Math.abs(signed) - angle;
+  const deviation = Math.abs(signed) - angle2;
   if (deviation === 0) return "separating";
   return Math.sign(deviation) * Math.sign(signed) * relative < 0 ? "applying" : "separating";
 }
@@ -252,7 +252,7 @@ function matchAspect(aBody, aLongitude, bBody, bLongitude) {
   return best;
 }
 function findAspects(bodies) {
-  const candidates = bodies.filter((body2) => ASPECT_BODY_SET.has(body2.body));
+  const candidates = bodies.filter((body3) => ASPECT_BODY_SET.has(body3.body));
   const aspects2 = [];
   for (let first2 = 0; first2 < candidates.length; first2 += 1) {
     for (let second = first2 + 1; second < candidates.length; second += 1) {
@@ -836,17 +836,17 @@ function eclipticFrame(tt) {
   };
   return last;
 }
-function meanEcliptic(frame, x, y, z23) {
+function meanEcliptic(frame, x, y, z24) {
   const m = frame.rows;
   return [
-    m[0] * x + m[1] * y + m[2] * z23,
-    m[3] * x + m[4] * y + m[5] * z23,
-    m[6] * x + m[7] * y + m[8] * z23
+    m[0] * x + m[1] * y + m[2] * z24,
+    m[3] * x + m[4] * y + m[5] * z24,
+    m[6] * x + m[7] * y + m[8] * z24
   ];
 }
-function eclipticOfDate(x, y, z23, tt) {
+function eclipticOfDate(x, y, z24, tt) {
   const frame = eclipticFrame(tt);
-  const [ex, ey, ez] = meanEcliptic(frame, x, y, z23);
+  const [ex, ey, ez] = meanEcliptic(frame, x, y, z24);
   return {
     lon: normalizeLongitude(Math.atan2(ey, ex) * RAD2 + frame.tilt.dpsi / 3600),
     lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD2
@@ -1675,18 +1675,18 @@ var PackEphemeris = class {
     return out;
   }
   /** A body relative to the solar-system barycentre: Sun, Earth, Moon, Mercury to Pluto (Mars to Pluto as system barycentres). */
-  state(body2, et, out) {
+  state(body3, et, out) {
     if (out === this.scratch || out === this.scratch2) fail("bad-header", "state(): out must not be an internal buffer");
-    if (body2 === "Sun") return this.ssb("sun", et, out);
-    if (body2 === "Moon" || body2 === "Earth") {
+    if (body3 === "Sun") return this.ssb("sun", et, out);
+    if (body3 === "Moon" || body3 === "Earth") {
       this.ssb("emb", et, out);
       this.ssb("moon", et, this.scratch);
-      const f = body2 === "Moon" ? 1 : -this.k;
+      const f = body3 === "Moon" ? 1 : -this.k;
       for (let i = 0; i < 6; i += 1) out[i] = out[i] + f * this.scratch[i];
       return out;
     }
-    const key2 = PACK_NAME[body2];
-    if (!key2) return fail("unknown-body", `unknown body ${body2}`);
+    const key2 = PACK_NAME[body3];
+    if (!key2) return fail("unknown-body", `unknown body ${body3}`);
     return this.ssb(key2, et, out);
   }
   lunar(et, emb, moon, earth) {
@@ -1860,8 +1860,8 @@ var Reducer = class {
   constructor(backend) {
     this.backend = backend;
   }
-  pos(body2, et, buf) {
-    this.backend.state(body2, et, buf);
+  pos(body3, et, buf) {
+    this.backend.state(body3, et, buf);
     return position(buf);
   }
   /** The Earth relative to the barycentre at et, and the barycentre's velocity and acceleration there. */
@@ -1898,8 +1898,8 @@ var Reducer = class {
    * instant the speed is for, so that it is the rate of the place on that
    * instant's side of the step at the limb, not the step.
    */
-  apparent(body2, ttDays, behind) {
-    if (!REDUCED_BODIES.includes(body2)) fail("unknown-body", `${String(body2)} is not a body this reduction places`);
+  apparent(body3, ttDays, behind) {
+    if (!REDUCED_BODIES.includes(body3)) fail("unknown-body", `${String(body3)} is not a body this reduction places`);
     if (!Number.isFinite(ttDays)) fail("bad-instant", "ttDays must be a finite number");
     const jdTt = ttDays + 2451545;
     const et = ttDays * DAY2 + tdbMinusTt(jdTt);
@@ -1908,8 +1908,8 @@ var Reducer = class {
     this.backend.state("Earth", et, this.b);
     const observer = position(this.b);
     const observerVel = velocity(this.b);
-    const lunar = body2 === "Moon" ? this.lunarBasis(et) : null;
-    const geoAt = (tau2) => lunar ? this.geocentricMoon(et - tau2, tau2, lunar) : sub(this.pos(body2, et - tau2, this.a), observer);
+    const lunar = body3 === "Moon" ? this.lunarBasis(et) : null;
+    const geoAt = (tau2) => lunar ? this.geocentricMoon(et - tau2, tau2, lunar) : sub(this.pos(body3, et - tau2, this.a), observer);
     let tau = 0;
     let geo = geoAt(0);
     for (let i = 0; i < LIGHT_TIME_ITERATIONS; i += 1) {
@@ -1924,7 +1924,7 @@ var Reducer = class {
     }
     const distKm = norm(geo);
     let p = unit(geo);
-    const sunAtRecv = body2 === "Sun" ? null : this.pos("Sun", et, this.c);
+    const sunAtRecv = body3 === "Sun" ? null : this.pos("Sun", et, this.c);
     const behindDisc = sunAtRecv !== null && (behind ?? this.behindDisc(p, distKm, et, observer, sunAtRecv));
     if (sunAtRecv !== null && !behindDisc) {
       const eVec = sub(observer, sunAtRecv);
@@ -1944,7 +1944,7 @@ var Reducer = class {
     const w1 = 1 + pdv / (1 + bm1);
     p = unit([(bm1 * p[0] + w1 * v[0]) / (1 + pdv), (bm1 * p[1] + w1 * v[1]) / (1 + pdv), (bm1 * p[2] + w1 * v[2]) / (1 + pdv)]);
     if (!Number.isFinite(p[0]) || !Number.isFinite(p[1]) || !Number.isFinite(p[2]) || !Number.isFinite(distKm)) {
-      fail("bad-geometry-of-sky", `${body2} has no determinable direction at this instant`);
+      fail("bad-geometry-of-sky", `${body3} has no determinable direction at this instant`);
     }
     const { matrix, epsTrue } = npbMatrix(t);
     const { lon, lat } = eclipticLonLatDeg(equToEcl(apply(matrix, p), epsTrue));
@@ -1985,11 +1985,11 @@ var Reducer = class {
     const ttOf = (et) => (et - tdbMinusTt(et / DAY2 + 2451545)) / DAY2;
     for (const boundary of this.backend.boundaries(coverage.from - DAY2, coverage.to + 2 * ACCELERATION_STEP_SEC)) {
       instants.push(boundary, boundary - ACCELERATION_STEP_SEC, boundary + ACCELERATION_STEP_SEC);
-      for (const body2 of REDUCED_BODIES) {
+      for (const body3 of REDUCED_BODIES) {
         let at = boundary;
         for (let round3 = 0; round3 < 4; round3 += 1) {
           if (!this.backend.covers(at) || !this.backend.covers(at - DAY2)) break;
-          at = boundary + this.apparent(body2, ttOf(at)).lightTimeSec;
+          at = boundary + this.apparent(body3, ttOf(at)).lightTimeSec;
         }
         instants.push(at);
       }
@@ -2162,8 +2162,8 @@ function sourceOf(copy, digest2, header) {
   return Object.freeze({
     ephemeris: Object.freeze({ name: DE440_EPHEMERIS_NAME, version: digest2 }),
     pack,
-    place(body2, ttDays, behind) {
-      const place2 = reducer.apparent(body2, ttDays, behind);
+    place(body3, ttDays, behind) {
+      const place2 = reducer.apparent(body3, ttDays, behind);
       return { lon: place2.lon, lat: place2.lat, dist: place2.distKm / AU_KM2, behindDisc: place2.behindDisc };
     },
     trueNode(ttDays) {
@@ -2357,12 +2357,12 @@ var StarTable = [
   { ra: 0, dec: 0, dist: 0 },
   { ra: 0, dec: 0, dist: 0 }
 ];
-function GetStar(body2) {
-  const index = StarList.indexOf(body2);
+function GetStar(body3) {
+  const index = StarList.indexOf(body3);
   return index >= 0 ? StarTable[index] : null;
 }
-function UserDefinedStar(body2) {
-  const star2 = GetStar(body2);
+function UserDefinedStar(body3) {
+  const star2 = GetStar(body3);
   return star2 && star2.dist > 0 ? star2 : null;
 }
 var PrecessDirection;
@@ -3521,10 +3521,10 @@ function precession_rot(time2, dir) {
   throw "Invalid precess direction";
 }
 var Vector = class {
-  constructor(x, y, z23, t) {
+  constructor(x, y, z24, t) {
     this.x = x;
     this.y = y;
-    this.z = z23;
+    this.z = z24;
     this.t = t;
   }
   /**
@@ -3536,10 +3536,10 @@ var Vector = class {
   }
 };
 var StateVector = class {
-  constructor(x, y, z23, vx, vy, vz, t) {
+  constructor(x, y, z24, vx, vy, vz, t) {
     this.x = x;
     this.y = y;
-    this.z = z23;
+    this.z = z24;
     this.vx = vx;
     this.vy = vy;
     this.vz = vz;
@@ -3610,10 +3610,10 @@ function VsopDeriv(formula, t) {
     let sin_sum = 0;
     let cos_sum = 0;
     for (let [ampl, phas, freq] of series2) {
-      let angle = phas + t * freq;
-      sin_sum += ampl * freq * Math.sin(angle);
+      let angle2 = phas + t * freq;
+      sin_sum += ampl * freq * Math.sin(angle2);
       if (s > 0)
-        cos_sum += ampl * Math.cos(angle);
+        cos_sum += ampl * Math.cos(angle2);
     }
     deriv += s * dpower * cos_sum - tpower * sin_sum;
     dpower = tpower;
@@ -3672,9 +3672,9 @@ function CalcVsopPosVel(model, tt) {
   const equ_vel = VsopRotate(eclip_vel);
   return new body_state_t(tt, equ_pos, equ_vel);
 }
-function AdjustBarycenter(ssb, time2, body2, pmass) {
+function AdjustBarycenter(ssb, time2, body3, pmass) {
   const shift2 = pmass / (pmass + SUN_GM);
-  const planet2 = CalcVsop(vsop[body2], time2);
+  const planet2 = CalcVsop(vsop[body3], time2);
   ssb.x += shift2 * planet2.x;
   ssb.y += shift2 * planet2.y;
   ssb.z += shift2 * planet2.z;
@@ -3745,10 +3745,10 @@ var PlutoStateTable = [
   [73e4, [4.24325283709, -30.118201690825, -10.707441231349], [0.0031725847067411, 1609846120227e-16, -90672150593868e-17]]
 ];
 var TerseVector = class _TerseVector {
-  constructor(x, y, z23) {
+  constructor(x, y, z24) {
     this.x = x;
     this.y = y;
-    this.z = z23;
+    this.z = z24;
   }
   clone() {
     return new _TerseVector(this.x, this.y, this.z);
@@ -3808,9 +3808,9 @@ function BodyStateFromTable(entry) {
   let [tt, [rx, ry, rz], [vx, vy, vz]] = entry;
   return new body_state_t(tt, new TerseVector(rx, ry, rz), new TerseVector(vx, vy, vz));
 }
-function AdjustBarycenterPosVel(ssb, tt, body2, planet_gm) {
+function AdjustBarycenterPosVel(ssb, tt, body3, planet_gm) {
   const shift2 = planet_gm / (planet_gm + SUN_GM);
-  const planet2 = CalcVsopPosVel(vsop[body2], tt);
+  const planet2 = CalcVsopPosVel(vsop[body3], tt);
   ssb.r.incr(planet2.r.mul(shift2));
   ssb.v.incr(planet2.v.mul(shift2));
   return planet2;
@@ -3971,35 +3971,35 @@ var Rotation_JUP_EQJ = new RotationMatrix([
   [0.0303959428906285, 0.902057912352809, 0.430543388542295],
   [-0.0144994559663353, -0.430299169409101, 0.902569881273754]
 ]);
-function HelioVector(body2, date3) {
+function HelioVector(body3, date3) {
   var time2 = MakeTime(date3);
-  if (body2 in vsop)
-    return CalcVsop(vsop[body2], time2);
-  if (body2 === Body.Pluto) {
+  if (body3 in vsop)
+    return CalcVsop(vsop[body3], time2);
+  if (body3 === Body.Pluto) {
     const p = CalcPluto(time2, true);
     return new Vector(p.x, p.y, p.z, time2);
   }
-  if (body2 === Body.Sun)
+  if (body3 === Body.Sun)
     return new Vector(0, 0, 0, time2);
-  if (body2 === Body.Moon) {
+  if (body3 === Body.Moon) {
     var e = CalcVsop(vsop.Earth, time2);
     var m = GeoMoon(time2);
     return new Vector(e.x + m.x, e.y + m.y, e.z + m.z, time2);
   }
-  if (body2 === Body.EMB) {
+  if (body3 === Body.EMB) {
     const e2 = CalcVsop(vsop.Earth, time2);
     const m2 = GeoMoon(time2);
     const denom = 1 + EARTH_MOON_MASS_RATIO;
     return new Vector(e2.x + m2.x / denom, e2.y + m2.y / denom, e2.z + m2.z / denom, time2);
   }
-  if (body2 === Body.SSB)
+  if (body3 === Body.SSB)
     return CalcSolarSystemBarycenter(time2);
-  const star2 = UserDefinedStar(body2);
+  const star2 = UserDefinedStar(body3);
   if (star2) {
     const sphere = new Spherical(star2.dec, 15 * star2.ra, star2.dist);
     return VectorFromSphere(sphere, time2);
   }
-  throw `HelioVector: Unknown body "${body2}"`;
+  throw `HelioVector: Unknown body "${body3}"`;
 }
 function CorrectLightTravel(func, time2) {
   let ltime = time2;
@@ -4056,16 +4056,16 @@ function BackdatePosition(date3, observerBody, targetBody, aberration) {
   const bpos = new BodyPosition(observerBody, targetBody, aberration, observerPos);
   return CorrectLightTravel((t) => bpos.Position(t), time2);
 }
-function GeoVector(body2, date3, aberration) {
+function GeoVector(body3, date3, aberration) {
   VerifyBoolean(aberration);
   const time2 = MakeTime(date3);
-  switch (body2) {
+  switch (body3) {
     case Body.Earth:
       return new Vector(0, 0, 0, time2);
     case Body.Moon:
       return GeoMoon(time2);
     default:
-      const vec = BackdatePosition(time2, Body.Earth, body2, aberration);
+      const vec = BackdatePosition(time2, Body.Earth, body3, aberration);
       vec.t = time2;
       return vec;
   }
@@ -4073,16 +4073,16 @@ function GeoVector(body2, date3, aberration) {
 function ExportState(terse, time2) {
   return new StateVector(terse.r.x, terse.r.y, terse.r.z, terse.v.x, terse.v.y, terse.v.z, time2);
 }
-function BaryState(body2, date3) {
+function BaryState(body3, date3) {
   const time2 = MakeTime(date3);
-  if (body2 === Body.SSB) {
+  if (body3 === Body.SSB) {
     return new StateVector(0, 0, 0, 0, 0, 0, time2);
   }
-  if (body2 === Body.Pluto) {
+  if (body3 === Body.Pluto) {
     return CalcPluto(time2, false);
   }
   const bary = new major_bodies_t(time2.tt);
-  switch (body2) {
+  switch (body3) {
     case Body.Sun:
       return ExportState(bary.Sun, time2);
     case Body.Jupiter:
@@ -4096,18 +4096,18 @@ function BaryState(body2, date3) {
     case Body.Moon:
     case Body.EMB:
       const earth = CalcVsopPosVel(vsop[Body.Earth], time2.tt);
-      const state = body2 === Body.Moon ? GeoMoonState(time2) : GeoEmbState(time2);
+      const state = body3 === Body.Moon ? GeoMoonState(time2) : GeoEmbState(time2);
       return new StateVector(state.x + bary.Sun.r.x + earth.r.x, state.y + bary.Sun.r.y + earth.r.y, state.z + bary.Sun.r.z + earth.r.z, state.vx + bary.Sun.v.x + earth.v.x, state.vy + bary.Sun.v.y + earth.v.y, state.vz + bary.Sun.v.z + earth.v.z, time2);
   }
-  if (body2 in vsop) {
-    const planet2 = CalcVsopPosVel(vsop[body2], time2.tt);
+  if (body3 in vsop) {
+    const planet2 = CalcVsopPosVel(vsop[body3], time2.tt);
     return new StateVector(bary.Sun.r.x + planet2.r.x, bary.Sun.r.y + planet2.r.y, bary.Sun.r.z + planet2.r.z, bary.Sun.v.x + planet2.v.x, bary.Sun.v.y + planet2.v.y, bary.Sun.v.z + planet2.v.z, time2);
   }
-  throw `BaryState: Unsupported body "${body2}"`;
+  throw `BaryState: Unsupported body "${body3}"`;
 }
-function HelioState(body2, date3) {
+function HelioState(body3, date3) {
   const time2 = MakeTime(date3);
-  switch (body2) {
+  switch (body3) {
     case Body.Sun:
       return new StateVector(0, 0, 0, 0, 0, 0, time2);
     case Body.SSB:
@@ -4121,21 +4121,21 @@ function HelioState(body2, date3) {
     case Body.Saturn:
     case Body.Uranus:
     case Body.Neptune:
-      const planet2 = CalcVsopPosVel(vsop[body2], time2.tt);
+      const planet2 = CalcVsopPosVel(vsop[body3], time2.tt);
       return ExportState(planet2, time2);
     case Body.Pluto:
       return CalcPluto(time2, true);
     case Body.Moon:
     case Body.EMB:
       const earth = CalcVsopPosVel(vsop.Earth, time2.tt);
-      const state = body2 == Body.Moon ? GeoMoonState(time2) : GeoEmbState(time2);
+      const state = body3 == Body.Moon ? GeoMoonState(time2) : GeoEmbState(time2);
       return new StateVector(state.x + earth.r.x, state.y + earth.r.y, state.z + earth.r.z, state.vx + earth.v.x, state.vy + earth.v.y, state.vz + earth.v.z, time2);
     default:
-      if (UserDefinedStar(body2)) {
-        const vec = HelioVector(body2, time2);
+      if (UserDefinedStar(body3)) {
+        const vec = HelioVector(body3, time2);
         return new StateVector(vec.x, vec.y, vec.z, 0, 0, 0, time2);
       }
-      throw `HelioState: Unsupported body "${body2}"`;
+      throw `HelioState: Unsupported body "${body3}"`;
   }
 }
 var ApsisKind;
@@ -4259,9 +4259,9 @@ function refuseUnderSource(what) {
   if (source) throw new TypeError(`${what} does not run inside withEphemeris: it computes on the engine's own sources, not a caller's`);
 }
 var tidy = (lon) => lon === 360 ? 0 : lon + 0;
-function sourceLongitude(from, body2, ttDays, behind) {
-  if (body2 === "North Node") return tidy(from.trueNode(ttDays));
-  return body2 === "South Node" ? normalizeLongitude(from.trueNode(ttDays) + 180) : tidy(from.place(body2, ttDays, behind).lon);
+function sourceLongitude(from, body3, ttDays, behind) {
+  if (body3 === "North Node") return tidy(from.trueNode(ttDays));
+  return body3 === "South Node" ? normalizeLongitude(from.trueNode(ttDays) + 180) : tidy(from.place(body3, ttDays, behind).lon);
 }
 function timeOf(basis) {
   const { from, to } = EPHEMERIS_SPAN.daysFromJ2000;
@@ -4318,8 +4318,8 @@ var PLANETS = [
   { name: "Neptune", body: Body.Neptune },
   { name: "Pluto", body: Body.Pluto }
 ];
-function planetOfDate(body2, time2) {
-  const equatorial = GeoVector(body2, time2, true);
+function planetOfDate(body3, time2) {
+  const equatorial = GeoVector(body3, time2, true);
   return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time2.tt);
 }
 function moonOfDate(time2) {
@@ -4337,33 +4337,33 @@ function trueNodeLongitude(time2) {
   );
   return normalizeLongitude(Math.atan2(x, -y) * RAD32 + frame.tilt.dpsi / 3600);
 }
-function longitudeAt(body2, ms, clock2) {
+function longitudeAt(body3, ms, clock2) {
   const basis = basisAt(ms, clock2);
-  return longitudeOn(body2, basis, sourceAt(basis.ttDays));
+  return longitudeOn(body3, basis, sourceAt(basis.ttDays));
 }
-function assertKnownBody(body2) {
-  if (body2 !== "Moon" && body2 !== "North Node" && body2 !== "South Node" && !PLANETS.some((p) => p.name === body2)) {
-    throw new RangeError(`Unknown body: ${String(body2)}`);
+function assertKnownBody(body3) {
+  if (body3 !== "Moon" && body3 !== "North Node" && body3 !== "South Node" && !PLANETS.some((p) => p.name === body3)) {
+    throw new RangeError(`Unknown body: ${String(body3)}`);
   }
 }
-function longitudeOn(body2, basis, from, behind) {
-  assertKnownBody(body2);
-  if (from) return sourceLongitude(from, body2, basis.ttDays, behind);
+function longitudeOn(body3, basis, from, behind) {
+  assertKnownBody(body3);
+  if (from) return sourceLongitude(from, body3, basis.ttDays, behind);
   const time2 = timeOf(basis);
-  if (body2 === "Moon") return moonOfDate(time2).lon;
-  if (body2 === "North Node") return trueNodeLongitude(time2);
-  if (body2 === "South Node") {
+  if (body3 === "Moon") return moonOfDate(time2).lon;
+  if (body3 === "North Node") return trueNodeLongitude(time2);
+  if (body3 === "South Node") {
     return normalizeLongitude(trueNodeLongitude(time2) + 180);
   }
-  return planetOfDate(PLANETS.find((p) => p.name === body2).body, time2).lon;
+  return planetOfDate(PLANETS.find((p) => p.name === body3).body, time2).lon;
 }
-function bodyLongitude(body2, date3) {
-  return evaluated(() => longitudeAt(body2, date3.getTime(), UTC_CLOCK));
+function bodyLongitude(body3, date3) {
+  return evaluated(() => longitudeAt(body3, date3.getTime(), UTC_CLOCK));
 }
 var SPEED_STEP_DAYS = 1e-3;
 var NODE_SPEED_STEP_DAYS = 0.25;
-function longitudeSpeed(body2, date3) {
-  return evaluated(() => speedAt(body2, date3.getTime(), UTC_CLOCK));
+function longitudeSpeed(body3, date3) {
+  return evaluated(() => speedAt(body3, date3.getTime(), UTC_CLOCK));
 }
 function centralDifference(longitudeOf, ms, clock2, stepDays) {
   const before2 = basisAt(sample(ms, -stepDays), clock2);
@@ -4374,16 +4374,16 @@ function centralDifference(longitudeOf, ms, clock2, stepDays) {
   if (difference < -180) difference += 360;
   return difference / elapsedDays(before2, after, 2 * stepDays);
 }
-function speedAt(body2, ms, clock2, from = sourceAt(basisAt(ms, clock2).ttDays), behind) {
-  assertKnownBody(body2);
-  const node = body2 === "North Node" || body2 === "South Node";
+function speedAt(body3, ms, clock2, from = sourceAt(basisAt(ms, clock2).ttDays), behind) {
+  assertKnownBody(body3);
+  const node = body3 === "North Node" || body3 === "South Node";
   const stepDays = node ? NODE_SPEED_STEP_DAYS : SPEED_STEP_DAYS;
-  const side = from && !node && behind === void 0 ? from.place(body2, basisAt(ms, clock2).ttDays).behindDisc : behind;
-  return centralDifference((basis) => longitudeOn(body2, basis, from, side), ms, clock2, stepDays);
+  const side = from && !node && behind === void 0 ? from.place(body3, basisAt(ms, clock2).ttDays).behindDisc : behind;
+  return centralDifference((basis) => longitudeOn(body3, basis, from, side), ms, clock2, stepDays);
 }
-function position2(body2, lon, lat, speed, chosen) {
+function position2(body3, lon, lat, speed, chosen) {
   return {
-    body: body2,
+    body: body3,
     lon,
     lat,
     speed,
@@ -4434,9 +4434,9 @@ function bodiesAt(ms, clock2, chosen = chosenAt(basisAt(ms, clock2).ttDays)) {
 function sourceBodiesAt(chosen, from, ms, clock2) {
   const tt = basisAt(ms, clock2).ttDays;
   return ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "North Node", "South Node"].map(
-    (body2) => {
-      const place2 = body2 === "North Node" || body2 === "South Node" ? { lon: sourceLongitude(from, body2, tt), lat: 0 } : from.place(body2, tt);
-      return position2(body2, tidy(place2.lon), place2.lat, speedAt(body2, ms, clock2, from, "behindDisc" in place2 ? place2.behindDisc : void 0), chosen);
+    (body3) => {
+      const place2 = body3 === "North Node" || body3 === "South Node" ? { lon: sourceLongitude(from, body3, tt), lat: 0 } : from.place(body3, tt);
+      return position2(body3, tidy(place2.lon), place2.lat, speedAt(body3, ms, clock2, from, "behindDisc" in place2 ? place2.behindDisc : void 0), chosen);
     }
   );
 }
@@ -4718,22 +4718,22 @@ function solve(longitudeAt2, targetLongitude, { fromTime, toTime, step }, count)
   }
   return crossings;
 }
-function run(longitudeAt2, body2, targetLongitude, window, maxSamples) {
+function run(longitudeAt2, body3, targetLongitude, window, maxSamples) {
   const count = window.toTime === window.fromTime ? 0 : coarseSampleCount(window);
   return sampleCrossings(
     count,
     maxSamples,
-    (time2) => longitudeAt2(body2, new Date(time2)),
+    (time2) => longitudeAt2(body3, new Date(time2)),
     "Ephemeris returned a non-finite longitude.",
     (sample2) => solve(sample2, targetLongitude, window, count)
   );
 }
-function findLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from, to, stepDays = 5) {
+function findLongitudeCrossingsWith(longitudeAt2, body3, targetLongitude, from, to, stepDays = 5) {
   const window = validWindow(targetLongitude, from, to, stepDays);
-  const result = run(longitudeAt2, body2, targetLongitude, window, Number.POSITIVE_INFINITY);
+  const result = run(longitudeAt2, body3, targetLongitude, window, Number.POSITIVE_INFINITY);
   return result.crossings;
 }
-function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from, to, options = {}) {
+function searchLongitudeCrossingsWith(longitudeAt2, body3, targetLongitude, from, to, options = {}) {
   const prototype = options !== null && typeof options === "object" ? Object.getPrototypeOf(options) : void 0;
   if (prototype !== Object.prototype && prototype !== null) {
     throw new RangeError("Crossing search options must be a plain options object.");
@@ -4746,7 +4746,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   const stepDays = options.stepDays === void 0 ? 5 : options.stepDays;
   const window = validWindow(targetLongitude, from, to, stepDays);
   const maxSamples = validBudget(options.maxSamples);
-  return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
+  return run(longitudeAt2, body3, targetLongitude, window, maxSamples);
 }
 
 // node_modules/@zodiacs/engine/dist/chunk-4RCOOAGI.js
@@ -4835,14 +4835,14 @@ function assertDerivedFlags(supplied, actual) {
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
-function findLongitudeCrossings(body2, targetLongitude, from, to, stepDays = 5) {
-  assertKnownBody(body2);
-  return findLongitudeCrossingsWith(bodyLongitude, body2, targetLongitude, windowEnd(from, "start"), windowEnd(to, "end"), stepDays);
+function findLongitudeCrossings(body3, targetLongitude, from, to, stepDays = 5) {
+  assertKnownBody(body3);
+  return findLongitudeCrossingsWith(bodyLongitude, body3, targetLongitude, windowEnd(from, "start"), windowEnd(to, "end"), stepDays);
 }
-function searchLongitudeCrossings(body2, targetLongitude, from, to, options) {
-  assertKnownBody(body2);
+function searchLongitudeCrossings(body3, targetLongitude, from, to, options) {
+  assertKnownBody(body3);
   const { value, fallbacks } = notingFallbacks(
-    () => searchLongitudeCrossingsWith(bodyLongitude, body2, targetLongitude, windowEnd(from, "start"), windowEnd(to, "end"), options)
+    () => searchLongitudeCrossingsWith(bodyLongitude, body3, targetLongitude, windowEnd(from, "start"), windowEnd(to, "end"), options)
   );
   return value.status === "complete" ? { ...value, flags: fallbacks } : value;
 }
@@ -4928,26 +4928,26 @@ function positions(date3) {
 function natalChart(birth) {
   return computedBirth(validateBirth(birth));
 }
-function phaseName(angle) {
-  if (angle < 22.5 || angle >= 337.5) return "New Moon";
-  if (angle < 67.5) return "Waxing Crescent";
-  if (angle < 112.5) return "First Quarter";
-  if (angle < 157.5) return "Waxing Gibbous";
-  if (angle < 202.5) return "Full Moon";
-  if (angle < 247.5) return "Waning Gibbous";
-  if (angle < 292.5) return "Last Quarter";
+function phaseName(angle2) {
+  if (angle2 < 22.5 || angle2 >= 337.5) return "New Moon";
+  if (angle2 < 67.5) return "Waxing Crescent";
+  if (angle2 < 112.5) return "First Quarter";
+  if (angle2 < 157.5) return "Waxing Gibbous";
+  if (angle2 < 202.5) return "Full Moon";
+  if (angle2 < 247.5) return "Waning Gibbous";
+  if (angle2 < 292.5) return "Last Quarter";
   return "Waning Crescent";
 }
 function moonPhase(date3) {
   const at = dateFrom(date3, "date");
-  const angle = normalizeLongitude(bodyLongitude("Moon", at) - bodyLongitude("Sun", at));
+  const angle2 = normalizeLongitude(bodyLongitude("Moon", at) - bodyLongitude("Sun", at));
   const { ephemeris, fallback: fallback2 } = ephemerisAt(at.getTime());
   return {
     at,
-    angle,
-    illumination: (1 - Math.cos(angle * Math.PI / 180)) / 2,
-    name: phaseName(angle),
-    waxing: angle < 180,
+    angle: angle2,
+    illumination: (1 - Math.cos(angle2 * Math.PI / 180)) / 2,
+    name: phaseName(angle2),
+    waxing: angle2 < 180,
     ephemeris: ephemeris.name,
     ...fallback2 !== null && { fallback: fallback2 }
   };
@@ -5495,25 +5495,25 @@ function validateResult(value, instantaneousApplying, instant4, scale3, continuo
   const longitudes2 = /* @__PURE__ */ new Map();
   const speeds = /* @__PURE__ */ new Map();
   for (const item of result.bodies) {
-    const body2 = record(item);
-    fields(body2, BODY_RECORD);
-    const name = choice(body2.body, BODIES);
+    const body3 = record(item);
+    fields(body3, BODY_RECORD);
+    const name = choice(body3.body, BODIES);
     if (names.has(name)) fail2("invalid_value");
     names.add(name);
-    const lon = longitude(body2.lon);
+    const lon = longitude(body3.lon);
     longitudes2.set(name, lon);
-    number(body2.lat, -90, 90);
-    const speed = number(body2.speed, -Number.MAX_VALUE, Number.MAX_VALUE);
+    number(body3.lat, -90, 90);
+    const speed = number(body3.speed, -Number.MAX_VALUE, Number.MAX_VALUE);
     speeds.set(name, speed);
-    const degree = number(body2.degree, 0, 30, true);
-    if (bool(body2.retrograde) !== speed < 0 || body2.sign !== SIGNS[Math.floor(lon / 30)]?.slug || !close(degree, lon % 30))
+    const degree = number(body3.degree, 0, 30, true);
+    if (bool(body3.retrograde) !== speed < 0 || body3.sign !== SIGNS[Math.floor(lon / 30)]?.slug || !close(degree, lon % 30))
       fail2("inconsistent_result");
   }
   if (result.angles === null !== (result.houses === null)) fail2("inconsistent_result");
   if (result.angles !== null) {
     const angles = record(result.angles);
     fields(angles, ANGLES_RECORD);
-    for (const angle of Object.values(angles)) longitude(angle);
+    for (const angle2 of Object.values(angles)) longitude(angle2);
     if (!angularClose(angles.dsc, angles.asc + 180) || !angularClose(angles.ic, angles.mc + 180))
       fail2("inconsistent_result");
     const houses = record(result.houses);
@@ -5566,11 +5566,11 @@ function validateResult(value, instantaneousApplying, instant4, scale3, continuo
     fields(aspect2, ASPECT_RECORD);
     const a = choice(
       aspect2.a,
-      BODIES.filter((body2) => ASPECT_BODY_SET.has(body2))
+      BODIES.filter((body3) => ASPECT_BODY_SET.has(body3))
     );
     const b = choice(
       aspect2.b,
-      BODIES.filter((body2) => ASPECT_BODY_SET.has(body2))
+      BODIES.filter((body3) => ASPECT_BODY_SET.has(body3))
     );
     const key2 = [a, b].sort().join("/");
     if (a === b || pairs.has(key2)) fail2("inconsistent_result");
@@ -5968,7 +5968,7 @@ function createNatalEnvelope(chart, context = {}) {
       coverage: { ...COVERAGE }
     };
     const result = {
-      bodies: list(source3.bodies).map((body2) => kept(body2, BODY_RECORD)),
+      bodies: list(source3.bodies).map((body3) => kept(body3, BODY_RECORD)),
       angles: source3.angles === null ? null : kept(source3.angles, ANGLES_RECORD),
       houses: houses === null ? null : kept(houses, HOUSES_RECORD),
       aspects: list(source3.aspects).map((aspect2) => kept(aspect2, ASPECT_RECORD)),
@@ -6847,7 +6847,7 @@ function parseEventsRequest(value) {
   return {
     from,
     to,
-    bodies: EVENT_BODIES.filter((body2) => bodies.includes(body2)),
+    bodies: EVENT_BODIES.filter((body3) => bodies.includes(body3)),
     kinds: EVENT_KINDS.filter((kind) => kinds.includes(kind))
   };
 }
@@ -6870,20 +6870,20 @@ async function parseSkyFactRequest(value, zones) {
   switch (kind) {
     case "sign": {
       onlyFields(object2, ["kind", "body", "sign", "instant", "date", "zone"], "");
-      const body2 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const body3 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
       const sign4 = oneOf(required(object2, "sign", ""), "/sign", SIGN_SLUGS, TEXT.sign);
-      return { kind, body: body2, sign: sign4, when: await factWhen(object2, zones) };
+      return { kind, body: body3, sign: sign4, when: await factWhen(object2, zones) };
     }
     case "retrograde": {
       onlyFields(object2, ["kind", "body", "instant", "date", "zone"], "");
-      const body2 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
-      return { kind, body: body2, when: await factWhen(object2, zones) };
+      const body3 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      return { kind, body: body3, when: await factWhen(object2, zones) };
     }
     case "ingress": {
       onlyFields(object2, ["kind", "body", "sign", "date", "zone"], "");
-      const body2 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const body3 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
       const sign4 = oneOf(required(object2, "sign", ""), "/sign", SIGN_SLUGS, TEXT.sign);
-      return { kind, body: body2, sign: sign4, day: await factDay(object2, zones) };
+      return { kind, body: body3, sign: sign4, day: await factDay(object2, zones) };
     }
     case "phase": {
       onlyFields(object2, ["kind", "phase", "date", "zone"], "");
@@ -6892,11 +6892,11 @@ async function parseSkyFactRequest(value, zones) {
     }
     case "aspect": {
       onlyFields(object2, ["kind", "body", "other", "aspect", "instant", "date", "zone"], "");
-      const body2 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const body3 = oneOf(required(object2, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
       const other = oneOf(required(object2, "other", ""), "/other", EVENT_BODIES, TEXT.otherBody);
-      if (other === body2) throw invalidRequest("/other", TEXT.otherBody);
+      if (other === body3) throw invalidRequest("/other", TEXT.otherBody);
       const aspect2 = oneOf(required(object2, "aspect", ""), "/aspect", ASPECT_TYPES, TEXT.aspect);
-      return { kind, body: body2, other, aspect: aspect2, when: await factWhen(object2, zones) };
+      return { kind, body: body3, other, aspect: aspect2, when: await factWhen(object2, zones) };
     }
   }
 }
@@ -6922,8 +6922,8 @@ function basisOf2(instant4) {
 function iso(date3) {
   return date3.toISOString();
 }
-function rowOf(rows3, body2) {
-  const row = rows3.find((candidate) => candidate.body === body2);
+function rowOf(rows3, body3) {
+  const row = rows3.find((candidate) => candidate.body === body3);
   if (!row) throw new Error("The engine returned no row for a body it names.");
   return row;
 }
@@ -6984,19 +6984,19 @@ var SampleBudget = class {
     };
   }
 };
-function stepFor(body2) {
-  return body2 === "Moon" ? SEARCH_STEP_DAYS.moon : SEARCH_STEP_DAYS.default;
+function stepFor(body3) {
+  return body3 === "Moon" ? SEARCH_STEP_DAYS.moon : SEARCH_STEP_DAYS.default;
 }
-function signCrossings(body2, boundary, from, to, budget) {
-  return budget.settle(searchLongitudeCrossings(body2, boundary, from, to, budget.options(stepFor(body2))));
+function signCrossings(body3, boundary, from, to, budget) {
+  return budget.settle(searchLongitudeCrossings(body3, boundary, from, to, budget.options(stepFor(body3))));
 }
 function signEntered(boundary, retrograde) {
   const index = Math.round(boundary / 30) % 12;
   return SIGN_SLUGS[retrograde ? (index + 11) % 12 : index];
 }
-function stationCrossings(body2, from, to, budget, rowsAt) {
+function stationCrossings(body3, from, to, budget, rowsAt) {
   const speedAt2 = (name, date3) => rowOf(rowsAt(date3), name).speed;
-  return budget.settle(searchLongitudeCrossingsWith(speedAt2, body2, 0, from, to, budget.options(SEARCH_STEP_DAYS.default)));
+  return budget.settle(searchLongitudeCrossingsWith(speedAt2, body3, 0, from, to, budget.options(SEARCH_STEP_DAYS.default)));
 }
 function phaseCrossings(target, from, to, budget) {
   const elongationAt = (_body, date3) => moonPhase(date3).angle;
@@ -7026,7 +7026,7 @@ function computePositions(request2) {
       // The response identifies the ephemeris once in its backend and receipt. From engine 2.0.0 a row
       // can carry the instant's own flags too; the instant reports them once, in its deltaT segment,
       // its timeScale and its flags.
-      bodies: (request2.bodies ? rows3.filter((row) => request2.bodies.includes(row.body)) : rows3).map(({ ephemeris: _ephemeris, fallback: _fallback, flags: _flags, ...body2 }) => body2),
+      bodies: (request2.bodies ? rows3.filter((row) => request2.bodies.includes(row.body)) : rows3).map(({ ephemeris: _ephemeris, fallback: _fallback, flags: _flags, ...body3 }) => body3),
       deltaT: deltaT2,
       timeScale,
       flags: outsideReferenceSpan(instant4) ? ["outside-reference-span"] : []
@@ -7035,19 +7035,19 @@ function computePositions(request2) {
   return successBody("positions", { instants }, computeReceipt("positions"));
 }
 var KIND_ORDER = { ingress: 0, station: 1, lunation: 2 };
-var BODY_ORDER = new Map(["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"].map((body2, index) => [body2, index]));
+var BODY_ORDER = new Map(["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"].map((body3, index) => [body3, index]));
 function computeEvents(request2) {
   const { from, to } = request2;
   const budget = new SampleBudget("events.samples");
   const rowsAt = positionsMemo();
   const events = [];
   if (request2.kinds.includes("ingress")) {
-    for (const body2 of request2.bodies) {
+    for (const body3 of request2.bodies) {
       for (let index = 0; index < 12; index += 1) {
-        for (const crossing of signCrossings(body2, index * 30, from, to, budget)) {
+        for (const crossing of signCrossings(body3, index * 30, from, to, budget)) {
           events.push({
             kind: "ingress",
-            body: body2,
+            body: body3,
             at: iso(crossing.at),
             sign: signEntered(index * 30, crossing.retrograde),
             retrograde: crossing.retrograde
@@ -7057,15 +7057,15 @@ function computeEvents(request2) {
     }
   }
   if (request2.kinds.includes("station")) {
-    for (const body2 of request2.bodies) {
-      if (!STATION_BODIES.includes(body2)) continue;
-      for (const crossing of stationCrossings(body2, from, to, budget, rowsAt)) {
+    for (const body3 of request2.bodies) {
+      if (!STATION_BODIES.includes(body3)) continue;
+      for (const crossing of stationCrossings(body3, from, to, budget, rowsAt)) {
         events.push({
           kind: "station",
-          body: body2,
+          body: body3,
           at: iso(crossing.at),
           type: crossing.retrograde ? "retrograde" : "direct",
-          ...placeOf(rowOf(rowsAt(crossing.at), body2).lon)
+          ...placeOf(rowOf(rowsAt(crossing.at), body3).lon)
         });
       }
     }
@@ -7118,8 +7118,8 @@ async function refuseSplitDay(request2, dependencies) {
 function searchSpan(window) {
   return { from: new Date(window.from.getTime() - 1), to: new Date(window.to.getTime() - 1) };
 }
-function stateAt(rows3, body2) {
-  const row = rowOf(rows3, body2);
+function stateAt(rows3, body3) {
+  const row = rowOf(rows3, body3);
   return { lon: row.lon, sign: row.sign, degree: row.degree, speed: row.speed, retrograde: row.retrograde };
 }
 function boundaryMarginArcsec(lon) {
@@ -7127,10 +7127,10 @@ function boundaryMarginArcsec(lon) {
   return Math.min(within, 30 - within) * 3600;
 }
 var LUMINARIES2 = /* @__PURE__ */ new Set(["Sun", "Moon"]);
-function aspectRule(type, body2, other) {
+function aspectRule(type, body3, other) {
   const definition = ASPECTS.find((candidate) => candidate.type === type);
   if (!definition) throw new Error("The engine names no such aspect.");
-  const luminary = LUMINARIES2.has(body2) || LUMINARIES2.has(other);
+  const luminary = LUMINARIES2.has(body3) || LUMINARIES2.has(other);
   return { angle: definition.angle, allowedOrb: luminary ? definition.luminaryOrb : definition.orb };
 }
 function aspectHolds(rows3, request2) {
@@ -7138,24 +7138,24 @@ function aspectHolds(rows3, request2) {
   return match?.definition.type === request2.aspect;
 }
 function aspectState(rows3, request2, rule2) {
-  const body2 = rowOf(rows3, request2.body);
+  const body3 = rowOf(rows3, request2.body);
   const other = rowOf(rows3, request2.other);
-  const apart = separation(body2.lon, other.lon);
+  const apart = separation(body3.lon, other.lon);
   return {
     body: stateAt(rows3, request2.body),
     other: stateAt(rows3, request2.other),
     separation: apart,
     orb: Math.abs(apart - rule2.angle),
-    motion: aspectMotion(body2, other, rule2.angle)
+    motion: aspectMotion(body3, other, rule2.angle)
   };
 }
 function aspectEdges(rule2) {
-  const { angle, allowedOrb: allowedOrb2 } = rule2;
+  const { angle: angle2, allowedOrb: allowedOrb2 } = rule2;
   const edges = [
-    { lon: normalizeLongitude(angle - allowedOrb2), lower: true },
-    { lon: normalizeLongitude(angle + allowedOrb2), lower: false },
-    { lon: normalizeLongitude(360 - angle - allowedOrb2), lower: true },
-    { lon: normalizeLongitude(360 - angle + allowedOrb2), lower: false }
+    { lon: normalizeLongitude(angle2 - allowedOrb2), lower: true },
+    { lon: normalizeLongitude(angle2 + allowedOrb2), lower: false },
+    { lon: normalizeLongitude(360 - angle2 - allowedOrb2), lower: true },
+    { lon: normalizeLongitude(360 - angle2 + allowedOrb2), lower: false }
   ];
   return edges.filter((edge, index) => edges.findIndex((candidate) => candidate.lon === edge.lon) === index);
 }
@@ -7332,7 +7332,7 @@ async function computeApiRateLimit(req, id = COMPUTE_RATE_LIMIT_ID) {
 }
 
 // src/ai-tools/contracts.ts
-import { z as z19 } from "zod";
+import { z as z20 } from "zod";
 
 // src/lib/compute-api/openapi.ts
 var ref = (name) => ({ $ref: `#/components/schemas/${name}` });
@@ -8121,9 +8121,9 @@ var COMPUTE_TAG = Object.freeze({
 // node_modules/@zodiacs/engine/dist/chunk-LWZS7HI3.js
 var DEG5 = Math.PI / 180;
 var ARCSEC3 = DEG5 / 3600;
-function toEquator(m, angle) {
-  const c = Math.cos(angle);
-  const s = Math.sin(angle);
+function toEquator(m, angle2) {
+  const c = Math.cos(angle2);
+  const s = Math.sin(angle2);
   return [
     m[0],
     m[1],
@@ -8156,8 +8156,8 @@ function equatorRows(tt, kind) {
   const { mobl, tobl, dpsi } = frame.tilt;
   return kind === "mean" ? toEquator(frame.rows, mobl * DEG5) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC3), tobl * DEG5);
 }
-function turn2(m, x, y, z23) {
-  return [m[0] * x + m[1] * y + m[2] * z23, m[3] * x + m[4] * y + m[5] * z23, m[6] * x + m[7] * y + m[8] * z23];
+function turn2(m, x, y, z24) {
+  return [m[0] * x + m[1] * y + m[2] * z24, m[3] * x + m[4] * y + m[5] * z24, m[6] * x + m[7] * y + m[8] * z24];
 }
 
 // node_modules/@zodiacs/engine/dist/sky.js
@@ -8246,21 +8246,21 @@ function budgetOf(value) {
   }
   return value;
 }
-function conventionsOf(body2, input) {
-  const disc = body2 === "Sun" || body2 === "Moon";
+function conventionsOf(body3, input) {
+  const disc = body3 === "Sun" || body3 === "Moon";
   const limb = input.limb ?? (disc ? "upper" : "centre");
   if (limb !== "upper" && limb !== "centre" && limb !== "lower") {
     throw new RangeError('limb must be "upper", "centre" or "lower".');
   }
-  if (!disc && limb !== "centre") throw new RangeError(`${body2} is taken at its centre; only limb "centre" applies.`);
+  if (!disc && limb !== "centre") throw new RangeError(`${body3} is taken at its centre; only limb "centre" applies.`);
   const refraction = input.refraction ?? "standard";
   if (refraction !== "standard" && refraction !== "none") throw new RangeError('refraction must be "standard" or "none".');
   return Object.freeze({ limb, refraction, refractionArcmin: refraction === "standard" ? STANDARD_REFRACTION_ARCMIN : 0 });
 }
-function stateAt2(body2, site, conventions, ms) {
+function stateAt2(body3, site, conventions, ms) {
   refuseUnderSource("@zodiacs/engine/sky's rising and setting");
   return onChartClock(ms, "utc", void 0, (time2) => {
-    const g = GeoVector(BODIES2[body2], time2, true);
+    const g = GeoVector(BODIES2[body3], time2, true);
     const [vx, vy, vz] = turn2(equatorRows(time2.tt, "true"), g.x, g.y, g.z);
     const theta = (gastHours(time2) * 15 + site.longitude) * RAD4;
     const phi = site.latitude * RAD4;
@@ -8272,16 +8272,16 @@ function stateAt2(body2, site, conventions, ms) {
     const sinT = Math.sin(theta);
     const x = vx - (n + h) * cosPhi * cosT / KM_PER_AU2;
     const y = vy - (n + h) * cosPhi * sinT / KM_PER_AU2;
-    const z23 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
+    const z24 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
     const east = -x * sinT + y * cosT;
     const radial = x * cosT + y * sinT;
-    const north = -radial * sinPhi + z23 * cosPhi;
-    const up = radial * cosPhi + z23 * sinPhi;
+    const north = -radial * sinPhi + z24 * cosPhi;
+    const up = radial * cosPhi + z24 * sinPhi;
     const altitude = Math.atan2(up, Math.hypot(east, north)) / RAD4;
     const azimuth = (Math.atan2(east, north) / RAD4 % 360 + 360) % 360;
     const hourAngle = ((theta - Math.atan2(y, x)) / RAD4 % 360 + 360) % 360;
-    const radius = body2 === "Sun" || body2 === "Moon" ? SKY_RADII_KM[body2] : 0;
-    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z23) * KM_PER_AU2)) / RAD4;
+    const radius = body3 === "Sun" || body3 === "Moon" ? SKY_RADII_KM[body3] : 0;
+    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z24) * KM_PER_AU2)) / RAD4;
     const limb = conventions.limb === "upper" ? 1 : conventions.limb === "lower" ? -1 : 0;
     const horizon = -conventions.refractionArcmin / 60 - limb * semiDiameter;
     return { above: altitude - horizon, altitude, azimuth, hourAngle };
@@ -8291,12 +8291,12 @@ var BudgetSpent = class {
 };
 var HOUR_MS3 = 36e5;
 var offsetFrom = (target, value) => ((value - target + 540) % 360 + 360) % 360 - 180;
-function searchEvents(body2, site, conventions, fromMs, toMs, maxSamples, transits2) {
+function searchEvents(body3, site, conventions, fromMs, toMs, maxSamples, transits2) {
   const cache = /* @__PURE__ */ new Map();
   const state = (ms) => {
     let known = cache.get(ms);
     if (!known) {
-      known = stateAt2(body2, site, conventions, ms);
+      known = stateAt2(body3, site, conventions, ms);
       cache.set(ms, known);
     }
     return known;
@@ -8320,7 +8320,7 @@ function searchEvents(body2, site, conventions, fromMs, toMs, maxSamples, transi
   };
   const run2 = (value, target) => {
     if (budget < 1) throw new BudgetSpent();
-    const result = searchLongitudeCrossingsWith((_, date3) => value(state(date3.getTime())), body2, target, from, to, {
+    const result = searchLongitudeCrossingsWith((_, date3) => value(state(date3.getTime())), body3, target, from, to, {
       stepDays: STEP_DAYS,
       maxSamples: budget
     });
@@ -8357,13 +8357,13 @@ function windowFlags(events, first2, fromMs, toMs) {
   }
   return flags;
 }
-function eventsIn(body2, site, input, fromMs, toMs) {
-  const conventions = conventionsOf(body2, input);
+function eventsIn(body3, site, input, fromMs, toMs) {
+  const conventions = conventionsOf(body3, input);
   const maxSamples = budgetOf(input.maxSamples);
   if (!(toMs > fromMs)) throw new RangeError("The window must end after it starts.");
-  const search = searchEvents(body2, site, conventions, fromMs, toMs, maxSamples, true);
+  const search = searchEvents(body3, site, conventions, fromMs, toMs, maxSamples, true);
   const base = {
-    body: body2,
+    body: body3,
     observer: site,
     from: new Date(fromMs),
     to: new Date(toMs),
@@ -8381,8 +8381,8 @@ function eventsIn(body2, site, input, fromMs, toMs) {
     events: Object.freeze(search.events)
   });
 }
-function skyEvents(body2, observer, from, to, options) {
-  const name = bodyOf(body2);
+function skyEvents(body3, observer, from, to, options) {
+  const name = bodyOf(body3);
   const site = observerOf(observer);
   const input = optionsOf(options, ["limb", "refraction", "maxSamples"], "options");
   return eventsIn(name, site, input, dateFrom(from, "from").getTime(), dateFrom(to, "to").getTime());
@@ -8400,8 +8400,8 @@ function calendarDateMs(value) {
 function offsetOf(value, site) {
   return value === void 0 ? site.longitude * 4 : numberIn(value, -1080, 1080, "utcOffsetMinutes");
 }
-function skyEventsOn(body2, observer, date3, options) {
-  const name = bodyOf(body2);
+function skyEventsOn(body3, observer, date3, options) {
+  const name = bodyOf(body3);
   const site = observerOf(observer);
   const input = optionsOf(options, ["limb", "refraction", "maxSamples", "utcOffsetMinutes"], "options");
   const fromMs = calendarDateMs(date3) - offsetOf(input.utcOffsetMinutes, site) * 6e4;
@@ -8462,8 +8462,8 @@ var HOUR = 36e5;
 function first(events, kind) {
   return events.find((event2) => event2.kind === kind);
 }
-function upInWindow(body2, observer, at, until) {
-  const ahead = skyEvents(body2, observer, at, new Date(at.getTime() + 24 * HOUR));
+function upInWindow(body3, observer, at, until) {
+  const ahead = skyEvents(body3, observer, at, new Date(at.getTime() + 24 * HOUR));
   if (ahead.status !== "complete") return false;
   if (ahead.flags.includes("never-sets")) return true;
   if (ahead.flags.includes("never-rises")) return false;
@@ -8494,7 +8494,7 @@ function eveningSky(observer, date3, utcOffsetMinutes) {
   const goldenHour = goldenStart && sunset && goldenStart.getTime() < sunset.getTime() ? { start: goldenStart.toISOString(), end: sunset.toISOString() } : null;
   const moonHigh = first(moon.events, "upper-transit");
   const evening = dusk ?? sunset;
-  const planetsAfterDusk = evening ? EVENING_PLANETS.filter((body2) => upInWindow(body2, observer, evening, new Date(evening.getTime() + EVENING_HOURS * HOUR))) : [];
+  const planetsAfterDusk = evening ? EVENING_PLANETS.filter((body3) => upInWindow(body3, observer, evening, new Date(evening.getTime() + EVENING_HOURS * HOUR))) : [];
   return {
     date: date3,
     utcOffsetMinutes,
@@ -8581,14 +8581,14 @@ var OCCASION_BODIES = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Sa
 function skyAt(instant4) {
   if (Number.isNaN(instant4.getTime())) throw new RangeError("skyAt needs a valid instant.");
   const rows3 = positions(instant4);
-  const bodies = OCCASION_BODIES.map((body2) => {
-    const row = rows3.find((candidate) => candidate.body === body2);
-    if (!row) throw new Error(`The engine returned no position for ${body2}.`);
+  const bodies = OCCASION_BODIES.map((body3) => {
+    const row = rows3.find((candidate) => candidate.body === body3);
+    if (!row) throw new Error(`The engine returned no position for ${body3}.`);
     return {
-      body: body2,
+      body: body3,
       sign: String(row.sign),
       degree: Math.round(row.degree * 10) / 10,
-      retrograde: body2 !== "Sun" && body2 !== "Moon" && row.retrograde
+      retrograde: body3 !== "Sun" && body3 !== "Moon" && row.retrograde
     };
   });
   const phase = moonPhase(instant4);
@@ -8646,8 +8646,8 @@ async function occasionCard(input, clock2) {
     const offsetMinutes2 = Math.round((utcInstant(date3, "12:00").getTime() - noon2.getTime()) / 6e4);
     evening = eveningSky({ latitude: place2.lat, longitude: place2.lon }, date3, offsetMinutes2);
   }
-  const sign4 = (body2) => sky.bodies.find((row) => row.body === body2).sign;
-  const words = OCCASION_WORDS[input.occasion];
+  const sign4 = (body3) => sky.bodies.find((row) => row.body === body3).sign;
+  const words2 = OCCASION_WORDS[input.occasion];
   return {
     input,
     instant: instant4.toISOString(),
@@ -8655,9 +8655,9 @@ async function occasionCard(input, clock2) {
     moonSignChange,
     evening,
     words: {
-      title: words.title,
+      title: words2.title,
       interpretation: sunMoonLine(sign4("Sun"), sign4("Moon")),
-      closing: words.closing
+      closing: words2.closing
     }
   };
 }
@@ -8695,7 +8695,7 @@ function weighOccasionDate(occasion, sky) {
     score2 += points;
     weighed.push({ points, reason });
   };
-  const place2 = (body2) => sky.bodies.find((row) => row.body === body2);
+  const place2 = (body3) => sky.bodies.find((row) => row.body === body3);
   const retro = new Set(sky.retrograde);
   const venus = place2("Venus");
   const moon = place2("Moon");
@@ -9954,11 +9954,11 @@ function normalizeLongitude2(lon) {
 function signIndexOf(lon) {
   return Math.min(11, Math.floor(normalizeLongitude2(lon) / 30));
 }
-function settledSignIndex(body2, lon, timeKnown) {
+function settledSignIndex(body3, lon, timeKnown) {
   if (!Number.isFinite(lon)) return null;
   const index = signIndexOf(lon);
   if (timeKnown) return index;
-  const reach = DAILY_REACH[body2];
+  const reach = DAILY_REACH[body3];
   if (reach === void 0) return null;
   const within = normalizeLongitude2(lon) - index * 30;
   return within >= reach && 30 - within >= reach ? index : null;
@@ -10066,8 +10066,8 @@ function boundaryDistance(entry) {
 
 // src/lib/sharing/twins.ts
 function twinSigns(chart) {
-  const sun = chart.bodies.find((body2) => body2.body === "Sun");
-  const moon = chart.bodies.find((body2) => body2.body === "Moon");
+  const sun = chart.bodies.find((body3) => body3.body === "Sun");
+  const moon = chart.bodies.find((body3) => body3.body === "Moon");
   const index = sun ? settledSignIndex("Sun", sun.lon, chart.input.timeKnown) : null;
   return { sun: index === null ? null : SIGNS2[index].slug, moon: chart.input.timeKnown && moon && Number.isFinite(moon.lon) ? signForLongitude2(moon.lon).slug : null };
 }
@@ -18812,7 +18812,7 @@ async function personChart(person2, fallback2, clock2) {
     houseSystem: "whole",
     timeKnown
   });
-  const lonOf2 = (body2) => chart.bodies.find((row) => row.body === body2)?.lon ?? Number.NaN;
+  const lonOf2 = (body3) => chart.bodies.find((row) => row.body === body3)?.lon ?? Number.NaN;
   const angles = timeKnown && placed ? chart.angles : null;
   return {
     person: person2,
@@ -26273,31 +26273,31 @@ function ingresses(fromT, toT) {
 }
 function aspects(fromT, toT, bodies) {
   if (!(toT > fromT)) return [];
-  const pairs = bodies.flatMap((body2) => OFFSETS2.map(([type, offset]) => ({ body: body2, type, offset })));
-  const separation3 = (body2, angle, t) => delta(bodyLongitude(body2, new Date(t)) + angle, bodyLongitude("Moon", new Date(t)));
+  const pairs = bodies.flatMap((body3) => OFFSETS2.map(([type, offset]) => ({ body: body3, type, offset })));
+  const separation3 = (body3, angle2, t) => delta(bodyLongitude(body3, new Date(t)) + angle2, bodyLongitude("Moon", new Date(t)));
   const out = [];
   let prevT = fromT;
-  const prev = pairs.map(({ body: body2, offset }) => separation3(body2, offset, prevT));
+  const prev = pairs.map(({ body: body3, offset }) => separation3(body3, offset, prevT));
   while (prevT < toT) {
     const t = Math.min(prevT + DAY_MS5 / 8, toT);
     const moonLon = bodyLongitude("Moon", new Date(t));
-    const bodyLons = new Map(bodies.map((body2) => [body2, bodyLongitude(body2, new Date(t))]));
-    pairs.forEach(({ body: body2, type, offset }, i) => {
-      const cur = delta((bodyLons.get(body2) ?? 0) + offset, moonLon);
+    const bodyLons = new Map(bodies.map((body3) => [body3, bodyLongitude(body3, new Date(t))]));
+    pairs.forEach(({ body: body3, type, offset }, i) => {
+      const cur = delta((bodyLons.get(body3) ?? 0) + offset, moonLon);
       const before2 = prev[i];
       if (cur === 0 && before2 !== 0 && Math.abs(before2) < 90) {
-        out.push({ at: new Date(t), body: body2, aspect: type, moonLon, ...around(t, ASPECT_STEP_MS, fromT, toT) });
+        out.push({ at: new Date(t), body: body3, aspect: type, moonLon, ...around(t, ASPECT_STEP_MS, fromT, toT) });
       } else if (before2 !== 0 && cur !== 0 && Math.sign(cur) !== Math.sign(before2) && Math.abs(cur) < 90 && Math.abs(before2) < 90) {
         let lo = prevT;
         let hi = t;
         const rising = cur > before2;
         for (let k = 0; k < 26; k += 1) {
           const mid = (lo + hi) / 2;
-          if (separation3(body2, offset, mid) > 0 === rising) hi = mid;
+          if (separation3(body3, offset, mid) > 0 === rising) hi = mid;
           else lo = mid;
         }
         const at = new Date(hi);
-        out.push({ at, body: body2, aspect: type, moonLon: bodyLongitude("Moon", at), ...around(hi, ASPECT_STEP_MS, fromT, toT) });
+        out.push({ at, body: body3, aspect: type, moonLon: bodyLongitude("Moon", at), ...around(hi, ASPECT_STEP_MS, fromT, toT) });
       }
       prev[i] = cur;
     });
@@ -27560,10 +27560,10 @@ var PLANET_LABELS = {
     "South Node": "Nodo Sud"
   }
 };
-function planetLabel(locale, body2) {
+function planetLabel(locale, body3) {
   const catalogLocale = requireCatalogLocale(locale);
-  if (catalogLocale === "ru") return russianRuntime().astrology.planets[body2] ?? body2;
-  return PLANET_LABELS[catalogLocale][body2] ?? body2;
+  if (catalogLocale === "ru") return russianRuntime().astrology.planets[body3] ?? body3;
+  return PLANET_LABELS[catalogLocale][body3] ?? body3;
 }
 
 // src/lib/return-visits/copy.ts
@@ -28426,8 +28426,8 @@ var skyCalendarData = z3.object({
   note: z3.string()
 });
 var PLANET_ORDER = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
-function listWords(words) {
-  return words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} and ${words.at(-1)}`;
+function listWords(words2) {
+  return words2.length < 2 ? words2.join("") : `${words2.slice(0, -1).join(", ")} and ${words2.at(-1)}`;
 }
 var iso2 = (value) => new Date(value).toISOString();
 function feedContents() {
@@ -28790,14 +28790,14 @@ function aspectKey(a, type, b) {
   const second = NATAL_PLANET_ORDER.indexOf(b);
   return first2 >= 0 && second >= 0 && first2 > second ? `${b}:${type}:${a}` : `${a}:${type}:${b}`;
 }
-function planetInHouseLine(body2, house, opts = {}) {
-  const curated = CURATED[`${body2}:${house}`];
+function planetInHouseLine(body3, house, opts = {}) {
+  const curated = CURATED[`${body3}:${house}`];
   if (curated) return curated;
-  const verb = PLACED[body2];
+  const verb = PLACED[body3];
   const theme = NATAL_HOUSE_THEME[house];
-  if (!verb || !theme) return `Your ${body2} occupies the ${ORDINAL[house] ?? `${house}th`} house.`;
-  if (opts.withTheme === false) return `Your ${body2} ${verb} the ${ORDINAL[house]} house too.`;
-  return `Your ${body2} ${verb} the ${ORDINAL[house]} house: ${theme}.`;
+  if (!verb || !theme) return `Your ${body3} occupies the ${ORDINAL[house] ?? `${house}th`} house.`;
+  if (opts.withTheme === false) return `Your ${body3} ${verb} the ${ORDINAL[house]} house too.`;
+  return `Your ${body3} ${verb} the ${ORDINAL[house]} house: ${theme}.`;
 }
 function natalAspectLine(a, type, b) {
   const curated = NATAL_ASPECT_LINES[aspectKey(a, type, b)];
@@ -28955,8 +28955,8 @@ var ORDINAL2 = [
   "eleventh",
   "twelfth"
 ];
-function isNode(body2) {
-  return body2 === "North Node" || body2 === "South Node";
+function isNode(body3) {
+  return body3 === "North Node" || body3 === "South Node";
 }
 function signContext(sign4) {
   const essence = signTagline(sign4);
@@ -28970,26 +28970,26 @@ function houseContext(house) {
   if (!theme) return `It falls in house ${house}, the life area where this placement is most likely to show up.`;
   return `The ${ORDINAL2[house] ?? `${house}th`} house brings it into ${theme}.`;
 }
-function motionContext(body2, speed) {
+function motionContext(body3, speed) {
   if (speed == null) return void 0;
-  if (isNode(body2)) {
+  if (isNode(body3)) {
     return speed < 0 ? "The negative speed is normal: lunar nodes usually move backward through the zodiac. Astrologers do not read this like a retrograde planet." : "The true node can briefly move forward. That motion does not make it a planet or make this interpretation stronger.";
   }
   if (speed >= 0) return void 0;
-  return `${body2} appeared to move backward from Earth when you were born. Astrology calls this retrograde; the planet did not reverse its orbit.`;
+  return `${body3} appeared to move backward from Earth when you were born. Astrology calls this retrograde; the planet did not reverse its orbit.`;
 }
-function placementContext(body2, signSlug7, house, speed) {
-  const theme = NATAL_BODY_THEME[body2];
+function placementContext(body3, signSlug7, house, speed) {
+  const theme = NATAL_BODY_THEME[body3];
   const sign4 = signBySlug(signSlug7);
   const location = houseContext(house);
   const housePhrase = house == null ? "The missing birth time means the life area remains open." : `The ${ORDINAL2[house] ?? `${house}th`} house shows the life area where that pattern is most visible.`;
-  const synthesis = isNode(body2) ? `${sign4.name} describes the style of ${theme.topic}. ${housePhrase} This is a symbolic lens, not a prediction or fixed destiny.` : `${sign4.name} shapes your ${theme.topic}; ${housePhrase} It describes a tendency, not a guarantee of what will happen.`;
+  const synthesis = isNode(body3) ? `${sign4.name} describes the style of ${theme.topic}. ${housePhrase} This is a symbolic lens, not a prediction or fixed destiny.` : `${sign4.name} shapes your ${theme.topic}; ${housePhrase} It describes a tendency, not a guarantee of what will happen.`;
   return {
     what: theme.what,
     how: signContext(sign4),
     where: location,
     synthesis,
-    motionNote: motionContext(body2, speed)
+    motionNote: motionContext(body3, speed)
   };
 }
 
@@ -29320,7 +29320,7 @@ function birthTimeNote(date3, time2, zone10, resolved) {
 }
 var slugAt2 = (index) => index === null ? null : SIGNS2[index].slug;
 var signName4 = (slug) => SIGNS2.find((sign4) => sign4.slug === slug).name;
-var placementUrl = (origin, body2, slug) => `${origin}/learn/placements/${body2.toLowerCase()}-in-${slug}/`;
+var placementUrl = (origin, body3, slug) => `${origin}/learn/placements/${body3.toLowerCase()}-in-${slug}/`;
 async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), options = {}) {
   const date3 = parseCivilDate(args.birthDate);
   if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
@@ -29335,50 +29335,50 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/
   const placidus = !!options.skyEvents && "houseSystem" in args && args.houseSystem === "placidus";
   const chart = computeChart3({ utc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: placidus ? "placidus" : "whole", timeKnown });
   const angles = timeKnown && placed ? chart.angles : null;
-  let possible = (body2) => [slugAt2(signIndexForLongitude2(lonOf(chart, body2)))];
+  let possible = (body3) => [slugAt2(signIndexForLongitude2(lonOf(chart, body3)))];
   let dayEnds = [];
   if (!timeKnown) {
     const [first2, last2] = args.zone ? [await localInstant2(args.birthDate, "00:00", args.zone, longitude2, clock2), await localInstant2(args.birthDate, "23:59", args.zone, longitude2, clock2)] : [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR3), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR3)];
     dayEnds = [first2, last2];
     const ends = [first2, last2].map((at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }));
-    possible = (body2) => {
-      const indices = new Set(ends.map((end) => signIndexForLongitude2(lonOf(end, body2))));
-      const [from, to] = [lonOf(ends[0], body2), lonOf(ends[1], body2)];
+    possible = (body3) => {
+      const indices = new Set(ends.map((end) => signIndexForLongitude2(lonOf(end, body3))));
+      const [from, to] = [lonOf(ends[0], body3), lonOf(ends[1], body3)];
       const [a, b] = [signIndexForLongitude2(from), signIndexForLongitude2(to)];
       const step = (to - from + 540) % 360 - 180 < 0 ? 11 : 1;
       if (a !== b) for (let index = a; index !== b; index = (index + step) % 12) indices.add(index);
       return [...indices].map((index) => SIGNS2[index].slug);
     };
   }
-  const settled = (body2) => timeKnown || possible(body2).length === 1 ? possible(body2)[0] : null;
+  const settled = (body3) => timeKnown || possible(body3).length === 1 ? possible(body3)[0] : null;
   const houseFor = (lon) => angles && chart.houses ? houseOf(lon, chart.houses.cusps) : null;
-  const planets = PLANETS2.map((body2) => {
-    const row = chart.bodies.find((entry) => entry.body === body2);
-    const sign4 = settled(body2);
+  const planets = PLANETS2.map((body3) => {
+    const row = chart.bodies.find((entry) => entry.body === body3);
+    const sign4 = settled(body3);
     const house = sign4 ? houseFor(row.lon) : null;
-    const context = sign4 ? placementContext(body2, sign4, house, row.speed) : null;
+    const context = sign4 ? placementContext(body3, sign4, house, row.speed) : null;
     return {
-      body: body2,
+      body: body3,
       sign: sign4,
-      possibleSigns: possible(body2),
+      possibleSigns: possible(body3),
       position: sign4 ? formatLongitude(row.lon) : null,
       retrograde: row.retrograde,
       house,
       signLine: context ? context.how : null,
-      houseLine: house ? planetInHouseLine(body2, house) : null,
-      pageUrl: sign4 ? placementUrl(origin, body2, sign4) : null
+      houseLine: house ? planetInHouseLine(body3, house) : null,
+      pageUrl: sign4 ? placementUrl(origin, body3, sign4) : null
     };
   });
   const sun = planets[0];
   const moon = planets[1];
   const risingSlug = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
-  const aspectBodies = new Set(timeKnown ? PLANETS2 : PLANETS2.filter((body2) => body2 !== "Moon"));
+  const aspectBodies = new Set(timeKnown ? PLANETS2 : PLANETS2.filter((body3) => body3 !== "Moon"));
   const aspects2 = chart.aspects.filter((aspect2) => aspectBodies.has(aspect2.a) && aspectBodies.has(aspect2.b)).sort((a, b) => a.orb - b.orb || a.a.localeCompare(b.a) || a.b.localeCompare(b.b)).slice(0, NATAL_TOP_ASPECTS).map((aspect2) => ({ a: aspect2.a, b: aspect2.b, type: aspect2.type, orb: Math.round(aspect2.orb * 10) / 10, line: natalAspectLine(aspect2.a, aspect2.type, aspect2.b) }));
-  const weatherBodies = PLANETS2.map((body2) => {
-    const row = chart.bodies.find((entry) => entry.body === body2);
-    return { body: body2, lon: row.lon, retrograde: row.retrograde, sign: settled(body2) ?? void 0 };
+  const weatherBodies = PLANETS2.map((body3) => {
+    const row = chart.bodies.find((entry) => entry.body === body3);
+    return { body: body3, lon: row.lon, retrograde: row.retrograde, sign: settled(body3) ?? void 0 };
   });
-  const weather = chartWeather(weatherBodies, angles ? (body2) => houseFor(chart.bodies.find((entry) => entry.body === body2).lon) : void 0);
+  const weather = chartWeather(weatherBodies, angles ? (body3) => houseFor(chart.bodies.find((entry) => entry.body === body3).lon) : void 0);
   const unknown = [];
   if (!timeKnown) {
     unknown.push("No birth time was given, so the rising sign and the houses are unknown, and the chart is cast for midday.");
@@ -29404,17 +29404,17 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/
     const entry = big(kind, slug, options2, url);
     return { ...entry, meaning: entry.meaning ? guard(entry.meaning) : null };
   };
-  const node = (body2) => {
-    const row = chart.bodies.find((entry) => entry.body === body2);
-    const sign4 = settled(body2);
+  const node = (body3) => {
+    const row = chart.bodies.find((entry) => entry.body === body3);
+    const sign4 = settled(body3);
     const house = sign4 ? houseFor(row.lon) : null;
-    const context = sign4 ? placementContext(body2, sign4, house, row.speed) : null;
+    const context = sign4 ? placementContext(body3, sign4, house, row.speed) : null;
     return {
       sign: sign4,
-      possibleSigns: possible(body2),
+      possibleSigns: possible(body3),
       position: sign4 ? formatLongitude(row.lon) : null,
       house,
-      meaning: guard(NATAL_BODY_THEME[body2].what),
+      meaning: guard(NATAL_BODY_THEME[body3].what),
       signLine: context ? guard(context.how) : null,
       houseLine: context && house ? guard(context.where) : null
     };
@@ -29432,9 +29432,9 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/
     const sign4 = timeKnown || possibleSigns.length === 1 ? possibleSigns[0] : null;
     if (!sign4) unknown.push(`Chiron changed sign that day, from ${possibleSigns.map(signName4).join(" to ")}; the birth time settles it.`);
     const house = sign4 ? houseFor(here.lon) : null;
-    const aspects3 = PLANETS2.filter((body2) => aspectBodies.has(body2)).flatMap((body2) => {
-      const match = matchAspect2("Chiron", here.lon, body2, lonOf(chart, body2));
-      return match ? [{ body: body2, type: match.def.type, orb: match.orb }] : [];
+    const aspects3 = PLANETS2.filter((body3) => aspectBodies.has(body3)).flatMap((body3) => {
+      const match = matchAspect2("Chiron", here.lon, body3, lonOf(chart, body3));
+      return match ? [{ body: body3, type: match.def.type, orb: match.orb }] : [];
     }).sort((a, b) => a.orb - b.orb || PLANETS2.indexOf(a.body) - PLANETS2.indexOf(b.body)).map((aspect2) => ({ body: aspect2.body, type: aspect2.type, orb: Math.round(aspect2.orb * 10) / 10, line: guard(chironAspectLine(aspect2.type, aspect2.body)) }));
     return {
       about: CHIRON_ABOUT,
@@ -29490,8 +29490,8 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/
   ];
   return { data: withNodes ?? data, links };
 }
-function lonOf(chart, body2) {
-  return chart.bodies.find((row) => row.body === body2).lon;
+function lonOf(chart, body3) {
+  return chart.bodies.find((row) => row.body === body3).lon;
 }
 
 // src/ai-tools/features/horoscope-period.ts
@@ -32932,9 +32932,9 @@ import { z as z7 } from "zod";
 
 // src/lib/engine/returns.ts
 var DAY11 = 864e5;
-function findLongitudeCrossings2(body2, targetLon, from, to, stepDays = 5) {
+function findLongitudeCrossings2(body3, targetLon, from, to, stepDays = 5) {
   if (!(to.getTime() > from.getTime())) return [];
-  return findLongitudeCrossingsWith(bodyLongitude2, body2, targetLon, from, to, stepDays);
+  return findLongitudeCrossingsWith(bodyLongitude2, body3, targetLon, from, to, stepDays);
 }
 function groupIntoSeasons2(crossings, gapDays = 400) {
   const seasons = [];
@@ -33034,7 +33034,7 @@ var STEP_DAYS2 = {
   Pluto: 5
 };
 var TRANSIT_BODY_SET = new Set(TRANSIT_BODY_ORDER);
-var BODY_INDEX = new Map(TRANSIT_BODY_ORDER.map((body2, index) => [body2, index]));
+var BODY_INDEX = new Map(TRANSIT_BODY_ORDER.map((body3, index) => [body3, index]));
 var NATAL_INDEX = new Map(
   NATAL_POINT_ORDER.map((point2, index) => [point2, index])
 );
@@ -33057,17 +33057,17 @@ function angularError(targetLon, transitLon) {
 function signedAngularDelta(referenceLon, lon) {
   return ((lon - referenceLon + 540) % 360 + 360) % 360 - 180;
 }
-function isTransitBody(body2) {
-  return TRANSIT_BODY_SET.has(body2);
+function isTransitBody(body3) {
+  return TRANSIT_BODY_SET.has(body3);
 }
 function natalTransitPoints(chart) {
   const byBody = /* @__PURE__ */ new Map();
   for (const position3 of chart.bodies) {
     if (isTransitBody(position3.body)) byBody.set(position3.body, normalizeLongitude3(position3.lon));
   }
-  const points = TRANSIT_BODY_ORDER.flatMap((body2) => {
-    const lon = byBody.get(body2);
-    return lon === void 0 ? [] : [{ name: body2, lon }];
+  const points = TRANSIT_BODY_ORDER.flatMap((body3) => {
+    const lon = byBody.get(body3);
+    return lon === void 0 ? [] : [{ name: body3, lon }];
   });
   if (chart.angles) {
     points.push(
@@ -33085,7 +33085,7 @@ function selectedTransitBodies(options) {
   const selected = new Set(options.transitBodies ?? DEFAULT_TRANSIT_BODIES);
   if (options.includeMoon) selected.add("Moon");
   else selected.delete("Moon");
-  return TRANSIT_BODY_ORDER.filter((body2) => selected.has(body2));
+  return TRANSIT_BODY_ORDER.filter((body3) => selected.has(body3));
 }
 function selectedNatalPoints(natal, options) {
   const points = natalTransitPoints(natal);
@@ -33098,10 +33098,10 @@ function selectedAspects(options) {
   const selected = new Set(options.aspects);
   return MAJOR_ASPECT_ORDER.filter((aspect2) => selected.has(aspect2));
 }
-function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
-  const referenceLon = ephemeris.bodyLongitude(body2, new Date((fromMs + toMs) / 2));
+function refineLongitudeExtremum(ephemeris, body3, fromMs, toMs, maximize) {
+  const referenceLon = ephemeris.bodyLongitude(body3, new Date((fromMs + toMs) / 2));
   const valueAt2 = (time2) => {
-    const lon = ephemeris.bodyLongitude(body2, new Date(time2));
+    const lon = ephemeris.bodyLongitude(body3, new Date(time2));
     return referenceLon + signedAngularDelta(referenceLon, lon);
   };
   let lo = fromMs;
@@ -33128,21 +33128,21 @@ function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
   }
   return new Date(bestMs);
 }
-function stationBreakpoints(ephemeris, body2, from, to, stepDays) {
+function stationBreakpoints(ephemeris, body3, from, to, stepDays) {
   const stations = [];
   const stepMs = stepDays * DAY12;
   const toMs = to.getTime();
   let previousMs = from.getTime();
-  let previousSpeed = ephemeris.longitudeSpeed(body2, from);
+  let previousSpeed = ephemeris.longitudeSpeed(body3, from);
   while (previousMs < toMs) {
     const currentMs = Math.min(previousMs + stepMs, toMs);
-    const currentSpeed = ephemeris.longitudeSpeed(body2, new Date(currentMs));
+    const currentSpeed = ephemeris.longitudeSpeed(body3, new Date(currentMs));
     const previousSign = Math.sign(previousSpeed);
     const currentSign = Math.sign(currentSpeed);
     if (!(previousSign === 0 && currentSign === 0) && (previousSign === 0 || currentSign === 0 || previousSign !== currentSign)) {
       stations.push(refineLongitudeExtremum(
         ephemeris,
-        body2,
+        body3,
         Math.max(from.getTime(), previousMs - stepMs),
         Math.min(toMs, currentMs + stepMs),
         previousSpeed > currentSpeed
@@ -33264,7 +33264,7 @@ function solarReturnsIn(natalSunLon, window) {
 }
 function yearScan(natal, from, to) {
   const window = clipToReferenceSpan(from, to);
-  const scan = (body2, lon, step) => window ? findLongitudeCrossings2(body2, lon, window.from, window.to, step) : [];
+  const scan = (body3, lon, step) => window ? findLongitudeCrossings2(body3, lon, window.from, window.to, step) : [];
   const solarReturns = window ? solarReturnsIn(natal.sunLon, window) : [];
   const points = [
     { name: "Sun", lon: natal.sunLon }
@@ -33272,13 +33272,13 @@ function yearScan(natal, from, to) {
   if (natal.moonLon != null) points.push({ name: "Moon", lon: natal.moonLon });
   if (natal.ascLon != null) points.push({ name: "ASC", lon: natal.ascLon });
   const aspects2 = [];
-  for (const body2 of ["Jupiter", "Saturn"]) {
+  for (const body3 of ["Jupiter", "Saturn"]) {
     for (const point2 of points) {
       for (const { aspect: aspect2, offsets } of ASPECT_OFFSETS2) {
-        const crossings = offsets.flatMap((off) => scan(body2, (point2.lon + off) % 360)).sort((a, b) => a.at.getTime() - b.at.getTime());
+        const crossings = offsets.flatMap((off) => scan(body3, (point2.lon + off) % 360)).sort((a, b) => a.at.getTime() - b.at.getTime());
         for (const season of groupIntoSeasons2(crossings, 300)) {
           aspects2.push({
-            body: body2,
+            body: body3,
             aspect: aspect2,
             natal: point2.name,
             from: season.first.toISOString(),
@@ -33684,7 +33684,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   const shownZone = args.currentZone ?? args.zone ?? "UTC";
   const today2 = dateIn(now, shownZone);
-  const lon = (body2) => chart.bodies.find((row) => row.body === body2).lon;
+  const lon = (body3) => chart.bodies.find((row) => row.body === body3).lon;
   const under18 = isUnder18(args.birthDate, today2);
   const guard = (text2) => under18 ? softenMinor(softenHealth(text2)) : softenHealth(text2);
   const sun = natalSunSign(args, timeKnown, lon("Sun"), longitude2, clock2);
@@ -33694,7 +33694,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
   if (under18) limits2.push(MINOR_NOTE);
   if (!timeKnown) limits2.push("No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.");
   else if (!placed) limits2.push("No birthplace coordinates were given, so the rising degree and the Midheaven are left out.");
-  const points = [...TRANSIT_BODY_ORDER.filter((body2) => timeKnown || body2 !== "Moon"), ...angles ? ["ASC", "MC"] : []];
+  const points = [...TRANSIT_BODY_ORDER.filter((body3) => timeKnown || body3 !== "Moon"), ...angles ? ["ASC", "MC"] : []];
   const pageUrl = `${origin}/transits/`;
   const mode = args.mode ?? "window";
   if (mode === "window") {
@@ -33710,7 +33710,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
     const toUtc2 = await startOfDay(nextDay, shownZone, clock2);
     const planets = days <= TRANSITS_PERSONAL_DAYS ? [...DEFAULT_TRANSIT_BODIES] : [...SLOW_TRANSIT_BODIES];
     if (days > TRANSITS_PERSONAL_DAYS) limits2.push(`Windows longer than ${TRANSITS_PERSONAL_DAYS} days list only Jupiter, Saturn, Uranus, Neptune and Pluto; ask for a shorter window for the Sun, Mercury, Venus and Mars.`);
-    const natal2 = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles };
+    const natal2 = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body3, lon: at }) => ({ body: body3, lon: at })), angles };
     const pad2 = transitLoopPadDays(planets);
     const expandedFrom = new Date(Math.max(SPAN_START, fromUtc2.getTime() - pad2 * DAY13));
     const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY13));
@@ -33751,11 +33751,11 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const scan = yearScan({ sunLon: lon("Sun"), moonLon: timeKnown ? lon("Moon") : null, ascLon: angles ? angles.asc : null, birthUtc }, fromUtc, toUtc);
   const sunSign = SIGNS2[signIndexForLongitude2(lon("Sun"))].slug;
   const risingSign = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
-  const natalBodies = chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body) && (timeKnown || row.body !== "Moon")).map(({ body: body2, lon: at }) => ({ body: body2, lon: at }));
+  const natalBodies = chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body) && (timeKnown || row.body !== "Moon")).map(({ body: body3, lon: at }) => ({ body: body3, lon: at }));
   const ingressWindows = ingresses_default.windows;
   const ingresses2 = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
   const ingressSign = new Map(ingressWindows.map((window) => [`${window.planet}|${window.from}`, window.sign]));
-  const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles: null };
+  const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body3, lon: at }) => ({ body: body3, lon: at })), angles: null };
   const outerPoints = ["Sun", ...timeKnown ? ["Moon"] : [], ...YEAR_AHEAD_PERSONAL_POINTS];
   const slowContacts = [
     ...scanTransitContacts(natal, fromUtc, toUtc, { transitBodies: ["Jupiter", "Saturn"], natalPoints: YEAR_AHEAD_PERSONAL_POINTS }),
@@ -36460,8 +36460,8 @@ function matchTopic(query, options = {}) {
   const placement = matchPlacement(query);
   if (placement) return topics.find((topic) => topic.key === placement.planet.toLowerCase());
   if (matchRising(query)) return topics.find((topic) => topic.key === "rising-sign");
-  const angle = matchAngleSign(query);
-  if (angle) return topics.find((topic) => topic.key === angle.angle);
+  const angle2 = matchAngleSign(query);
+  if (angle2) return topics.find((topic) => topic.key === angle2.angle);
   if (DIGNITY.test(clean(query))) return topics.find((topic) => topic.key === "rulership");
   const folded2 = fold(query);
   if (!folded2) return null;
@@ -36480,9 +36480,9 @@ function risingParts(sign4) {
     related: [sign4.slug, "big-three"]
   };
 }
-function angleParts({ angle, sign: sign4 }) {
-  const name = angle === "midheaven" ? "Midheaven" : "IC";
-  const house = angle === "midheaven" ? 10 : 4;
+function angleParts({ angle: angle2, sign: sign4 }) {
+  const name = angle2 === "midheaven" ? "Midheaven" : "IC";
+  const house = angle2 === "midheaven" ? 10 : 4;
   return {
     title: `${name} in ${sign4.name}`,
     paragraphs: [
@@ -36613,8 +36613,8 @@ function signPairAnswer(query, a, b, friendship, origin) {
 }
 function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
   const keys = keysFor(options);
-  const words = clean(args.topic);
-  const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
+  const words2 = clean(args.topic);
+  const outside = OUT_OF_SCOPE.find((name) => ` ${words2} `.includes(` ${name} `));
   const pair = outside ? null : matchSignPair(args.topic);
   if (pair) return signPairAnswer(args.topic, pair.a, pair.b, pair.friendship, origin);
   const topic = outside ? null : matchTopic(args.topic, options);
@@ -36642,16 +36642,16 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
   const noSuchHouseLine = noSuchHouse ? `There is no ${noSuchHouseName}; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.` : null;
   const glossaryLead = lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : [];
   const extra = topic.extra?.() ?? [];
-  const body2 = topic.key === "saturn-return" || topic.plainFirst ? [...extra, ...glossaryLead] : [...glossaryLead, ...extra];
+  const body3 = topic.key === "saturn-return" || topic.plainFirst ? [...extra, ...glossaryLead] : [...glossaryLead, ...extra];
   const paragraphs = [
     ...noSuchHouseLine ? [noSuchHouseLine] : [],
-    ...body2
+    ...body3
   ].filter((paragraph2, index, all) => paragraph2 && all.indexOf(paragraph2) === index).map(softenHealth);
   const chiron = topic.key === "chiron";
   const placement = noSuchHouse || chiron ? null : matchPlacement(args.topic);
   const rising = noSuchHouse || placement || chiron ? null : matchRising(args.topic);
-  const angle = noSuchHouse || placement || rising || chiron ? null : matchAngleSign(args.topic);
-  const placed = chiron ? chironParts(args.topic) : placement ? placementParts(placement) : rising ? risingParts(rising) : angle ? angleParts(angle) : null;
+  const angle2 = noSuchHouse || placement || rising || chiron ? null : matchAngleSign(args.topic);
+  const placed = chiron ? chironParts(args.topic) : placement ? placementParts(placement) : rising ? risingParts(rising) : angle2 ? angleParts(angle2) : null;
   if (placed) paragraphs.push(...placed.paragraphs.map(softenHealth));
   const pages = [...placed?.pages ?? [], ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data = {
@@ -36787,11 +36787,11 @@ function countryFold(hint) {
   return COUNTRY_ALIAS[folded2] ?? folded2;
 }
 function countryMatches(country, hint) {
-  const words = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
+  const words2 = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
   const wanted = countryFold(hint);
   const name = fold2(country);
-  if (!words(wanted).trim()) return name === wanted;
-  return words(name).includes(words(wanted)) || words(wanted).includes(words(name));
+  if (!words2(wanted).trim()) return name === wanted;
+  return words2(name).includes(words2(wanted)) || words2(wanted).includes(words2(name));
 }
 function queryVariants(place2) {
   const query = foldedQuery(place2);
@@ -40741,9 +40741,9 @@ function lineOf(event2, at, until, eclipseOn) {
   switch (event2.kind) {
     case "solar-eclipse":
     case "lunar-eclipse": {
-      const body2 = event2.kind === "solar-eclipse" ? "solar" : "lunar";
+      const body3 = event2.kind === "solar-eclipse" ? "solar" : "lunar";
       const minutes = event2.extra?.totalMinutes;
-      return `${cap9(event2.type)} ${body2} eclipse at ${where}: ${ECLIPSE_LINE[`${body2}:${event2.type}`]}${minutes ? `, with totality lasting about ${minutes} minutes` : ""}.`;
+      return `${cap9(event2.type)} ${body3} eclipse at ${where}: ${ECLIPSE_LINE[`${body3}:${event2.type}`]}${minutes ? `, with totality lasting about ${minutes} minutes` : ""}.`;
     }
     case "station":
       return event2.type === "retrograde" ? `${event2.planet} stands still at ${where} and turns retrograde: from here it appears to move backward through the zodiac.` : `${event2.planet} stands still at ${where} and turns direct: from here it moves forward through the zodiac again.`;
@@ -40822,7 +40822,7 @@ async function searchSkyEvents(args, clock2, options) {
   }
   if (kinds.includes("ingress")) {
     const outside = [];
-    for (const planet2 of (planets ?? SKY_EVENT_PLANETS).filter((body2) => body2 !== "Chiron")) {
+    for (const planet2 of (planets ?? SKY_EVENT_PLANETS).filter((body3) => body3 !== "Chiron")) {
       for (const ingress of ingressesOf(planet2, rows3)) if (inside(ingress.at)) raw.push(ingress);
       const horizon = ingressHorizon(planet2);
       if (from < horizon.from || to >= horizon.to) outside.push(planet2 === "Sun" ? "the Sun" : planet2);
@@ -40834,11 +40834,11 @@ async function searchSkyEvents(args, clock2, options) {
   }
   const budget = new SampleBudget("events.samples");
   if (kinds.includes("station")) {
-    for (const body2 of STATION_BODIES) {
-      if (planets && !planets.includes(body2)) continue;
-      for (const crossing of stationCrossings(body2, start, end, budget, rows3)) {
-        const lon = rowOf(rows3(crossing.at), body2).lon;
-        raw.push({ kind: "station", at: crossing.at, planet: body2, sign: SIGNS2[signIndexForLongitude2(lon)].slug, lon, type: crossing.retrograde ? "retrograde" : "direct" });
+    for (const body3 of STATION_BODIES) {
+      if (planets && !planets.includes(body3)) continue;
+      for (const crossing of stationCrossings(body3, start, end, budget, rows3)) {
+        const lon = rowOf(rows3(crossing.at), body3).lon;
+        raw.push({ kind: "station", at: crossing.at, planet: body3, sign: SIGNS2[signIndexForLongitude2(lon)].slug, lon, type: crossing.retrograde ? "retrograde" : "direct" });
       }
     }
   }
@@ -41761,11 +41761,11 @@ function birthDayEnds(date3, midday, local) {
 }
 function cachedLongitude(longitudeAt2) {
   const cache = /* @__PURE__ */ new Map();
-  return (body2, date3) => {
-    const key2 = `${body2}|${date3.getTime()}`;
+  return (body3, date3) => {
+    const key2 = `${body3}|${date3.getTime()}`;
     let value = cache.get(key2);
     if (value === void 0) {
-      value = longitudeAt2(body2, date3);
+      value = longitudeAt2(body3, date3);
       cache.set(key2, value);
     }
     return value;
@@ -41968,7 +41968,7 @@ var yearScoreData = z12.object({
 });
 function natalPointsAt(utc, timeKnown) {
   const chart = computeChart3({ utc, houseSystem: "whole", timeKnown });
-  const lon = (body2) => chart.bodies.find((row) => row.body === body2).lon;
+  const lon = (body3) => chart.bodies.find((row) => row.body === body3).lon;
   return { natal: { Sun: lon("Sun"), Moon: timeKnown ? lon("Moon") : null, Mercury: lon("Mercury"), Venus: lon("Venus"), Mars: lon("Mars") }, sunLon: lon("Sun") };
 }
 async function birthInstant3(birthDate, time2, timeZone, clock2, longitude2) {
@@ -41984,7 +41984,7 @@ function settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2) {
   const { sign: sign4 } = settledSunSign(ends, sunLonAt);
   return sign4 === null ? null : SIGNS2[sign4].slug;
 }
-function scoreFrom(natal, start, longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3))) {
+function scoreFrom(natal, start, longitudeAt2 = cachedLongitude((body3, date3) => bodyLongitude2(body3, date3))) {
   return scoreYear(natal, longitudeAt2, start);
 }
 async function untimedDayEnds(birthDate, timeZone, midday, clock2, longitude2) {
@@ -41999,7 +41999,7 @@ async function untimedDayEnds(birthDate, timeZone, midday, clock2, longitude2) {
   return birthDayEnds(birthDate, midday, local);
 }
 function exactPasses(natal, year) {
-  const bodies = Object.entries(natal).filter((entry) => entry[1] !== null).map(([body2, lon]) => ({ body: body2, lon }));
+  const bodies = Object.entries(natal).filter((entry) => entry[1] !== null).map(([body3, lon]) => ({ body: body3, lon }));
   const from = /* @__PURE__ */ new Date(`${year.from}T00:00:00Z`);
   const to = new Date(Date.parse(`${year.to}T00:00:00Z`) + DAY16);
   return year.drivers.map((driver) => scanTransitContacts({ bodies, angles: null }, from, to, { transitBodies: [driver.planet], natalPoints: [driver.point], aspects: [driver.aspect] }).map((contact2) => contact2.exactUtc.slice(0, 10)));
@@ -42048,7 +42048,7 @@ async function getYearScore(args, now, clock2, origin) {
   const utc = await birthInstant3(birthDate, time2, timeZone, clock2, longitude2);
   const { natal } = natalPointsAt(utc, timeKnown);
   const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2);
-  const longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3));
+  const longitudeAt2 = cachedLongitude((body3, date3) => bodyLongitude2(body3, date3));
   const year = scoreFrom(natal, startDate, longitudeAt2);
   const scoreRange2 = timeKnown ? null : birthDayRange(natal, (at) => natalPointsAt(at, false).natal, await untimedDayEnds(birthDate, timeZone, utc, clock2, longitude2), longitudeAt2, startDate);
   const reading = yearReading(year, guard);
@@ -42135,7 +42135,7 @@ var JUPITER_FOCUS = {
   pisces: "imagination, compassion, and restorative space"
 };
 function planetsOnlyReturnReading(bodies, aspects2) {
-  const strongest = [...aspects2].filter((aspect2) => ![aspect2.a, aspect2.b].some((body2) => body2 === "Moon" || body2.includes("Node"))).sort((left, right) => left.orb - right.orb)[0];
+  const strongest = [...aspects2].filter((aspect2) => ![aspect2.a, aspect2.b].some((body3) => body3 === "Moon" || body3.includes("Node"))).sort((left, right) => left.orb - right.orb)[0];
   if (strongest) {
     const left = RETURN_ROLE[strongest.a] ?? strongest.a.toLowerCase();
     const right = RETURN_ROLE[strongest.b] ?? strongest.b.toLowerCase();
@@ -42147,7 +42147,7 @@ function planetsOnlyReturnReading(bodies, aspects2) {
       receipt: `${strongest.a} ${strongest.type} ${strongest.b} \xB7 ${strongest.orb.toFixed(1)}\xB0 orb`
     };
   }
-  const jupiter = bodies.find((body2) => body2.body === "Jupiter");
+  const jupiter = bodies.find((body3) => body3.body === "Jupiter");
   if (jupiter) {
     const sign4 = signForLongitude2(jupiter.lon);
     return {
@@ -42225,7 +42225,7 @@ var MOON_TONE = {
 var cap10 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 function solarReturnThemes(chart) {
   const themes = [];
-  const at = (body2) => chart.bodies.find((row) => row.body === body2)?.lon;
+  const at = (body3) => chart.bodies.find((row) => row.body === body3)?.lon;
   const sun = at("Sun");
   if (chart.asc !== null) {
     const sign4 = signForLongitude2(chart.asc);
@@ -42250,7 +42250,7 @@ function solarReturnThemes(chart) {
     const sign4 = signForLongitude2(saturn);
     themes.push({ kind: "saturn", title: `Saturn in ${sign4.name}`, line: `The year's serious work is ${SATURN_FOCUS[sign4.slug]}.`, basis: `Saturn in ${sign4.name}` });
   }
-  const strongest = [...chart.aspects].filter((aspect2) => ![aspect2.a, aspect2.b].some((body2) => body2 === "Moon" || body2.includes("Node"))).sort((a, b) => a.orb - b.orb)[0];
+  const strongest = [...chart.aspects].filter((aspect2) => ![aspect2.a, aspect2.b].some((body3) => body3 === "Moon" || body3.includes("Node"))).sort((a, b) => a.orb - b.orb)[0];
   if (strongest) {
     const reading = planetsOnlyReturnReading(chart.bodies, chart.aspects);
     themes.push({ kind: "aspect", title: `${strongest.a} ${strongest.type} ${strongest.b}`, line: reading.text, basis: reading.receipt });
@@ -43091,21 +43091,21 @@ var DIRECTION_HALF_SPAN_MS = 3e4;
 var TURN_RESOLUTION_MS = 1e3;
 var direction = (from, to) => Math.sign(((to - from) % 360 + 540) % 360 - 180);
 function dayTurns(lonAt, start, end) {
-  const moving = (body2, ms) => direction(lonAt(body2, new Date(ms - DIRECTION_HALF_SPAN_MS)), lonAt(body2, new Date(ms + DIRECTION_HALF_SPAN_MS)));
+  const moving = (body3, ms) => direction(lonAt(body3, new Date(ms - DIRECTION_HALF_SPAN_MS)), lonAt(body3, new Date(ms + DIRECTION_HALF_SPAN_MS)));
   const out = [];
   const first2 = start.getTime();
   const last2 = end.getTime();
   if (!(last2 > first2)) return out;
-  const turned = (body2, ms) => out.push({ body: body2, lon: lonAt(body2, new Date(ms)), at: new Date(ms) });
-  for (const body2 of TURNING_POINTS) {
-    const opening = moving(body2, first2);
-    const closing = moving(body2, last2);
+  const turned = (body3, ms) => out.push({ body: body3, lon: lonAt(body3, new Date(ms)), at: new Date(ms) });
+  for (const body3 of TURNING_POINTS) {
+    const opening = moving(body3, first2);
+    const closing = moving(body3, last2);
     if (opening === 0) {
-      turned(body2, first2);
+      turned(body3, first2);
       continue;
     }
     if (closing === 0) {
-      turned(body2, last2);
+      turned(body3, last2);
       continue;
     }
     if (opening === closing) continue;
@@ -43113,7 +43113,7 @@ function dayTurns(lonAt, start, end) {
     let hi = last2;
     while (hi - lo > TURN_RESOLUTION_MS) {
       const mid = lo + Math.floor((hi - lo) / 2);
-      const now = moving(body2, mid);
+      const now = moving(body3, mid);
       if (now === 0) {
         lo = mid;
         hi = mid;
@@ -43122,7 +43122,7 @@ function dayTurns(lonAt, start, end) {
       if (now === opening) lo = mid;
       else hi = mid;
     }
-    turned(body2, lo + Math.floor((hi - lo) / 2));
+    turned(body3, lo + Math.floor((hi - lo) / 2));
   }
   return out;
 }
@@ -43374,11 +43374,11 @@ function pageChart(input) {
 }
 function pageLongitudes() {
   const seen = /* @__PURE__ */ new Map();
-  return (body2, at) => {
-    const key2 = `${body2} ${at.getTime()}`;
+  return (body3, at) => {
+    const key2 = `${body3} ${at.getTime()}`;
     let lon = seen.get(key2);
     if (lon === void 0) {
-      lon = onPageEphemeris(() => bodyLongitude2(body2, at));
+      lon = onPageEphemeris(() => bodyLongitude2(body3, at));
       seen.set(key2, lon);
     }
     return lon;
@@ -43710,7 +43710,7 @@ async function retrogradeForMe(args, context) {
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon);
     const ends = await retrogradeBirthDayEnds(args, context.localTime);
-    const rows3 = ends.map((end) => POINT_NAMES.map((body2) => ({ body: body2, lon: pageLon(body2, end) })));
+    const rows3 = ends.map((end) => POINT_NAMES.map((body3) => ({ body: body3, lon: pageLon(body3, end) })));
     dayEnds = [rows3[0], rows3[1]];
     turns = dayTurns(pageLon, ends[0], ends[1]);
     sunHeld = rows3.every((end) => signIndexForLongitude2(end.find((row) => row.body === "Sun").lon) === sunIndex);
@@ -43788,12 +43788,752 @@ var retrogradeForMeTool = definePersonalTool({
   run: (args, context) => retrogradeForMe(args, context)
 });
 
-// src/ai-tools/personal/vedic-signs.ts
+// src/ai-tools/personal/astrocartography.ts
 import { z as z17 } from "zod";
 
-// node_modules/@zodiacs/engine/dist/chunk-JRMBVSRS.js
+// src/lib/astrocartography/lines.ts
+var ACG_BODIES = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var ACG_ANGLES = ["ASC", "DSC", "MC", "IC"];
 var DEG8 = Math.PI / 180;
-var ARCSEC4 = DEG8 / 3600;
+var EARTH_RADIUS_KM = 6371.0088;
+function wrapLongitude(lon) {
+  const wrapped = ((lon + 180) % 360 + 360) % 360 - 180;
+  return wrapped === -180 ? 180 : wrapped;
+}
+function mcLongitude(body3, gast) {
+  return wrapLongitude(body3.ra - gast);
+}
+function horizonLongitude(body3, gast, latitude, angle2) {
+  const x = -Math.tan(latitude * DEG8) * Math.tan(body3.dec * DEG8);
+  if (!Number.isFinite(x) || Math.abs(x) > 1) return null;
+  const h0 = Math.acos(x) / DEG8;
+  return wrapLongitude(body3.ra + (angle2 === "ASC" ? -h0 : h0) - gast);
+}
+function horizonLine(body3, gast, angle2, stepDegrees = 0.5, maxLatitude = 85) {
+  const points = [];
+  if (Math.abs(Math.tan(body3.dec * DEG8)) < 1e-9) {
+    const lon = wrapLongitude(body3.ra + (angle2 === "ASC" ? -90 : 90) - gast);
+    for (let lat = -maxLatitude; lat <= maxLatitude + 1e-9; lat += stepDegrees) points.push({ lat, lon });
+    return points;
+  }
+  for (let h = stepDegrees / 2; h < 180; h += stepDegrees) {
+    const lat = Math.atan(-Math.cos(h * DEG8) / Math.tan(body3.dec * DEG8)) / DEG8;
+    if (Math.abs(lat) > maxLatitude) continue;
+    points.push({ lat, lon: wrapLongitude(body3.ra + (angle2 === "ASC" ? -h : h) - gast) });
+  }
+  points.sort((a, b) => a.lat - b.lat);
+  const filled = [];
+  const fill = (from, to) => {
+    if (to - from <= stepDegrees) return;
+    for (let k = Math.max(0, Math.floor((from + maxLatitude) / stepDegrees)); ; k += 1) {
+      const lat = -maxLatitude + k * stepDegrees;
+      if (lat >= to || lat > maxLatitude + 1e-9) break;
+      if (lat <= from) continue;
+      const lon = horizonLongitude(body3, gast, lat, angle2);
+      if (lon !== null) filled.push({ lat, lon });
+    }
+  };
+  let previous = -maxLatitude - stepDegrees;
+  for (const point2 of points) {
+    fill(previous, point2.lat);
+    filled.push(point2);
+    previous = point2.lat;
+  }
+  fill(previous, maxLatitude + stepDegrees);
+  return filled;
+}
+function distanceKm(a, b) {
+  const dLat = (b.lat - a.lat) * DEG8;
+  const dLon = (b.lon - a.lon) * DEG8;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * DEG8) * Math.cos(b.lat * DEG8) * Math.sin(dLon / 2) ** 2;
+  return 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+function distanceToMeridianKm(place2, longitude2) {
+  const dLon = (longitude2 - place2.lon) * DEG8;
+  if (Math.cos(dLon) < 0) return (90 - Math.abs(place2.lat)) * DEG8 * EARTH_RADIUS_KM;
+  return Math.asin(Math.min(1, Math.abs(Math.sin(dLon)) * Math.cos(place2.lat * DEG8))) * EARTH_RADIUS_KM;
+}
+function distanceToPolylineKm(place2, line) {
+  if (!line.length) return Infinity;
+  let best = Infinity;
+  let at = 0;
+  line.forEach((point2, index) => {
+    const d = distanceKm(place2, point2);
+    if (d < best) {
+      best = d;
+      at = index;
+    }
+  });
+  for (const neighbour of [at - 1, at + 1]) {
+    const other = line[neighbour];
+    if (!other) continue;
+    const from = line[at];
+    const otherLon = from.lon + wrapLongitude(other.lon - from.lon);
+    let lo = 0;
+    let hi = 1;
+    const at_ = (t) => distanceKm(place2, { lat: from.lat + (other.lat - from.lat) * t, lon: from.lon + (otherLon - from.lon) * t });
+    for (let i = 0; i < 30; i += 1) {
+      const m1 = lo + (hi - lo) * 0.382;
+      const m2 = lo + (hi - lo) * 0.618;
+      if (at_(m1) < at_(m2)) hi = m2;
+      else lo = m1;
+    }
+    best = Math.min(best, at_((lo + hi) / 2));
+  }
+  return best;
+}
+function sideOf(place2, lineLongitude) {
+  if (lineLongitude === null) return null;
+  return wrapLongitude(lineLongitude - place2.lon) >= 0 ? "east" : "west";
+}
+function lineDistances(place2, bodies, gast) {
+  const rows3 = [];
+  for (const body3 of bodies) {
+    const mc = mcLongitude(body3, gast);
+    const ic = wrapLongitude(mc + 180);
+    rows3.push({ body: body3.body, angle: "MC", km: distanceToMeridianKm(place2, mc), side: sideOf(place2, mc) });
+    rows3.push({ body: body3.body, angle: "IC", km: distanceToMeridianKm(place2, ic), side: sideOf(place2, ic) });
+    for (const angle2 of ["ASC", "DSC"]) {
+      rows3.push({ body: body3.body, angle: angle2, km: distanceToPolylineKm(place2, horizonLine(body3, gast, angle2, 0.25, 89.9)), side: sideOf(place2, horizonLongitude(body3, gast, place2.lat, angle2)) });
+    }
+  }
+  return rows3.sort((a, b) => a.km - b.km || ACG_BODIES.indexOf(a.body) - ACG_BODIES.indexOf(b.body) || ACG_ANGLES.indexOf(a.angle) - ACG_ANGLES.indexOf(b.angle));
+}
+var STRONG_KM = 300;
+var NOTICEABLE_KM = 800;
+function strengthOf(km) {
+  return km <= STRONG_KM ? "strong" : km <= NOTICEABLE_KM ? "noticeable" : "faint";
+}
+function eclipticToEquatorial2(lon, lat, obliquity) {
+  const l = lon * DEG8;
+  const b = lat * DEG8;
+  const e = obliquity * DEG8;
+  const ra = Math.atan2(Math.sin(l) * Math.cos(e) - Math.tan(b) * Math.sin(e), Math.cos(l)) / DEG8;
+  const dec = Math.asin(Math.sin(b) * Math.cos(e) + Math.cos(b) * Math.sin(e) * Math.sin(l)) / DEG8;
+  return { ra: (ra % 360 + 360) % 360, dec };
+}
+function ramcFromMc(mc, obliquity) {
+  const ra = Math.atan2(Math.sin(mc * DEG8) * Math.cos(obliquity * DEG8), Math.cos(mc * DEG8)) / DEG8;
+  return (ra % 360 + 360) % 360;
+}
+
+// src/lib/astrocartography/positions.ts
+function equatorialMoment(utc) {
+  const chart = computeChart3({ utc, latitude: 0, longitude: 0, houseSystem: "whole", timeKnown: true });
+  const centuries = (utc.getTime() / 864e5 + 24405875e-1 - 2451545) / 36525;
+  const obliquity = meanObliquity(centuries);
+  const gast = ramcFromMc(chart.angles.mc, obliquity);
+  const bodies = ACG_BODIES.map((body3) => {
+    const row = chart.bodies.find((entry) => entry.body === body3);
+    return { body: body3, ...eclipticToEquatorial2(row.lon, row.lat, obliquity) };
+  });
+  return { gast, bodies };
+}
+
+// src/lib/astrocartography/meanings.ts
+function under18At(birthDate, now) {
+  return isUnderAge(birthDate, earliestToday(now), 18);
+}
+var ANGLE_NAME = {
+  ASC: "rising",
+  DSC: "setting",
+  MC: "overhead",
+  IC: "underfoot"
+};
+var ANGLE_LABEL = {
+  ASC: "Ascendant line",
+  DSC: "Descendant line",
+  MC: "Midheaven line",
+  IC: "IC line"
+};
+var ANGLE_AREA = {
+  ASC: "how you come across and how you feel in yourself",
+  DSC: "the people you meet, partners and close collaborators",
+  MC: "work, reputation and your public life",
+  IC: "home, family, roots and private life"
+};
+var LINE_MEANING = {
+  Sun: {
+    ASC: "Traditionally a place where you feel visible and sure of yourself, with energy to start things and be recognised for them.",
+    DSC: "Traditionally a place where strong, confident people come into your life, and where partnerships put you in the spotlight.",
+    MC: "Traditionally one of the best lines for career and recognition: a place to lead, be seen and build a name.",
+    IC: "Traditionally a place to put down roots and feel at home in yourself, with family and private life at the centre."
+  },
+  Moon: {
+    ASC: "Traditionally a place where feelings run close to the surface and you are more sensitive, intuitive and approachable.",
+    DSC: "Traditionally a place for caring, close relationships, and for meeting people who feel like family.",
+    MC: "Traditionally a place where the public warms to you, good for work that involves people, care, food or the home.",
+    IC: "Traditionally one of the most homely lines: a place to feel settled, close to family and emotionally safe."
+  },
+  Mercury: {
+    ASC: "Traditionally a place where your mind is quick and busy, good for study, writing and talking your way into things.",
+    DSC: "Traditionally a place for lively conversation, useful contacts and partnerships built on ideas; a good line for contracts and negotiation.",
+    MC: "Traditionally strong for work in writing, teaching, media, trade and anything that runs on communication.",
+    IC: "Traditionally a place for a busy home, study, reading and keeping in touch with family."
+  },
+  Venus: {
+    ASC: "Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.",
+    DSC: "Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.",
+    MC: "Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.",
+    IC: "Traditionally a place for a beautiful, comfortable home and warm family life."
+  },
+  Mars: {
+    ASC: "Traditionally a place of drive and courage, good for physical activity and bold starts; tempers can run hotter here.",
+    DSC: "Traditionally a place for spirited, competitive relationships; partnerships are energising but can turn into contests.",
+    MC: "Traditionally a place to compete and push hard for career goals, good for ambition, sport and enterprise.",
+    IC: "Traditionally a busy, restless line for home life: good for building and renovating, harder for peace and quiet."
+  },
+  Jupiter: {
+    ASC: "Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.",
+    DSC: "Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.",
+    MC: "Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.",
+    IC: "Traditionally a place for a large, happy home, good for family, property and feeling well provided for."
+  },
+  Saturn: {
+    ASC: "Traditionally a place of hard work and seriousness, where you build discipline and lasting skill; it asks you to take rest seriously.",
+    DSC: "Traditionally a place for committed, long term partnerships with older or more established people, which take work to keep.",
+    MC: "Traditionally a place where career progress is slow but solid, and authority comes from patience and effort.",
+    IC: "Traditionally a place of responsibility at home, good for building something lasting, less so for ease."
+  },
+  Uranus: {
+    ASC: "Traditionally a place of change and independence, where you feel freer and more unconventional.",
+    DSC: "Traditionally a place for unusual, exciting relationships that may not follow the usual pattern.",
+    MC: "Traditionally a place for sudden turns in career, good for technology, innovation and working for yourself.",
+    IC: "Traditionally a restless line for home: frequent moves, unusual living arrangements and a need for space."
+  },
+  Neptune: {
+    ASC: "Traditionally a dreamy, inspiring place for art, music and spiritual life; boundaries can blur here.",
+    DSC: "Traditionally a place for idealistic, romantic relationships, where it helps to see people clearly before committing.",
+    MC: "Traditionally good for creative, healing or spiritual work, less so for a clear, steady career path; read the small print here.",
+    IC: "Traditionally a place for a peaceful retreat near water, good for rest and reflection."
+  },
+  Pluto: {
+    ASC: "Traditionally an intense line for deep personal change, where you feel more powerful and more private.",
+    DSC: "Traditionally a place for intense, transforming relationships, where power in partnerships matters.",
+    MC: "Traditionally a place to gain influence and work with power, research or big projects; it asks for staying power.",
+    IC: "Traditionally a place where family matters come to the surface and old patterns are worked through."
+  }
+};
+var LINE_MEANING_MINOR = {
+  Venus: {
+    ASC: "Places where ease and warmth come more readily, and you tend to feel at home in yourself.",
+    DSC: "Places where friendships and good company come easily."
+  },
+  Neptune: {
+    DSC: "Places where other people can seem larger than life; keep a clear head about who is who."
+  }
+};
+var MINOR_LEFT_OUT = /love|attract|romant|relationship|partner/iu;
+function lineMeaning(body3, angle2, minor = false) {
+  if (!minor) return LINE_MEANING[body3][angle2];
+  const own = LINE_MEANING_MINOR[body3]?.[angle2];
+  if (own) return own;
+  return MINOR_LEFT_OUT.test(LINE_MEANING[body3][angle2]) ? null : LINE_MEANING[body3][angle2];
+}
+function angleArea(angle2, minor = false) {
+  return minor && MINOR_LEFT_OUT.test(ANGLE_AREA[angle2]) ? null : ANGLE_AREA[angle2];
+}
+function lineSentence(body3, angle2, minor = false) {
+  const meaning = lineMeaning(body3, angle2, minor);
+  const area = angleArea(angle2, minor);
+  return `${body3} ${ANGLE_LABEL[angle2]} (${body3} ${ANGLE_NAME[angle2]})${area ? `, for ${area}` : ""}.${meaning ? ` ${meaning}` : ""}`;
+}
+var ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
+var ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
+function changeLength(minutes) {
+  if (minutes === 1) return "one minute";
+  return minutes === 60 ? "one hour" : minutes % 60 === 0 ? `${minutes / 60} hours` : `${minutes} minutes`;
+}
+function clockFoldLimit(minutes) {
+  return `Clocks repeated that ${minutes === 60 ? "hour" : "time"} where you were born. This map uses the earlier pass; the later one would move every line ${Number((minutes / 4).toFixed(2))} degrees east or west.`;
+}
+function clockGapLimit(minutes) {
+  return `That clock time did not exist where you were born: clocks jumped forward. This map uses the time ${changeLength(minutes)} later.`;
+}
+function clockChangeLimit(flags, jumpMinutes) {
+  const minutes = Math.round(jumpMinutes ?? 0);
+  if (minutes < 1) return null;
+  return flags.includes("dst-fold") ? clockFoldLimit(minutes) : flags.includes("dst-gap") ? clockGapLimit(minutes) : null;
+}
+function roundedDistanceKm(km) {
+  return Math.round(km / 10) * 10;
+}
+function farPlaceSummary(nearest) {
+  if (!nearest || nearest.km <= NOTICEABLE_KM) return null;
+  const distance2 = roundedDistanceKm(nearest.km).toLocaleString("en-GB");
+  return `No line within ${NOTICEABLE_KM} km; the nearest is the ${nearest.body} ${ANGLE_LABEL[nearest.angle]}, ${distance2} km.`;
+}
+
+// src/lib/astrocartography/share.ts
+var ASTROCARTOGRAPHY_SHARE_PATH = "/share/astrocartography/";
+var ASTROCARTOGRAPHY_SHARE_KEYS = Object.freeze(["p", "a", "ref"]);
+var PLANET_SLUG = (planet2) => planet2.toLowerCase();
+var ANGLE_SLUG = (angle2) => angle2.toLowerCase();
+function astrocartographyQuery(share, withRef2 = false) {
+  const params = new URLSearchParams({ p: PLANET_SLUG(share.planet), a: ANGLE_SLUG(share.angle) });
+  if (withRef2 && share.ref) params.set("ref", share.ref);
+  return params.toString();
+}
+function astrocartographyShareUrl(origin, line) {
+  return `${origin}${ASTROCARTOGRAPHY_SHARE_PATH}?${astrocartographyQuery({ ...line, ref: null })}`;
+}
+
+// src/lib/geo/place-label.ts
+function hash53(text2) {
+  let h1 = 3735928559;
+  let h2 = 1103547991;
+  for (let i = 0; i < text2.length; i += 1) {
+    const code = text2.charCodeAt(i);
+    h1 = Math.imul(h1 ^ code, 2654435761);
+    h2 = Math.imul(h2 ^ code, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ h1 >>> 16, 2246822507) ^ Math.imul(h2 ^ h2 >>> 13, 3266489909);
+  h2 = Math.imul(h2 ^ h2 >>> 16, 2246822507) ^ Math.imul(h1 ^ h1 >>> 13, 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+}
+function placeId(place2) {
+  const key2 = [place2.name, place2.admin1, place2.country, Math.round(place2.lat * 100), Math.round(place2.lon * 100)].join("|");
+  return `p${hash53(key2).toString(36).padStart(11, "0")}`;
+}
+function rowPoint(index, row) {
+  return { name: row[0], admin1: index.admin1[row[2]] ?? "", country: index.countries[row[3]] ?? "", lat: row[4] / 100, lon: row[5] / 100 };
+}
+function coordinateText(lat, lon) {
+  const part = (value, positive, negative) => `${Math.abs(value).toFixed(2)}\xB0 ${value < 0 ? negative : positive}`;
+  return `${part(lat, "N", "S")}, ${part(lon, "E", "W")}`;
+}
+function placeLabelText(place2) {
+  return [place2.name, place2.admin1, place2.country].filter(Boolean).join(", ");
+}
+function placeDistinctions(places) {
+  const counts = /* @__PURE__ */ new Map();
+  for (const place2 of places) counts.set(placeLabelText(place2), (counts.get(placeLabelText(place2)) ?? 0) + 1);
+  return places.map((place2) => (counts.get(placeLabelText(place2)) ?? 0) > 1 ? coordinateText(place2.lat, place2.lon) : "");
+}
+function distinctPlaceLabels(places) {
+  const extra = placeDistinctions(places);
+  return places.map((place2, i) => extra[i] ? `${placeLabelText(place2)} (${extra[i]})` : placeLabelText(place2));
+}
+
+// src/ai-tools/personal/astrocartography.ts
+var ACG_MAX_CITIES = 5;
+var ACG_LIST_LATITUDES = Array.from({ length: 31 }, (_, index) => -75 + index * 5);
+var round22 = (value) => Math.round(value * 100) / 100;
+var KM_PER_MILE = 1.609344;
+var astrocartographyInput = z17.strictObject({
+  ...birthFields,
+  time: birthFields.time.unwrap().describe("The birth time on the local clock, such as 08:30. Required: the lines move about 1 degree of longitude for every 4 minutes of birth time. Never guess it. Needs zone."),
+  zone: birthFields.zone.unwrap().describe("The birthplace's time zone, such as Europe/Madrid. Required."),
+  latitude: birthFields.latitude.describe("Optional. The birthplace's latitude, with longitude: it matters only for births on local mean time, before standard time zones. Nothing is stored."),
+  cities: z17.array(z17.string().trim().min(2).max(80)).max(ACG_MAX_CITIES).optional().describe(`Optional. Up to ${ACG_MAX_CITIES} towns or cities to check, such as "Lisbon" or "Paris, France" (a country after a comma when several places share the name). Names are matched against the place index bundled with Zodiacs and not sent anywhere or stored.`),
+  placeIds: z17.array(z17.string().trim().min(2).max(40)).max(ACG_MAX_CITIES).optional().describe(`Optional. The id of a place listed under ambiguous or didYouMean in an earlier answer, to check exactly that place. Up to ${ACG_MAX_CITIES} places in all, with cities.`)
+}).superRefine(refineBirth).superRefine((args, context) => {
+  if ((args.cities?.length ?? 0) + (args.placeIds?.length ?? 0) > ACG_MAX_CITIES) context.addIssue({ code: "custom", path: ["placeIds"], message: `Up to ${ACG_MAX_CITIES} places in all, with cities.` });
+});
+var body = z17.enum(ACG_BODIES);
+var angle = z17.enum(ACG_ANGLES);
+var nearLine = z17.object({
+  planet: body,
+  angle,
+  /** "Venus Descendant line". */
+  title: z17.string(),
+  distanceKm: z17.number().int().min(0),
+  distanceMiles: z17.number().int().min(0),
+  /** Which way the line lies along the place's own latitude, when the line reaches it. */
+  side: z17.enum(["east", "west"]).nullable(),
+  strength: z17.enum(["strong", "noticeable", "faint"]),
+  line: z17.string(),
+  /**
+   * A share card of this line alone: the planet and the angle, never the birth details or the place. Null while the
+   * website's page is switched off, and for a reading whose confidence is not the card's (no birthplace coordinates).
+   */
+  shareUrl: z17.url().nullable()
+});
+var placeChoice = z17.object({ id: z17.string(), name: z17.string(), region: z17.string(), country: z17.string(), label: z17.string() });
+var astrocartographyData = z17.object({
+  birthDate: z17.string(),
+  /** The birth instant the lines are for, UTC. */
+  instantUtc: z17.string(),
+  /** Greenwich apparent sidereal time at birth, degrees. */
+  siderealTimeDegrees: z17.number(),
+  lines: z17.array(z17.object({
+    planet: body,
+    /** East longitudes of the Midheaven and IC lines, degrees from −180 to 180 (negative is west). */
+    mcLongitude: z17.number(),
+    icLongitude: z17.number(),
+    /** Where the planet was rising and setting, at every 5 degrees of latitude it reaches from 75 south to 75 north. */
+    ascendant: z17.array(z17.object({ latitude: z17.number(), longitude: z17.number() })),
+    descendant: z17.array(z17.object({ latitude: z17.number(), longitude: z17.number() }))
+  })),
+  cities: z17.array(z17.object({
+    asked: z17.string(),
+    /** The place's id (placeIds reads it back). */
+    id: z17.string(),
+    name: z17.string(),
+    region: z17.string(),
+    country: z17.string(),
+    latitude: z17.number(),
+    longitude: z17.number(),
+    /** Nearby lines, closest first. Outside the noticeable range, only the nearest measurement is given. */
+    closest: z17.array(nearLine).max(12),
+    summary: z17.string()
+  })).max(ACG_MAX_CITIES),
+  /** Names that matched no town or city in the index. */
+  unmatched: z17.array(z17.string()).max(ACG_MAX_CITIES),
+  /** Names that match more than one place equally well, with the places they could be: ask which one is meant. */
+  ambiguous: z17.array(z17.object({
+    asked: z17.string(),
+    places: z17.array(placeChoice).min(2).max(5)
+  })).max(ACG_MAX_CITIES),
+  /** Names with a region or country that no place with the name is in, with the places of that name elsewhere: ask which one is meant. */
+  didYouMean: z17.array(z17.object({
+    asked: z17.string(),
+    places: z17.array(placeChoice).min(1).max(5)
+  })).max(ACG_MAX_CITIES),
+  readings: z17.object({ ASC: z17.string(), DSC: z17.string(), MC: z17.string(), IC: z17.string() }),
+  confidence: z17.number().int().min(40).max(95),
+  confidenceLabel: z17.string(),
+  limits: z17.array(z17.string()),
+  /** The /astrocartography/ page; null while the website's page is switched off (PUBLIC_ASTROCARTOGRAPHY_ENABLED). */
+  pageUrl: z17.url().nullable()
+});
+function equatorialBodies(utc) {
+  return equatorialMoment(utc).bodies;
+}
+function greenwichSiderealDegrees(utc) {
+  return equatorialMoment(utc).gast;
+}
+var words = (text2) => ` ${fold2(text2).replace(/[^a-z0-9]+/gu, " ").trim()} `;
+var partKeys = (text2) => text2.split(",").map((part) => words(part).trim());
+function splitCity(text2, joined = []) {
+  const raw = text2.split(",").map((part) => part.trim());
+  const keys = raw.map((part) => words(part).trim());
+  const parts = [];
+  for (let at = 0; at < raw.length; ) {
+    const run2 = joined.find((name) => name.length <= raw.length - at && name.every((key2, offset) => keys[at + offset] === key2))?.length ?? 1;
+    parts.push(raw.slice(at, at + run2).join(", "));
+    at += run2;
+  }
+  const [place2, ...hints] = parts;
+  return place2.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place: place2, hints } : { place: parts.join(", "), hints: [] };
+}
+var labelIndexes = /* @__PURE__ */ new WeakMap();
+function labelIndex(table) {
+  let index = labelIndexes.get(table);
+  if (index) return index;
+  const labels = /* @__PURE__ */ new Map();
+  const add = (key2, row) => {
+    const list3 = labels.get(key2);
+    if (list3) list3.push(row);
+    else labels.set(key2, [row]);
+  };
+  const joined = /* @__PURE__ */ new Map();
+  for (const shard of Object.values(table.shards)) {
+    for (const row of shard) {
+      const point2 = rowPoint(table.index, row);
+      const label2 = placeLabelText(point2);
+      add(partKeys(label2).join(","), row);
+      add(partKeys(`${label2} (${coordinateText(point2.lat, point2.lon)})`).join(","), row);
+      for (const name of [point2.name, ...row[1] === 0 ? [] : [String(row[1])], point2.admin1, point2.country]) {
+        if (name.includes(",")) joined.set(partKeys(name).join(","), partKeys(name));
+      }
+    }
+  }
+  for (const list3 of labels.values()) list3.sort((a, b) => b[7] - a[7]);
+  index = { labels, joined: [...joined.values()].sort((a, b) => b.length - a.length) };
+  labelIndexes.set(table, index);
+  return index;
+}
+function placeByLabel(table, text2) {
+  if (PLACE_ID.test(text2.trim())) {
+    const place2 = placeById(table, text2);
+    if (place2) return { place: place2 };
+  }
+  const rows3 = labelIndex(table).labels.get(partKeys(text2).join(","));
+  if (!rows3?.length) return null;
+  return rows3.length === 1 ? { place: toPlace(table, rows3[0]) } : { choices: rows3.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+}
+var PLACE_ID = /^p[0-9a-z]{11}$/u;
+var REGION_NAMES = /* @__PURE__ */ new Set(["england", "scotland", "wales", "northern ireland"]);
+var isRegionName = (hint) => REGION_NAMES.has(words(hint).trim());
+function regionMatches(hint, region) {
+  return words(hint).trim() !== "" && words(region).trim() === words(hint).trim();
+}
+var countryKey = (text2) => words(text2).trim().replace(/^the /u, "");
+var COUNTRY_ALIASES = foldedAliases({
+  UK: "United Kingdom",
+  "U.K.": "United Kingdom",
+  Britain: "United Kingdom",
+  "Great Britain": "United Kingdom",
+  US: "United States",
+  "U.S.": "United States",
+  USA: "United States",
+  "U.S.A.": "United States",
+  America: "United States",
+  "United States of America": "United States",
+  "US Virgin Islands": "U.S. Virgin Islands",
+  UAE: "United Arab Emirates",
+  "U.A.E.": "United Arab Emirates",
+  Holland: "Netherlands",
+  Korea: "South Korea",
+  "Republic of Korea": "South Korea",
+  DPRK: "North Korea",
+  "Czech Republic": "Czechia",
+  Burma: "Myanmar",
+  Swaziland: "Eswatini",
+  Macedonia: "North Macedonia",
+  "Cape Verde": "Cabo Verde",
+  "C\xF4te d'Ivoire": "Ivory Coast",
+  "C\xF4te d Ivoire": "Ivory Coast",
+  "East Timor": "Timor-Leste",
+  "Russian Federation": "Russia",
+  "Viet Nam": "Vietnam",
+  Macau: "Macao",
+  T\u00FCrkiye: "Turkey",
+  Palestine: "Palestinian Territory",
+  "Vatican City": "Vatican",
+  "Holy See": "Vatican",
+  DRC: "Democratic Republic of the Congo",
+  "DR Congo": "Democratic Republic of the Congo",
+  "D.R. Congo": "Democratic Republic of the Congo",
+  "Congo-Kinshasa": "Democratic Republic of the Congo",
+  "Congo-Brazzaville": "Republic of the Congo"
+});
+function foldedAliases(aliases) {
+  const folded2 = /* @__PURE__ */ Object.create(null);
+  for (const [alias, country] of Object.entries(aliases)) {
+    const key2 = countryKey(alias);
+    if (key2 in folded2 && folded2[key2] !== countryKey(country)) throw new Error(`Country alias ${alias} folds to a key that names another country`);
+    folded2[key2] = countryKey(country);
+  }
+  return folded2;
+}
+var countryWanted = (hint) => COUNTRY_ALIASES[countryKey(hint)] ?? countryKey(hint);
+function countryNameMatches(country, hint) {
+  const wanted = countryWanted(hint);
+  return wanted !== "" && countryKey(country) === wanted;
+}
+function countryHintMatches(hint, region, country) {
+  return isRegionName(hint) ? regionMatches(hint, region) : countryNameMatches(country, hint);
+}
+function hintsMatch(hints, region, country) {
+  if (hints.length === 1) {
+    const [hint] = hints;
+    return regionMatches(hint, region) || countryHintMatches(hint, region, country);
+  }
+  return hints.every((hint, index) => index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region));
+}
+var Fit = { Whole: 0, Words: 1, Longer: 2, Contains: 3 };
+function fitOf(names, query) {
+  let best = null;
+  for (const name of names) {
+    let fit = null;
+    if (name === query) fit = Fit.Whole;
+    else if (name.startsWith(query)) fit = /[\p{L}\p{N}]/u.test(name[query.length] ?? "") ? Fit.Longer : Fit.Words;
+    else if (query[2] && name[0] === query[0] && name.includes(query)) fit = Fit.Contains;
+    if (fit !== null && (best === null || fit < best)) best = fit;
+  }
+  return best;
+}
+var MINOR_SHARE = 0.1;
+var ACG_CHOICES = 5;
+function toPlace(table, row) {
+  const point2 = rowPoint(table.index, row);
+  return { id: placeId(point2), name: point2.name, region: point2.admin1, country: point2.country, latitude: point2.lat, longitude: point2.lon };
+}
+var byId = /* @__PURE__ */ new WeakMap();
+function placeById(table, id) {
+  let rows3 = byId.get(table);
+  if (!rows3) {
+    rows3 = /* @__PURE__ */ new Map();
+    for (const shard of Object.values(table.shards)) for (const row2 of shard) rows3.set(placeId(rowPoint(table.index, row2)), row2);
+    byId.set(table, rows3);
+  }
+  const row = rows3.get(id.trim());
+  return row ? toPlace(table, row) : null;
+}
+function resolvePlace(table, text2) {
+  const labelled = placeByLabel(table, text2);
+  if (labelled) return labelled;
+  const { place: place2, hints } = splitCity(text2, labelIndex(table).joined);
+  const named2 = /* @__PURE__ */ new Map();
+  for (const query of queryVariants(place2)) {
+    const key2 = shardKey(query);
+    for (const row of queryRows(table.index, table.shards[key2] ?? [], key2)) {
+      const fit = fitOf(row[1] === 0 ? [fold2(row[0])] : [fold2(row[0]), fold2(row[1])], query);
+      if (fit === null) continue;
+      const known = named2.get(row);
+      if (known === void 0 || fit < known) named2.set(row, fit);
+    }
+  }
+  const found = new Map([...named2].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? "", table.index.countries[row[3]] ?? "")));
+  const rows3 = (from, fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
+  const best = (from) => {
+    for (const fit of [Fit.Whole, Fit.Words, Fit.Longer, Fit.Contains]) {
+      const list3 = rows3(from, fit);
+      if (list3.length) return list3;
+    }
+    return [];
+  };
+  if (!found.size) {
+    const elsewhere = best(named2);
+    return elsewhere.length ? { suggestions: elsewhere.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) } : null;
+  }
+  const choose = (list3) => list3.length === 1 ? { place: toPlace(table, list3[0]) } : { choices: list3.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+  const whole = rows3(found, Fit.Whole);
+  if (whole.length) {
+    if (hints.length) return choose(whole);
+    const [largest, next] = whole;
+    if (next && next[7] >= largest[7] * MINOR_SHARE) return choose(whole);
+    const larger = rows3(found, Fit.Words).filter((row) => row[7] > largest[7]);
+    return larger.length ? choose([...larger, largest]) : choose([largest]);
+  }
+  const inPlace = best(found);
+  const wholeElsewhere = rows3(named2, Fit.Whole).filter((row) => !found.has(row));
+  if (wholeElsewhere.length && found.get(inPlace[0]) > Fit.Words) return { suggestions: [...wholeElsewhere, ...inPlace].slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+  return choose(inPlace);
+}
+function placeLabel(place2) {
+  return placeLabelText({ name: place2.name, admin1: place2.region, country: place2.country });
+}
+function choiceList(places) {
+  const labels = distinctPlaceLabels(places.map((place2) => ({ name: place2.name, admin1: place2.region, country: place2.country, lat: place2.latitude, lon: place2.longitude })));
+  const foldedKey = (label2) => partKeys(label2).join(",");
+  const folded2 = /* @__PURE__ */ new Map();
+  for (const label2 of labels) folded2.set(foldedKey(label2), (folded2.get(foldedKey(label2)) ?? 0) + 1);
+  return places.map((place2, index) => {
+    const label2 = (folded2.get(foldedKey(labels[index])) ?? 0) > 1 ? `${placeLabel(place2)} (${coordinateText(place2.latitude, place2.longitude)})` : labels[index];
+    return { id: place2.id, name: place2.name, region: place2.region, country: place2.country, label: label2 };
+  });
+}
+async function getAstrocartography(args, context) {
+  const natal = await castNatal(args, context.localTime);
+  const pageOn = context.pageOn === true;
+  const utc = natal.birthUtc;
+  const bodies = equatorialBodies(utc);
+  const gast = greenwichSiderealDegrees(utc);
+  const confidence = readingConfidence(natal.detail);
+  const confidenceLabel = readingConfidenceText(confidence);
+  const cardMatches = confidence === ACG_CONFIDENCE;
+  const under18 = under18At(args.birthDate, context.now);
+  const guard = (text2) => under18 ? softenMinor(text2) : text2;
+  const lines = bodies.map((entry) => {
+    const mc = mcLongitude(entry, gast);
+    const at = (which) => ACG_LIST_LATITUDES.flatMap((latitude) => {
+      const longitude2 = horizonLongitude(entry, gast, latitude, which);
+      return longitude2 === null ? [] : [{ latitude, longitude: round22(longitude2) }];
+    });
+    return { planet: entry.body, mcLongitude: round22(mc), icLongitude: round22(wrapLongitude(mc + 180)), ascendant: at("ASC"), descendant: at("DSC") };
+  });
+  const cities = [];
+  const unmatched = [];
+  const ambiguous = [];
+  const limits2 = [
+    "Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.",
+    `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`
+  ];
+  const clockChange = clockChangeLimit(natal.flags, natal.jumpMinutes);
+  if (clockChange) limits2.push(clockChange);
+  if (under18) limits2.push(MINOR_NOTE);
+  const asked = args.cities ?? [];
+  const ids = args.placeIds ?? [];
+  const didYouMean = [];
+  const readPlace = (text2, place2) => {
+    const point2 = { lat: place2.latitude, lon: place2.longitude };
+    const distances = lineDistances(point2, bodies, gast);
+    const far = farPlaceSummary(distances[0]);
+    const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
+    const closest = selected.map((row) => {
+      const distanceKm2 = roundedDistanceKm(row.km);
+      return {
+        planet: row.body,
+        angle: row.angle,
+        title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
+        distanceKm: distanceKm2,
+        distanceMiles: Math.round(distanceKm2 / KM_PER_MILE),
+        side: row.side,
+        strength: strengthOf(row.km),
+        line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
+        shareUrl: pageOn && cardMatches ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null
+      };
+    });
+    const strong = closest.filter((row) => row.strength === "strong");
+    const top = closest[0];
+    let summary = far;
+    if (!summary && strong.length) {
+      const meaning = lineMeaning(top.planet, top.angle, under18);
+      summary = `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}.${meaning ? ` ${guard(meaning)}` : ""}`;
+    }
+    summary ??= `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is still noticeable there.`;
+    cities.push({ asked: text2, id: place2.id, name: place2.name, region: place2.region, country: place2.country, latitude: roundCoordinate(place2.latitude), longitude: roundCoordinate(place2.longitude), closest, summary });
+  };
+  if (asked.length || ids.length) {
+    if (!context.placeTable) throw new RangeError("Town and city lookup is not offered here; leave out cities for the lines alone.");
+    const table = await context.placeTable();
+    const byIds = ids.map((id) => {
+      const place2 = placeById(table, id);
+      if (!place2) throw new RangeError("A place id is not in the index. Use an id from ambiguous or didYouMean, or name the place in cities.");
+      return [id, place2];
+    });
+    for (const text2 of asked) {
+      const resolved = resolvePlace(table, text2);
+      if (!resolved) unmatched.push(text2);
+      else if ("choices" in resolved) ambiguous.push({ asked: text2, places: choiceList(resolved.choices) });
+      else if ("suggestions" in resolved) didYouMean.push({ asked: text2, places: choiceList(resolved.suggestions) });
+      else readPlace(text2, resolved.place);
+    }
+    for (const [id, place2] of byIds) readPlace(id, place2);
+    for (const entry of ambiguous) {
+      const labels = entry.places.map((place2) => place2.label).join("; ");
+      const shared = entry.places.some((place2) => place2.label !== placeLabel(place2));
+      limits2.push(shared ? `More than one town or city matches ${entry.asked}: ${labels}. Some share a name, region and country, so choose one by its id in placeIds.` : `More than one town or city matches ${entry.asked}: ${labels}. Add the region or country after a comma to choose one, such as ${entry.places[0].label}.`);
+    }
+    for (const entry of didYouMean) limits2.push(`No town or city in the index matches ${entry.asked}. Did you mean ${entry.places.map((place2) => place2.label).join("; ")}? Ask which one is meant, then give its id in placeIds.`);
+    if (unmatched.length) limits2.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(", ")}. Try another spelling, or add the country after a comma.`);
+  }
+  return {
+    data: {
+      birthDate: args.birthDate,
+      instantUtc: utc.toISOString(),
+      siderealTimeDegrees: Math.round(gast * 1e4) / 1e4,
+      lines,
+      cities,
+      unmatched,
+      ambiguous,
+      didYouMean,
+      readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
+      confidence,
+      confidenceLabel,
+      limits: limits2,
+      pageUrl: pageOn ? `${context.origin}/astrocartography/` : null
+    },
+    links: [
+      ...pageOn ? [{ title: "Draw your map on Zodiacs (calculated in your browser)", url: `${context.origin}/astrocartography/` }] : [],
+      { title: "Resolve a town or city (find_birthplace)", url: `${context.origin}/birth-chart/` },
+      { title: "How we calculate", url: `${context.origin}/methodology/` }
+    ]
+  };
+}
+var astrocartographyTool = definePersonalTool({
+  name: "get_astrocartography",
+  title: "Your map lines",
+  summary: "astrocartography lines, and the lines nearest named towns and cities",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13, and this tool refuses anyone under 13. Ask for the birth date alone first, with a four-digit year, and while that date does not yet show the person is 13 or older, ask for no birth time, time zone or birthplace and do not call find_birthplace. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. A name with a region or country that no place of that name is in comes back under didYouMean; ask which one is meant. To check a place listed under ambiguous or didYouMean, give its id in placeIds. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  input: astrocartographyInput,
+  data: astrocartographyData,
+  // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
+  clockDependent: true,
+  pageFlag: "PUBLIC_ASTROCARTOGRAPHY_ENABLED",
+  example: { birthDate: "1990-05-03", time: "08:30", zone: "Europe/London", latitude: 51.51, longitude: -0.13, cities: ["Lisbon", "New York", "Tokyo"] },
+  run: async (args, context) => getAstrocartography(await withCheckedZone(args, context), context)
+});
+
+// src/ai-tools/personal/vedic-signs.ts
+import { z as z18 } from "zod";
+
+// node_modules/@zodiacs/engine/dist/chunk-JRMBVSRS.js
+var DEG9 = Math.PI / 180;
+var ARCSEC4 = DEG9 / 3600;
 var MAS = ARCSEC4 / 1e3;
 var J20004 = 2451545;
 var DAY_MS7 = 864e5;
@@ -43911,12 +44651,12 @@ function definitionOf(definition) {
   }
   return definition;
 }
-function longitudeIn(frame, x, y, z23) {
-  const [ex, ey] = meanEcliptic(frame, x, y, z23);
+function longitudeIn(frame, x, y, z24) {
+  const [ex, ey] = meanEcliptic(frame, x, y, z24);
   return Math.atan2(ey, ex);
 }
 function olderModelLongitude(model, jd) {
-  let zeta, z23, theta, eps;
+  let zeta, z24, theta, eps;
   if (model === "newcomb") {
     const B1850 = 239675820358095e-8;
     const CENTURY = 36524.2198781;
@@ -43925,20 +44665,20 @@ function olderModelLongitude(model, jd) {
     const sum = (4607.1096 + t * (2.7944 + 118e-6 * t) + (1.3972 + 118e-6 * t + 0.03632 * h) * h) * h;
     const diff = (0.79236 + 656e-6 * t + 328e-6 * h) * h * h;
     zeta = (sum - diff) / 2;
-    z23 = (sum + diff) / 2;
+    z24 = (sum + diff) / 2;
     theta = (2005.1125 - t * (0.85294 + 365e-6 * t) + (-0.42647 - 365e-6 * t - 0.041802 * h) * h) * h;
     const e = (jd - B1850) / CENTURY;
     eps = 84451.68 + e * (-46.837 + e * (-8752e-6 + 183e-5 * e));
   } else {
     const t = (jd - J20004) / 36525;
     zeta = t * (2306.2181 + t * (0.30188 + 0.017998 * t));
-    z23 = t * (2306.2181 + t * (1.09468 + 0.018203 * t));
+    z24 = t * (2306.2181 + t * (1.09468 + 0.018203 * t));
     theta = t * (2004.3109 + t * (-0.42665 - 0.041833 * t));
     eps = 84381.448 + t * (-46.815 + t * (-59e-5 + 1813e-6 * t));
   }
-  [zeta, z23, theta, eps] = [zeta * ARCSEC4, z23 * ARCSEC4, theta * ARCSEC4, eps * ARCSEC4];
-  const x = Math.cos(z23) * Math.cos(zeta) * Math.cos(theta) - Math.sin(z23) * Math.sin(zeta);
-  const y = Math.sin(z23) * Math.cos(zeta) * Math.cos(theta) + Math.cos(z23) * Math.sin(zeta);
+  [zeta, z24, theta, eps] = [zeta * ARCSEC4, z24 * ARCSEC4, theta * ARCSEC4, eps * ARCSEC4];
+  const x = Math.cos(z24) * Math.cos(zeta) * Math.cos(theta) - Math.sin(z24) * Math.sin(zeta);
+  const y = Math.sin(z24) * Math.cos(zeta) * Math.cos(theta) + Math.cos(z24) * Math.sin(zeta);
   const w = Math.cos(zeta) * Math.sin(theta);
   return Math.atan2(Math.cos(eps) * y + Math.sin(eps) * w, x);
 }
@@ -43961,13 +44701,13 @@ function bias(v) {
   const x1 = v[0] + alpha * v[1];
   const y1 = v[1] - alpha * v[0];
   const x2 = x1 - xi * v[2];
-  const z23 = v[2] + xi * x1;
-  return [x2, y1 - eta * z23, z23 + eta * y1];
+  const z24 = v[2] + xi * x1;
+  return [x2, y1 - eta * z24, z24 + eta * y1];
 }
 function apparentStar(s, time2) {
   refuseUnderSource("A star-anchored ayanamsa");
-  const ra = s.ra * DEG8;
-  const dec = s.dec * DEG8;
+  const ra = s.ra * DEG9;
+  const dec = s.dec * DEG9;
   const p0 = bias([Math.cos(dec) * Math.cos(ra), Math.cos(dec) * Math.sin(ra), Math.sin(dec)]);
   const east = bias([-Math.sin(ra), Math.cos(ra), 0]);
   const north = bias([-Math.sin(dec) * Math.cos(ra), -Math.sin(dec) * Math.sin(ra), Math.cos(dec)]);
@@ -43988,7 +44728,7 @@ function apparentStar(s, time2) {
   const em = Math.hypot(helio.x, helio.y, helio.z);
   const e = [helio.x / em, helio.y / em, helio.z / em];
   const pe = dot2(p, e);
-  const elongation = Math.acos(Math.min(1, Math.max(-1, -pe))) / DEG8;
+  const elongation = Math.acos(Math.min(1, Math.max(-1, -pe))) / DEG9;
   const w = SUN_SCHWARZSCHILD_AU / em / Math.max(1 + pe, 1e-6 / Math.max(em * em, 1));
   p = unit2([p[0] + w * (e[0] - pe * p[0]), p[1] + w * (e[1] - pe * p[1]), p[2] + w * (e[2] - pe * p[2])]);
   const v = [bary.vx / C_AU_PER_DAY, bary.vy / C_AU_PER_DAY, bary.vz / C_AU_PER_DAY];
@@ -44000,8 +44740,8 @@ function meanAyanamsa(definition, time2, frame) {
   switch (definition.kind) {
     case "epoch": {
       const { frame: at, correction } = frame;
-      const [x, y, z23] = eclipticFrame(time2.tt).rows;
-      return { value: definition.value + (correction - longitudeIn(at, x, y, z23)) / DEG8, elongation: null };
+      const [x, y, z24] = eclipticFrame(time2.tt).rows;
+      return { value: definition.value + (correction - longitudeIn(at, x, y, z24)) / DEG9, elongation: null };
     }
     case "linear": {
       const perDay = definition.rate / JULIAN_YEAR / 3600;
@@ -44009,8 +44749,8 @@ function meanAyanamsa(definition, time2, frame) {
       return { value: atJ2000 - 360 * Math.round(atJ2000 / 360) + perDay * time2.tt, elongation: null };
     }
     case "star": {
-      const { direction: [x, y, z23], elongation } = apparentStar(definition.star, time2);
-      return { value: longitudeIn(eclipticFrame(time2.tt), x, y, z23) / DEG8 - definition.longitude, elongation };
+      const { direction: [x, y, z24], elongation } = apparentStar(definition.star, time2);
+      return { value: longitudeIn(eclipticFrame(time2.tt), x, y, z24) / DEG9 - definition.longitude, elongation };
     }
   }
 }
@@ -44283,7 +45023,7 @@ var TRIMSAMSA = [
   { ends: [5, 12, 20, 25, 30], signs: [1, 5, 11, 9, 7] }
 ].map(({ ends, signs }) => ({ ends: ends.map((d) => d * 7560), signs }));
 var CIRCLE = 12 * SIGN_TICKS;
-var DEG9 = Math.PI / 180;
+var DEG10 = Math.PI / 180;
 var J20005 = Date.UTC(2e3, 0, 1, 12);
 var SPAN_FROM = Date.UTC(1800, 0, 1);
 var SPAN_TO = Date.UTC(2200, 0, 1);
@@ -44450,7 +45190,7 @@ var nakshatraOrdinal = (n) => ORDINALS[n];
 
 // src/lib/vedic-signs/reading.ts
 var POLAR_RISING_LIMIT = "The rising sign (lagna) is undefined at a geographic pole because there is no unique direction of east.";
-var round22 = (value) => Math.round(value * 100) / 100;
+var round23 = (value) => Math.round(value * 100) / 100;
 var label = (index) => `${SIGNS2[index].name} (${RASHIS[index]})`;
 var listOr = (names) => names.length < 3 ? names.join(" or ") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
 function signOf2(point2, line, timeKnown = true, tropicalRun = null) {
@@ -44459,7 +45199,7 @@ function signOf2(point2, line, timeKnown = true, tropicalRun = null) {
   return {
     sign: SIGNS2[index].slug,
     rashi: RASHIS[index],
-    degree: timeKnown ? Math.min(29.99, round22(point2.lon - index * 30)) : null,
+    degree: timeKnown ? Math.min(29.99, round23(point2.lon - index * 30)) : null,
     tropicalSign: tropical.length === 1 ? SIGNS2[tropical[0]].slug : null,
     tropicalCandidates: tropical.length === 1 ? [] : tropical.map((entry) => SIGNS2[entry].slug),
     line
@@ -44595,60 +45335,60 @@ function untimedInstant(noon2, span2, noonFlags) {
 }
 
 // src/ai-tools/personal/vedic-signs.ts
-var vedicSignsInput = z17.strictObject({
+var vedicSignsInput = z18.strictObject({
   ...birthFields,
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign (lagna). Give it with longitude and zone. Nothing is stored."),
-  ayanamsa: z17.enum(VEDIC_AYANAMSAS).optional().describe("The sidereal zodiac to use. lahiri (the default, the Indian government standard), raman, krishnamurti, fagan-bradley, yukteswar or true-chitra.")
+  ayanamsa: z18.enum(VEDIC_AYANAMSAS).optional().describe("The sidereal zodiac to use. lahiri (the default, the Indian government standard), raman, krishnamurti, fagan-bradley, yukteswar or true-chitra.")
 }).superRefine(refineBirth);
-var sign3 = z17.object({
+var sign3 = z18.object({
   /** The Western sign name for the sidereal sign, such as aries. */
-  sign: z17.enum(SIGNS2.map((entry) => entry.slug)),
-  rashi: z17.enum(RASHIS),
+  sign: z18.enum(SIGNS2.map((entry) => entry.slug)),
+  rashi: z18.enum(RASHIS),
   /** Degrees into the sidereal sign, 0 to 30, to two decimals; null without a birth time. */
-  degree: z17.number().min(0).max(30).nullable(),
+  degree: z18.number().min(0).max(30).nullable(),
   /** The sign the same body is in on the tropical (Western) zodiac; null when an untimed birth day changed it. */
-  tropicalSign: z17.string().nullable(),
+  tropicalSign: z18.string().nullable(),
   /** The Western signs an untimed birth day passed through, when it changed sign that day; otherwise empty. */
-  tropicalCandidates: z17.array(z17.string()),
-  line: z17.string()
+  tropicalCandidates: z18.array(z18.string()),
+  line: z18.string()
 });
-var nakshatra = z17.object({
-  name: z17.string(),
+var nakshatra = z18.object({
+  name: z18.string(),
   /** 1 for Ashwini to 27 for Revati. */
-  number: z17.number().int().min(1).max(27),
+  number: z18.number().int().min(1).max(27),
   /** The quarter of the nakshatra; null without a birth time. */
-  pada: z17.number().int().min(1).max(4).nullable(),
+  pada: z18.number().int().min(1).max(4).nullable(),
   /** Its ruling planet in the Vimshottari order. */
-  lord: z17.string(),
-  deity: z17.string(),
-  symbol: z17.string(),
-  line: z17.string()
+  lord: z18.string(),
+  deity: z18.string(),
+  symbol: z18.string(),
+  line: z18.string()
 });
-var vedicSignsData = z17.object({
-  timeKnown: z17.boolean(),
-  placed: z17.boolean(),
-  ayanamsa: z17.object({ name: z17.enum(VEDIC_AYANAMSAS), label: z17.string(), degrees: z17.number() }),
+var vedicSignsData = z18.object({
+  timeKnown: z18.boolean(),
+  placed: z18.boolean(),
+  ayanamsa: z18.object({ name: z18.enum(VEDIC_AYANAMSAS), label: z18.string(), degrees: z18.number() }),
   sun: sign3.nullable(),
   /** Sun signs the birth day touched, when it changed sign that day without a birth time. */
-  sunCandidates: z17.array(z17.string()),
+  sunCandidates: z18.array(z18.string()),
   moon: sign3.nullable(),
-  moonCandidates: z17.array(z17.string()),
+  moonCandidates: z18.array(z18.string()),
   rising: sign3.nullable(),
   moonNakshatra: nakshatra.nullable(),
-  nakshatraCandidates: z17.array(z17.string()),
+  nakshatraCandidates: z18.array(z18.string()),
   /** One plain paragraph, built from the lines above. */
-  summary: z17.string(),
-  confidence: z17.number().int().min(40).max(95),
-  confidenceLabel: z17.string(),
-  limits: z17.array(z17.string()),
-  note: z17.string(),
+  summary: z18.string(),
+  confidence: z18.number().int().min(40).max(95),
+  confidenceLabel: z18.string(),
+  limits: z18.array(z18.string()),
+  note: z18.string(),
   /** The /vedic-signs/ page; null while the website's page is switched off (PUBLIC_VEDIC_SIGNS_ENABLED). */
-  pageUrl: z17.url().nullable(),
+  pageUrl: z18.url().nullable(),
   /**
    * The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth
    * detail. Null when the Sun changed sign on an untimed birth day, or while the website's page is switched off.
    */
-  shareUrl: z17.url().nullable()
+  shareUrl: z18.url().nullable()
 });
 async function vedicSigns(args, clock2, origin, pageOn = false) {
   const ayanamsa2 = args.ayanamsa ?? "lahiri";
@@ -44690,7 +45430,7 @@ var vedicSignsTool = definePersonalTool({
 });
 
 // src/ai-tools/personal/registry.ts
-var PERSONAL_TOOLS = [vedicSignsTool, retrogradeForMeTool];
+var PERSONAL_TOOLS = [vedicSignsTool, retrogradeForMeTool, astrocartographyTool];
 var DEFINITIONS2 = PERSONAL_TOOLS;
 var PERSONAL_TOOL_NAMES = DEFINITIONS2.map((tool) => tool.name);
 var isPersonalTool = (tool) => PERSONAL_TOOL_NAMES.includes(tool);
@@ -44700,7 +45440,7 @@ function personalRecord(pick2) {
 }
 
 // src/ai-tools/features/good-days.ts
-import { z as z18 } from "zod";
+import { z as z19 } from "zod";
 
 // src/lib/good-days/goals.ts
 var GOOD_DAY_GOALS = ["launch", "contract", "move", "relationship", "travel", "job", "wedding"];
@@ -44970,7 +45710,7 @@ function goodDaysWindow(from, to, today2) {
 var ECLIPSES2 = eclipses_default.eclipses.map((row) => ({ ...row, at: Date.parse(row.peak) }));
 var ASPECT_VERB3 = { conjunction: "meets", sextile: "sextiles", square: "squares", trine: "trines", opposition: "opposes" };
 var HARMONIOUS = /* @__PURE__ */ new Set(["conjunction", "sextile", "trine"]);
-var bodyName3 = (body2) => body2 === "Sun" ? "the Sun" : body2;
+var bodyName3 = (body3) => body3 === "Sun" ? "the Sun" : body3;
 var RETROGRADE_LINE2 = {
   Mercury: "Mercury is retrograde, which tradition reads as delays and second thoughts in plans, messages and paperwork.",
   Venus: "Venus is retrograde, astrology\u2019s traditional caution against new commitments of the heart.",
@@ -45033,10 +45773,10 @@ async function daySkies(from, days, zone10, clock2) {
   }
   return out;
 }
-function phaseBand(angle) {
-  if (angle >= 330 || angle < 12) return "dark";
-  if (angle < 168) return "waxing";
-  if (angle < 192) return "full";
+function phaseBand(angle2) {
+  if (angle2 >= 330 || angle2 < 12) return "dark";
+  if (angle2 < 168) return "waxing";
+  if (angle2 < 192) return "full";
   return "waning";
 }
 function phaseFactor(goal, day2) {
@@ -45097,8 +45837,8 @@ function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
   const until = (index) => index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone10, date3)}` : "";
   const course = segments.map((segment, index) => `${signName7(segment.sign)}${until(index)}`).join(", then in ");
   const rated = segments.filter((segment) => moonSignWhy(goal, segment.sign));
-  const words = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
-  return { points, text: `The Moon is in ${course}${words}.`, clause: `the Moon in ${course}` };
+  const words2 = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
+  return { points, text: `The Moon is in ${course}${words2}.`, clause: `the Moon in ${course}` };
 }
 function eclipseFactor(day2) {
   const within = ECLIPSES2.filter((row) => row.at >= day2.start.getTime() && row.at < day2.end.getTime());
@@ -45303,61 +46043,61 @@ async function findGoodDays(input, clock2) {
 // src/ai-tools/features/good-days.ts
 var ZONE_PATTERN12 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE8 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
-var zone6 = z18.string().min(1).max(64).regex(ZONE_PATTERN12);
-var goodDaysInput = z18.strictObject({
-  goal: z18.enum(GOOD_DAY_GOALS).describe("What the day is for: launch (launching something new), contract (signing a contract), move (moving home), relationship (starting a relationship), travel (setting out on a journey), job (starting a new job) or wedding. Zodiacs gives no timing for surgery, medical procedures or treatment."),
-  from: z18.string().regex(DATE8).optional().describe("The first day to search, such as 2027-03-01, on the person's clock. Leave it out for today."),
-  to: z18.string().regex(DATE8).optional().describe(`The last day to search, at most ${GOOD_DAYS_MAX_DAYS} days in all (about twelve months), from ${GOOD_DAYS_FIRST} to ${GOOD_DAYS_LAST}. Leave it out for ${GOOD_DAYS_DEFAULT_DAYS} days from from.`),
+var zone6 = z19.string().min(1).max(64).regex(ZONE_PATTERN12);
+var goodDaysInput = z19.strictObject({
+  goal: z19.enum(GOOD_DAY_GOALS).describe("What the day is for: launch (launching something new), contract (signing a contract), move (moving home), relationship (starting a relationship), travel (setting out on a journey), job (starting a new job) or wedding. Zodiacs gives no timing for surgery, medical procedures or treatment."),
+  from: z19.string().regex(DATE8).optional().describe("The first day to search, such as 2027-03-01, on the person's clock. Leave it out for today."),
+  to: z19.string().regex(DATE8).optional().describe(`The last day to search, at most ${GOOD_DAYS_MAX_DAYS} days in all (about twelve months), from ${GOOD_DAYS_FIRST} to ${GOOD_DAYS_LAST}. Leave it out for ${GOOD_DAYS_DEFAULT_DAYS} days from from.`),
   zone: zone6.optional().describe("The person's time zone, such as Europe/London, so days and times are on their clock. Without it, UTC."),
-  count: z18.number().int().min(1).max(GOOD_DAYS_MAX_COUNT).optional().describe(`How many best days to return: ${GOOD_DAYS_DEFAULT_COUNT} unless given, at most ${GOOD_DAYS_MAX_COUNT}.`),
-  birthDate: z18.string().regex(DATE8).optional().describe("Optional: the person's own birth date, such as 1994-05-14, only if they ask for their own chart to be included. Used for this answer only, never stored. Never send a child's birth date."),
-  birthTime: z18.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("Optional: the birth time on the birthplace clock, only if the person knows it. Never guess it. Needs birthDate and birthZone."),
+  count: z19.number().int().min(1).max(GOOD_DAYS_MAX_COUNT).optional().describe(`How many best days to return: ${GOOD_DAYS_DEFAULT_COUNT} unless given, at most ${GOOD_DAYS_MAX_COUNT}.`),
+  birthDate: z19.string().regex(DATE8).optional().describe("Optional: the person's own birth date, such as 1994-05-14, only if they ask for their own chart to be included. Used for this answer only, never stored. Never send a child's birth date."),
+  birthTime: z19.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("Optional: the birth time on the birthplace clock, only if the person knows it. Never guess it. Needs birthDate and birthZone."),
   birthZone: zone6.optional().describe("Optional: the birthplace's time zone, such as America/New_York. Needs birthDate.")
 }).superRefine((args, context) => {
   if (args.birthTime !== void 0 && args.birthZone === void 0) context.addIssue({ code: "custom", message: "A birth time needs its birthplace time zone (birthZone)." });
   if ((args.birthTime !== void 0 || args.birthZone !== void 0) && args.birthDate === void 0) context.addIssue({ code: "custom", message: "A birth time or birthplace time zone needs the birth date." });
 });
-var signSlug6 = z18.enum(SIGNS2.map((sign4) => sign4.slug));
-var goodDaysData = z18.object({
-  goal: z18.enum(GOOD_DAY_GOALS),
-  goalLabel: z18.string(),
+var signSlug6 = z19.enum(SIGNS2.map((sign4) => sign4.slug));
+var goodDaysData = z19.object({
+  goal: z19.enum(GOOD_DAY_GOALS),
+  goalLabel: z19.string(),
   /** The first and last day searched, on the person's clock, and how many days that is. */
-  from: z18.string(),
-  to: z18.string(),
-  days: z18.number().int().min(1).max(GOOD_DAYS_MAX_DAYS),
-  zone: z18.string(),
+  from: z19.string(),
+  to: z19.string(),
+  days: z19.number().int().min(1).max(GOOD_DAYS_MAX_DAYS),
+  zone: z19.string(),
   /** request: the call named a zone. assistant: the host shared one. default: UTC was assumed, and message says so. */
-  zoneSource: z18.enum(["request", "assistant", "default"]),
+  zoneSource: z19.enum(["request", "assistant", "default"]),
   /** The best days, highest rated first, at least two days apart where the window allows. */
-  best: z18.array(z18.object({
-    date: z18.string(),
+  best: z19.array(z19.object({
+    date: z19.string(),
     /** Such as Tue 12 Jan 2027. */
-    label: z18.string(),
+    label: z19.string(),
     /** 0 to 100, astrology's traditional reading of the day for the goal. */
-    score: z18.number().int().min(0).max(100),
-    verdict: z18.string(),
+    score: z19.number().int().min(0).max(100),
+    verdict: z19.string(),
     /** One plain line: the day's strongest reasons, then, after "But", its heaviest caution when one of ten points or more holds it back. */
-    reason: z18.string(),
+    reason: z19.string(),
     /** Every reason found, strongest first. */
-    factors: z18.array(z18.string()),
+    factors: z19.array(z19.string()),
     /** Void-of-course Moon periods that touch the day's waking hours (08:00 to 20:00), on the person's clock. */
-    voidOfCourse: z18.array(z18.object({ from: z18.string(), to: z18.string() })),
-    confidenceLabel: z18.string()
+    voidOfCourse: z19.array(z19.object({ from: z19.string(), to: z19.string() })),
+    confidenceLabel: z19.string()
   })).max(GOOD_DAYS_MAX_COUNT),
   /** Days tradition would avoid for the goal, in date order, each with its one-line reason. */
-  avoid: z18.array(z18.object({ date: z18.string(), label: z18.string(), score: z18.number().int().min(0).max(100), reason: z18.string() })),
+  avoid: z19.array(z19.object({ date: z19.string(), label: z19.string(), score: z19.number().int().min(0).max(100), reason: z19.string() })),
   /** Retrograde periods of the planets the goal is read against, and eclipses, that touch the window. */
-  periods: z18.array(z18.object({ kind: z18.enum(["mercury-retrograde", "venus-retrograde", "mars-retrograde", "eclipse"]), from: z18.string(), to: z18.string(), line: z18.string() })),
+  periods: z19.array(z19.object({ kind: z19.enum(["mercury-retrograde", "venus-retrograde", "mars-retrograde", "eclipse"]), from: z19.string(), to: z19.string(), line: z19.string() })),
   /** With a birth date: the natal Sun sign (null when the Sun changed sign on an untimed day of birth). Nothing else about the birth is returned. */
-  personal: z18.object({ sun: signSlug6.nullable(), timeKnown: z18.boolean() }).nullable(),
-  confidence: z18.number().int().min(40).max(95),
-  confidenceLabel: z18.string(),
+  personal: z19.object({ sun: signSlug6.nullable(), timeKnown: z19.boolean() }).nullable(),
+  confidence: z19.number().int().min(40).max(95),
+  confidenceLabel: z19.string(),
   /** The goal's own line: what tradition reads into its best days, and what it leaves to the person. */
-  care: z18.string(),
+  care: z19.string(),
   /** What the answer leaves out or assumes, in plain sentences; null when there is nothing to add. */
-  message: z18.string().nullable(),
-  pageUrl: z18.url(),
-  note: z18.literal(GOOD_DAYS_NOTE)
+  message: z19.string().nullable(),
+  pageUrl: z19.url(),
+  note: z19.literal(GOOD_DAYS_NOTE)
 });
 async function getGoodDays(args, clock2, options) {
   if (options.allowEvents) {
@@ -45521,42 +46261,42 @@ var TOOL_TITLES = {
   find_good_days: "Find good days",
   ...personalRecord((tool) => tool.title)
 };
-var instant3 = z19.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).");
+var instant3 = z20.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).");
 var ZONE_PATTERN13 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone7 = z19.string().min(1).max(64).regex(ZONE_PATTERN13).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
-var date = z19.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var wallClock = z19.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
+var zone7 = z20.string().min(1).max(64).regex(ZONE_PATTERN13).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
+var date = z20.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var wallClock = z20.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
-  get_capabilities: z19.strictObject({}),
-  open_chart_studio: z19.strictObject({}),
+  get_capabilities: z20.strictObject({}),
+  open_chart_studio: z20.strictObject({}),
   get_moment_chart: momentChartInput,
-  get_sky: z19.strictObject({ instant: instant3.optional(), zone: zone7.optional(), bodies: z19.array(z19.enum(POSITION_BODIES)).min(1).max(12).optional() }),
-  get_upcoming_events: z19.strictObject({ from: instant3.optional(), to: instant3.optional(), zone: zone7.optional(), bodies: z19.array(z19.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z19.array(z19.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
+  get_sky: z20.strictObject({ instant: instant3.optional(), zone: zone7.optional(), bodies: z20.array(z20.enum(POSITION_BODIES)).min(1).max(12).optional() }),
+  get_upcoming_events: z20.strictObject({ from: instant3.optional(), to: instant3.optional(), zone: zone7.optional(), bodies: z20.array(z20.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z20.array(z20.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
     if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
   }),
-  check_sky_fact: z19.strictObject({ kind: z19.enum(["sign", "retrograde", "ingress", "phase"]), body: z19.enum(EVENT_BODIES).optional(), sign: z19.enum(SIGN_SLUGS).optional(), phase: z19.enum(PHASE_NAMES).optional(), instant: instant3.optional(), date: date.optional(), zone: zone7.optional() }),
-  get_occasion_sky: z19.strictObject({
-    occasion: z19.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
+  check_sky_fact: z20.strictObject({ kind: z20.enum(["sign", "retrograde", "ingress", "phase"]), body: z20.enum(EVENT_BODIES).optional(), sign: z20.enum(SIGN_SLUGS).optional(), phase: z20.enum(PHASE_NAMES).optional(), instant: instant3.optional(), date: date.optional(), zone: zone7.optional() }),
+  get_occasion_sky: z20.strictObject({
+    occasion: z20.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
     date: date.optional().describe("The day, such as 2027-09-18 (years 1800 to 2199). Needed unless searchFrom and searchTo are given."),
     searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo."),
     searchTo: date.optional().describe("The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
     time: wallClock.optional().describe("The local clock time, such as 16:30, if the person gives one. Needs zone."),
     zone: zone7.optional().describe("The place's time zone, such as Europe/Lisbon. Needed with a time or a place."),
-    latitude: z19.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
-    longitude: z19.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z19.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored."),
-    names: z19.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
+    latitude: z20.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z20.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z20.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored."),
+    names: z20.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
   }).superRefine((args, context) => {
     if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
     if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A time or a place needs its time zone." });
     if (args.searchFrom === void 0 !== (args.searchTo === void 0)) context.addIssue({ code: "custom", message: "Give searchFrom and searchTo together." });
     if (args.date === void 0 && args.searchFrom === void 0) context.addIssue({ code: "custom", message: "Give a date, or a window to search." });
   }),
-  get_life_milestones: z19.strictObject({
+  get_life_milestones: z20.strictObject({
     birthDate: date.describe("The birth date, such as 1997-03-15."),
     time: wallClock.optional().describe("The birth time on the local clock, if known. Needs zone."),
     zone: zone7.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
-    longitude: z19.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
+    longitude: z20.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
   }).superRefine((args, context) => {
     if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
   }),
@@ -45578,18 +46318,18 @@ var INPUT_SCHEMAS = {
   get_numerology: numerologyInput,
   find_good_days: goodDaysInput,
   ...personalRecord((tool) => tool.input),
-  get_horoscope: z19.strictObject({
-    sign: z19.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
-    period: z19.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
-    focus: z19.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
+  get_horoscope: z20.strictObject({
+    sign: z20.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
+    period: z20.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
+    focus: z20.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
     date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
     zone: zone7.optional(),
     birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
-    birthTime: z19.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
+    birthTime: z20.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
     birthZone: zone7.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
   }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
 };
-var link3 = z19.object({ title: z19.string(), url: z19.url() });
+var link3 = z20.object({ title: z20.string(), url: z20.url() });
 var publishedBackendSchema = {
   ...COMPUTE_SCHEMAS.Backend,
   properties: {
@@ -45629,118 +46369,118 @@ function inlined(schema) {
 function computeValue(component) {
   const schema = connectorComputeSchema(component);
   if (!schema) throw new Error(`No compute API component ${component}`);
-  return z19.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(schema));
+  return z20.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(schema));
 }
-var calculationOf = (result) => z19.object({
-  schema: z19.string(),
+var calculationOf = (result) => z20.object({
+  schema: z20.string(),
   result,
   receipt: computeValue("ComputeReceipt"),
   backend: computeValue("Backend"),
-  cite: z19.object({ url: z19.url(), receipt: z19.string(), engine: z19.string(), version: z19.string() })
+  cite: z20.object({ url: z20.url(), receipt: z20.string(), engine: z20.string(), version: z20.string() })
 });
-var statements2 = z19.record(z19.string(), z19.string());
-var limits = z19.object({
-  from: z19.string(),
-  to: z19.string(),
-  eventWindowDays: z19.number().int(),
-  eventKinds: z19.array(z19.enum(EVENT_KINDS)),
-  samples: z19.number().int(),
-  factSamples: z19.number().int()
+var statements2 = z20.record(z20.string(), z20.string());
+var limits = z20.object({
+  from: z20.string(),
+  to: z20.string(),
+  eventWindowDays: z20.number().int(),
+  eventKinds: z20.array(z20.enum(EVENT_KINDS)),
+  samples: z20.number().int(),
+  factSamples: z20.number().int()
 });
-var localTime = z19.object({ utc: z19.string(), zone: z19.string(), display: z19.string() });
-var body = z19.object({ body: z19.string(), lon: z19.number(), lat: z19.number(), speed: z19.number(), retrograde: z19.boolean(), sign: z19.string(), degree: z19.number() });
-var positionResult = z19.object({ instants: z19.array(z19.object({ instant: z19.string(), bodies: z19.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z19.array(z19.string()) })) });
-var event = z19.object({ kind: z19.enum(EVENT_KINDS), at: z19.string(), localAt: z19.string(), body: z19.string().optional(), sign: z19.string(), type: z19.string().optional(), retrograde: z19.boolean().optional(), lon: z19.number().optional(), degree: z19.number().optional() });
-var personal = z19.object({ timeKnown: z19.boolean(), items: z19.array(z19.object({ title: z19.string(), line: z19.string(), when: z19.string() })), note: z19.string() });
-var horoscope = z19.object({
-  status: z19.enum(["available", "unavailable", "choose-sign"]),
-  sign: z19.enum(HOROSCOPE_SIGNS).optional(),
-  signName: z19.string().optional(),
-  period: z19.enum(HOROSCOPE_PERIODS),
-  focus: z19.enum(HOROSCOPE_FOCUSES),
-  date: z19.string(),
-  dateLabel: z19.string(),
-  zone: z19.string(),
-  zoneLabel: z19.string(),
-  zoneSource: z19.enum(["request", "assistant", "default"]),
-  reading: z19.object({ title: z19.string(), paragraphs: z19.array(z19.object({ heading: z19.string().optional(), text: z19.string() })) }).optional(),
-  why: z19.object({ note: z19.string(), facts: z19.array(z19.object({ text: z19.string(), when: z19.string() })), houses: z19.array(z19.string()) }).optional(),
-  available: z19.array(z19.object({ date: z19.string(), label: z19.string() })).optional(),
-  message: z19.string().optional(),
+var localTime = z20.object({ utc: z20.string(), zone: z20.string(), display: z20.string() });
+var body2 = z20.object({ body: z20.string(), lon: z20.number(), lat: z20.number(), speed: z20.number(), retrograde: z20.boolean(), sign: z20.string(), degree: z20.number() });
+var positionResult = z20.object({ instants: z20.array(z20.object({ instant: z20.string(), bodies: z20.array(body2), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z20.array(z20.string()) })) });
+var event = z20.object({ kind: z20.enum(EVENT_KINDS), at: z20.string(), localAt: z20.string(), body: z20.string().optional(), sign: z20.string(), type: z20.string().optional(), retrograde: z20.boolean().optional(), lon: z20.number().optional(), degree: z20.number().optional() });
+var personal = z20.object({ timeKnown: z20.boolean(), items: z20.array(z20.object({ title: z20.string(), line: z20.string(), when: z20.string() })), note: z20.string() });
+var horoscope = z20.object({
+  status: z20.enum(["available", "unavailable", "choose-sign"]),
+  sign: z20.enum(HOROSCOPE_SIGNS).optional(),
+  signName: z20.string().optional(),
+  period: z20.enum(HOROSCOPE_PERIODS),
+  focus: z20.enum(HOROSCOPE_FOCUSES),
+  date: z20.string(),
+  dateLabel: z20.string(),
+  zone: z20.string(),
+  zoneLabel: z20.string(),
+  zoneSource: z20.enum(["request", "assistant", "default"]),
+  reading: z20.object({ title: z20.string(), paragraphs: z20.array(z20.object({ heading: z20.string().optional(), text: z20.string() })) }).optional(),
+  why: z20.object({ note: z20.string(), facts: z20.array(z20.object({ text: z20.string(), when: z20.string() })), houses: z20.array(z20.string()) }).optional(),
+  available: z20.array(z20.object({ date: z20.string(), label: z20.string() })).optional(),
+  message: z20.string().optional(),
   personal: personal.optional(),
   /** The share link for the reading shown, when there is one. */
-  shareUrl: z19.url().nullable().optional(),
-  disclosure: z19.string()
+  shareUrl: z20.url().nullable().optional(),
+  disclosure: z20.string()
 });
-var clockTime2 = z19.object({ utc: z19.string(), local: z19.string() });
+var clockTime2 = z20.object({ utc: z20.string(), local: z20.string() });
 var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
-var occasionSky = z19.object({
-  occasion: z19.enum(ASSISTANT_OCCASION_KINDS),
-  date: z19.string(),
-  time: z19.string().nullable(),
-  zone: z19.string().nullable(),
-  place: z19.string().nullable(),
-  names: z19.string().nullable(),
-  card: z19.object({ title: z19.string(), interpretation: z19.string(), closing: z19.string() }),
+var occasionSky = z20.object({
+  occasion: z20.enum(ASSISTANT_OCCASION_KINDS),
+  date: z20.string(),
+  time: z20.string().nullable(),
+  zone: z20.string().nullable(),
+  place: z20.string().nullable(),
+  names: z20.string().nullable(),
+  card: z20.object({ title: z20.string(), interpretation: z20.string(), closing: z20.string() }),
   instant: clockTime2,
-  instantIs: z19.enum(["given-time", "local-noon", "utc-noon"]),
-  sky: z19.object({
-    bodies: z19.array(z19.object({ body: z19.string(), sign: z19.string(), degree: z19.number(), retrograde: z19.boolean() })),
-    moon: z19.object({ phase: z19.string(), illuminationPercent: z19.number(), waxing: z19.boolean() }),
-    retrograde: z19.array(z19.string())
+  instantIs: z20.enum(["given-time", "local-noon", "utc-noon"]),
+  sky: z20.object({
+    bodies: z20.array(z20.object({ body: z20.string(), sign: z20.string(), degree: z20.number(), retrograde: z20.boolean() })),
+    moon: z20.object({ phase: z20.string(), illuminationPercent: z20.number(), waxing: z20.boolean() }),
+    retrograde: z20.array(z20.string())
   }),
-  moonSignChange: z19.object({ from: z19.string(), to: z19.string() }).nullable(),
-  evening: z19.object({
+  moonSignChange: z20.object({ from: z20.string(), to: z20.string() }).nullable(),
+  evening: z20.object({
     sunrise: clockTime2.nullable(),
     sunset: clockTime2.nullable(),
-    goldenHour: z19.object({ start: clockTime2, end: clockTime2 }).nullable(),
+    goldenHour: z20.object({ start: clockTime2, end: clockTime2 }).nullable(),
     civilDusk: clockTime2.nullable(),
     moonrise: clockTime2.nullable(),
     moonset: clockTime2.nullable(),
-    moonHighest: z19.object({ at: clockTime2, altitude: z19.number() }).nullable(),
-    planetsAfterDusk: z19.array(z19.string()),
-    flags: z19.array(z19.string())
+    moonHighest: z20.object({ at: clockTime2, altitude: z20.number() }).nullable(),
+    planetsAfterDusk: z20.array(z20.string()),
+    flags: z20.array(z20.string())
   }).nullable(),
-  rating: z19.object({ score: z19.number().int().min(0).max(100), verdict: z19.string(), reasons: z19.array(z19.string()) }),
+  rating: z20.object({ score: z20.number().int().min(0).max(100), verdict: z20.string(), reasons: z20.array(z20.string()) }),
   /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
-  bestDays: z19.object({
-    from: z19.string(),
-    to: z19.string(),
-    days: z19.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
-    best: z19.array(z19.object({ date: z19.string(), score: z19.number().int().min(0).max(100), verdict: z19.string(), reasons: z19.array(z19.string()) })).max(3)
+  bestDays: z20.object({
+    from: z20.string(),
+    to: z20.string(),
+    days: z20.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z20.array(z20.object({ date: z20.string(), score: z20.number().int().min(0).max(100), verdict: z20.string(), reasons: z20.array(z20.string()) })).max(3)
   }).nullable(),
-  cardUrl: z19.url().nullable(),
-  shareUrl: z19.url().nullable(),
-  note: z19.literal(occasionNote)
+  cardUrl: z20.url().nullable(),
+  shareUrl: z20.url().nullable(),
+  note: z20.literal(occasionNote)
 });
-var milestone = z19.object({
-  kind: z19.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
-  name: z19.string(),
-  index: z19.number(),
-  age: z19.number(),
-  first: z19.string(),
-  last: z19.string(),
-  passes: z19.array(z19.object({ at: z19.string(), retrograde: z19.boolean() }))
+var milestone = z20.object({
+  kind: z20.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
+  name: z20.string(),
+  index: z20.number(),
+  age: z20.number(),
+  first: z20.string(),
+  last: z20.string(),
+  passes: z20.array(z20.object({ at: z20.string(), retrograde: z20.boolean() }))
 });
-var lifeMilestones = z19.object({
-  birthDate: z19.string(),
-  timeKnown: z19.boolean(),
-  asOf: z19.string(),
-  milestones: z19.array(milestone),
+var lifeMilestones = z20.object({
+  birthDate: z20.string(),
+  timeKnown: z20.boolean(),
+  asOf: z20.string(),
+  milestones: z20.array(milestone),
   next: milestone.nullable(),
-  numbers: z19.object({ fullMoons: z19.number(), mercuryRetrogrades: z19.number(), jupiterReturns: z19.number() }),
-  cardUrl: z19.url().nullable(),
-  shareUrl: z19.url().nullable(),
-  note: z19.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
+  numbers: z20.object({ fullMoons: z20.number(), mercuryRetrogrades: z20.number(), jupiterReturns: z20.number() }),
+  cardUrl: z20.url().nullable(),
+  shareUrl: z20.url().nullable(),
+  note: z20.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
 });
 var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
-  open_chart_studio: z19.object({ title: z19.literal("Chart Studio"), calculation: z19.literal("browser-local"), initialChart: z19.literal("birth-details"), sharing: z19.literal("user-reviewed-selection-only") }),
-  get_capabilities: z19.object({ name: z19.literal("Zodiacs"), version: z19.string(), engine: computeValue("Backend"), tools: z19.array(z19.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z19.string(), limitations: z19.array(z19.string()) }),
+  open_chart_studio: z20.object({ title: z20.literal("Chart Studio"), calculation: z20.literal("browser-local"), initialChart: z20.literal("birth-details"), sharing: z20.literal("user-reviewed-selection-only") }),
+  get_capabilities: z20.object({ name: z20.literal("Zodiacs"), version: z20.string(), engine: computeValue("Backend"), tools: z20.array(z20.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z20.string(), limitations: z20.array(z20.string()) }),
   get_moment_chart: momentChartData,
-  get_sky: z19.object({ mode: z19.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z19.object({ name: z19.string(), angle: z19.number(), illumination: z19.number() }), interpretation: z19.literal("Astronomical calculations; no personal prediction is supplied.") }),
-  get_upcoming_events: z19.object({ from: z19.string(), to: z19.string(), zone: z19.string(), events: z19.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z19.literal("tested-not-proven") }),
-  check_sky_fact: z19.object({ answer: z19.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z19.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
+  get_sky: z20.object({ mode: z20.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z20.object({ name: z20.string(), angle: z20.number(), illumination: z20.number() }), interpretation: z20.literal("Astronomical calculations; no personal prediction is supplied.") }),
+  get_upcoming_events: z20.object({ from: z20.string(), to: z20.string(), zone: z20.string(), events: z20.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z20.literal("tested-not-proven") }),
+  check_sky_fact: z20.object({ answer: z20.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z20.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
@@ -45761,20 +46501,20 @@ var dataSchemas = {
   get_numerology: numerologyData,
   find_good_days: goodDaysData
 };
-var ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(ALL_AI_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var COVERAGE_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(COVERAGE_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var PLACE_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(PLACE_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var SKY_EVENTS_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(SKY_EVENTS_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var SOLAR_RETURN_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(SOLAR_RETURN_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var YEAR_SCORE_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(YEAR_SCORE_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var NUMEROLOGY_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(NUMEROLOGY_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var GOOD_DAYS_ERROR_SCHEMA = z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.enum(GOOD_DAYS_TOOL_NAMES), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
-var personalErrorSchema = (tool) => z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(false), tool: z19.literal(tool), error: z19.object({ code: z19.string(), message: z19.string(), retryAfterSeconds: z19.number().optional() }) });
+var ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(ALL_AI_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var COVERAGE_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(COVERAGE_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var PLACE_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(PLACE_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var SKY_EVENTS_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(SKY_EVENTS_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var SOLAR_RETURN_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(SOLAR_RETURN_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var YEAR_SCORE_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(YEAR_SCORE_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var NUMEROLOGY_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(NUMEROLOGY_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var GOOD_DAYS_ERROR_SCHEMA = z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.enum(GOOD_DAYS_TOOL_NAMES), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
+var personalErrorSchema = (tool) => z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(false), tool: z20.literal(tool), error: z20.object({ code: z20.string(), message: z20.string(), retryAfterSeconds: z20.number().optional() }) });
 function outputSchema(tool, data) {
   const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : SKY_EVENTS_TOOL_NAMES.includes(tool) ? SKY_EVENTS_ERROR_SCHEMA : YEAR_SCORE_TOOL_NAMES.includes(tool) ? YEAR_SCORE_ERROR_SCHEMA : SOLAR_RETURN_TOOL_NAMES.includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA : NUMEROLOGY_TOOL_NAMES.includes(tool) ? NUMEROLOGY_ERROR_SCHEMA : GOOD_DAYS_TOOL_NAMES.includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : PERSONAL_TOOL_NAMES.includes(tool) ? personalErrorSchema(tool) : ERROR_SCHEMA;
-  return z19.union([
-    z19.object({ schema: z19.literal(AI_RESULT_SCHEMA), ok: z19.literal(true), tool: z19.literal(tool), data, links: z19.array(link3) }),
-    tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z19.literal(MOMENT_CHART_TOOL) }) : error
+  return z20.union([
+    z20.object({ schema: z20.literal(AI_RESULT_SCHEMA), ok: z20.literal(true), tool: z20.literal(tool), data, links: z20.array(link3) }),
+    tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z20.literal(MOMENT_CHART_TOOL) }) : error
   ]);
 }
 var OUTPUT_SCHEMAS = {
@@ -45892,14 +46632,14 @@ function eventTimes(utc, zone10, window) {
   const shown = shownTime(utc, window);
   return { at: shownUtc(shown), localAt: localIso(shown.at, zone10, shown.precision === "millisecond") };
 }
-function moonDirection(angle) {
-  return angle < 180 ? "waxing" : "waning";
+function moonDirection(angle2) {
+  return angle2 < 180 ? "waxing" : "waning";
 }
-function moonPhaseLabel(angle) {
-  const name = moonPhaseNameFromAngle(angle);
+function moonPhaseLabel(angle2) {
+  const name = moonPhaseNameFromAngle(angle2);
   if (/^Wa(?:x|n)ing /u.test(name) || name === "First Quarter" || name === "Last Quarter") return name;
-  const turn3 = (angle % 360 + 360) % 360;
-  return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle)}`;
+  const turn3 = (angle2 % 360 + 360) % 360;
+  return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle2)}`;
 }
 
 // api/_compute/local-time.mjs
@@ -46585,8 +47325,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       if (!probeTable) {
         probeTable = /* @__PURE__ */ new Map();
         for (const row of HOST_PROBES.split(";")) {
-          const [hashes = "", body2 = ""] = row.split(":");
-          const minutes = body2.split(",").map((value) => parseInt(value, 36) * 6e4);
+          const [hashes = "", body3 = ""] = row.split(":");
+          const minutes = body3.split(",").map((value) => parseInt(value, 36) * 6e4);
           const spans = [];
           let previous = 0;
           for (let index = 0; index + 2 < minutes.length; index += 3) {
@@ -46704,7 +47444,7 @@ var BIRTH_OCCASION_SAVE_LABELS = Object.freeze({
   baby: "New baby",
   "coming-of-age": "Coming of age"
 });
-var round23 = (value) => Math.round(value * 100) / 100;
+var round24 = (value) => Math.round(value * 100) / 100;
 function savedOccasionPath(args, data) {
   if (BIRTH_OCCASIONS.has(data.occasion)) return null;
   const params = new URLSearchParams({ o: data.occasion, d: data.date });
@@ -46713,8 +47453,8 @@ function savedOccasionPath(args, data) {
   if (data.time) params.set("t", data.time);
   if (data.zone && hasCoords) {
     params.set("tz", data.zone);
-    params.set("lat", round23(args.latitude).toFixed(2));
-    params.set("lon", round23(args.longitude).toFixed(2));
+    params.set("lat", round24(args.latitude).toFixed(2));
+    params.set("lon", round24(args.longitude).toFixed(2));
   }
   return `/occasions/#${params.toString()}`;
 }
@@ -46740,10 +47480,10 @@ function toMilestone(kind, season, birth, index = season.index) {
     age: ageAt(birth, season.first)
   };
 }
-function seasonsOf(body2, target, birth, fromYears, toYears) {
+function seasonsOf(body3, target, birth, fromYears, toYears) {
   const window = clipToReferenceSpan(new Date(birth.getTime() + fromYears * YEAR2), new Date(birth.getTime() + toYears * YEAR2));
   if (!window) return [];
-  return groupIntoSeasons2(findLongitudeCrossings2(body2, (target % 360 + 360) % 360, window.from, window.to));
+  return groupIntoSeasons2(findLongitudeCrossings2(body3, (target % 360 + 360) % 360, window.from, window.to));
 }
 function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
@@ -46844,25 +47584,25 @@ var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
   const cache = { lon: /* @__PURE__ */ new Map(), speed: /* @__PURE__ */ new Map() };
-  const once = (store, read) => (body2, date3) => {
-    const key2 = `${body2}|${date3.getTime()}`;
+  const once = (store, read) => (body3, date3) => {
+    const key2 = `${body3}|${date3.getTime()}`;
     let value = store.get(key2);
     if (value === void 0) {
-      value = read(body2, date3);
+      value = read(body3, date3);
       store.set(key2, value);
     }
     return value;
   };
   return {
-    bodyLongitude: once(cache.lon, (body2, date3) => ephemeris.bodyLongitude(body2, date3)),
-    longitudeSpeed: once(cache.speed, (body2, date3) => ephemeris.longitudeSpeed(body2, date3))
+    bodyLongitude: once(cache.lon, (body3, date3) => ephemeris.bodyLongitude(body3, date3)),
+    longitudeSpeed: once(cache.speed, (body3, date3) => ephemeris.longitudeSpeed(body3, date3))
   };
 }
 var distance = (target, lon) => Math.abs(((lon - target + 540) % 360 + 360) % 360 - 180);
 var keyOf = (contact2) => `${contact2.transitBody}|${contact2.natalPoint}|${contact2.aspect}`;
 function shifted(chart, degrees) {
   return {
-    bodies: chart.bodies.map(({ body: body2, lon }) => ({ body: body2, lon: lon + degrees })),
+    bodies: chart.bodies.map(({ body: body3, lon }) => ({ body: body3, lon: lon + degrees })),
     angles: chart.angles ? { asc: chart.angles.asc + degrees, mc: chart.angles.mc + degrees } : null
   };
 }
@@ -46880,7 +47620,7 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
   const scanner = createTransitScanner({
     bodyLongitude: sky.bodyLongitude,
     longitudeSpeed: sky.longitudeSpeed,
-    findLongitudeCrossings: (body2, target, start, end, stepDays) => findLongitudeCrossingsWith(sky.bodyLongitude, body2, target, start, end, stepDays)
+    findLongitudeCrossings: (body3, target, start, end, stepDays) => findLongitudeCrossingsWith(sky.bodyLongitude, body3, target, start, end, stepDays)
   });
   const options = { transitBodies: DEFAULT_TRANSIT_BODIES, natalPoints: points.map((point2) => point2.name), aspects: MAJOR_ASPECT_ORDER };
   const exact = /* @__PURE__ */ new Map();
@@ -46972,7 +47712,7 @@ async function personalWeek(input, now, clock2, zone10) {
   }
   const chart = computeChart3({ utc, houseSystem: "whole", timeKnown });
   const week = computeYourWeek({
-    natal: { bodies: chart.bodies.map(({ body: body2, lon }) => ({ body: body2, lon })), angles: null },
+    natal: { bodies: chart.bodies.map(({ body: body3, lon }) => ({ body: body3, lon })), angles: null },
     timeKnown,
     fromUtc: now.toISOString()
   });
@@ -47012,11 +47752,11 @@ function writtenDateReadings(text2) {
     return [...readingsOf(a, b, c), ...readingsOf(a, c, b), ...readingsOf(c, b, a), ...readingsOf(c, a, b)];
   }
   if (!/^[\p{L}\d].*[\p{L}\d]$/u.test(text2)) return [];
-  const words = text2.toLowerCase().split(/[\s,./-]+/u).filter((word) => word !== "of");
-  const monthAt = words.findIndex((word) => MONTH_NUMBERS.has(word));
-  if (words.length !== 3 || monthAt < 0) return [];
-  const month = String(MONTH_NUMBERS.get(words[monthAt]));
-  const numbers = words.filter((_, index) => index !== monthAt).map((word) => /^(\d+)(st|nd|rd|th)?$/u.exec(word));
+  const words2 = text2.toLowerCase().split(/[\s,./-]+/u).filter((word) => word !== "of");
+  const monthAt = words2.findIndex((word) => MONTH_NUMBERS.has(word));
+  if (words2.length !== 3 || monthAt < 0) return [];
+  const month = String(MONTH_NUMBERS.get(words2[monthAt]));
+  const numbers = words2.filter((_, index) => index !== monthAt).map((word) => /^(\d+)(st|nd|rd|th)?$/u.exec(word));
   if (numbers.some((match) => !match)) return [];
   const [first2, second] = numbers;
   const readings = [];
@@ -47053,8 +47793,8 @@ function castMomentChart(args, now) {
     instant: utc.toISOString(),
     angles,
     houses: { system: houses.system === "whole" ? "whole-sign" : houses.system, cusps: houses.cusps, polarFallback: chart.flags.includes("polar-fallback") },
-    positions: chart.bodies.map(({ body: body2, lon, retrograde }) => ({
-      body: body2,
+    positions: chart.bodies.map(({ body: body3, lon, retrograde }) => ({
+      body: body3,
       longitude: lon,
       sign: SIGN_SLUGS[signIndexForLongitude2(lon)],
       house: houseOf(lon, houses.cusps),
@@ -47557,7 +48297,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const withLabel = (rating2) => ({ ...rating2, verdict: `${rating2.verdict}. ${label2}.`, reasons: [...rating2.reasons, label2] });
         const rating = withLabel(rateOccasionDate(args.occasion, card.sky));
         if (best) best = { ...best, best: best.best.map((day2) => withLabel(day2)) };
-        const signOf4 = (body2) => card.sky.bodies.find((row) => row.body === body2)?.sign ?? null;
+        const signOf4 = (body3) => card.sky.bodies.find((row) => row.body === body3)?.sign ?? null;
         const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date: date3, names: null, place: null, sun: signOf4("Sun"), moon: signOf4("Moon"), score: rating.score, confidence: readingConfidence(detail) });
         const printable = cardUrl !== null;
         data = {
@@ -48043,7 +48783,7 @@ var WIDGET_HTML = `<!doctype html>
 
 // src/ai-tools/watch/service.ts
 import { ProtocolError } from "@modelcontextprotocol/server";
-import { z as z21 } from "zod";
+import { z as z22 } from "zod";
 
 // src/ai-tools/watch/callback.ts
 import { lookup } from "node:dns/promises";
@@ -48062,8 +48802,8 @@ function signingKey(secret) {
   if (key2.length < 24 || key2.length > 64 || (encoded2.includes("=") ? canonical !== encoded2 : canonical.replace(/=+$/, "") !== encoded2)) throw new Error("invalid-signing-key");
   return key2;
 }
-function signature(secret, id, seconds2, body2) {
-  return `v1,${createHmac("sha256", signingKey(secret)).update(`${id}.${seconds2}.${body2}`).digest("base64")}`;
+function signature(secret, id, seconds2, body3) {
+  return `v1,${createHmac("sha256", signingKey(secret)).update(`${id}.${seconds2}.${body3}`).digest("base64")}`;
 }
 function destinationVault(encodedKey) {
   const key2 = Buffer.from(encodedKey, "base64");
@@ -48102,9 +48842,9 @@ function callbackUrl(raw) {
   if (url.protocol !== "https:" || url.username || url.password || url.hash || url.port && url.port !== "443" || url.hostname.endsWith(".") || !url.hostname.includes(".") || isIP(url.hostname.replace(/^\[|\]$/g, ""))) throw new Error("invalid-callback");
   return url;
 }
-var callbackPost = async (raw, headers, body2) => {
+var callbackPost = async (raw, headers, body3) => {
   const url = callbackUrl(raw);
-  if (Buffer.byteLength(body2) > 262144) throw new Error("payload-too-large");
+  if (Buffer.byteLength(body3) > 262144) throw new Error("payload-too-large");
   const signal = AbortSignal.timeout(1e4);
   const addresses = await Promise.race([
     lookup(url.hostname, { all: true }),
@@ -48118,7 +48858,7 @@ var callbackPost = async (raw, headers, body2) => {
       agent: false,
       signal,
       servername: url.hostname,
-      headers: { ...headers, "Content-Length": String(Buffer.byteLength(body2)) },
+      headers: { ...headers, "Content-Length": String(Buffer.byteLength(body3)) },
       lookup: (_host, options, done) => {
         if (typeof options === "object" && options.all) done(null, [pinned]);
         else done(null, pinned.address, pinned.family);
@@ -48137,23 +48877,23 @@ var callbackPost = async (raw, headers, body2) => {
       res.on("end", () => resolve2({ status: res.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") }));
     });
     req.on("error", () => reject(new Error(signal.aborted ? "timeout" : "callback-failed")));
-    req.end(body2);
+    req.end(body3);
   });
 };
-function signedHeaders(secret, id, subscription, body2, now, previous) {
+function signedHeaders(secret, id, subscription, body3, now, previous) {
   const seconds2 = Math.floor(now / 1e3);
   return {
     "Content-Type": "application/json",
     "webhook-id": id,
     "webhook-timestamp": String(seconds2),
-    "webhook-signature": [signature(secret, id, seconds2, body2), ...previous ? [signature(previous, id, seconds2, body2)] : []].join(" "),
+    "webhook-signature": [signature(secret, id, seconds2, body3), ...previous ? [signature(previous, id, seconds2, body3)] : []].join(" "),
     "X-MCP-Subscription-Id": subscription
   };
 }
 async function verifyCallback(url, secret, id, post, now) {
   const challenge = randomBytes2(32).toString("base64url");
-  const body2 = JSON.stringify({ type: "verification", challenge });
-  const response = await post(url, signedHeaders(secret, `verify_${randomBytes2(16).toString("hex")}`, id, body2, now), body2);
+  const body3 = JSON.stringify({ type: "verification", challenge });
+  const response = await post(url, signedHeaders(secret, `verify_${randomBytes2(16).toString("hex")}`, id, body3, now), body3);
   let echo;
   try {
     echo = JSON.parse(response.body).challenge;
@@ -48165,12 +48905,12 @@ async function verifyCallback(url, secret, id, post, now) {
 }
 
 // src/ai-tools/watch/contracts.ts
-import { z as z20 } from "zod";
+import { z as z21 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
 var DAY24 = 864e5;
 var BODIES5 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
-var zone8 = z20.string().max(80).default("UTC").refine((value) => {
+var zone8 = z21.string().max(80).default("UTC").refine((value) => {
   try {
     new Intl.DateTimeFormat("en", { timeZone: value });
     return true;
@@ -48178,18 +48918,18 @@ var zone8 = z20.string().max(80).default("UTC").refine((value) => {
     return false;
   }
 });
-var choices = (values) => z20.array(z20.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
+var choices = (values) => z21.array(z21.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
 var FILTERS = {
-  "zodiacs.sky.ingress": z20.object({ bodies: choices(BODIES5), zone: zone8 }).strict(),
-  "zodiacs.sky.station": z20.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone8 }).strict(),
-  "zodiacs.sky.lunation": z20.object({ phases: choices(["new", "full"]), zone: zone8 }).strict()
+  "zodiacs.sky.ingress": z21.object({ bodies: choices(BODIES5), zone: zone8 }).strict(),
+  "zodiacs.sky.station": z21.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone8 }).strict(),
+  "zodiacs.sky.lunation": z21.object({ phases: choices(["new", "full"]), zone: zone8 }).strict()
 };
-var subscriptionParams = z20.object({
-  name: z20.enum(NAMES),
-  arguments: z20.unknown(),
-  delivery: z20.object({ mode: z20.literal("webhook"), url: z20.string().max(2048), secret: z20.string().max(100) }).strict(),
-  cursor: z20.null().optional(),
-  ttlMs: z20.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
+var subscriptionParams = z21.object({
+  name: z21.enum(NAMES),
+  arguments: z21.unknown(),
+  delivery: z21.object({ mode: z21.literal("webhook"), url: z21.string().max(2048), secret: z21.string().max(100) }).strict(),
+  cursor: z21.null().optional(),
+  ttlMs: z21.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
 }).strict();
 var unsubscribeParams = subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({
   delivery: subscriptionParams.shape.delivery.omit({ secret: true })
@@ -48365,14 +49105,14 @@ function configuredSkyWatch(env) {
   return new SkyWatch(rpc, env.ZODIACS_SKY_WATCH_KEY, callbackPost, Date.now, configuredWatchOAuth(env, rpc));
 }
 function registerSkyWatch(server, watch, owner) {
-  const meta = { _meta: z21.record(z21.string(), z21.unknown()).optional() };
+  const meta = { _meta: z22.record(z22.string(), z22.unknown()).optional() };
   const guarded2 = (run2) => run2().catch((error) => {
     if (error instanceof ProtocolError) throw error;
     throw new ProtocolError(-32602, "The event request could not be completed under its schema or availability requirements.");
   });
   server.server.setRequestHandler(
     "events/list",
-    { params: z21.object({ ...meta, cursor: z21.null().optional() }).strict() },
+    { params: z22.object({ ...meta, cursor: z22.null().optional() }).strict() },
     async () => ({ events: EVENT_DEFINITIONS })
   );
   server.server.setRequestHandler(
@@ -48388,7 +49128,7 @@ function registerSkyWatch(server, watch, owner) {
 }
 
 // src/ai-tools/accounts/contracts.ts
-import { z as z22 } from "zod";
+import { z as z23 } from "zod";
 var ACCOUNTS_SWITCH_ENV = "ZODIACS_ACCOUNTS_ENABLED";
 var SAVE_TOOL_NAME = "save_to_zodiacs";
 var ACCOUNT_SCOPES = ["openid"];
@@ -48400,19 +49140,19 @@ var MAX_SAVED_STRING = 600;
 var MAX_LABEL = 80;
 var PROFILE_URL = `${ORIGIN}/profile/`;
 var PLAIN_TEXT3 = /^[^\u0000-\u001f\u007f-\u009f<>{}[\]\\`]+$/u;
-var plainText2 = (max) => z22.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
-var date2 = z22.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var zone9 = z22.string().min(1).max(64).regex(ZONE_PATTERN13);
-var weekInput = z22.strictObject({
+var plainText2 = (max) => z23.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
+var date2 = z23.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var zone9 = z23.string().min(1).max(64).regex(ZONE_PATTERN13);
+var weekInput = z23.strictObject({
   birthDate: date2.describe("The birth date given to get_horoscope, such as 1994-05-14."),
-  birthTime: z22.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
+  birthTime: z23.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
   birthZone: zone9.optional().describe("The birthplace's time zone, needed with birthTime."),
   zone: zone9.optional().describe("The person's own time zone, for the dates of the week.")
 }).superRefine((args, context) => {
   if (args.birthTime !== void 0 && !args.birthZone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
 });
-var saveInput = z22.strictObject({
-  kind: z22.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
+var saveInput = z23.strictObject({
+  kind: z23.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
   label: plainText2(MAX_LABEL).optional().describe('Optional short name for the saved item, such as "Our wedding day". Plain text.'),
   chart: compatibilityPerson.optional().describe('For kind chart: the same details as one side of get_compatibility, or { famous: "<name>" }.'),
   comparison: compatibilityInput.optional().describe("For kind comparison: exactly the arguments given to get_compatibility."),
@@ -48422,27 +49162,27 @@ var saveInput = z22.strictObject({
   const given = ["chart", "comparison", "occasion", "week"].filter((key2) => args[key2] !== void 0);
   if (given.length !== 1 || given[0] !== args.kind) context.addIssue({ code: "custom", message: "Give exactly the details for the kind being saved." });
 });
-var link4 = z22.object({ title: z22.string(), url: z22.url() });
-var saveData = z22.object({
-  saved: z22.literal(true),
-  id: z22.uuid(),
-  kind: z22.enum(SAVE_KINDS),
-  title: z22.string(),
-  summary: z22.string(),
-  savedAt: z22.string(),
+var link4 = z23.object({ title: z23.string(), url: z23.url() });
+var saveData = z23.object({
+  saved: z23.literal(true),
+  id: z23.uuid(),
+  kind: z23.enum(SAVE_KINDS),
+  title: z23.string(),
+  summary: z23.string(),
+  savedAt: z23.string(),
   /** True when the same item was already in the account; it is not saved twice. */
-  alreadySaved: z22.boolean(),
-  profileUrl: z22.url(),
-  note: z22.string()
+  alreadySaved: z23.boolean(),
+  profileUrl: z23.url(),
+  note: z23.string()
 });
-var SAVE_ERROR_SCHEMA = z22.object({
-  schema: z22.literal(AI_RESULT_SCHEMA),
-  ok: z22.literal(false),
-  tool: z22.literal(SAVE_TOOL_NAME),
-  error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() })
+var SAVE_ERROR_SCHEMA = z23.object({
+  schema: z23.literal(AI_RESULT_SCHEMA),
+  ok: z23.literal(false),
+  tool: z23.literal(SAVE_TOOL_NAME),
+  error: z23.object({ code: z23.string(), message: z23.string(), retryAfterSeconds: z23.number().optional() })
 });
-var SAVE_OUTPUT_SCHEMA = z22.union([
-  z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(true), tool: z22.literal(SAVE_TOOL_NAME), data: saveData, links: z22.array(link4) }),
+var SAVE_OUTPUT_SCHEMA = z23.union([
+  z23.object({ schema: z23.literal(AI_RESULT_SCHEMA), ok: z23.literal(true), tool: z23.literal(SAVE_TOOL_NAME), data: saveData, links: z23.array(link4) }),
   SAVE_ERROR_SCHEMA
 ]);
 var SAVE_TITLE = "Save to my Zodiacs account";
@@ -48574,7 +49314,7 @@ async function buildSavedRecord(input, dependencies = {}) {
         if (!result.ok) return { failure: result.error.message };
         if (result.tool !== "get_occasion_sky") return { failure: "Zodiacs could not work that out again." };
         const data = result.data;
-        const sign4 = (body2) => data.sky.bodies.find((row) => row.body === body2)?.sign ?? null;
+        const sign4 = (body3) => data.sky.bodies.find((row) => row.body === body3)?.sign ?? null;
         const name = OCCASION_NAMES[data.occasion] ?? "Occasion";
         const path = savedOccasionPath(occasionArgs, data);
         const birth = BIRTH_OCCASIONS.has(data.occasion);
@@ -49236,10 +49976,10 @@ function createAiNodeHandler(options = {}) {
       if (length !== void 0 && (typeof length !== "string" || !/^\d+$/.test(length))) return send(res, 400, "invalid-length");
       if (length !== void 0 && Number(length) > MAX_HTTP_BYTES) return send(res, 413, "payload-too-large");
       let text2;
-      let body2;
+      let body3;
       try {
         text2 = await readBody(req);
-        body2 = JSON.parse(text2);
+        body3 = JSON.parse(text2);
       } catch (error) {
         if (error instanceof Error && error.message === "payload-too-large") return send(res, 413, "payload-too-large");
         res.statusCode = 400;
@@ -49248,8 +49988,8 @@ function createAiNodeHandler(options = {}) {
         res.end(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error: the body is not valid JSON.", data: { code: "invalid-json" } } }));
         return;
       }
-      if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
-      const message = body2;
+      if (!body3 || typeof body3 !== "object" || Array.isArray(body3)) return send(res, 400, "invalid-json-rpc");
+      const message = body3;
       if (String(message.method) === "tools/call") {
         verdict = await countRequest();
         if (verdict !== "allowed") return refuse(verdict);
@@ -49277,9 +50017,9 @@ function createAiNodeHandler(options = {}) {
             changed = true;
           }
         }
-        if (changed) text2 = JSON.stringify(body2);
+        if (changed) text2 = JSON.stringify(body3);
       }
-      if (calledTool && normaliseCoverageCall(body2)) text2 = JSON.stringify(body2);
+      if (calledTool && normaliseCoverageCall(body3)) text2 = JSON.stringify(body3);
       const ageFirst = calledTool && AGE_FIRST_TOOLS.has(calledTool) ? ageFirstRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
       const refusal = ageFirst ?? (calledTool ? argumentRefusal(calledTool, message.params.arguments, calledTool === SAVE_TOOL_NAME ? void 0 : inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : void 0);
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
@@ -49308,7 +50048,7 @@ function createAiNodeHandler(options = {}) {
           if (typeof req.headers?.[key2] === "string") headers.set(key2, req.headers[key2]);
         }
         const request2 = new Request(`${ORIGIN}/mcp`, { method: "POST", headers, body: text2 });
-        const response = await sdk.fetch(request2, { parsedBody: body2 });
+        const response = await sdk.fetch(request2, { parsedBody: body3 });
         res.statusCode = response.status;
         response.headers.forEach((value, key2) => {
           if (!["cache-control", "content-length", "access-control-allow-origin"].includes(key2)) res.setHeader(key2, value);
