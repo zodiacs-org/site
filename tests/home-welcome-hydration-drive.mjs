@@ -20,6 +20,9 @@ try {
     const page=await context.newPage();const requests=[];
     let release;const held=new Promise(resolve=>{release=resolve;});
     await page.addInitScript(()=>{
+     localStorage.setItem('zodiacs.profile.v1', JSON.stringify({
+      version: 1, charts: [{ relationship: 'other', summary: { bodies: [{ body: 'Sun', lon: 20 }] } }],
+     }));
      window.__homeWelcomePaint={fcp:null,posterLcp:null};
      new PerformanceObserver(list=>{
       for(const entry of list.getEntries())if(entry.name==='first-contentful-paint')window.__homeWelcomePaint.fcp=entry.startTime;
@@ -37,7 +40,7 @@ try {
      await page.goto(baseURL+'/',{waitUntil:'domcontentloaded'});
      const island=page.locator('astro-island[component-url*="WelcomeBack."]');
      assert.equal(await island.count(),1,'Real welcome island is present');
-     assert.equal(await island.getAttribute('client'),'interaction');
+     assert.equal(await island.getAttribute('client'),'home-returning');
      await page.waitForTimeout(500);
      assert.equal(requests.length,0,'Welcome module fetched while the real poster was held');
      release();
@@ -68,7 +71,7 @@ const report={
  producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},
  checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim(),
  records,passed:failure===null&&records.length===variants.length,failure,
- limitations:['Real local-build poster requests, anonymous empty profiles and automatic hydration only.','Returning saved-chart behavior is checked separately by the existing consumer drive.','No Lighthouse result, independent astronomy, private clearance or publication claim.']
+ limitations:['Real local-build poster requests, chart chooser profiles and automatic hydration only.','Returning saved-chart behavior is checked separately by the existing consumer drive.','No Lighthouse result, independent astronomy, private clearance or publication claim.']
 };
 const path='docs/platform/evidence/home-poster-loading-20261010/hydration-controls.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');
 mkdirSync('docs/platform/evidence/home-poster-loading-20261010',{recursive:true});writeFileSync(path,bytes);

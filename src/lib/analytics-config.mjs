@@ -16,6 +16,7 @@ export const ANALYTICS_EVENT_PROPS = Object.freeze({
   terminal_view_switch: ['surface', 'direction'],
   sdk_click: ['source', 'destination'],
   bio_click: ['destination'],
+  thesis_click: ['source'],
   // A visit that arrived from a link the Zodiacs app gave in ChatGPT or another assistant.
   assistant_arrival: ['assistant'],
   wallet_chart_computed: ['chain', 'holds_registry_asset'],
@@ -193,6 +194,9 @@ export const ANALYTICS_EVENT_VALUES = Object.freeze({
   birthday_card_made: Object.freeze({ source: Object.freeze(['direct', 'card']) }),
   assistant_arrival: Object.freeze({
     assistant: Object.freeze(['chatgpt', 'assistant']),
+  }),
+  thesis_click: Object.freeze({
+    source: Object.freeze(['astrofolio', 'fomo']),
   }),
   bio_click: Object.freeze({
     destination: Object.freeze([

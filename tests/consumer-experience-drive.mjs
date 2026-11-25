@@ -60,6 +60,8 @@ async function calculate(page, { unknown = false } = {}) {
   await page.locator('#place-opt-0').click();
   await page.locator('.calc__submit').click();
   await page.locator('.calc__result').waitFor();
+  check('The placements table is accessible on the first result', await page.locator('.calc__detail').getByRole('table').isVisible());
+  check('The result heading has focus', await page.locator('.calc__result > h2').evaluate(heading => document.activeElement === heading));
   await page.locator('[data-first-reading-start]').waitFor();
   await fits(page, unknown ? 'Unknown-time chart' : 'Known-time chart');
 }
@@ -209,7 +211,7 @@ try { await withPreview({ port: 8784 }, async baseURL => {
         await restore(context, savedState.origins);
         await page.clock.install({ time: new Date(`${daily.date}T12:00:00Z`) });
         await page.goto(baseURL);
-        const card = page.locator('.wb-card');
+        const card = page.locator('.wb-chart');
         await card.waitFor({ state: 'visible' });
         await card.locator('a[href="/today/"]').click();
         await page.locator('.today-reading--resolved').waitFor();
@@ -252,8 +254,8 @@ try { await withPreview({ port: 8784 }, async baseURL => {
         await page.locator('[data-save-prompt] button[type="submit"]').click();
         await page.locator('[data-primary-action="saved_charts"]').waitFor();
         await page.goto(baseURL);
-        await page.locator('.wb-card').waitFor({ state: 'visible' });
-        check(`${engine}: saving a friend does not replace the owner`, !(await page.locator('.wb-card h2').textContent()).includes('Simulated friend'));
+        await page.locator('.wb-chart .chip').first().waitFor({ state: 'visible' });
+        check(`${engine}: saving a friend does not replace the owner`, !(await page.locator('.wb-chart h2').textContent()).includes('Simulated friend'));
         await shot(page, `${engine}-saved-friend-home`);
         // Mixed-chart fixtures make the friend's edit newer to isolate
         // identity precedence independently of the calculator save flow.
