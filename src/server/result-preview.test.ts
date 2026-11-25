@@ -50,6 +50,9 @@ import {
   retrogradeForYouStoryAddress,
   RESULT_SHARE_ROUTE_KEY,
   RESULT_SHARE_ROUTES,
+  handleYourDayImageRequest,
+  handleYourDayLinkRequest,
+  handleYourDayStoryRequest,
 } from './result-preview';
 import {
   bigThreeCardModel,
@@ -77,6 +80,7 @@ import { parseRetrogradeForYouShare, retrogradeForYouCleanQuery } from '../lib/r
 import { requestOrigin } from './chart-preview';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import { parseVedicSignsShare, vedicSignsCleanQuery } from '../lib/vedic-signs/share';
+import { yourDayCleanQuery } from '../lib/personal-day/share';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
@@ -638,7 +642,24 @@ describe('share link pages', () => {
     expect(invite).toContain('<a class="cta" href="/compatibility/invite/">Make an invite link</a>');
     expect(invite).toContain('<a class="more" href="/compatibility/">Compare two charts now</a>');
     expect(invite).toContain('Taurus and Scorpio. Two birth charts, read together.');
-    for (const page of [big, untimed, chinese, animal, invite]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    const day = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus&ref=chatgpt'))).text();
+    expect(day).toContain('<h1>My day, 9 November 2026: Taurus Sun</h1>');
+    expect(day).toContain('content="https://zodiacs.org/api/og/your-day-image?day=2026-11-09&amp;s=taurus"');
+    expect(day).toContain('href="/api/og/your-day-story?day=2026-11-09&amp;s=taurus" download="zodiacs-your-day-2026-11-09-story.jpg"');
+    expect(day).toContain('<a class="cta" href="/your-day/">Read your day</a>');
+    expect(day).toContain('The day’s transits for this Taurus Sun chart, ranked by strength.');
+    expect(day).toContain('If you give a birth time, the reading shows the local time for contacts that become exact that day.');
+    expect(day).not.toMatch(/way of loving|romance|attraction/u);
+    // A link that carries a key the share does not use is sent to the day's own address; one that is no share
+    // opens the plain page.
+    const extraDay = await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus&t=08:30'));
+    expect(extraDay.status).toBe(303);
+    expect(extraDay.headers.get('location')).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus');
+    expect(await extraDay.text()).toBe('');
+    const plainDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/'))).text();
+    expect(plainDay).toContain('<h1>Read your day</h1>');
+    expect(plainDay).not.toContain('08:30');
+    for (const page of [big, untimed, chinese, animal, invite, day, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[\u2014\u2013]/u);
     // A bare address or a query that is not a share opens the plain page, with the site's own card.
     expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/big-three.png"');
     expect(await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=dragonfly'))).text()).toContain('<h1>The Chinese zodiac</h1>');
@@ -707,6 +728,7 @@ describe('the deployed entry', () => {
       ['/share/astrocartography/', 'astrocartography-link'], ['/api/og/astrocartography-image', 'astrocartography-image'], ['/api/og/astrocartography-story', 'astrocartography-story'],
       ['/share/vedic-signs/', 'vedic-signs-link'], ['/api/og/vedic-signs-image', 'vedic-signs-image'], ['/api/og/vedic-signs-story', 'vedic-signs-story'],
       ['/share/retrograde-for-you/', 'retrograde-for-you-link'], ['/api/og/retrograde-for-you-image', 'retrograde-for-you-image'], ['/api/og/retrograde-for-you-story', 'retrograde-for-you-story'],
+      ['/share/your-day/', 'your-day-link'], ['/api/og/your-day-image', 'your-day-image'], ['/api/og/your-day-story', 'your-day-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
@@ -901,6 +923,8 @@ describe('share preview images', () => {
     ['Vedic signs read with another ayanamsa', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=aries&a=raman'))],
     ['retrograde for Sun sign', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&sun=taurus'))],
     ['retrograde without Sun sign', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mars&s=2027-01-10'))],
+    ['personal day', () => handleYourDayImageRequest(new Request('https://zodiacs.org/api/og/your-day-image?day=2026-11-09&s=taurus'))],
+    ['personal day for Leo Sun', () => handleYourDayImageRequest(new Request('https://zodiacs.org/api/og/your-day-image?day=2026-11-12&s=leo'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -949,6 +973,9 @@ describe('share preview images', () => {
       [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-25&sun=taurus'],
       [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&sun=taurus&d=1990-05-03'],
       [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70'],
+      [handleYourDayImageRequest, 'https://zodiacs.org/api/og/your-day-image?day=2026-11-09&p=mars&a=square&n=sun&c=75'],
+      [handleYourDayImageRequest, 'https://zodiacs.org/api/og/your-day-image?day=2026-11-09&s=taurus&b=1990-05-03'],
+      [handleYourDayImageRequest, 'https://zodiacs.org/api/og/your-day-image?day=2026-11-09&s=ophiuchus'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -975,6 +1002,7 @@ describe('story pictures', () => {
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
     ['Vedic signs', () => handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=sagittarius&a=lahiri'))],
     ['retrograde for Sun sign', () => handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&sun=taurus'))],
+    ['personal day', () => handleYourDayStoryRequest(new Request('https://zodiacs.org/api/og/your-day-story?day=2026-11-09&s=taurus'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -1001,6 +1029,7 @@ describe('story pictures', () => {
     expect((await handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&d=1990-08-01'))).status).toBe(400);
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
+    expect((await handleYourDayStoryRequest(new Request('https://zodiacs.org/api/og/your-day-story?day=2026-11-09&s=taurus&lat=40.42'))).status).toBe(400);
     expect((await handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=leo&a=lahiri&d=1990-08-01'))).status).toBe(400);
     expect((await handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&h=5&b=sun&c=70'))).status).toBe(400);
   });
@@ -1112,5 +1141,56 @@ describe('a retrograde in one person’s chart', () => {
       expect(retrogradeForYouCleanQuery(new URLSearchParams('p=venus&s=2026-10-24&ref=other'))).toBe('');
       expect(retrogradeForYouCleanQuery(new URLSearchParams(''))).toBe('');
     });
+  });
+});
+
+describe('the Your day share page clears every key it does not use from the address, on the deployed entry', () => {
+  const SECRETS = ['1990-05-03', '08:30', 'Lisbon', 'Ada', '38.72', 'scorpio', 'leo'];
+  const holdsNone = (text: string) => { for (const value of SECRETS) expect(text).not.toContain(value); };
+  const deployed = async (route: 'your-day-link' | 'your-day-image' | 'your-day-story', query: Record<string, string | string[]>) => {
+    vi.stubEnv('PUBLIC_YOUR_DAY_ENABLED', '1');
+    const res = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+    return res;
+  };
+  afterEach(() => { vi.unstubAllEnvs(); });
+
+  it.each([
+    [{ day: '2026-11-09', s: 'taurus', birthDate: '1990-05-03' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    [{ day: '2026-11-09', s: 'taurus', moon: 'scorpio', rising: 'leo' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    [{ day: '2026-11-09', s: 'taurus', t: '08:30', city: 'Lisbon', n: 'Ada', lat: '38.72' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    [{ birthDate: '1990-05-03', s: 'taurus', day: '2026-11-09', ref: 'chatgpt' }, '/share/your-day/?day=2026-11-09&s=taurus&ref=chatgpt'],
+    [{ day: '2026-11-09', s: 'taurus', fbclid: 'IwAR0' }, '/share/your-day/?day=2026-11-09&s=taurus'],
+    // A repeated key, or a query that is no share, leaves nothing of the query: the plain page.
+    [{ day: ['2026-11-09', '1990-05-03'], s: 'taurus' }, '/share/your-day/'],
+    [{ day: '2026-11-09', s: 'ophiuchus', d: '1990-05-03' }, '/share/your-day/'],
+    [{ birthDate: '1990-05-03' }, '/share/your-day/'],
+  ] as const)('sends %j to %s', async (query, location) => {
+    const res = await deployed('your-day-link', query as Record<string, string | string[]>);
+    expect(res.statusCode).toBe(303);
+    expect(res.headers.get('location')).toBe(`https://zodiacs.org${location}`);
+    holdsNone(res.headers.get('location')!);
+    holdsNone(res.body.toString('utf8'));
+  });
+
+  it('opens the card at the clean address, and the plain page with no query', async () => {
+    const card = await deployed('your-day-link', { day: '2026-11-09', s: 'taurus' });
+    expect(card.statusCode).toBe(200);
+    expect(card.body.toString('utf8')).toContain('My day, 9 November 2026: Taurus Sun');
+    expect((await deployed('your-day-link', { day: '2026-11-09', s: 'taurus', ref: 'assistant' })).statusCode).toBe(200);
+    const plain = await deployed('your-day-link', {});
+    expect(plain.statusCode).toBe(200);
+    expect(plain.body.toString('utf8')).toContain('<h1>Read your day</h1>');
+  });
+
+  it('leaves the pictures as they were: only their own keys, else refused', async () => {
+    expect((await deployed('your-day-image', { day: '2026-11-09', s: 'taurus', birthDate: '1990-05-03' })).statusCode).toBe(400);
+    expect((await deployed('your-day-story', { day: '2026-11-09', s: 'taurus', fbclid: 'IwAR0' })).statusCode).toBe(400);
+  });
+
+  it('builds the clean query from the share keys alone', () => {
+    expect(yourDayCleanQuery(new URLSearchParams('s=leo&x=1&day=2026-11-09'))).toBe('day=2026-11-09&s=leo');
+    expect(yourDayCleanQuery(new URLSearchParams('day=2026-11-09&s=leo&ref=other'))).toBe('');
+    expect(yourDayCleanQuery(new URLSearchParams(''))).toBe('');
   });
 });

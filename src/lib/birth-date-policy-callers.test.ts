@@ -35,6 +35,7 @@ const ISLANDS = [
   'AstrocartographyMap',
   'VedicSigns',
   'RetrogradeForYou',
+  'YourDay',
 ] as const;
 
 const YEAR_SKY_TWINS = ['YearSkyEs', 'YearSkyFr', 'YearSkyIt', 'YearSkyPt'] as const;

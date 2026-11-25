@@ -123,6 +123,7 @@ export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/astrocartography/': 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
   '/vedic-signs/': 'PUBLIC_VEDIC_SIGNS_ENABLED',
   '/retrogrades/for-you/': 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
+  '/your-day/': 'PUBLIC_YOUR_DAY_ENABLED',
 });
 const launchedRoute = (route, env) => !LAUNCH_FLAGGED_ROUTES[route] || env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
 
