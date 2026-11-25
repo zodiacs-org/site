@@ -69,6 +69,12 @@ it('keeps the published connector reply while a separate route advertises and re
       }
       for (const [date, zone] of [
         ['1892-07-04', 'Pacific/Apia'],
+        ['2019-02-16', 'America/Sao_Paulo'],
+        ['2019-02-17', 'America/Sao_Paulo'],
+        ['2019-04-06', 'America/Santiago'],
+        ['2019-04-07', 'America/Santiago'],
+        ['2022-09-21', 'Asia/Tehran'],
+        ['2022-09-22', 'Asia/Tehran'],
         ['2026-11-01', 'America/New_York'],
       ] as const) {
         const accepted = await client.callTool({

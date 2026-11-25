@@ -511,9 +511,10 @@ describe('compute API validation', () => {
       expect((await call('sky-fact', { kind: 'sign', body: 'Moon', sign: 'scorpio', instant: ingress })).status).toBe(200);
     }
     // The dates beyond each change are whole. A clock that went back to a midnight keeps its dates whole too:
-    // Apia went from the end of 4 July 1892 back to its start, one day of 48 hours. And a change inside a
-    // day leaves it one span: New York's 25 hours on 1 November 2026, Lord Howe's 23.5 on 7 October 2012
-    // and 24.5 on 1 April 2012.
+    // Apia went from the end of 4 July 1892 back to its start, one day of 48 hours. Clocks that roll back at
+    // midnight from 24:00 to 23:00 of the same day (Sao Paulo, Santiago, Tehran) keep a single 25-hour span
+    // and never split either date. And a change inside a day leaves it one span: New York's 25 hours on
+    // 1 November 2026, Lord Howe's 23.5 on 7 October 2012 and 24.5 on 1 April 2012.
     for (const [date, zone, from, to] of [
       ['1989-10-27', 'America/St_Johns', '1989-10-27T02:30:00.000Z', '1989-10-28T02:30:00.000Z'],
       ['1989-10-30', 'America/St_Johns', '1989-10-30T03:30:00.000Z', '1989-10-31T03:30:00.000Z'],
@@ -522,6 +523,12 @@ describe('compute API validation', () => {
       ['1892-07-03', 'Pacific/Apia', '1892-07-02T11:26:56.000Z', '1892-07-03T11:26:56.000Z'],
       ['1892-07-04', 'Pacific/Apia', '1892-07-03T11:26:56.000Z', '1892-07-05T11:26:56.000Z'],
       ['1892-07-05', 'Pacific/Apia', '1892-07-05T11:26:56.000Z', '1892-07-06T11:26:56.000Z'],
+      ['2019-02-16', 'America/Sao_Paulo', '2019-02-16T02:00:00.000Z', '2019-02-17T03:00:00.000Z'],
+      ['2019-02-17', 'America/Sao_Paulo', '2019-02-17T03:00:00.000Z', '2019-02-18T03:00:00.000Z'],
+      ['2019-04-06', 'America/Santiago', '2019-04-06T03:00:00.000Z', '2019-04-07T04:00:00.000Z'],
+      ['2019-04-07', 'America/Santiago', '2019-04-07T04:00:00.000Z', '2019-04-08T04:00:00.000Z'],
+      ['2022-09-21', 'Asia/Tehran', '2022-09-20T19:30:00.000Z', '2022-09-21T20:30:00.000Z'],
+      ['2022-09-22', 'Asia/Tehran', '2022-09-21T20:30:00.000Z', '2022-09-22T20:30:00.000Z'],
       ['2026-11-01', 'America/New_York', '2026-11-01T04:00:00.000Z', '2026-11-02T05:00:00.000Z'],
       ['2012-10-07', 'Australia/Lord_Howe', '2012-10-06T13:30:00.000Z', '2012-10-07T13:00:00.000Z'],
       ['2012-04-01', 'Australia/Lord_Howe', '2012-03-31T13:00:00.000Z', '2012-04-01T13:30:00.000Z'],
