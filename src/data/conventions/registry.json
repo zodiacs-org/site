@@ -2101,9 +2101,10 @@
     {
       "name": "timeScale",
       "title": "Time scale",
-      "description": "How a natal chart's instant becomes UT1 and TT, and where the basis is recorded.",
+      "description": "How a natal chart's or compute request's instant becomes UT1 and TT, and where the basis is recorded.",
       "usedIn": [
-        "natal receipts: conventions.timeScale"
+        "natal receipts: conventions.timeScale",
+        "compute receipts: conventions.timeScale"
       ],
       "entries": [
         {
@@ -2136,7 +2137,7 @@
           "id": "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
           "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
           "title": "The engine's time basis with continuous UTC, in the result",
-          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds and UT1 from IERS UT1 − UTC; after the table, TT is UTC plus 69.184 s and UT1 comes from the ΔT model; before 1972, the instant read as UT1 and TT from the ΔT model; the basis recorded in the result's timeScale. A receipt names this set only for a chart whose basis is continuous-utc.",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds and UT1 from IERS UT1 − UTC; after the table, TT is UTC plus 69.184 s and UT1 comes from the ΔT model; before 1972, the instant read as UT1 and TT from the ΔT model; where a result includes timeScale, the basis is recorded there. A natal receipt names this set for a chart whose basis is continuous-utc; compute receipts name this complete three-era rule across all accepted dates.",
           "sources": [
             {
               "title": "@zodiacs/engine 2.1.0, src/receipt.ts, the conventions sets",
