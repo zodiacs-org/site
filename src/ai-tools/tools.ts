@@ -8,6 +8,7 @@ import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-
 import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
 import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
 import type { LocalTimeModule } from '../lib/compute-api/local-time';
+import { isFixedOffsetZone } from '../lib/time/fixed-zones';
 import { occasionCard } from '../lib/occasions/card';
 import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path';
 import { MILESTONE_WORDS, milestoneCard } from '../lib/occasions/milestone-card';
@@ -490,7 +491,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (skyEvents) capabilities.limitations.push('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet\'s next retrograde, when a planet changes sign, every full Moon next year or this week\'s void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.');
           // Numerology is a separate tradition from astrology, and the line says so.
           if (dependencies.momentChart) capabilities.limitations.push(MOMENT_ROUTING);
-          if (numerologyOn(dependencies)) capabilities.limitations.push('get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.');
+          if (numerologyOn(dependencies)) capabilities.limitations.push(
+            'get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.',
+            'For a numerology reading, use get_numerology, not explain_astrology.',
+          );
         }
         if (goodDaysOn(dependencies)) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -568,7 +572,31 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
-        const calculation = await computeSkyFact(request, { localTime: localTime() });
+        const rawCalculation = await computeSkyFact(request, { localTime: localTime() });
+        const zoneName = rawCalculation.result.fact.zone;
+        const fixedZone = zoneName !== null && isFixedOffsetZone(zoneName);
+        const zoneFlags = rawCalculation.result.zone
+          ? [...rawCalculation.result.zone.start.flags, ...rawCalculation.result.zone.end.flags]
+          : [];
+        if (!fixedZone && zoneFlags.includes('calendar-unknown')) {
+          return failure(tool, 'calendar-unknown', 'That date was skipped by a calendar change in the requested time zone, so the civil date is ambiguous without a calendar or country. Omit zone to check across every time zone, or inspect the UTC window with get_upcoming_events.');
+        }
+        if (zoneFlags.includes('host-zone-data-differs')) {
+          return failure(tool, 'host-zone-data-differs', 'This server\'s time zone rules differ near that date. Omit zone to check across every time zone, or inspect the UTC window with get_upcoming_events.');
+        }
+        const publishedLocalFlags = (flags: readonly string[]) => flags.filter((flag) => flag === 'dst-gap' || flag === 'dst-fold' || flag === 'lmt');
+        const calculation = rawCalculation.result.zone
+          ? {
+            ...rawCalculation,
+            result: {
+              ...rawCalculation.result,
+              zone: {
+                start: { ...rawCalculation.result.zone.start, flags: publishedLocalFlags(rawCalculation.result.zone.start.flags) },
+                end: { ...rawCalculation.result.zone.end, flags: publishedLocalFlags(rawCalculation.result.zone.end.flags) },
+              },
+            },
+          }
+          : rawCalculation;
         data = { answer: calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
         links = [methodLink, calendarLink];
         break;

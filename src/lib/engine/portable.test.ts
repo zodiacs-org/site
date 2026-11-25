@@ -54,7 +54,7 @@ describe('optional portable calculation boundary', () => {
     expect(result.chart.input.houseSystem).toBe('placidus');
     expect(result.chart.input.utc.toISOString()).toBe('2001-12-21T08:30:00.000Z');
     expect(result.chart.houses?.system ?? null).toBe(timeKnown ? 'whole' : null);
-    expect(result.chart.flags).toEqual([timeKnown ? 'polar-fallback' : 'no-time']);
+    expect(result.chart.flags).toEqual(timeKnown ? ['polar-fallback', 'polar-angles'] : ['no-time']);
     const { ephemeris, ...compact } = native;
     expect(result.envelope.receipt.engine.ephemeris).toEqual(ephemeris);
     expect(result.chart).toEqual({ ...compact, input: { ...native.input, flags: [] },

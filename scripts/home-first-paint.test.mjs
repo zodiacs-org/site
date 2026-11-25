@@ -51,7 +51,7 @@ const fontContract = [
 const optionalHeroFaces = ['instrument-sans-home-nav-core.woff2', 'eb-garamond-home-400-core.woff2'];
 
 describe('homepage first-paint assets', () => {
-  it('keeps the motion control out of document flow before deferred styles load', async () => {
+  it('keeps the motion control out of document flow from the first paint', async () => {
     const critical = await readFile(resolve(repositoryRoot, 'src/home/home-first-paint.css'), 'utf8');
     const page = await readFile(resolve(repositoryRoot, 'src/pages/index.astro'), 'utf8');
     const canonical = page.match(/<style>([\s\S]*?)<\/style>/u)[1];
@@ -139,9 +139,8 @@ describe('homepage first-paint assets', () => {
     const ticker = page.match(/<SkyTicker\b[^>]*\/>/gu);
 
     expect(ticker).toEqual(['<SkyTicker />']);
-    // The saved-profile island has no SSR child for visibility observation.
-    // The intent/load fallback reaches returning state after the initial poster load.
-    expect(page).toContain('<WelcomeBack client:interaction />');
+    // Only a visible returning greeting needs the intent/load fallback.
+    expect(page).toContain('<WelcomeBack client:home-returning />');
     // The sign picker under the hero is twelve plain links: no island.
     expect(page).not.toContain('<TodayBySign');
     expect(page).toMatch(/<a\s+href=\{`\/horoscopes\/\$\{s\.slug\}\/`\}/u);

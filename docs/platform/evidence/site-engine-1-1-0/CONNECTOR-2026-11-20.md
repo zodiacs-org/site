@@ -51,6 +51,14 @@ Neptune path continues to use Astronomy Engine and the DE440 route keeps its
 separate calculation. The server reports 0.6.9. The portable plugin and
 registry record retain their existing versions.
 
+## Gated numerology guidance
+
+Starting from the reproduced 0.6.9 source, apply the changes to
+`src/ai-tools/tools.ts` and `src/lib/numerology/reading.ts` from the
+`runtimeSource.readingConfidence` commit with one line of diff context.
+Build the hosted entry with the same settings and lifetime boundary. The
+resulting digest is recorded in `publishedSha256`.
+
 ## Moment charts (ZOD-62)
 
 The proposed hosted tool is available on both routes when
@@ -73,3 +81,5 @@ lifetime boundary. The current digest is in `publishedSha256`.
 switch on and off. It checks that existing definitions keep their values,
 casts a chart for now, submits the same recent date to the birth tool, and
 inspects the request URLs, returned links, counters and preview diagnostics.
+
+The combined hosted build retains both source changes. After applying the moment chart changes to the reproduced source, apply the numerology guidance to the same sources before compiling.
