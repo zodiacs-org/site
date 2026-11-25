@@ -47,12 +47,17 @@ const file = card.split('/').pop();
   const rootOf = (target) => target instanceof Element && target.closest('[data-card-share]');
   const warm = (event) => { const root = rootOf(event.target); if (root) prepare(root.dataset.card); };
   for (const type of ['pointerover', 'focusin', 'touchstart']) document.addEventListener(type, warm, { passive: true });
-  if (typeof IntersectionObserver === 'function' && document.querySelectorAll) {
+  // The script runs after the first control is parsed; the page may hold more
+  // (the Big Three page has twelve), so they are observed once parsing ends.
+  const observeAll = () => {
+    if (typeof IntersectionObserver !== 'function' || !document.querySelectorAll) return;
     const seen = new IntersectionObserver((entries) => {
       for (const item of entries) if (item.isIntersecting) { prepare(item.target.dataset.card); seen.unobserve(item.target); }
     }, { rootMargin: '200px' });
     document.querySelectorAll('[data-card-share]').forEach((root) => seen.observe(root));
-  }
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', observeAll, { once: true });
+  else observeAll();
   document.addEventListener('click', async (event) => {
     const button = event.target instanceof Element && event.target.closest('[data-card-share-button]');
     if (!button) return;

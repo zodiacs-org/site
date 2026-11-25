@@ -114,6 +114,25 @@ describe('shareable cards', () => {
     expect(early.calls.order.indexOf('share')).toBe(early.calls.order.indexOf('tap') + 2);
     expect(early.calls.shared).toEqual([{ title: 'Leo', url }]);
 
+    // Every control on the page is observed once parsing ends, not only the first one parsed.
+    {
+      const handlers: Record<string, () => void> = {};
+      const observed: string[] = [];
+      const roots = ['aries', 'taurus', 'gemini'].map((sign) => ({ dataset: { card: `/cards/en/big-three/${sign}.jpg` } }));
+      let parsed = 1;
+      const document = {
+        readyState: 'loading',
+        addEventListener: (type: string, handler: () => void) => { handlers[type] = handler; },
+        querySelectorAll: () => roots.slice(0, parsed),
+      };
+      class Observer { observe(root: { dataset: { card: string } }) { observed.push(root.dataset.card); } unobserve() {} }
+      new Function('window', 'document', 'IntersectionObserver', script)({}, document, Observer);
+      expect(observed).toEqual([]);
+      parsed = roots.length;
+      handlers.DOMContentLoaded();
+      expect(observed).toEqual(roots.map((root) => root.dataset.card));
+    }
+
     const fallback = await run({});
     expect(fallback.calls.copied).toEqual([url]);
     expect(fallback.calls.shared).toEqual([]);
