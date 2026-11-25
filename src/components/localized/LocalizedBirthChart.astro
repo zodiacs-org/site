@@ -26,6 +26,7 @@ import { englishOnlyCue, localizePath, t } from '../../lib/i18n';
 import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
 import { formatDate, formatTime, intlLocale } from '../../lib/i18n/dates';
 import { signName, signPrepositional } from '../../lib/signs';
+import { signInRu } from '../../lib/sign-ru';
 import { ALL_TOOLS_LABEL, NAV_MORE } from '../../lib/nav-tools';
 import {
   SAMPLE_ASPECTS,
@@ -428,8 +429,8 @@ const COPY: Record<BirthChartLocale, Copy> = {
     moonRole: 'эмоциональная жизнь',
     risingRole: 'первое впечатление',
     sunText: (house) => `Справедливость, партнёрство и чувство равновесия находятся в центре личности этого человека. При Солнце в ${house}-м доме это чаще всего видно в работе и общественной жизни.`,
-    moonText: (sign, house) => `Чувства обычно приходят быстро и честно. Полезный вопрос для Луны в ${sign} в ${house}-м доме: где дома есть место для прямоты?`,
-    risingText: (sign) => `Человека с асцендентом в ${sign} часто сначала видят спокойным, умелым и немного сдержанным, а тепло замечают позже. Асцендент также задаёт, откуда начинаются дома.`,
+    moonText: (sign, house) => `Чувства обычно приходят быстро и честно. Полезный вопрос для Луны ${sign} в ${house}-м доме: где дома есть место для прямоты?`,
+    risingText: (sign) => `Человека с асцендентом ${sign} часто сначала видят спокойным, умелым и немного сдержанным, а тепло замечают позже. Асцендент также задаёт, откуда начинаются дома.`,
     signLink: (sign) => `Подробнее о знаке ${sign}`,
     anatomyWheel: 'Колесо натальной карты-примера с четырьмя пронумерованными частями',
     positions: 'Точные положения',
@@ -492,7 +493,8 @@ const linkTo = (path: string) => (englishOnly(path)
 const suffix = (path: string) => (englishOnly(path) ? cue.suffix : '');
 const name = (slug: string) => signName(slug, locale);
 /** Russian puts the sign in the prepositional case after "в". */
-const inSign = (slug: string) => (locale === 'ru' ? signPrepositional(slug) : name(slug));
+// Russian takes the preposition with the sign: «в Овне», «во Льве».
+const inSign = (slug: string) => (locale === 'ru' ? signInRu(slug) : name(slug));
 const cap = (text: string) => text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
 const number = (value: number, digits: number) => new Intl.NumberFormat(intlLocale(locale), {
   minimumFractionDigits: digits,

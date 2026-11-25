@@ -10,15 +10,17 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  POINT_NAMES, dateOn, dayLabel, natalBasis, retrogradeReading,
+  POINT_NAMES, dayLabel, dayTurns, natalBasis, retrogradeReading,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
-import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
+import { birthDaySpan } from '../../lib/time/birth-day-span';
+import { loopsFromSky, skyCoverageStart, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { publishedRetrogradeDate, retrogradeForYouShareQuery } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import sky from '../../data/sky.json';
 import { birthDateRefusal } from '../../lib/birth-date-policy';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, skippedWholeDate, withClockLimit } from '../../lib/vedic-signs/clock';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -40,6 +42,10 @@ export type RetrogradeForYouOutcome =
     periods: (RetrogradePeriod & { shareQuery: string | null; skyDate: string | null; nextLine: string | null })[];
     /** Planets whose next loop lies past the committed sky data. */
     unavailable: RetrogradePlanet[];
+    /** Planets the committed sky data cannot place yet on this clock's date: it is before the data settles where they stand. */
+    notCovered: RetrogradePlanet[];
+    /** "Thu 1 Jan 2026", the first day the data covers. */
+    dataStarts: string;
     /** "Thu 1 Jan 2031", the first day the data does not cover. */
     dataEnds: string;
     summary: string;
@@ -67,9 +73,14 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   // The shared birth date policy, before any chart resolution.
   const refused = retrogradeForYouRefusal(input.birthDate, input.now);
   if (refused) return refused;
-  const today = dateOn(input.now, input.zone);
   const timeKnown = input.birthTime !== null;
+  // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
+  if (!timeKnown && skippedWholeDate(input.birthDate, resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: input.place.lon }))) throw new SkippedBirthDateError();
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon });
+  // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
+  // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as get_retrograde_for_me does).
+  const onClock = birthTimeOnClock(resolved.flags, timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const birthUtc = resolved.utc;
   const chart = computeChart({ utc: birthUtc, latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown });
   const angles = timeKnown && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
@@ -79,25 +90,33 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     : null;
   let sunHeld = true;
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
+  let turns: Parameters<typeof natalBasis>[0]['dayTurns'];
   if (!timeKnown) {
-    // Without a birth time a placement holds only if it is the same at both ends of the birth day.
-    const dayStart = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: input.place.lon }).utc;
-    const dayEnd = resolveLocalToUtc(input.birthDate, '23:59', input.place.tz, { longitude: input.place.lon }).utc;
+    // Without a birth time a placement holds only if it is the same at both ends of the birth day, its whole span on
+    // the birthplace clock up to the instant before the next local midnight: a repeated last minute at its later pass,
+    // a skipped end at the nearest minute shown.
+    const [dayStart, dayEnd] = birthDaySpan(input.birthDate, input.place.tz, input.place.lon, resolveLocalToUtc);
     const rows = (at: Date) => POINT_NAMES.map((body) => ({ body, lon: bodyLongitude(body, at) }));
     dayEnds = [rows(dayStart), rows(dayEnd)];
+    // A planet that stationed that day can leave a loop's degrees between the two ends: where it turned counts too.
+    turns = dayTurns((body, at) => bodyLongitude(body as (typeof POINT_NAMES)[number], at), dayStart, dayEnd);
     const sign = (lon: number) => Math.floor((((lon % 360) + 360) % 360) / 30);
     const sunAt = (end: readonly { body: string; lon: number }[]) => sign(end.find((row) => row.body === 'Sun')!.lon);
     sunHeld = sunAt(dayEnds[0]) === sunAt(dayEnds[1]);
   }
-  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, today, dayEnds, foldAsc });
+  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, now: input.now, dayEnds, dayTurns: turns, foldAsc });
   const span = sky as SkySpan;
-  const reading = retrogradeReading({
+  const reading = withClockLimit(retrogradeReading({
     planets: input.planets, now: input.now, zone: input.zone, basis,
     loopsFor: (planet) => loopsFromSky(planet, input.now, span, (body, at) => bodyLongitude(body, at)),
-  });
+  }), onClock.limit);
   const sunSign = sunHeld
     ? (SIGNS[signIndexForLongitude(chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
     : null;
+  const beforeData = (planet: RetrogradePlanet) => {
+    const covered = skyCoverageStart(planet, span);
+    return !covered || input.now.getTime() < covered.getTime();
+  };
   return {
     periods: reading.periods.map((period) => ({
       ...period,
@@ -107,7 +126,10 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
         planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, sun: sunSign,
       }, span.retrogrades),
     })),
-    unavailable: reading.unavailable,
+    // Before the data settles where a planet stands it is not covered, never read as direct; past the data, unavailable.
+    unavailable: reading.unavailable.filter((planet) => !beforeData(planet)),
+    notCovered: reading.unavailable.filter(beforeData),
+    dataStarts: dayLabel(sky.from, 'UTC'),
     dataEnds: dayLabel(sky.to, 'UTC'),
     summary: reading.summary,
     limits: reading.limits,

@@ -19,6 +19,7 @@ import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signBySlug, signIndexForLongitude } from '../signs';
 import { MINOR_NOTE, isUnder13, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
+import { earliestToday } from '../birth-date-policy';
 
 export { isUnder13, MINOR_NOTE };
 
@@ -31,7 +32,7 @@ export const RETROGRADE_HUE_SIGN: Readonly<Record<RetrogradePlanet, string>> = {
 /** What each planet's retrograde is traditionally read as, in general. */
 export const RETROGRADE_LINE: Readonly<Record<RetrogradePlanet, string>> = {
   Mercury: 'Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch: check the details, back up what matters, reread contracts before signing them, and leave room for delays in travel and messages.',
-  Venus: 'Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a good window to review finances and old ties, and a poor one for big purchases or a sudden change of look.',
+  Venus: 'Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a time to reflect on what you spend on and why, to look again at old ties, and to notice what still feels like you.',
   Mars: 'Mars retrograde traditionally slows drive and ambition: plans stall, tempers run shorter and old disputes come back. It asks you to rework a strategy rather than force it, and to take rest seriously when energy dips.',
 };
 
@@ -96,10 +97,13 @@ export interface NatalBasis {
   baseSign: string | null;
   /**
    * The natal points. Without a birth time `lon` is the noon chart's and
-   * `ends` holds the longitude at each end of the birth day, so a contact is
-   * claimed only when both ends agree.
+   * `ends` holds the longitude at each end of the birth day, then the
+   * longitude where the planet turned if it stationed that day, so a contact
+   * is claimed only when every degree it covered that day agrees. `turned`:
+   * the planet stationed within the untimed birth day, so a contact with it
+   * is only ever possible, never definite.
    */
-  points: { name: string; lon: number; ends?: readonly [number, number] }[];
+  points: { name: string; lon: number; ends?: readonly number[]; turned?: boolean }[];
   /** True without a birth time: natal positions are printed in whole degrees, with "about". */
   approximate: boolean;
   detail: ReadingDetail;
@@ -160,6 +164,55 @@ export function loopSigns(loop: RetrogradeLoop): number[] {
   return out;
 }
 
+/** The bodies that can station; the Sun and Moon never do. */
+const TURNING_POINTS: readonly string[] = POINT_NAMES.filter((name) => name !== 'Sun' && name !== 'Moon');
+/**
+ * Half the span the direction of motion at an instant is read over, on either side of it. Near a station the
+ * longitude is a parabola in time, for which the difference across a span centred on an instant has the sign of the
+ * speed at that instant exactly, whatever the span: the wider span only lifts that difference clear of rounding.
+ */
+const DIRECTION_HALF_SPAN_MS = 30_000;
+/** A turn is located to within this. */
+const TURN_RESOLUTION_MS = 1_000;
+const direction = (from: number, to: number) => Math.sign((((to - from) % 360) + 540) % 360 - 180);
+
+/**
+ * The planets that stationed within an untimed birth day, both ends included, each with its longitude where it
+ * turned and the instant it turned. Between the two ends of the day a planet moves one way unless it stations, so its
+ * two ends and that turn bound every degree it covered: a planet that turned can be on a loop's degrees at both ends
+ * of the day and off them in between. The direction is read at each exact end of the day, at the instant itself, so
+ * a turn seconds after the day begins or seconds before it ends is found; the turn is then located by halving the
+ * span between an instant it moved one way and one it moved the other until the two are under a second apart.
+ * `lonAt` is the ephemeris the caller reads the ends with. Pure.
+ */
+export function dayTurns(lonAt: (body: string, at: Date) => number, start: Date, end: Date): { body: string; lon: number; at: Date }[] {
+  const moving = (body: string, ms: number) => direction(lonAt(body, new Date(ms - DIRECTION_HALF_SPAN_MS)), lonAt(body, new Date(ms + DIRECTION_HALF_SPAN_MS)));
+  const out: { body: string; lon: number; at: Date }[] = [];
+  const first = start.getTime();
+  const last = end.getTime();
+  if (!(last > first)) return out;
+  const turned = (body: string, ms: number) => out.push({ body, lon: lonAt(body, new Date(ms)), at: new Date(ms) });
+  for (const body of TURNING_POINTS) {
+    const opening = moving(body, first);
+    const closing = moving(body, last);
+    // Stationary at an exact end of the day: it turned there.
+    if (opening === 0) { turned(body, first); continue; }
+    if (closing === 0) { turned(body, last); continue; }
+    if (opening === closing) continue;
+    let lo = first;
+    let hi = last;
+    while (hi - lo > TURN_RESOLUTION_MS) {
+      const mid = lo + Math.floor((hi - lo) / 2);
+      const now = moving(body, mid);
+      if (now === 0) { lo = mid; hi = mid; break; }
+      if (now === opening) lo = mid;
+      else hi = mid;
+    }
+    turned(body, lo + Math.floor((hi - lo) / 2));
+  }
+  return out;
+}
+
 /** True when `lon` lies on the loop's degrees, from the direct station forward to the retrograde station. */
 export function inLoop(loop: RetrogradeLoop, lon: number): boolean {
   return norm(lon - loop.stationDirect.lon) <= norm(loop.stationRetrograde.lon - loop.stationDirect.lon);
@@ -173,8 +226,11 @@ export function foldRisingLimit(earlier: string, later: string): string {
 /**
  * The house basis and the natal points, from a chart cast with whole-sign
  * houses. `sunHeld` says whether the Sun's sign is the same at both ends of an
- * untimed birth day (always true with a birth time). `today` is the date on
- * the person's clock, for the under-18 rule.
+ * untimed birth day (always true with a birth time). `now` is the instant
+ * of the reading. The under-18 rule reads the age on the calendar date at
+ * UTC-12 (earliestToday), as the shared under-13 policy does, so nobody is
+ * read as 18 early in any time zone; the clock the dates are shown on (the
+ * device's, the current zone's or the birthplace's) never moves it.
  */
 export function natalBasis(input: {
   timeKnown: boolean;
@@ -183,9 +239,11 @@ export function natalBasis(input: {
   bodies: readonly { body: string; lon: number }[];
   sunHeld: boolean;
   birthDate: string;
-  today: string;
+  now: Date;
   /** Without a birth time: the bodies at the start and the end of the birth day. */
   dayEnds?: readonly [readonly { body: string; lon: number }[], readonly { body: string; lon: number }[]];
+  /** Without a birth time: the planets that stationed within the birth day, where they turned (dayTurns). */
+  dayTurns?: readonly { body: string; lon: number }[];
   /**
    * When the birth time fell in a stretch the clocks repeated: the rising degree at the later pass, the size of the
    * change after the earlier one. The chart uses the earlier pass; a limit says so only when the rising sign, and so
@@ -213,9 +271,14 @@ export function natalBasis(input: {
   // The Moon only with a birth time (it moves about 13 degrees a day), the angles only with a place too.
   const endLon = (rows: readonly { body: string; lon: number }[], name: string) => rows.find((row) => row.body === name)!.lon;
   const ends = !input.timeKnown ? input.dayEnds : undefined;
-  const points: NatalBasis['points'] = POINT_NAMES.filter((name) => name !== 'Moon' || input.timeKnown).map((name) => ({
-    name: name as string, lon: lonOf(name), ...(ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name)] as const } : {}),
-  }));
+  const points: NatalBasis['points'] = POINT_NAMES.filter((name) => name !== 'Moon' || input.timeKnown).map((name) => {
+    const turns = ends ? (input.dayTurns ?? []).filter((row) => row.body === name).map((row) => row.lon) : [];
+    return {
+      name: name as string, lon: lonOf(name),
+      ...(ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name), ...turns] } : {}),
+      ...(turns.length > 0 ? { turned: true } : {}),
+    };
+  });
   if (input.angles) points.push({ name: 'Ascendant', lon: input.angles.asc }, { name: 'Midheaven', lon: input.angles.mc });
   if (!input.timeKnown) limits.push('Without a birth time the natal Moon is left out of the points each loop passes over.');
 
@@ -223,7 +286,7 @@ export function natalBasis(input: {
     countedFrom, baseSign, points, approximate: !input.timeKnown,
     detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
     // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
-    minor: isUnderAge(input.birthDate, input.today, 18),
+    minor: isUnderAge(input.birthDate, earliestToday(input.now), 18),
     limits,
   };
 }
@@ -260,7 +323,8 @@ export function retrogradePeriod(planet: RetrogradePlanet, loops: LoopSet, now: 
   const possibleContacts: RetrogradePeriod['possibleContacts'] = [];
   for (const point of basis.points) {
     const inside = point.ends ? point.ends.map((lon) => inLoop(subject, lon)) : [inLoop(subject, point.lon)];
-    if (inside.every(Boolean)) {
+    // A planet that turned within an untimed birth day is a possible contact at most.
+    if (inside.every(Boolean) && !point.turned) {
       contacts.push({
         point: point.name, sign: SIGNS[signIndexForLongitude(point.lon)].slug, position: position(point.lon),
         line: `The loop passes over your natal ${point.name} at ${position(point.lon)}: ${CONTACT_LINE}.`,

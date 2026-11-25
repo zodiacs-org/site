@@ -333,7 +333,6 @@ export const ES_ADDITIONS = Object.freeze({
   'chineseZodiac.historyTitle': 'Lo que registra el ciclo',
   'chineseZodiac.hubIntro': 'Una introducción cuidadosa al zodiaco chino: su secuencia de animales, las tablas de años, el marco histórico y el límite anual que no cae el 1 de enero.',
   'chineseZodiac.hubTitle': 'El ciclo animal de doce años.',
-  'chineseZodiac.iconRailNote': 'Los discos de colores son la marca visual de los signos occidentales de Zodiacs.org. No sustituyen a los animales del zodiaco chino ni se corresponden con ellos.',
   'chineseZodiac.itemLink': 'Leer el Año del {animal}',
   'chineseZodiac.kicker': 'Zodiaco chino',
   'chineseZodiac.learnLabel': 'Aprende',

@@ -17,6 +17,7 @@ import { z } from 'zod';
 import type { LocalTimeFlag, LocalTimeModule } from '../../lib/compute-api/local-time';
 import { computeChart } from '../../lib/engine/full.js';
 import type { Chart } from '../../lib/engine/types';
+import { birthDaySpan } from '../../lib/time/birth-day-span';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import type { PlaceTable } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
@@ -65,6 +66,11 @@ export interface PersonalToolContext {
   /** The time zone the assistant shares with the call, if any (ChatGPT's user location). */
   hostZone?: string | undefined;
   origin: string;
+  /**
+   * The tool's website page is switched on (the definition's pageFlag, or no flag at all), so its page and share
+   * links lead somewhere. Anything but true: the answer carries neither.
+   */
+  pageOn?: boolean | undefined;
   /** The hosted event budget, for tools that search the sky over a span. */
   allowEvents?: (() => Promise<Verdict>) | undefined;
   /** The GeoNames place index, for tools that take place names. */
@@ -82,6 +88,8 @@ export interface PersonalToolDefinition<N extends string = string> {
   readonly summary: string;
   readonly input: z.ZodType;
   readonly data: z.ZodType;
+  /** The PUBLIC_*_ENABLED switch of the tool's website page, when it has one; the tool links to the page only while it is on. */
+  readonly pageFlag?: string;
   /** True when a repeat call can differ because the answer moves with the server's clock. */
   readonly clockDependent: boolean;
   /** A call with an adult's details, which the shared tests make (src/ai-tools/personal-tools.test.ts). */
@@ -134,7 +142,11 @@ export interface NatalCast {
  * it is cast for local noon (UTC noon without a zone) with no angles, as
  * get_natal_chart and get_personal_transits cast it.
  */
-export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<NatalCast> {
+/**
+ * `chartOf` casts the chart from the resolved instant: the hosted engine's default unless a tool must match its
+ * website page's calculation (./page-ephemeris.ts).
+ */
+export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime'], chartOf: (input: Parameters<typeof computeChart>[0]) => Chart = computeChart): Promise<NatalCast> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -153,22 +165,24 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
     flags = [...resolved.flags];
     if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
+  const chart = chartOf({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
 
 /**
- * The two ends of an untimed birth day: the local day with a zone, else every
+ * The two ends of an untimed birth day: the local day with a zone, its whole
+ * span on that clock up to the instant before the next local midnight (a
+ * repeated last minute at its later pass, a skipped end at the nearest minute
+ * shown: src/lib/time/birth-day-span.ts), else every
  * zone's version of that date (UTC−12 to UTC+14). A placement holds for an
  * untimed birth only when it is the same at both ends.
  */
 export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59.999Z`) + 12 * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
-  const local = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!)).utc;
-  return [local('00:00'), local('23:59')];
+  return birthDaySpan(args.birthDate, args.zone, longitude, (date, time, zone, options) => clock.resolveLocalToUtc(date, time, zone, options));
 }
 
 /**

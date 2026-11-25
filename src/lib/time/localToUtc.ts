@@ -5,7 +5,7 @@
  * resolution onto them.
  *
  * The engine reads a wall time in an IANA zone (docs/time.md in the engine):
- * - before 1970, on the zone's history from tzdata 2025c compiled with its
+ * - before 1970, on the zone's history from tzdata 2026f compiled with its
  *   backzone file, which the engine ships in 16 files and loads lazily, one per
  *   call of prepareLocalTime(date, timeZone);
  * - from 1970, and in the fixed zones, on the host's Intl data;
@@ -37,13 +37,16 @@ export interface LocalTimeResolution {
   utc: Date;
   /** Offset applied, minutes east of UTC (may be fractional for LMT). */
   offsetMinutes: number;
-  flags: ('dst-gap' | 'dst-fold' | 'lmt')[];
+  /** The engine's flags; engine 2.0.0 added calendar-unknown and host-zone-data-differs. */
+  flags: ('dst-gap' | 'dst-fold' | 'lmt' | 'calendar-unknown' | 'host-zone-data-differs')[];
   /**
    * With dst-gap or dst-fold: the size of the clock change, minutes (60 for
    * most daylight saving changes, 30 on Lord Howe Island), from the offsets on
    * either side of it.
    */
   jumpMinutes?: number;
+  /** With dst-gap or dst-fold: the instant the clock changed, which need not fall on a whole minute. */
+  transitionAt?: Date;
   /**
    * Present when the birthplace's own mean time read the wall time (also in
    * the gap at the end of its era): the longitude used, and the offset the
@@ -292,7 +295,10 @@ export function resolveLocalToUtc(
     utc: resolved.utc,
     offsetMinutes: resolved.offsetMinutes,
     flags: [...resolved.flags],
-    ...(resolved.jump && resolved.transition ? { jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes) } : {}),
+    ...(resolved.jump && resolved.transition ? {
+      jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes),
+      transitionAt: new Date(resolved.transition.at),
+    } : {}),
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
   };
 }

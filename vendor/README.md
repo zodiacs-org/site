@@ -1,10 +1,26 @@
 # Vendored @zodiacs/engine artifact
 
-The site installs `zodiacs-engine-1.1.0.tgz` from this directory. The archive
-came from npm. Its computed SHA-512 matches npm's `dist.integrity`, and
-`zodiacs-engine-1.1.0.sha256` records its SHA-256. The release carries its
-LICENSE, LICENSING.md and NOTICE. The registry and pack measurements are
-in [the adoption evidence](../docs/platform/evidence/site-engine-1-1-0/).
+The site installs `zodiacs-engine-2.1.0.tgz` from this directory. The archive
+is npm's `@zodiacs/engine@2.1.0`. Its computed SHA-512 matches npm's
+`dist.integrity`, and `zodiacs-engine-2.1.0.sha256` records its SHA-256. The
+release carries its LICENSE, LICENSING.md and NOTICE. The registry and pack
+measurements are in [the adoption evidence](../docs/platform/evidence/site-engine-2-1-0/).
+
+- Source commit: `92825deeeb5c74c5f56b37d5d612c3439347087e`
+- Artifact SHA-256: `272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc`
+
+2.x changes what a calculation answers in three places: unpinned UTC after the
+IERS table (2027-10-02) is read as continuous UTC, TT = UTC + 69.184 s; zone
+histories before 1970 follow tzdata 2026f; and charts inside a polar circle
+carry the `polar-angles` flag. The engine's `docs/migrating-to-2.md` lists every
+change. The site's generated event times after 2027-10-02 were recomputed.
+
+# Previous release: 1.1.0
+
+`zodiacs-engine-1.1.0.tgz` and its checksum remain archived; the site installed
+it from 2026-11-19 until 2.1.0. Its computed SHA-512 matches npm's
+`dist.integrity`. The registry and pack measurements are in
+[its adoption evidence](../docs/platform/evidence/site-engine-1-1-0/).
 
 - Source commit: `2496c28f273e1e99526490e857332fae44473367`
 - Artifact SHA-256: `4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac`

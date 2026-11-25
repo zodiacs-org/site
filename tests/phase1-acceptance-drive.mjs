@@ -242,6 +242,11 @@ try {
           document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-in'));
           document.querySelectorAll('[data-reading-reveal]')
             .forEach((element) => element.setAttribute('data-visible', 'true'));
+          // Shared entrance motion (docs/MOTION.md) hides [data-enter] blocks
+          // until they scroll into view. Evidence must show the settled page,
+          // so mark every entrance as arrived and finished before capture.
+          document.querySelectorAll('[data-enter]')
+            .forEach((element) => element.classList.add('is-in', 'is-done'));
         });
         const missingZodiacIcons = await page.evaluate(async () => {
           const waitForPaint = () => new Promise((resolvePaint) => requestAnimationFrame(() => resolvePaint()));

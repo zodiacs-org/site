@@ -73,6 +73,22 @@ export function parseRetrogradeForYouShare(params: URLSearchParams): RetrogradeF
 }
 
 /**
+ * The share page's own address for a query as it arrived: the share's keys, each once, in their fixed order, or
+ * nothing when the query is not a share. Every other key (a birth date, a Moon or rising sign, a house, a place, a
+ * name, an app's tracking key) is left out, and nothing is read from it, echoed or logged.
+ */
+export function retrogradeForYouCleanQuery(params: URLSearchParams): string {
+  const kept = new URLSearchParams();
+  for (const key of RETROGRADE_FOR_YOU_SHARE_KEYS) {
+    const values = params.getAll(key);
+    if (values.length > 1) return '';
+    if (values.length === 1) kept.set(key, values[0]);
+  }
+  const share = parseRetrogradeForYouShare(kept);
+  return share ? retrogradeForYouQuery(share, true) : '';
+}
+
+/**
  * The UTC date of the published retrograde window whose start is within a
  * day of `stationUtc`, or null: a share link names only a window the site's
  * sky data lists, so the server can check it.

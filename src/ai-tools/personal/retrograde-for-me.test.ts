@@ -1,18 +1,24 @@
-import { describe, expect, it } from 'vitest';
+import { createServer, request, type Server } from 'node:http';
+import { afterAll, describe, expect, it, vi } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { wholeSignHouseFromAsc } from '../../lib/daily';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { UNDER_13_REFUSAL } from '../contracts';
+import { UNDER_13_SENTENCE as UNDER_13_PLAIN } from '../../lib/good-days/find';
 import { MINOR_NOTE } from '../features/reading-guards';
 import { executeAiTool } from '../tools';
-import { RETROGRADE_ASK, RETROGRADE_LINE, retrogradeForMe, retrogradeLoops } from './retrograde-for-me';
+import { createAiNodeHandler } from '../http';
+import { RETROGRADE_ASK, RETROGRADE_LINE, retrogradeForMe, retrogradeForMeTool, retrogradeLoops } from './retrograde-for-me';
 import { castNatal, forbiddenClaim } from './shared';
+import { handleResultShareNodeRequest, retrogradeForYouStoryAddress } from '../../server/result-preview';
+import { requestOrigin } from '../../server/chart-preview';
 
 const clock = createLocalTimeModule();
 const NOW = new Date('2026-11-09T09:00:00Z');
-const context = (now = NOW) => ({ now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' });
+const context = (now = NOW) => ({ now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true });
 const run = (args: Parameters<typeof retrogradeForMe>[0], now = NOW) => retrogradeForMe(args, context(now)).then((result) => { if ('refused' in result) throw new Error(result.refused); return result.data; });
-const ON = { occasions: true, coverage: true, personal: true, now: () => NOW };
+const PAGE_FLAG = 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED';
+const ON = { occasions: true, coverage: true, personal: true, now: () => NOW, sitePageOn: (flag: string) => flag === PAGE_FLAG };
 const HOUR = 3_600_000;
 const near = (actual: string, published: string, within = HOUR) => expect(Math.abs(Date.parse(actual) - Date.parse(published)), `${actual} against ${published}`).toBeLessThanOrEqual(within);
 const MADRID = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
@@ -82,6 +88,21 @@ describe('get_retrograde_for_me against published stations', () => {
     expect(mercury.reading).toContain('is in the post-shadow until Mon 30 Nov 2026, going back over the degrees it covered while retrograde.');
     expect(mercury.reading.match(/post-shadow/gu)).toHaveLength(1);
     expect(mercury.shareUrl).toContain('s=2026-10-24');
+  });
+
+  it('keeps the published post-shadow of the data\'s last loop and finds the next loop past the data (12 January 2031)', async () => {
+    const data = await run({ birthDate: '1990-05-03', planets: ['Mercury'], currentZone: 'UTC' }, new Date('2031-01-12T12:00:00Z'));
+    const [mercury] = data.periods;
+    // The /retrogrades/ page's last Mercury window (src/data/sky.json): 2030-12-06 to 2030-12-25, post-shadow to 2031-01-13 14:45 UTC.
+    expect(mercury).toMatchObject({ retrogradeNow: false, status: 'post-shadow' });
+    expect(mercury.stationRetrograde.date).toBe('2030-12-06');
+    expect(mercury.stationDirect.date).toBe('2030-12-25');
+    near(mercury.postShadowEnd!.utc, '2031-01-13T14:45:30Z', 60_000);
+    // The data ends on 2031-01-01; the engine's station search gives the next loop, in March 2031.
+    expect(mercury.next).not.toBeNull();
+    expect(mercury.next!.stationRetrograde.startsWith('2031-03')).toBe(true);
+    expect(Date.parse(mercury.next!.stationDirect)).toBeGreaterThan(Date.parse(mercury.next!.stationRetrograde));
+    near(mercury.next!.stationRetrograde, retrogradeLoops('Mercury', new Date('2031-01-12T12:00:00Z')).current.stationRetrograde.at.toISOString(), 60_000);
   });
 });
 
@@ -169,7 +190,10 @@ describe('get_retrograde_for_me in the birth chart', () => {
 describe('get_retrograde_for_me privacy and refusals', () => {
   it('is not offered with the switch off, refuses a child, and puts no birth detail in a link', async () => {
     expect((await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03' }, { occasions: true, coverage: true })).ok).toBe(false);
-    expect(await executeAiTool('get_retrograde_for_me', { birthDate: '2016-05-03' }, ON)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+    // The plain under-13 sentence of the shared age gate (src/ai-tools/birth-date-age-gate.test.ts), not the birthday card wording.
+    const child = await executeAiTool('get_retrograde_for_me', { birthDate: '2016-05-03' }, ON);
+    expect(child).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_PLAIN } });
+    expect(JSON.stringify(child)).not.toContain(UNDER_13_REFUSAL);
     const result = await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'Europe/Madrid' }, ON);
     expect(result.ok).toBe(true);
     const text = JSON.stringify(result);
@@ -187,8 +211,182 @@ describe('get_retrograde_for_me privacy and refusals', () => {
     expect(text).not.toMatch(/[\u2013\u2014]/u);
   });
 
+  it('links to the page and its share cards only while the website page is switched on', async () => {
+    expect(retrogradeForMeTool.pageFlag).toBe(PAGE_FLAG);
+    const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
+      if (!result.ok) throw new Error('refused');
+      const data = result.data as { pageUrl: string | null; periods: { shareUrl: string | null }[] };
+      return { data, urls: JSON.stringify(result).match(/https:\/\/[^"]+/gu) ?? [] };
+    };
+    // The MCP switches on and the page on: the page, and a share card for each published window.
+    const on = linked(await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'Europe/Madrid' }, ON));
+    expect(on.data.pageUrl).toBe('https://zodiacs.org/retrogrades/for-you/');
+    expect(on.data.periods.some((period) => period.shareUrl?.startsWith('https://zodiacs.org/share/retrograde-for-you/?'))).toBe(true);
+    expect(on.urls).toContain('https://zodiacs.org/retrogrades/for-you/');
+    // The MCP switches on and the page off (or no page switch read at all): neither, so no link is a 404.
+    for (const dependencies of [{ ...ON, sitePageOn: () => false }, { occasions: true, coverage: true, personal: true, now: () => NOW }]) {
+      const off = linked(await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'Europe/Madrid' }, dependencies));
+      expect(off.data.pageUrl).toBeNull();
+      expect(off.data.periods.every((period) => period.shareUrl === null)).toBe(true);
+      expect(off.urls.filter((url) => url.includes('/retrogrades/for-you/') || url.includes('/share/'))).toEqual([]);
+      // The published retrogrades tables stay linked: they are live pages on main.
+      expect(off.urls.some((url) => url.startsWith('https://zodiacs.org/retrogrades/'))).toBe(true);
+    }
+    // Called directly, anything but pageOn: true links neither.
+    for (const pageOn of [false, undefined]) {
+      const result = await retrogradeForMe({ ...MADRID, currentZone: 'Europe/Madrid' }, { ...context(), pageOn });
+      if ('refused' in result) throw new Error(result.refused);
+      expect(result.data.pageUrl).toBeNull();
+      expect(result.data.periods.every((period) => period.shareUrl === null)).toBe(true);
+      expect(result.links.map((link) => link.url).filter((url) => url.includes('/retrogrades/for-you/'))).toEqual([]);
+    }
+  });
+
+  describe('on the hosted server', () => {
+    const STAGING = 'zodiacs-mcp-staging.vercel.app';
+    const servers: Server[] = [];
+    afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
+    async function serve(page: '1' | undefined) {
+      const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', ZODIACS_MCP_STAGING_HOST: STAGING, ...(page ? { [PAGE_FLAG]: page } : {}) };
+      // The default host list: zodiacs.org, www.zodiacs.org and the configured staging host.
+      const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+      const server = createServer((req, res) => { void handle(req, res); });
+      await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+      servers.push(server);
+      return (server.address() as { port: number }).port;
+    }
+    function call(port: number, host: string, path: string) {
+      return new Promise<any>((resolve, reject) => {
+        const req = request({ host: '127.0.0.1', port, path, method: 'POST', headers: { Host: host, 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18' } }, (res) => {
+          let text = ''; res.setEncoding('utf8');
+          res.on('data', (chunk) => { text += chunk; });
+          res.on('end', () => {
+            const body = text.includes('data: ') ? text.split('\n').find((line) => line.startsWith('data: '))!.slice(6) : text;
+            resolve(JSON.parse(body).result);
+          });
+        });
+        req.on('error', reject);
+        req.end(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'get_retrograde_for_me', arguments: { ...MADRID, currentZone: 'Europe/Madrid' } } }));
+      });
+    }
+    const pageLinks = (result: any) => (JSON.stringify(result.structuredContent).match(/https:\/\/[^"]+/gu) ?? []).filter((url) => url.includes('/retrogrades/for-you/') || url.includes('/share/'));
+
+    it('links the page and its cards on the staging site when the call comes in on the staging host, never on zodiacs.org', async () => {
+      const port = await serve('1');
+      for (const path of ['/mcp', '/mcp/de440']) {
+        const staged = await call(port, STAGING, path);
+        expect(staged.structuredContent?.ok, path).toBe(true);
+        const links = pageLinks(staged);
+        expect(links.length, path).toBeGreaterThan(0);
+        expect(links.every((url) => url.startsWith(`https://${STAGING}/`)), links.join(' ')).toBe(true);
+        expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/retrogrades/for-you/`);
+        expect(JSON.stringify(staged)).not.toMatch(/https:\/\/zodiacs\.org\/(?:retrogrades\/for-you|share)\//u);
+      }
+      // On zodiacs.org the same deployment links zodiacs.org.
+      const live = await call(port, 'zodiacs.org', '/mcp');
+      const links = pageLinks(live);
+      expect(links.length).toBeGreaterThan(0);
+      expect(links.every((url) => url.startsWith('https://zodiacs.org/'))).toBe(true);
+    });
+
+    it('opens a share issued on a configured custom staging host on that host: its picture, its redirect and its story address', async () => {
+      const CUSTOM = 'staging.zodiacs.org';
+      const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', ZODIACS_MCP_STAGING_HOST: CUSTOM, [PAGE_FLAG]: '1' };
+      const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+      const server = createServer((req, res) => { void handle(req, res); });
+      await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+      servers.push(server);
+      const port = (server.address() as { port: number }).port;
+      const staged = await call(port, CUSTOM, '/mcp/de440');
+      expect(staged.structuredContent?.ok).toBe(true);
+      expect(staged.structuredContent.data.pageUrl).toBe(`https://${CUSTOM}/retrogrades/for-you/`);
+      const shareUrl = new URL(staged.structuredContent.data.periods.find((period: { shareUrl: string | null }) => period.shareUrl).shareUrl);
+      expect(shareUrl.origin).toBe(`https://${CUSTOM}`);
+
+      // The share function, as vercel.json's rewrite calls it, on the host the link names.
+      const open = async (host: string, query: Record<string, string>) => {
+        const headers = new Map<string, string>();
+        const res = { statusCode: 0, body: Buffer.alloc(0) as Buffer, setHeader(name: string, value: string) { headers.set(name.toLowerCase(), value); }, end(body?: Buffer) { this.body = body ?? Buffer.alloc(0); } };
+        await handleResultShareNodeRequest({ method: 'GET', headers: { host }, query: { __zodiacs_share: 'retrograde-for-you-link', ...query } }, res, 'retrograde-for-you-link');
+        return { status: res.statusCode, location: headers.get('location'), html: res.body.toString('utf8') };
+      };
+      const query = Object.fromEntries(shareUrl.searchParams);
+      vi.stubEnv(PAGE_FLAG, '1');
+      vi.stubEnv('ZODIACS_MCP_STAGING_HOST', CUSTOM);
+      try {
+        const page = await open(shareUrl.host, query);
+        expect(page.status).toBe(200);
+        expect(page.html).toContain(`<meta property="og:image" content="https://${CUSTOM}/api/og/retrograde-for-you-image?`);
+        expect(page.html).not.toContain('https://zodiacs.org/');
+        // A key the share does not use is cleared by a redirect to the same host.
+        const cleared = await open(shareUrl.host, { ...query, utm_source: 'chat' });
+        expect(cleared.status).toBe(303);
+        expect(cleared.location).toBe(shareUrl.href);
+        // The story prints the page on the host the share was opened on.
+        expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: CUSTOM } })}/api/og/retrograde-for-you-story`)).toBe(`${CUSTOM}/retrogrades/for-you`);
+      } finally {
+        vi.unstubAllEnvs();
+      }
+
+      // With no staging host configured, the same host is not trusted: the MCP refuses it, and a share opened there
+      // builds its addresses on production.
+      vi.stubEnv(PAGE_FLAG, '1');
+      vi.stubEnv('ZODIACS_MCP_STAGING_HOST', '');
+      try {
+        const unconfigured = createAiNodeHandler({ env: { ...env, ZODIACS_MCP_STAGING_HOST: undefined }, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+        const refused = { statusCode: 0, setHeader() {}, end() {} };
+        await unconfigured({ method: 'POST', url: '/mcp/de440', headers: { host: CUSTOM, 'content-type': 'application/json' }, query: {} }, refused);
+        expect(refused.statusCode).toBe(403);
+        const page = await open(CUSTOM, query);
+        expect(page.html).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/retrograde-for-you-image?');
+        expect(page.html).not.toContain(CUSTOM);
+        expect((await open(CUSTOM, { ...query, utm_source: 'chat' })).location).toBe(`https://zodiacs.org${shareUrl.pathname}${shareUrl.search}`);
+        expect(retrogradeForYouStoryAddress(`${requestOrigin({ headers: { host: CUSTOM } })}/api/og/retrograde-for-you-story`)).toBe('zodiacs.org/retrogrades/for-you');
+        // A configured value that is not a valid hostname is not trusted either, nor a host that only begins with it.
+        expect(requestOrigin({ headers: { host: 'Staging.Zodiacs.org' } }, { ZODIACS_MCP_STAGING_HOST: 'Staging.Zodiacs.org' })).toBe('https://zodiacs.org');
+        expect(requestOrigin({ headers: { host: 'staging.zodiacs.org.evil.test' } }, { ZODIACS_MCP_STAGING_HOST: CUSTOM })).toBe('https://zodiacs.org');
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
+    it('links neither the page nor a card on either host while the page is switched off', async () => {
+      const port = await serve(undefined);
+      for (const host of [STAGING, 'zodiacs.org']) {
+        const result = await call(port, host, '/mcp');
+        expect(result.structuredContent?.ok, host).toBe(true);
+        expect(result.structuredContent.data.pageUrl).toBeNull();
+        expect(pageLinks(result), host).toEqual([]);
+      }
+    });
+  });
+
+  it('checks the birth zone as it checks currentZone, never repeating the value given', async () => {
+    // An otherwise valid call with a well-formed zone name tzdb does not have: the same fixed refusal as for currentZone.
+    const birthZone = await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', zone: 'Mars/Olympus_Mons', currentZone: 'UTC' }, ON);
+    const currentZone = await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', currentZone: 'Mars/Olympus_Mons' }, ON);
+    expect(birthZone).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    expect(JSON.stringify(birthZone)).not.toMatch(/Olympus|Mars\//u);
+    expect(JSON.stringify(currentZone)).not.toMatch(/Olympus|Mars\//u);
+    expect((birthZone as { error: { message: string } }).error.message).toBe("zone must be a time zone name the server's time zone data includes.");
+    expect((currentZone as { error: { message: string } }).error.message).toBe("currentZone must be a time zone name the server's time zone data includes.");
+    // With a time and a place too, and a known zone in any letter case is read as tzdb spells it.
+    const timed = await executeAiTool('get_retrograde_for_me', { ...MADRID, zone: 'Mars/Olympus_Mons', currentZone: 'UTC' }, ON);
+    expect(JSON.stringify(timed)).not.toMatch(/Olympus|Mars\//u);
+    const cased = await executeAiTool('get_retrograde_for_me', { ...MADRID, zone: 'europe/madrid', currentZone: 'UTC' }, ON);
+    const exact = await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'UTC' }, ON);
+    expect(JSON.stringify(cased)).toBe(JSON.stringify(exact));
+  });
+
   it('refuses a time without a zone and an unknown planet', async () => {
     expect(await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false });
     expect(await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', planets: ['Jupiter'] }, ON)).toMatchObject({ ok: false });
+  });
+});
+
+describe('get_retrograde_for_me description', () => {
+  it('tells the assistant the tool refuses anyone under 13, and to ask for the birth date alone first', () => {
+    expect(retrogradeForMeTool.description).toContain('Zodiacs is not directed at children under 13, and this tool refuses anyone under 13. Ask for the birth date alone first, with a four-digit year, and while that date does not yet show the person is 13 or older, ask for no birth time, time zone or birthplace and do not call find_birthplace.');
+    expect(retrogradeForMeTool.description.indexOf('under 13')).toBeLessThan(retrogradeForMeTool.description.indexOf('Give the birth date, and the time'));
   });
 });

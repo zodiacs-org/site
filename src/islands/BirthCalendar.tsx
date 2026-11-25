@@ -111,8 +111,9 @@ export default function BirthCalendar({ locale, id, date, calendar, country, onC
   const text = julian || (date !== '' && !parseCivilDate(date));
 
   useEffect(() => {
-    // A complete date written in 1924 or later is Gregorian.
-    if (julian && /^\d{4}-\d{2}-\d{2}$/.test(written) && written >= CALENDAR_CHOICE_BEFORE) onCalendarChange('gregorian');
+    // A complete date written in 1924 or later is Gregorian; a day the calendar does not have (1990-02-30) stays
+    // Old Style, where it is refused, so switching calendars never lets it through.
+    if (julian && parseCivilDate(written) && written >= CALENDAR_CHOICE_BEFORE) onCalendarChange('gregorian');
   }, [julian, written]);
   useEffect(() => { onTextEntry(text ? copy.format : null); }, [text, copy.format]);
   useEffect(() => () => onTextEntry(null), []);

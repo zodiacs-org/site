@@ -4,8 +4,11 @@
  * degrees, the shadow on either side, the natal house the loop falls in and
  * the natal points it passes over.
  *
- * Every instant is the engine's, by the code the compute API and
- * search_sky_events already use: stationCrossings (src/lib/compute-api/endpoints.ts)
+ * Where the committed sky data (src/data/sky.json) reaches, the loops are its
+ * windows, the ones the /retrogrades/ and /retrogrades/for-you/ pages read, so
+ * the tool and the pages give the same status to the second at a station or a
+ * shadow's edge. Past the data, every instant is the engine's, by the code the
+ * compute API and search_sky_events already use: stationCrossings (src/lib/compute-api/endpoints.ts)
  * finds where the engine's longitude speed crosses zero, and the shadows are
  * the engine's own longitude crossings (findLongitudeCrossings), defined as
  * scripts/build-sky.mjs defines them for the /retrogrades/ page: the pre-shadow
@@ -14,25 +17,32 @@
  * retrograde station. The houses, natal points and pre-written words are
  * src/lib/retrograde-for-you/reading.ts, shared with the /retrogrades/for-you/
  * page, which reads the same loops from the committed sky data; nothing is
- * generated.
+ * generated. The natal chart, the birth day's ends and turns, and the
+ * published windows' station degrees are read on the page's ephemeris
+ * (./page-ephemeris.ts), so a birth near a cusp gets the same Sun sign, houses
+ * and share card here as on the page. Before the data settles where a planet
+ * stands, and past its end, the engine's station search answers instead.
  *
  * Houses are whole-sign, counted from the rising sign with a birth time and
  * place, as the site counts them; otherwise from the Sun sign, labelled so.
  * Pure: no network, storage or logging.
  */
 import { z } from 'zod';
-import { findLongitudeCrossings, positions } from '@zodiacs/engine';
+import { findLongitudeCrossings } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
-  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading,
-  type RetrogradeLoop, type RetrogradePlanet,
+  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, dayTurns, formatPosition, natalBasis, retrogradeReading,
+  type LoopSet, type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
+import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
-import { computeChart } from '../../lib/engine/full.js';
 import sky from '../../data/sky.json';
-import { birthDayEnds, birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, skippedWholeDate, withClockLimit } from '../../lib/vedic-signs/clock';
+import { roundCoordinate } from '../plain-text';
+import { pageChart, pageLongitudes } from './page-ephemeris';
+import { birthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export { RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, type RetrogradeLoop, type RetrogradePlanet };
 
@@ -109,7 +119,10 @@ const period = z.object({
   reading: z.string(),
   confidence: z.number().int().min(40).max(95),
   confidenceLabel: z.string(),
-  /** A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null when the window is past the site's published sky data. */
+  /**
+   * A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null
+   * when the window is past the site's published sky data, or while the website's page is switched off.
+   */
   shareUrl: z.url().nullable(),
 });
 export const retrogradeForMeData = z.object({
@@ -122,7 +135,8 @@ export const retrogradeForMeData = z.object({
   periods: z.array(period),
   summary: z.string(),
   limits: z.array(z.string()),
-  pageUrl: z.url(),
+  /** The /retrogrades/for-you/ page; null while the website's page is switched off (PUBLIC_RETROGRADES_FOR_YOU_ENABLED). */
+  pageUrl: z.url().nullable(),
 });
 export type RetrogradeForMeData = z.infer<typeof retrogradeForMeData>;
 
@@ -160,9 +174,41 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
   return { current: fill(loops[position]), previous, retrogradeNow };
 }
 
+/**
+ * The loops the tool reads: the page's windows (src/data/sky.json) wherever they reach, and the engine's station
+ * search past them. When the data's last loop is in its post-shadow and the data holds no later loop, that published
+ * post-shadow stays and the engine supplies the next loop's stations, so the answer still says when it next turns.
+ */
+export function toolLoops(planet: RetrogradePlanet, now: Date, rowsAt = positionsMemo(), span: SkySpan = sky as SkySpan, pageLon: (body: RetrogradePlanet, at: Date) => number = pageLongitudes()): LoopSet {
+  // The published windows' station degrees as the page reads them (./page-ephemeris.ts), so the houses and contacts agree.
+  const fromSky = loopsFromSky(planet, now, span, pageLon);
+  if (!fromSky) return retrogradeLoops(planet, now, rowsAt);
+  if (fromSky.current || !fromSky.previous) return fromSky;
+  const ended = fromSky.previous.stationDirect.at.getTime();
+  const engine = retrogradeLoops(planet, now, rowsAt);
+  const after = engine.current.stationRetrograde.at.getTime() > ended ? engine.current : null;
+  return { ...fromSky, current: after };
+}
+
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
-export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
-  const natal = await castNatal(args, context.localTime);
+export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
+  // The birth zone goes through the same check as currentZone, whose refusal names the field and never the value given.
+  if (args.zone !== undefined) args = { ...args, zone: await context.resolveZone(args.zone, '/zone') };
+  // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
+  if (args.time === undefined && args.zone) {
+    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
+    const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+    const midnight = longitude !== undefined ? context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone, { longitude }) : context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone);
+    if (skippedWholeDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
+  }
+  // The natal chart, the day's ends and turns, and the published loops' degrees on the page's ephemeris
+  // (./page-ephemeris.ts), so the page and this tool give the same Sun sign, houses and contacts for the same birth.
+  const natal = await castNatal(args, context.localTime, pageChart);
+  const pageLon = pageLongitudes();
+  // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
+  // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as the page does).
+  const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const clock = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
   const now = context.now;
   const planets = RETROGRADE_PLANETS.filter((planet) => !args.planets || args.planets.includes(planet));
@@ -171,23 +217,24 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   // the Sun sign counts the houses, and a natal point is a contact, only then.
   let sunHeld = true;
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
+  let turns: Parameters<typeof natalBasis>[0]['dayTurns'];
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon);
     const ends = await birthDayEnds(args, context.localTime);
-    const rows = ends.map((end) => {
-      const at = positions(end);
-      return POINT_NAMES.map((body) => ({ body: body as string, lon: rowOf(at, body).lon }));
-    });
+    const rows = ends.map((end) => POINT_NAMES.map((body) => ({ body: body as string, lon: pageLon(body, end) })));
     dayEnds = [rows[0], rows[1]];
+    // A planet that stationed that day can leave a loop's degrees between the two ends: where it turned counts too.
+    turns = dayTurns(pageLon, ends[0], ends[1]);
     sunHeld = rows.every((end) => signIndexForLongitude(end.find((row) => row.body === 'Sun')!.lon) === sunIndex);
   }
   // A birth time the clocks showed twice: the rising degree at the later pass, the size of the change on, for the fold limit.
   const foldAsc = natal.angles && natal.flags.includes('dst-fold') && natal.jumpMinutes
-    ? computeChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 60_000), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
+    ? pageChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 60_000), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
     : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
-    birthDate: args.birthDate, today: dateOn(now, clock.zone), dayEnds, foldAsc,
+    // The under-18 rule reads the UTC-12 calendar date from `now` (natalBasis), never the clock the dates are shown on.
+    birthDate: args.birthDate, now, dayEnds, dayTurns: turns, foldAsc,
   });
   // The station and shadow searches count against the hosted event budget, as search_sky_events' do.
   if (context.allowEvents) {
@@ -195,16 +242,20 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     if (verdict !== 'allowed') return { refused: verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable' };
   }
   const rowsAt = positionsMemo();
-  const reading = retrogradeReading({
+  const reading = withClockLimit(retrogradeReading({
     planets, now, zone: clock.zone, basis,
-    loopsFor: (planet) => retrogradeLoops(planet, now, rowsAt),
+    // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
+    // to the second at a station or a shadow's edge; past the data, the engine's own station search.
+    loopsFor: (planet) => toolLoops(planet, now, rowsAt, sky as SkySpan, pageLon),
     leadingLimits: clock.note ? [clock.note] : [],
-  });
+  }), onClock.limit);
   const sunSign = sunHeld
     ? (SIGNS[signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
     : null;
+  // The page and its share cards are linked only while the website's page is on: with it off they would be a 404.
+  const pageOn = context.pageOn === true;
   const periods = reading.periods.map((period) => {
-    const query = retrogradeForYouShareQuery({
+    const query = pageOn && retrogradeForYouShareQuery({
       planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, sun: sunSign,
     }, sky.retrogrades);
     return { ...period, shareUrl: query ? retrogradeForYouShareUrl(context.origin, query) : null };
@@ -212,10 +263,10 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   return {
     data: {
       birthDate: args.birthDate, timeKnown: natal.timeKnown, placed: natal.placed, now: new Date(Math.round(now.getTime() / 60_000) * 60_000).toISOString(), timeZone: clock.zone,
-      periods, summary: reading.summary, limits: reading.limits, pageUrl: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}`,
+      periods, summary: reading.summary, limits: reading.limits, pageUrl: pageOn ? `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` : null,
     },
     links: [
-      { title: 'Retrogrades in your chart on Zodiacs', url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` },
+      ...(pageOn ? [{ title: 'Retrogrades in your chart on Zodiacs', url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` }] : []),
       { title: 'Retrogrades on Zodiacs', url: `${context.origin}/retrogrades/` },
       ...periods.map((period) => ({ title: `${period.planet} retrograde`, url: `${context.origin}${retrogradeTablePath(period.planet, publishedRetrogradeDate(period.planet, period.stationRetrograde.utc, sky.retrogrades))}` })),
       { title: 'Your birth chart on Zodiacs', url: `${context.origin}/birth-chart/` },
@@ -227,10 +278,11 @@ export const retrogradeForMeTool = definePersonalTool({
   name: 'get_retrograde_for_me',
   title: 'Retrogrades for you',
   summary: 'whether Mercury, Venus or Mars is retrograde now or when it next is, with its stations, shadows and the natal house it falls in',
-  description: "Says whether Mercury, Venus and Mars are retrograde now, and if not when each next turns retrograde, with the dates and degrees of both stations, the pre-shadow and post-shadow, the natal house the retrograde falls in, what that house traditionally covers and what the retrograde traditionally asks for there, and any natal planet or angle the loop passes over. Use it for questions such as how Mercury retrograde affects me or where the next Venus retrograde falls in my chart, once the person has given a birth date. For the dates of every station across the sky, with no birth chart, use search_sky_events; for all transits to the birth chart over a span, use get_personal_transits. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time and place, the houses are counted from the Sun sign and the answer says so. When they name a town or city instead of coordinates, use find_birthplace first. Give currentZone so the dates fall on their own clock. Share the reading plainly as astrology's reading, with the reading-confidence label.",
+  description: "Says whether Mercury, Venus and Mars are retrograde now, and if not when each next turns retrograde, with the dates and degrees of both stations, the pre-shadow and post-shadow, the natal house the retrograde falls in, what that house traditionally covers and what the retrograde traditionally asks for there, and any natal planet or angle the loop passes over. Use it for questions such as how Mercury retrograde affects me or where the next Venus retrograde falls in my chart, once the person has given a birth date. Zodiacs is not directed at children under 13, and this tool refuses anyone under 13. Ask for the birth date alone first, with a four-digit year, and while that date does not yet show the person is 13 or older, ask for no birth time, time zone or birthplace and do not call find_birthplace. For the dates of every station across the sky, with no birth chart, use search_sky_events; for all transits to the birth chart over a span, use get_personal_transits. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time and place, the houses are counted from the Sun sign and the answer says so. When they name a town or city instead of coordinates, use find_birthplace first. Give currentZone so the dates fall on their own clock. Share the reading plainly as astrology's reading, with the reading-confidence label.",
   input: retrogradeForMeInput,
   data: retrogradeForMeData,
   clockDependent: true,
+  pageFlag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, currentZone: 'Europe/Madrid' },
   run: (args, context) => retrogradeForMe(args, context),
 });

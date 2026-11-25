@@ -23,7 +23,8 @@ describe('growth link graph', () => {
 
   it('keeps horoscope programs linked back to their full sign guide', async () => {
     const program = await source('../components/HoroscopeProgramPage.astro');
-    expect(program).toContain('<a class="hz-guide" href={`/${sign.slug}/`}>');
+    // The guide card may carry extra attributes (the shared entrance mark), but its link stays exact.
+    expect(program).toMatch(/<a class="hz-guide" href=\{`\/\$\{sign\.slug\}\/`\}[^>]*>/);
     expect(program).toContain('Full {sign.name} guide <span class="arr">→</span>');
   });
 

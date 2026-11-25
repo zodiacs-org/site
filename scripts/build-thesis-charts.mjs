@@ -499,10 +499,10 @@ export function motionBlock() {
       .is-armed .tw { opacity:.12; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
       .is-armed.is-twelve .tw { opacity:1; }
     }
-    .thesis-mine, .thesis-shelf, .thesis-calendar { padding:20px; border:1px solid var(--hair); border-radius:14px; }
-    .thesis-mine .zfig-head, .thesis-shelf .zfig-head { margin-bottom:16px; }
-    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
-    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
+    .thesis-mine, .thesis-shelf, .thesis-calendar, .thesis-carry { padding:20px; border:1px solid var(--hair); border-radius:14px; }
+    .thesis-mine .zfig-head, .thesis-shelf .zfig-head, .thesis-carry .zfig-head { margin-bottom:16px; }
+    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap, .thesis-carry .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
+    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src, .thesis-carry .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
     .mine-film { margin:0 0 16px; }
     .mine-film__stage { position:relative; }
     .film-play { display:none; position:absolute; inset:0; margin:auto; width:max-content; height:max-content; align-items:center; gap:10px; padding:0; border:0; background:none; color:var(--ink); font:500 14px/1 'Instrument Sans',system-ui,sans-serif; cursor:pointer; }
@@ -547,6 +547,30 @@ export function motionBlock() {
       .is-armed .cal-draw { stroke-dasharray:1 1; stroke-dashoffset:1; }
       .is-armed.is-on .cal-draw { stroke-dashoffset:0; transition:stroke-dashoffset 1.1s ease; transition-delay:var(--d); }
       .is-armed .cal-pass--again .cal-draw { transition-duration:.7s; }
+    }
+    .thesis-carry .field-readout__n { width:1ch; text-align:center; }
+    /* The timeline: the axis is drawn through time, each form's marker drops
+       onto its date at --t, its leader draws up to the drawing, and the
+       drawing unveils as its twelve marks arrive. */
+    @media screen and (prefers-reduced-motion:no-preference) {
+      .thesis-carry.is-armed .carry-line { transform:scaleX(0); transform-box:fill-box; transform-origin:0 50%; }
+      .thesis-carry.is-armed.is-on .carry-line { transform:none; transition:transform 3.03s linear; }
+      .thesis-carry.is-armed .carry-tick, .thesis-carry.is-armed .carry-note { opacity:.12; }
+      .thesis-carry.is-armed.is-on .carry-tick, .thesis-carry.is-armed.is-on .carry-note { opacity:1; transition:opacity .6s ease; }
+      .thesis-carry.is-armed .carry-mark { opacity:0; transform:scale(.4); transform-box:fill-box; transform-origin:center; }
+      .thesis-carry.is-armed.is-on .carry-mark { opacity:1; transform:none; transition:opacity .3s cubic-bezier(.23,1,.32,1), transform .3s cubic-bezier(.23,1,.32,1); transition-delay:var(--t); }
+      .thesis-carry.is-armed .carry-lead { stroke-dasharray:1; stroke-dashoffset:-1; }
+      .thesis-carry.is-armed.is-on .carry-lead { stroke-dashoffset:0; transition:stroke-dashoffset .38s ease-out; transition-delay:calc(var(--t) + 80ms); }
+      .thesis-carry.is-armed .era__name, .thesis-carry.is-armed .era__time, .thesis-carry.is-armed .era__tip { opacity:.12; }
+      .thesis-carry.is-armed.is-on .era__name, .thesis-carry.is-armed.is-on .era__time, .thesis-carry.is-armed.is-on .era__tip { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--t) + 380ms); }
+      /* A veil in the plate's own colour dims each drawing, so it stays solid and nothing shows through it. */
+      .thesis-carry.is-armed .era__object::after { content:''; position:absolute; inset:0; background:var(--surface); opacity:.88; }
+      .thesis-carry.is-armed.is-on .era__object::after { opacity:0; transition:opacity .45s ease; transition-delay:calc(var(--t) + 380ms); }
+      .thesis-carry.is-armed .cd { opacity:0; transform:scale(.4); transform-box:fill-box; transform-origin:center; }
+      .thesis-carry.is-armed.is-on .cd { opacity:1; transform:none; transition:opacity .3s cubic-bezier(.23,1,.32,1), transform .3s cubic-bezier(.23,1,.32,1); transition-delay:calc(var(--t) + 480ms + var(--k) * 22ms); }
+      /* The closing beat: the twelve sign icons in the header light one after another. */
+      .thesis-carry.is-armed .carry-pick { opacity:.12; }
+      .thesis-carry.is-armed.is-twelve .carry-pick { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--j) * 70ms); }
     }`;
   const js = `
 // Armed after load, so none of this work delays the first paint.
@@ -590,6 +614,49 @@ export function motionBlock() {
       people.classList.add('is-on');
     });
   }
+  // The timeline: each form starts at its own --t (one source of truth, on
+  // its .era in the markup); the count ticks as each form lands, and the
+  // readout's twelve lights once the last form's marks have arrived.
+  var carry = document.querySelector('[data-motion="carry"]');
+  var carried = carry && carry.querySelector('[data-carry-count]');
+  // Each form's pop-up is CSS (:hover, :focus-within). This adds tap-to-toggle
+  // and Escape, keeps one pop-up at a time, and sets is-live, the gate that
+  // keeps the pop-ups off while the entrance plays.
+  function live() { carry.classList.add('is-live'); }
+  if (carry) [].forEach.call(carry.querySelectorAll('.era'), function (era) {
+    var wasOpen = false;
+    era.addEventListener('pointerdown', function () { wasOpen = document.activeElement === era && !era.classList.contains('tip-off'); });
+    era.addEventListener('click', function () { if (wasOpen) { era.classList.add('tip-off'); era.blur(); } });
+    era.addEventListener('focus', function () { era.classList.remove('tip-off'); });
+    era.addEventListener('mouseenter', function () {
+      var held = document.activeElement;
+      if (held && held !== era && held.parentNode === era.parentNode) held.blur();
+    });
+    era.addEventListener('mouseleave', function () { era.classList.remove('tip-off'); });
+    era.addEventListener('keydown', function (e) { if (e.key === 'Escape' || e.key === 'Esc') era.classList.add('tip-off'); });
+  });
+  // A reader who follows the plate's own link (#zodiac-timeline) is taken
+  // straight to it, so it shows its finished state, as when it is on screen at load.
+  var linked = location.hash === '#zodiac-timeline';
+  // The page scrolls smoothly, and a smooth jump made while the sections above
+  // are still being laid out can miss; land on the plate directly instead.
+  if (linked && carry) document.getElementById('zodiac-timeline').scrollIntoView({ block: 'start', behavior: 'instant' });
+  if (animate && carried && !linked && below(carry)) {
+    var eras = [].slice.call(carry.querySelectorAll('.era'));
+    var starts = eras.map(function (era) { return parseFloat(getComputedStyle(era).getPropertyValue('--t')) || 0; });
+    var last = Math.max.apply(Math, starts) + 1150;
+    carry.classList.add('is-armed');
+    carried.textContent = '0';
+    window.addEventListener('beforeprint', function () { carried.textContent = String(eras.length); });
+    once(carry, function () {
+      carry.classList.add('is-on');
+      starts.forEach(function (start, at) {
+        setTimeout(function () { carried.textContent = String(at + 1); }, start + 500);
+      });
+      setTimeout(function () { carry.classList.add('is-twelve'); }, last);
+      setTimeout(live, last + (carry.querySelectorAll('.carry-pick').length - 1) * 70 + 450);
+    });
+  } else if (carry) live();
   var fig = document.querySelector('[data-motion="field"]');
   if (!fig) return;
   var frame = fig.querySelector('.field-frame');
@@ -679,6 +746,7 @@ export function motionBlock() {
   var NAMES = { aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer', leo: 'Leo', virgo: 'Virgo', libra: 'Libra', scorpio: 'Scorpio', sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius', pisces: 'Pisces' };
   /* The reader's pick lives in this page only: nothing is stored or sent. */
   var mine = document.querySelector('[data-motion="mine"]');
+  var mineRest = mine && mine.querySelector('[data-mine-label]') ? mine.querySelector('[data-mine-label]').textContent : '';
   if (mine) {
     var grid = mine.querySelector('.mine-signs');
     var label = mine.querySelector('[data-mine-label]');
@@ -706,8 +774,51 @@ export function motionBlock() {
     if ('IntersectionObserver' in window) { var near = new IntersectionObserver(function (entries) { if (entries[0].isIntersecting) { near.disconnect(); art(); } }, { rootMargin: '600px 0px' }); near.observe(shelf); } else art();
   }
   if (field) [].forEach.call(field.querySelectorAll('.tw'), function (el, i) { el.setAttribute('data-sign', Object.keys(NAMES)[i]); });
+  /* The reader's pick lives in this page only: nothing is stored or sent. */
+  var carry = document.querySelector('[data-motion="carry"]');
+  var HUES = { aries: '#DE8E79', taurus: '#B9D4BE', gemini: '#B29DD0', cancer: '#B6D4E4', leo: '#E0A9B4', virgo: '#B7D9B0', libra: '#D3A9DE', scorpio: '#B9DCE8', sagittarius: '#E0B080', capricorn: '#C0DEA8', aquarius: '#AE8FC9', pisces: '#A9D4C4' };
+  function carrySync(sign) {
+    if (!carry) return;
+    var order = Object.keys(NAMES), at = order.indexOf(sign), shown = at < 0 ? 'aries' : sign;
+    var row = carry.querySelector('.carry-twelve-row'), label = carry.querySelector('[data-carry-label]');
+    [].forEach.call(carry.querySelectorAll('.carry-pick'), function (b) { b.setAttribute('aria-pressed', at >= 0 && b.getAttribute('data-sign') === sign ? 'true' : 'false'); });
+    if (row) row.classList.toggle('has-pick', at >= 0);
+    if (label) label.textContent = at >= 0 ? NAMES[sign] + ' in every form.' : 'The evolution of the zodiac. Pick your sign.';
+    carry.classList.toggle('has-pick', at >= 0);
+    [].forEach.call(carry.querySelectorAll('.cd'), function (cd) { cd.classList.toggle('is-me', at >= 0 && parseInt(cd.style.getPropertyValue('--k'), 10) === at); });
+    // The trading screen follows the pick: its coin name, chip and selection ring.
+    var word = carry.querySelector('.da-word'), chip = carry.querySelector('.da-chip'), ring = carry.querySelector('.da-ring');
+    var coin = carry.querySelectorAll('.era:last-child .cd')[order.indexOf(shown)];
+    if (word) {
+      word.textContent = shown.toUpperCase();
+      if (shown.length > 6) { word.setAttribute('textLength', '22'); word.setAttribute('lengthAdjust', 'spacingAndGlyphs'); } else { word.removeAttribute('textLength'); word.removeAttribute('lengthAdjust'); }
+    }
+    if (chip) chip.setAttribute('fill', HUES[shown]);
+    if (ring && coin) { ring.setAttribute('cx', coin.getAttribute('cx')); ring.setAttribute('cy', coin.getAttribute('cy')); }
+  }
+  if (carry) [].forEach.call(carry.querySelectorAll('.carry-pick'), function (b) {
+    b.addEventListener('click', function () {
+      if (!carry.classList.contains('is-live')) return;
+      var sign = b.getAttribute('aria-pressed') === 'true' ? '' : b.getAttribute('data-sign');
+      document.documentElement.dataset.mySign = sign;
+      document.dispatchEvent(new CustomEvent('thesis:sign', { detail: { sign: sign } }));
+    });
+  });
   document.addEventListener('thesis:sign', function (e) {
     var sign = e.detail.sign;
+    // Every picker, this one included, only dispatches; each plate syncs here, so nothing re-dispatches.
+    carrySync(sign);
+    // The first plate's own picker, when it is on the page, follows a pick made anywhere else.
+    if (mine) {
+      var known = !!NAMES[sign];
+      [].forEach.call(mine.querySelectorAll('.mine-sign'), function (o) { o.setAttribute('aria-pressed', known && o.getAttribute('data-sign') === sign ? 'true' : 'false'); });
+      var mineGrid = mine.querySelector('.mine-signs'), mineLabel = mine.querySelector('[data-mine-label]');
+      if (mineGrid) mineGrid.classList.toggle('has-pick', known);
+      if (mineLabel) {
+        if (!mineLabel.hasAttribute('data-resting')) mineLabel.setAttribute('data-resting', mineRest);
+        mineLabel.textContent = known ? NAMES[sign] + '. You already knew.' : mineLabel.getAttribute('data-resting');
+      }
+    }
     if (field) marks(field, '.tw', sign);
     if (shelf) marks(shelf, '.disc', sign);
     if (cal) marks(cal, '.cal-peak', sign);
