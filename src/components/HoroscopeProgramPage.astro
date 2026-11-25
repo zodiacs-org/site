@@ -7,6 +7,7 @@ import GuideQuickPrompts from './GuideQuickPrompts.astro';
 import EmailCapture from './EmailCapture.astro';
 import ShareRow from './ShareRow.astro';
 import SignIcon from './SignIcon.astro';
+import Motion from './Motion.astro';
 import UpcomingEventLinks from './events/UpcomingEventLinks.astro';
 import EditionText from './EditionText.astro';
 import dailyData from '../data/daily.json';
@@ -422,6 +423,11 @@ const ctaLede = edgeMoon && moonHouse
       } catch (error) {}
     </script>
   )}
+  {/* Shared entrance motion (docs/MOTION.md). The hero, the controls and the
+      reading hold still, since they stay put while a period switch crossfades
+      the reading. The rail's sky rows, the further reading and the sign cards
+      rise once; the chart wheel and the sign discs grow in once. */}
+  <Motion />
   <article
     class="program"
     style={`--sign:${sign.hue};--hue:${sign.hue}`}
@@ -608,7 +614,7 @@ const ctaLede = edgeMoon && moonHouse
           <p class="hz-sky__sub">{skySub}</p>
           <ul class="program__sky-markers hz-sky__rows">
             {skyRows.map((row) => (
-              <li class="program__sky-marker hz-sky__row" style={`--c:${row.hue}`}>
+              <li class="program__sky-marker hz-sky__row" style={`--c:${row.hue}`} data-enter="rise">
                 <span class="hz-pg" aria-hidden="true">
                   {row.body && PLANET_GLYPH[row.body]
                     ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.body]} />
@@ -643,7 +649,7 @@ const ctaLede = edgeMoon && moonHouse
 
     <section class="kwrap hz-section" aria-labelledby="chart-cta-heading">
       <div class="hz-cta">
-        <figure class="hz-cta__wheel hz-wheel">
+        <figure class="hz-cta__wheel hz-wheel" data-enter="disc">
           <img
             src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
             width={HOROSCOPE_WHEEL_SIZE}
@@ -682,7 +688,7 @@ const ctaLede = edgeMoon && moonHouse
         </div>
         <nav class="program__more" aria-labelledby="more-heading">
           {moreList.map((row) => (
-            <a href={surfacePath(sign.slug, row.key)} aria-current={row.key === surface ? 'page' : undefined}>
+            <a href={surfacePath(sign.slug, row.key)} aria-current={row.key === surface ? 'page' : undefined} data-enter="rise">
               <div><b class="program__more-label">{row.title}</b><small>{row.key === surface ? 'Reading now' : row.note}</small></div>
               <p>{row.teaser}</p>
               <span class="hz-go" aria-hidden="true">→</span>
@@ -690,7 +696,7 @@ const ctaLede = edgeMoon && moonHouse
           ))}
         </nav>
       </div>
-      <a class="hz-guide" href={`/${sign.slug}/`}>
+      <a class="hz-guide" href={`/${sign.slug}/`} data-enter="rise">
         <ArtFrame sign={sign.slug} alt="" fade focus="34% 40%" spot="40% 42%" sizes="(min-width: 1021px) 420px, calc(100vw - 40px)" class="hz-guide__art" />
         <span class="hz-guide__cap">
           <span class="kicker">The sign guide</span>
@@ -717,8 +723,9 @@ const ctaLede = edgeMoon && moonHouse
                 href={surfacePath(other.slug, surface)}
                 aria-current={other.slug === sign.slug ? 'page' : undefined}
                 style={`--sign:${other.hue}`}
+                data-enter="rise"
               >
-                <SignIcon sign={other.slug} size={44} webpOnly />
+                <span class="hz-signgrid__disc" data-enter="disc"><SignIcon sign={other.slug} size={44} webpOnly /></span>
                 <b>{other.name}</b>
                 <small>{other.slug === sign.slug ? 'Reading now' : signDateRange(other)}</small>
               </a>
@@ -750,6 +757,8 @@ const ctaLede = edgeMoon && moonHouse
     display: block;
     padding-bottom: clamp(48px, 7vw, 96px);
   }
+  /* Holds a sign card's disc so it can grow in without marking the picture. */
+  .hz-signgrid__disc { display: flex; }
 
   /* ── Hero: the sign art in the rounded cinematic frame ─────────── */
   .hz-hero {
