@@ -495,7 +495,7 @@
             "planetPositions": "apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
             "positionFrame": "icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
-            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
             "zodiac": "tropical"
           },
           "coverage": {
@@ -558,7 +558,7 @@
             "search-solver:engine-longitude-crossings",
             "search-window:start-exclusive-end-inclusive",
             "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
-            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
             "zodiac:tropical"
           ]
         },
@@ -572,7 +572,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:d0b042b741e3f3d78c3f145103a02db7b289a61871a0d1fa81279b9eae36f53b",
+          "receipt": "sha256:0ab6b8828a2f6f45eb7be1f8982dd7bbca1dc1697ed070ec0f90c837c64f3c82",
           "engine": "@zodiacs/engine",
           "version": "2.1.0"
         }
@@ -628,7 +628,7 @@
             "planetPositions": "apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
             "positionFrame": "icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
-            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
             "zodiac": "tropical"
           },
           "coverage": {
@@ -691,7 +691,7 @@
             "search-solver:engine-longitude-crossings",
             "search-window:start-exclusive-end-inclusive",
             "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
-            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
             "zodiac:tropical"
           ]
         },
@@ -705,7 +705,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:323b94537346721c0fceb61ed3752d80bcbea6cdd4299c3ba73906849c95bf48",
+          "receipt": "sha256:61aba993bd6a7b7517a93c02acb492ba4caddfe5ecfa0c4400dd998a7cb775a6",
           "engine": "@zodiacs/engine",
           "version": "2.1.0"
         }

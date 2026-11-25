@@ -629,9 +629,17 @@ describe('compute API receipts, backend and citation', () => {
 
   it("names both ΔT sources and their tables, the engine's conventions and coverage, and each search's limits", async () => {
     const chart = await call('chart', CHART);
+    const continuousChart = await call('chart', { ...CHART, utc: '2030-01-01T12:00:00Z' });
     const { json } = await call('events', VALID.events);
-    expect(json.receipt.conventions).toEqual(chart.json.receipt.conventions);
+    expect(json.receipt.conventions).toEqual(continuousChart.json.receipt.conventions);
+    expect(json.receipt.conventions.timeScale).toContain('tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after');
     expect(json.receipt.coverage).toEqual(chart.json.receipt.coverage);
+    // Pre-2027 and post-2027 positions requests share the exact same three-era receipt.
+    const posPre = await call('positions', { instants: ['2000-01-01T12:00:00Z'] });
+    const posPost = await call('positions', { instants: ['2030-01-01T12:00:00Z'] });
+    expect(posPre.json.receipt).toEqual(posPost.json.receipt);
+    expect(posPre.json.cite.receipt).toBe(posPost.json.cite.receipt);
+    expect(posPost.json.receipt.conventionIds).toContain(`timeScale:${continuousChart.json.receipt.conventions.timeScale}`);
     // The engine reads 2000 on IERS UT1 − UTC and 1900 on its ΔT model; the receipt names both sources.
     const modern = chart.json.result.deltaT;
     const early = (await call('chart', { ...CHART, utc: '1900-01-01T12:00:00Z' })).json.result.deltaT;

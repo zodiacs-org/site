@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "name": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.28",
+  "version": "0.1.0-rc.29",
   "releaseStatus": "unpublished-candidate",
-  "file": "zodiacs-mcp-server-0.1.0-rc.28.tgz",
-  "bytes": 3283996,
-  "sha256": "1a73b253ac1beb43b0b8eab1603aaf596aaecb4d1c52c38f44ed0aa9f5746dcd",
-  "artifactCommit": "51cc55f156bb2a89f563b825eed2ff8647917c90",
+  "file": "zodiacs-mcp-server-0.1.0-rc.29.tgz",
+  "bytes": 3284097,
+  "sha256": "a2dd2b84f7ec3f85d92a6a9b17933cd0653995bba3cb7e8aca9bc0a3343a6284",
+  "artifactCommit": "f31592d25e1e335826e9d465eec17b40071d4459",
   "artifactRepository": "https://github.com/zodiacs-org/site",
-  "artifactPath": "public/examples/zodiacs-mcp-server-0.1.0-rc.28.tgz",
+  "artifactPath": "public/examples/zodiacs-mcp-server-0.1.0-rc.29.tgz",
   "engine": {
     "package": "@zodiacs/engine",
     "version": "2.1.0"

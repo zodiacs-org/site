@@ -65,24 +65,22 @@ export interface DeltaTSource {
 
 type EngineStatements = Pick<NatalReceipt, 'conventions' | 'coverage'> & { deltaT: readonly [DeltaTSource, DeltaTSource] };
 let statements: EngineStatements | null = null;
+let receiptConventions: NatalReceipt['conventions'] | null = null;
 
 /**
  * The conventions and coverage statement exactly as the engine writes them
  * into a receipt, and the two sources of ΔT its time basis uses: IERS (the
  * leap seconds and UT1 − UTC) from 1972 to the end of its UT1 table, as a chart
- * at 2000-01-01 names it, and the ΔT model otherwise. The engine exports its
- * conventions set and the model's table but not the coverage statement or the
- * UT1 table's, so those are read from a chart and a receipt it writes for a
- * fixed instant.
+ * at 2000-01-01 names it, and the ΔT model otherwise.
  */
 export function engineStatements(): EngineStatements {
   if (!statements) {
-    const chart = natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false });
-    const { receipt } = createNatalEnvelope(chart);
-    const { model, table, tableDigest } = chart.deltaT;
+    const iersChart = natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false });
+    const { model, table, tableDigest } = iersChart.deltaT;
     if (model !== 'iers-utc/1' || table === null || tableDigest === null) {
       throw new Error('The engine\'s chart for 2000-01-01 no longer names the IERS table.');
     }
+    const { receipt } = createNatalEnvelope(iersChart);
     statements = {
       conventions: receipt.conventions,
       coverage: receipt.coverage,
@@ -93,6 +91,24 @@ export function engineStatements(): EngineStatements {
     };
   }
   return statements;
+}
+
+/**
+ * Conventions for compute receipts, read from a post-table chart (2030-01-01)
+ * so every compute receipt states @zodiacs/engine 2.1.0's complete three-era
+ * timeScale rule (before 1972, 1972 through table end, and continuous-UTC after)
+ * without encoding which era a request asked for or altering hosted capability
+ * fixtures.
+ */
+function computeReceiptConventions(): NatalReceipt['conventions'] {
+  if (!receiptConventions) {
+    const continuousChart = natalChart({ utc: '2030-01-01T12:00:00Z', timeKnown: false });
+    if (continuousChart.timeScale.basis !== 'continuous-utc') {
+      throw new Error('The engine\'s chart for 2030-01-01 no longer uses continuous-utc.');
+    }
+    receiptConventions = createNatalEnvelope(continuousChart).receipt.conventions;
+  }
+  return receiptConventions;
 }
 
 export interface SearchFacts {
@@ -181,7 +197,8 @@ export function computeReceipt(
   endpoint: ComputeEndpoint,
   extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts; electionSearch?: ElectionSearchFacts } = {},
 ): ComputeReceipt {
-  const { conventions, coverage, deltaT } = engineStatements();
+  const { coverage, deltaT } = engineStatements();
+  const conventions = computeReceiptConventions();
   const receipt: Omit<ComputeReceipt, 'conventionIds'> = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,

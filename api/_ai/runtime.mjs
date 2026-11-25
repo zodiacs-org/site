@@ -6464,14 +6464,15 @@ var BACKEND = Object.freeze({
   ephemeris: activeEphemeris()
 });
 var statements = null;
+var receiptConventions = null;
 function engineStatements() {
   if (!statements) {
-    const chart = natalChart({ utc: "2000-01-01T12:00:00Z", timeKnown: false });
-    const { receipt } = createNatalEnvelope(chart);
-    const { model, table, tableDigest } = chart.deltaT;
+    const iersChart = natalChart({ utc: "2000-01-01T12:00:00Z", timeKnown: false });
+    const { model, table, tableDigest } = iersChart.deltaT;
     if (model !== "iers-utc/1" || table === null || tableDigest === null) {
       throw new Error("The engine's chart for 2000-01-01 no longer names the IERS table.");
     }
+    const { receipt } = createNatalEnvelope(iersChart);
     statements = {
       conventions: receipt.conventions,
       coverage: receipt.coverage,
@@ -6482,6 +6483,16 @@ function engineStatements() {
     };
   }
   return statements;
+}
+function computeReceiptConventions() {
+  if (!receiptConventions) {
+    const continuousChart = natalChart({ utc: "2030-01-01T12:00:00Z", timeKnown: false });
+    if (continuousChart.timeScale.basis !== "continuous-utc") {
+      throw new Error("The engine's chart for 2030-01-01 no longer uses continuous-utc.");
+    }
+    receiptConventions = createNatalEnvelope(continuousChart).receipt.conventions;
+  }
+  return receiptConventions;
 }
 function computeConventionIds(receipt) {
   const ids = /* @__PURE__ */ new Set();
@@ -6508,7 +6519,8 @@ function computeConventionIds(receipt) {
   return [...ids].sort();
 }
 function computeReceipt(endpoint, extra = {}) {
-  const { conventions, coverage, deltaT: deltaT2 } = engineStatements();
+  const { coverage, deltaT: deltaT2 } = engineStatements();
+  const conventions = computeReceiptConventions();
   const receipt = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,
