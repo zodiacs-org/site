@@ -11,6 +11,7 @@ import {
   previewQuery,
 } from '../lib/share-preview.js';
 import { lockupImage } from './brand-lockup-image.js';
+import { configuredStagingHost } from '../lib/staging-host.js';
 
 export const PREVIEW_KICKER = 'Your chart signature';
 export const CHART_PREVIEW_ROUTE_KEY = '__zodiacs_og_route';
@@ -214,10 +215,15 @@ function firstHeader(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-export function requestOrigin(req: any): string {
+/**
+ * The site a share request was opened on: zodiacs.org, a Vercel preview, localhost, or the configured staging host the
+ * hosted MCP issues its links on (configuredStagingHost, the one validator both use); anything else is zodiacs.org.
+ */
+export function requestOrigin(req: any, env: Readonly<Record<string, string | undefined>> = process.env): string {
   const forwarded = firstHeader(req.headers?.['x-forwarded-host']).split(',')[0]?.trim();
   const host = forwarded || firstHeader(req.headers?.host).trim();
-  const trusted = /^(?:zodiacs\.org|www\.zodiacs\.org|[a-z0-9-]+(?:\.[a-z0-9-]+)*\.vercel\.app|localhost(?::\d{1,5})?)$/iu.test(host)
+  const staging = configuredStagingHost(env);
+  const trusted = /^(?:zodiacs\.org|www\.zodiacs\.org|[a-z0-9-]+(?:\.[a-z0-9-]+)*\.vercel\.app|localhost(?::\d{1,5})?)$/iu.test(host) || (staging !== null && host.toLowerCase() === staging)
     ? host
     : 'zodiacs.org';
   return `${trusted.startsWith('localhost') ? 'http' : 'https'}://${trusted}`;

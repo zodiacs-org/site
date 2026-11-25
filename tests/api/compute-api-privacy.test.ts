@@ -19,7 +19,7 @@ import { MESSAGES } from '../../src/lib/compute-api/errors';
 import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import type { LocalTimeModule } from '../../src/lib/compute-api/local-time';
 import * as sourceLocalTime from '../../src/lib/compute-api/local-time-source';
-import { CONDITION_FIELD_POINTERS, INDEXED_POINTERS, VALIDATION_MESSAGES, VALIDATION_POINTERS } from '../../src/lib/compute-api/validate';
+import { CONDITION_FIELD_POINTERS, INDEXED_POINTERS, LOCAL_DAY_MESSAGES, VALIDATION_MESSAGES, VALIDATION_POINTERS } from '../../src/lib/compute-api/validate';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 const bundledLocalTime = createLocalTimeModule();
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
@@ -126,6 +126,8 @@ const SCENARIOS: Scenario[] = [
   { name: 'a zone the server does not know', endpoint: 'time', body: { local: { date: DATE, time: TIME, zone: `${ZONE}_Island` } } },
   { name: 'a number where a string belongs', endpoint: 'time', body: { local: { date: DATE, time: TIME, zone: LONGITUDE } } },
   { name: 'a date that does not exist', endpoint: 'sky-fact', body: { kind: 'phase', phase: 'full', date: MISSING_DATE, zone: ZONE } },
+  // St. John's went from 00:01 back to 23:01 on 29 October 1989, so the date came in two parts.
+  { name: 'a date its zone lived in two parts', endpoint: 'sky-fact', body: { kind: 'phase', phase: 'full', date: '1989-10-29', zone: 'America/St_Johns' } },
   { name: 'a condition naming the input', endpoint: 'elections', body: { from: INSTANT, to: '2071-11-25T17:43:09+05:45', conditions: [{ kind: 'sign', body: 'Moon', sign: DATE }] } },
   { name: 'an election place out of range', endpoint: 'elections', body: { from: INSTANT, to: '2071-11-25T17:43:09+05:45', conditions: [{ kind: 'angular', body: 'Sun' }], place: { latitude: FAR_LATITUDE, longitude: LONGITUDE } } },
   { name: 'the wrong content type', endpoint: 'time', contentType: 'text/plain', body: JSON.stringify({ local: LOCAL }) },
@@ -322,7 +324,9 @@ function expectedHeaders(status: number, code: string | undefined): Map<string, 
   return headers;
 }
 
-const MESSAGE_CATALOG = new Set<string>([...Object.values(MESSAGES), ...Object.values(VALIDATION_MESSAGES), ...Object.values(BUDGET_MESSAGES)]);
+const MESSAGE_CATALOG = new Set<string>([
+  ...Object.values(MESSAGES), ...Object.values(VALIDATION_MESSAGES), ...Object.values(LOCAL_DAY_MESSAGES), ...Object.values(BUDGET_MESSAGES),
+]);
 const LIMITS = new Map<string, number>([...Object.entries(BUDGETS), ['body.bytes', MAX_BODY_BYTES]]);
 const INDEXED = new RegExp(`^(?:${INDEXED_POINTERS.join('|')})/(?:0|[1-9]\\d{0,2})$`, 'u');
 /** A field of one election condition: /conditions/2/body. */
@@ -522,8 +526,14 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/sky-events.ts',
       // get_year_score (ZODIACS_YEAR_SCORE_ENABLED=1) resolves a birth's local time with the same operations, server-side.
       'src/ai-tools/features/year-score.ts',
+      // The hosted sky chart shares the instant validator and position names.
+      'src/ai-tools/features/moment-chart-contract.ts', 'src/ai-tools/features/moment-chart.ts', 'src/ai-tools/moment-chart.test.ts',
       // get_solar_return (ZODIACS_SOLAR_RETURN_ENABLED=1) resolves a birth's local time with the same operations, server-side.
       'src/ai-tools/features/solar-return.ts',
+      // The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1) resolve a birth's local time with the same operations, server-side.
+      'src/ai-tools/personal/shared.ts',
+      // get_retrograde_for_me finds Mercury's, Venus's and Mars's stations with search_sky_events' station search.
+      'src/ai-tools/personal/retrograde-for-me.ts',
       // The new and full Moons either side of a moment come from the same lunation search, server-side (ZOD-64).
       'src/ai-tools/clear-time.ts', 'src/ai-tools/clear-time.test.ts',
     ]);

@@ -376,7 +376,7 @@
             "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
           },
           "name": "@zodiacs/engine",
-          "version": "1.1.0"
+          "version": "2.1.0"
         },
         "houses": {
           "absenceReason": null,
@@ -412,7 +412,7 @@
       },
       "backend": {
         "name": "@zodiacs/engine",
-        "version": "1.1.0",
+        "version": "2.1.0",
         "ephemeris": {
           "name": "jpl-de440",
           "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
@@ -420,9 +420,9 @@
       },
       "cite": {
         "url": "https://zodiacs.org/developers/compute/#chart",
-        "receipt": "sha256:402c5289194b0d2a8f1c8c03e8c087b59fbf538ef31370b2aab230ad7c3004fa",
+        "receipt": "sha256:707ba622925803694ecc9c9443445ccce13976f10eb09a48266b28072df05730",
         "engine": "@zodiacs/engine",
-        "version": "1.1.0"
+        "version": "2.1.0"
       }
     }
   },
@@ -475,7 +475,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0",
+            "version": "2.1.0",
             "ephemeris": {
               "name": "jpl-de440",
               "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
@@ -564,7 +564,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0",
+          "version": "2.1.0",
           "ephemeris": {
             "name": "jpl-de440",
             "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
@@ -572,9 +572,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:3eb235a2a85540bc0d5c4634552bcdbe91950b8c97577b00b865bc446f30c69b",
+          "receipt": "sha256:d0b042b741e3f3d78c3f145103a02db7b289a61871a0d1fa81279b9eae36f53b",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0"
+          "version": "2.1.0"
         }
       },
       {
@@ -608,7 +608,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0",
+            "version": "2.1.0",
             "ephemeris": {
               "name": "jpl-de440",
               "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
@@ -697,7 +697,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0",
+          "version": "2.1.0",
           "ephemeris": {
             "name": "jpl-de440",
             "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
@@ -705,9 +705,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:faaadf9fb5d420700fd4c59380fab7912aee4fe3fdceecf4fc39dae5c53c2882",
+          "receipt": "sha256:323b94537346721c0fceb61ed3752d80bcbea6cdd4299c3ba73906849c95bf48",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0"
+          "version": "2.1.0"
         }
       }
     ]

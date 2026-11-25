@@ -17,7 +17,7 @@ const instant = (v: unknown): v is string => text(v, 40) && Number.isFinite(Date
 const longitude = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v < 360;
 const house = (v: unknown): v is Profile['settings']['houseSystem'] => v === 'whole' || v === 'placidus';
 const bodies = new Set(['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','North Node','South Node']);
-const flags = new Set(['dst-gap','dst-fold','lmt','no-time','polar-fallback','outside-reference-span','delta-t-extrapolated','de440-unavailable','outside-de440-span']);
+const flags = new Set(['dst-gap','dst-fold','lmt','no-time','polar-fallback','polar-angles','calendar-unknown','host-zone-data-differs','outside-reference-span','delta-t-extrapolated','de440-unavailable','outside-de440-span']);
 const fail = (): never => { throw new Error('This is not a valid Zodiacs chart backup. Nothing was changed.'); };
 
 function parsePlace(v: unknown): SavedPlace | null {

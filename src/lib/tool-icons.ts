@@ -23,6 +23,7 @@ export type ToolIconName =
   | 'moon-sign'
   | 'rising-sign'
   | 'big-three'
+  | 'vedic-signs'
   | 'birthday'
   | 'numerology'
   | 'chart-pdf'
@@ -45,6 +46,7 @@ export type ToolIconName =
   | 'year-sky'
   | 'eclipses'
   | 'retrogrades'
+  | 'retrogrades-for-you'
   | 'full-moon-calendar'
   | 'sky-calendar'
   | 'sky-events'
@@ -84,6 +86,13 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
   'big-three': {
     hue: 'leo',
     body: '<circle cx="12" cy="6.4" r="2.7"/><circle cx="6.4" cy="16.6" r="2.7"/><circle cx="17.6" cy="16.6" r="2.7"/><path d="M10.7 8.8 7.7 14.2M13.3 8.8l3 5.4M9.1 16.6h5.8"/>',
+  },
+  // A crescent holding a star: the Moon in its nakshatra. Pisces, the sign the
+  // equinox has slid back through and where the two zodiacs part, and a hue
+  // apart from the Cancer the Western Moon tools wear.
+  'vedic-signs': {
+    hue: 'pisces',
+    body: '<path d="M13.2 4.2a8 8 0 1 0 6.3 12.4 6.4 6.4 0 0 1-6.3-12.4Z"/><path d="M17.2 7.6C17.48 9.42 17.9 9.84 19.7 10.1C17.9 10.36 17.48 10.78 17.2 12.6C16.92 10.78 16.5 10.36 14.7 10.1C16.5 9.84 16.92 9.42 17.2 7.6Z"/>',
   },
   // A cake with one candle.
   birthday: {
@@ -197,6 +206,11 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
     hue: 'gemini',
     body: '<path d="M3.5 17.4C9.2 17.4 14.6 13.3 14.6 9.1c0-2.4-1.7-3.7-3.1-3.7-1.6 0-2.7 1.4-2.7 3.1 0 4.3 5.2 7.3 11.6 7.3"/><path d="M18.2 13.5l2.3 2.3-2.3 2.3"/>',
   },
+  // A birth chart's circle and horizon, with a retrograde loop turning above it: Mercury's Gemini, as on Retrogrades.
+  'retrogrades-for-you': {
+    hue: 'gemini',
+    body: '<circle cx="12" cy="12" r="8.3"/><path d="M3.9 14.6h16.2"/><path d="M7.2 11.8c2.6 0 5.3-1.7 5.3-3.6 0-1.1-.8-1.7-1.5-1.7-.8 0-1.3.6-1.3 1.4 0 2 2.3 3.9 5.7 3.9"/><path d="M14.2 10.4l1.4 1.4-1.4 1.4"/>',
+  },
   // A full moon with its maria.
   'full-moon-calendar': {
     hue: 'pisces',
@@ -247,6 +261,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/moon-sign/': 'moon-sign',
   '/rising-sign/': 'rising-sign',
   '/big-three/': 'big-three',
+  '/vedic-signs/': 'vedic-signs',
   '/birthday/': 'birthday',
   '/numerology/': 'numerology',
   '/astrologer-kit/': 'chart-pdf',
@@ -271,6 +286,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/your-2027-sky/': 'year-sky',
   '/eclipses/': 'eclipses',
   '/retrogrades/': 'retrogrades',
+  '/retrogrades/for-you/': 'retrogrades-for-you',
   '/full-moon-calendar/': 'full-moon-calendar',
   '/sky-calendar/': 'sky-calendar',
   '/events/': 'sky-events',

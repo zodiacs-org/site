@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import Motion from '../../components/Motion.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -143,6 +145,8 @@ const jsonLd = [
   sources={sources}
 >
   <section class="section--tight container container--narrow">
+    <Motion />
+    <ToolHeroMark name="retrogrades" />
     <div class="tool-hero reveal">
       <h1 class="display">See when Mercury turns retrograde.</h1>
       <p>
@@ -171,7 +175,6 @@ const jsonLd = [
     </div>
     {/* The windows table rises once as it scrolls in (docs/MOTION.md); the hero and the
         "right now" answer above stay still. */}
-    <Motion />
     <div class="table-wrap" data-enter="rise">
       <table class="rx-table">
         <thead>
@@ -218,7 +221,11 @@ const jsonLd = [
       <p>
         Where a <a href="/learn/glossary/#retrograde">retrograde</a> lands in <em>your</em> chart decides which corner
         of life does the reviewing. That takes your{' '}
-        <a href="/birth-chart/">birth chart</a>. And if you were born with
+        <a href="/birth-chart/">birth chart</a>{launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') && (
+          <>, and{' '}
+          <a href="/retrogrades/for-you/">retrogrades in your chart</a> works it
+          out for each Mercury, Venus and Mars retrograde</>
+        )}. And if you were born with
         Mercury retrograde (roughly one person in five), astrologers read it
         as an inward-processing style, not a defect.
       </p>
@@ -282,4 +289,9 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (max-width: 337px), (min-width: 617px) and (max-width: 709px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>
