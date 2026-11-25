@@ -7,14 +7,24 @@ import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '..
 import { useEngine } from '../lib/hooks/useEngine';
 import type { PersonalSky } from '../lib/personal-calendar/compute';
 import type { PersonalCalendarEvent } from '../lib/ical';
+import type { Engine2NoticeItem } from '../lib/chart-notices';
 import SharingBirthForm from './SharingBirthForm';
 import { createModuleLoader } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 const loadEvents = createModuleLoader(() => import('../lib/personal-calendar/events'));
 const loadDownload = createModuleLoader(() => import('../lib/ical-download'));
+const loadNotices = createModuleLoader(() => import('../lib/chart-notices'));
 
-interface Result { events: PersonalCalendarEvent[]; calendar: string; from: string; to: string; timeKnown: boolean }
+interface Result {
+  events: PersonalCalendarEvent[];
+  calendar: string;
+  from: string;
+  to: string;
+  timeKnown: boolean;
+  hostZoneNote?: string;
+  notices: Engine2NoticeItem[];
+}
 
 function readerTimeZone(): string {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
@@ -56,21 +66,41 @@ export default function PersonalCalendar({ locale }: { locale: CatalogLocale }) 
     const run = generation.current; setBusy(true);
     try {
       const mod = await engine();
-      const { chart } = await calculateEntry(entry, mod, locale);
+      const { chart, oldStyle } = await calculateEntry(entry, mod, locale);
       if (chart.flags.includes('outside-reference-span')) throw new RangeError(t(locale, 'birthDateRange'));
       const now = new Date();
-      const [sky, events] = await Promise.all([scan(chart, now), loadEvents()]);
+      const noticeFlags = chart.flags.filter((flag) => (
+        flag === 'calendar-unknown' || (!chart.input.timeKnown && flag === 'host-zone-data-differs')
+      ));
+      const [sky, events, noticeMod] = await Promise.all([
+        scan(chart, now),
+        loadEvents(),
+        loadNotices(),
+      ]);
       if (run !== generation.current) return;
       const absolute = (path: string) => `https://zodiacs.org${localizePath(locale, path)}`;
+      const notices = noticeMod.resolveEngine2Notices(locale, noticeFlags, { convertedFromJulian: Boolean(oldStyle) });
       const options = {
         locale,
         timeZone: readerTimeZone(),
         links: { solarReturn: absolute('/solar-return/'), milestones: absolute('/occasions/milestones/'), saturnReturn: absolute('/saturn-return/'), transits: absolute('/transits/') },
+        ...(notices.length ? { notes: notices.map((notice) => notice.text) } : {}),
       };
       const list = events.personalEvents(sky, options);
       const calendar = events.personalCalendar(sky, { ...options, generatedAt: now });
       if (!calendar) throw new Error('empty calendar');
-      setResult({ events: list.sort((a, b) => (a.date ?? String(a.start)).localeCompare(b.date ?? String(b.start))), calendar, from: sky.from, to: sky.to, timeKnown: sky.timeKnown });
+      const hostZoneNote = sky.timeKnown && sky.hostZoneDiffers
+        ? events.PERSONAL_WORDS[locale].hostZoneDiffersTime
+        : undefined;
+      setResult({
+        events: list.sort((a, b) => (a.date ?? String(a.start)).localeCompare(b.date ?? String(b.start))),
+        calendar,
+        from: sky.from,
+        to: sky.to,
+        timeKnown: sky.timeKnown,
+        hostZoneNote,
+        notices,
+      });
       requestAnimationFrame(() => { if (run === generation.current) { resultRef.current?.focus({ preventScroll: true }); resultRef.current?.scrollIntoView({ block: 'start', behavior: 'auto' }); } });
     } catch (cause) { if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, s(locale, 'error'))); }
     finally { if (run === generation.current) setBusy(false); }
@@ -94,6 +124,10 @@ export default function PersonalCalendar({ locale }: { locale: CatalogLocale }) 
     {result && <section class="return-result" tabIndex={-1} ref={resultRef} aria-label={s(locale, 'personalTitle')} data-personal-calendar-result>
       <p>{s(locale, 'personalCount', { n: result.events.length, from: formatShortDate(locale, result.from), to: formatShortDate(locale, result.to) })}</p>
       {!result.timeKnown && <p class="notice">{s(locale, 'personalUnknown')}</p>}
+      {result.hostZoneNote && <p class="notice" role="note" data-personal-calendar-notice="host-zone-data-differs">{result.hostZoneNote}</p>}
+      {result.notices.map((notice) => (
+        <p class="notice" role="note" key={notice.key} data-personal-calendar-notice={notice.key}>{notice.text}</p>
+      ))}
       <ul class="return-contact-list">{result.events.map((event) => <li key={event.uid}>
         <span>{event.summary}</span>
         <time dateTime={event.date ?? String(event.start)}>{shown(event)}</time>

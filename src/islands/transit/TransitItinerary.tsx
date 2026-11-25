@@ -39,6 +39,7 @@ function Period({ window }: { window: TransitWindow }) {
 }
 
 const CALENDAR_NOTE = 'The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.';
+const CALENDAR_NOTE_HOST_ZONE_DIFFERS = 'The times in the file come from your supplied birth time using the offset from a device whose time-zone data differed from our historical table near your birth date. Contacts to your natal Moon, Ascendant, and Midheaven are omitted, but anyone you share the file with, or any online calendar you import it into, can still work out your birth time from the remaining planetary contacts.';
 const CALENDAR_NOTE_NO_TIME = 'Without a birth time, the times in the file come from your chart for noon at your birthplace, so anyone you share it with, or any online calendar you import it into, can work out your birth date from them, and the time zone of your birthplace or, before standard time, its longitude.';
 
 /**
@@ -47,8 +48,8 @@ const CALENDAR_NOTE_NO_TIME = 'Without a birth time, the times in the file come 
  * `birthTimeKnown` says whether the chart has a birth time at all: without
  * one it is noon at the birthplace, which the calendar note names.
  */
-export function TransitItinerary({ natal, timeKnown, anchorMs, birthTimeKnown = timeKnown }: {
-  natal: NatalTransitChart; timeKnown: boolean; anchorMs: number; birthTimeKnown?: boolean;
+export function TransitItinerary({ natal, timeKnown, anchorMs, birthTimeKnown = timeKnown, hostZoneDiffers = false, calendarNotes }: {
+  natal: NatalTransitChart; timeKnown: boolean; anchorMs: number; birthTimeKnown?: boolean; hostZoneDiffers?: boolean; calendarNotes?: readonly string[];
 }) {
   const [windows, setWindows] = useState<TransitWindow[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -97,7 +98,18 @@ export function TransitItinerary({ natal, timeKnown, anchorMs, birthTimeKnown = 
   const exportable = calendarTransitWindows([...active, ...future], timeKnown);
   const today = new Date(anchorMs).toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10);
   function download() {
-    try { downloadCalendarFile(serializeTransitWindows(exportable, { generatedAt: new Date(), timeKnown }), 'zodiacs-transit-itinerary.ics'); }
+    try {
+      downloadCalendarFile(
+        serializeTransitWindows(exportable, {
+          generatedAt: new Date(),
+          timeKnown,
+          birthTimeKnown,
+          hostZoneDiffers,
+          ...(calendarNotes?.length ? { notes: calendarNotes } : {}),
+        }),
+        'zodiacs-transit-itinerary.ics',
+      );
+    }
     catch { setError('The calendar could not be prepared. Your itinerary is still available.'); }
   }
   return <section class="itinerary" aria-label="Your transit itinerary" data-transit-itinerary>
@@ -109,7 +121,13 @@ export function TransitItinerary({ natal, timeKnown, anchorMs, birthTimeKnown = 
       {busy && <button type="button" class="btn" onClick={() => { cancel(); setBusy(false); setStatus('Calculation cancelled.'); }}>Cancel</button>}
       {!!exportable.length && <button type="button" class="btn" onClick={download}>Calendar for {exportable.length} periods</button>}
     </div>
-    {!!exportable.length && <p class="field__help" data-itinerary-calendar-note>{birthTimeKnown ? CALENDAR_NOTE : CALENDAR_NOTE_NO_TIME}</p>}
+    {!!exportable.length && (
+      <p class="field__help" data-itinerary-calendar-note>
+        {birthTimeKnown && hostZoneDiffers
+          ? CALENDAR_NOTE_HOST_ZONE_DIFFERS
+          : <>{birthTimeKnown ? CALENDAR_NOTE : CALENDAR_NOTE_NO_TIME}</>}
+      </p>
+    )}
     <p role="status" aria-live="polite">{status}</p>
     {error && <p class="calc__error" role="alert">{error}</p>}
     {windows && <>

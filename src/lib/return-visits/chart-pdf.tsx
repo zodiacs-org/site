@@ -3,6 +3,8 @@ import TechnicalWheel from '../wheel/TechnicalWheel';
 import { SIGNS, formatLongitude } from '../signs';
 import { planetLabel, aspectLabel } from '../i18n/astrology';
 import { localizePath, t, type CatalogLocale } from '../i18n';
+import { resolveEngine2Notices } from '../chart-notices';
+import { birthDateForChart } from '../../islands/BirthFields';
 import type { Chart } from '../engine/types';
 import type { ChartEntry } from '../sharing/chart-entry';
 import { returnText as s } from './copy';
@@ -49,10 +51,14 @@ export async function prepareClientPdf(chart: Chart, entry: ChartEntry, date: st
     if (!jpeg) throw new Error('JPEG encoding failed');
     pages.push({ jpeg: new Uint8Array(await jpeg.arrayBuffer()), width: WIDTH, height: HEIGHT });
   }
+  const oldStyleReading = entry.calendar === 'julian'
+    ? await birthDateForChart(locale, entry.date, 'julian')
+    : null;
+  const oldStyleDateLabel = oldStyleReading && !('error' in oldStyleReading) ? oldStyleReading.oldStyle : undefined;
   begin();
   y = paragraph(s(locale, 'opening'), y) + 24;
   text(s(locale, 'birthDetails'), 125, y, 34, serif); y += 52;
-  text(`${date} · ${entry.timeKnown ? entry.time : s(locale, 'dayTimeUnknown')}`, 125, y, 26); y += 42;
+  text(`${oldStyleDateLabel ?? date} · ${entry.timeKnown ? entry.time : s(locale, 'dayTimeUnknown')}`, 125, y, 26); y += 42;
   y = paragraph(entry.city ? `${entry.city.name} · ${entry.city.tz} · ${entry.city.lat.toFixed(4)}, ${entry.city.lon.toFixed(4)}` : '', y, 24) + 22;
   if (!chart.input.timeKnown) y = paragraph(s(locale, 'unknownNote'), y, 24) + 24;
   const signImageHrefs = Object.fromEntries(await Promise.all(SIGNS.map(async (sign) => {
@@ -103,10 +109,16 @@ export async function prepareClientPdf(chart: Chart, entry: ChartEntry, date: st
     'no-time': 'noTimeNotice',
     'polar-fallback': 'polarNotice',
   } as const;
-  const notices = chart.flags.flatMap((flag) => {
-    const key = noticeKeys[flag as keyof typeof noticeKeys];
-    return key ? [t(locale, key)] : [];
+  const engine2Notices = resolveEngine2Notices(locale, chart.flags, {
+    convertedFromJulian: Boolean(oldStyleDateLabel),
   });
+  const notices = [
+    ...chart.flags.flatMap((flag) => {
+      const key = noticeKeys[flag as keyof typeof noticeKeys];
+      return key ? [t(locale, key)] : [];
+    }),
+    ...engine2Notices.map((item) => item.text),
+  ];
   if (notices.length) y = paragraph(notices.join(' · '), y, 24);
   await finish();
   return assembleChartPdf(pages, `https://zodiacs.org${localizePath(locale, '/methodology/')}`);

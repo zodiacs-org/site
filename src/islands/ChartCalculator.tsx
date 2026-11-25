@@ -11,13 +11,14 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
  *   'rising' — rising-focused result view (time required)
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { BirthFields, birthDateForChart, calendarInPlay, loadBirthCalendar, type CalendarChoice } from './BirthFields';
 import AstroTerm from './AstroTerm';
 import SignChip from './SignChip';
 import PlanetGlyph from '../components/PlanetGlyph';
 import AspectGlyph from '../components/AspectGlyph';
 import LayerChips from './explorer/LayerChips';
 import { moonAspectsUnsettled, moonCandidates, moonDegreeUnsettled, moonIsUncertain, moonLabel, moonNoticeKey } from '../lib/moon-certainty';
+import type { Engine2NoticeItem } from '../lib/chart-notices';
 import { createModuleLoader } from '../lib/module-load';
 import { downloadCalculationReceipt } from '../lib/receipt-download';
 import { savedRecordsEnabled } from '../lib/profile/saved-record-flags';
@@ -40,6 +41,8 @@ import { formatLongitude, signBySlug, signForLongitude, signName, signPrepositio
 import { signInRu } from '../lib/sign-ru';
 import { signIcon } from '../lib/sign-icon';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
+import { gregorianToJulian } from '../lib/time/calendar';
+import { CALENDAR_CHOICE_BEFORE } from '../lib/time/calendar-choice';
 import { assessLocalDateReference, type LocalDateReferenceAssessment } from '../lib/time/local-date-reference';
 import { localDateMoonSigns } from '../lib/moon-day-bounds';
 import { houseOf } from '../lib/engine/houses';
@@ -100,6 +103,14 @@ interface RunInput {
   mine?: MineHandoff | null;
   /** The entered Old Style date beside the Gregorian `date`, as one line for the result. */
   oldStyle?: string;
+  /** The entered Old Style YYYY-MM-DD when `date` was converted from Julian. */
+  writtenJulianDate?: string;
+  /** True when reopened from a saved profile chart whose original calendar is not stored. */
+  fromSavedChart?: boolean;
+  /** Saved `calendar-unknown` provenance when reopened from an engine 2.0.0+ summary. */
+  savedCalendarUnknown?: boolean;
+  /** True when `savedCalendarUnknown` came from reconstructing a saved chart without `calendarChecked`. */
+  calendarUnverified?: boolean;
 }
 
 interface FormFieldErrors {
@@ -119,6 +130,7 @@ type ChartActionDockModule = typeof import('./ChartActionDock');
 const loadWheel = createModuleLoader(() => import('../lib/wheel/Wheel'));
 const loadChartControls = createModuleLoader(() => import('./ChartActionDock'));
 const loadCalculatorReceipt = createModuleLoader(() => import('../lib/engine/calculator-receipt'));
+const loadNotices = createModuleLoader(() => import('../lib/chart-notices'));
 // The Big Three reading text only shows with a result, so it downloads with the calculation.
 const loadInterpretations = createModuleLoader(() => import('../lib/interpretations'));
 type BigThreeReader = typeof import('../lib/interpretations').bigThree;
@@ -338,9 +350,18 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   // That date, which was already charted: it gets no calendar note, which
   // could send it through the Old Style conversion a second time.
   const [storedDate, setStoredDate] = useState('');
+  const [savedCalendarContext, setSavedCalendarContext] = useState<{
+    date: string;
+    tz: string;
+    calendar: CalendarChoice;
+    fromSavedChart?: true;
+    savedCalendarUnknown?: boolean;
+    calendarUnverified?: true;
+  } | null>(null);
   const [houseSystem, setHouseSystem] = useState<HouseSystem>(initialField('#house-system')?.value === 'placidus'
     ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
+  const [engine2Notices, setEngine2Notices] = useState<Engine2NoticeItem[]>([]);
   const [resultCount, setResultCount] = useState(0);
   const firstResult = resultCount === 1;
   const [Wheel, setWheel] = useState<Awaited<ReturnType<typeof loadWheel>>['default'] | null>(null);
@@ -448,6 +469,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     clearPostChartContext();
     shareRuntimeRef.current.primary = undefined;
     setChart(null);
+    setEngine2Notices([]);
     setOnMeanTime(false);
     setComputedInput(null);
     setShareInput(null);
@@ -474,6 +496,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const mineProfileOriginRef = useRef(false);
   const runChartIdRef = useRef(0);
   useEffect(() => () => {
+    inputRevisionRef.current += 1;
     runChartIdRef.current += 1;
     chartContextIdRef.current += 1;
     resultOwnerRef.current = null;
@@ -601,6 +624,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     setDate('');
     setCalendar('gregorian');
     setStoredDate('');
+    setSavedCalendarContext(null);
     setTime('');
     setTimeKnown(true);
     setCity(null);
@@ -1151,6 +1175,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     // A Moon lookup or a birthday page hands its date (and optional time)
     // here without a place; the next needed field takes focus.
     const openDate = (handoff: { date: string; time: string | null }) => {
+      setSavedCalendarContext(null);
       setDate(handoff.date);
       setCalendar('gregorian');
       setTime(handoff.time ?? '');
@@ -1171,7 +1196,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       mine: MineHandoff | null,
       source: ChartComputedSource,
       profileOrigin = false,
+      isOldStyle = false,
+      savedCalendar?: { fromSavedChart?: true; savedCalendarUnknown?: boolean; calendarUnverified?: true },
     ) => {
+      const effectiveSavedCalendar = savedCalendar
+        ?? (source === 'shared_details' ? { fromSavedChart: true as const } : undefined);
       const linkCity: City = {
         name: decoded.place ?? (russianCopy?.chart.sharedBirthplace ?? 'Shared birthplace'),
         admin1: '', country: '',
@@ -1180,24 +1209,65 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       setDate(decoded.date);
       setCalendar('gregorian');
       setStoredDate(decoded.date);
+      setSavedCalendarContext(effectiveSavedCalendar && (!isOldStyle || effectiveSavedCalendar.savedCalendarUnknown !== undefined)
+        ? {
+            date: decoded.date,
+            tz: linkCity.tz,
+            calendar: isOldStyle ? 'julian' : 'gregorian',
+            ...(effectiveSavedCalendar.fromSavedChart && !isOldStyle ? { fromSavedChart: true as const } : {}),
+            savedCalendarUnknown: effectiveSavedCalendar.savedCalendarUnknown,
+            ...(effectiveSavedCalendar.calendarUnverified && !isOldStyle ? { calendarUnverified: true as const } : {}),
+          }
+        : null);
       setTime(decoded.time ?? '');
       setTimeKnown(decoded.timeKnown);
       setCity(linkCity);
       setHouseSystem(decoded.houseSystem);
       setFromLink(true);
       setLinkName(decoded.name ?? null);
+      setSubjectMode(nextSubjectMode);
+      setMineHandoff(mine);
       setPositionsOnly(null);
       primaryProfileOriginRef.current = profileOrigin;
       primaryProfileChartIdRef.current = null;
       mineProfileOriginRef.current = handoffOrigins.mine && mine !== null;
       clearFragment();
-      runChart({
+      const baseRun: RunInput = {
         date: decoded.date, time: decoded.time ?? '', timeKnown: decoded.timeKnown,
         city: linkCity, houseSystem: decoded.houseSystem,
         name: decoded.name,
         subjectMode: nextSubjectMode,
         mine,
-      }, false, source);
+        ...(effectiveSavedCalendar?.fromSavedChart && !isOldStyle ? { fromSavedChart: true } : {}),
+        ...(effectiveSavedCalendar?.savedCalendarUnknown !== undefined
+          ? { savedCalendarUnknown: effectiveSavedCalendar.savedCalendarUnknown }
+          : {}),
+        ...(effectiveSavedCalendar?.calendarUnverified && !isOldStyle ? { calendarUnverified: true } : {}),
+      };
+      if (!isOldStyle) {
+        runChart(baseRun, false, source);
+        return;
+      }
+      const writtenJulianDate = gregorianToJulian(decoded.date);
+      if (!writtenJulianDate || writtenJulianDate >= CALENDAR_CHOICE_BEFORE) {
+        runChart(baseRun, false, source);
+        return;
+      }
+      setDate(writtenJulianDate);
+      setCalendar('julian');
+      setStoredDate('');
+      const revision = inputRevisionRef.current;
+      const accessGeneration = profileAccessGeneration.current;
+      void loadBirthCalendar().then((mod) => {
+        if (revision !== inputRevisionRef.current) return;
+        const oldStyle = mod.oldStyleLine(locale, writtenJulianDate, decoded.date);
+        const keepMine = !handoffOrigins.mine
+          || (accessGeneration === profileAccessGeneration.current && profileAccessAllowed());
+        runChart({ ...baseRun, mine: keepMine ? baseRun.mine : null, writtenJulianDate, oldStyle }, false, source);
+      }, () => {
+        if (revision !== inputRevisionRef.current) return;
+        setError(calculationLoadMessage(locale));
+      });
     };
 
     // The entry is read once and deleted; a missing or spent key shows the
@@ -1207,7 +1277,21 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       if (taken?.kind === 'date') openDate(taken);
       else if (taken?.kind === 'chart') {
         const mine: MineHandoff | null = taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff;
-        const open = () => openDetails(taken.input, mine, 'fresh', taken.profileOrigin === true);
+        const savedCalendar = taken.fromSavedChart || typeof taken.savedCalendarUnknown === 'boolean'
+          ? {
+              ...(taken.fromSavedChart ? { fromSavedChart: true as const } : {}),
+              savedCalendarUnknown: taken.savedCalendarUnknown,
+              ...(taken.calendarUnverified ? { calendarUnverified: true as const } : {}),
+            }
+          : undefined;
+        const open = () => openDetails(
+          taken.input,
+          mine,
+          'fresh',
+          taken.profileOrigin === true,
+          taken.oldStyle === true,
+          savedCalendar,
+        );
         // An ordinary unsaved handoff can open at once. A profile-origin one
         // waits for a current grant, as the saved-chart id path does, so
         // inherited details are not filled while access is locked.
@@ -1294,6 +1378,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           setDate(input.date);
           setCalendar('gregorian');
           setStoredDate(input.date);
+          setSavedCalendarContext({
+            date: input.date,
+            tz: linkCity.tz,
+            calendar: 'gregorian',
+            fromSavedChart: true,
+            savedCalendarUnknown: input.savedCalendarUnknown,
+          });
           setTime(input.time);
           setTimeKnown(input.timeKnown);
           setCity(linkCity);
@@ -1444,6 +1535,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       // pinned history; the downloads run together. A rejection is observed
       // by the loader itself.
       const wheelReady = mode === 'full' ? loadWheel() : null;
+      const noticesReady = loadNotices();
       const localTimeReady = prepareLocalTime(input.date, input.city.tz);
       // Optional: a failed download leaves the cards without their reading line.
       const readingsReady = showsEnglishInterpretation
@@ -1453,6 +1545,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       if (!runIsCurrent()) return;
       await localTimeReady;
       const wheel = await wheelReady;
+      const noticesModule = await noticesReady;
       if (!runIsCurrent()) return;
       if (readingsReady) {
         const read = await readingsReady;
@@ -1470,7 +1563,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         if (!runIsCurrent()) return;
       }
       const effectiveTime = input.timeKnown ? input.time : '12:00';
-      const resolved = resolveLocalToUtc(input.date, effectiveTime, input.city.tz, { longitude: input.city.lon });
+      const reconstructedCalendar = Boolean(input.fromSavedChart && input.savedCalendarUnknown === undefined);
+      const resolved = resolveLocalToUtc(input.date, effectiveTime, input.city.tz, {
+        longitude: input.city.lon,
+        writtenJulianDate: input.writtenJulianDate,
+        reconstructedCalendar,
+      });
       let referenceAssessment: LocalDateReferenceAssessment | null = null;
       if (!input.timeKnown) {
         try {
@@ -1478,13 +1576,18 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         } catch { throw localDateReferenceFailure; }
         if (referenceAssessment.referenceStatus !== 'member') throw localDateReferenceFailure;
       }
+      const resolvedFlags = input.savedCalendarUnknown === undefined
+        ? resolved.flags
+        : input.savedCalendarUnknown && input.date >= '1582-10-05' && input.date <= '1918-02-26'
+          ? [...resolved.flags.filter((flag) => flag !== 'calendar-unknown'), 'calendar-unknown' as const]
+          : resolved.flags.filter((flag) => flag !== 'calendar-unknown');
       const calculationInput = {
         utc: resolved.utc,
         latitude: input.city.lat,
         longitude: input.city.lon,
         houseSystem: input.houseSystem,
         timeKnown: input.timeKnown,
-        flags: resolved.flags,
+        flags: resolvedFlags,
       };
       const portable = receiptModule?.computeCalculatorReceipt(calculationInput, {
         date: input.date,
@@ -1492,8 +1595,14 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         timeZone: input.city.tz,
         offsetMinutes: resolved.offsetMinutes,
         reference: input.timeKnown ? 'supplied-instant' : 'local-noon',
+        ...(input.writtenJulianDate ? { calendar: 'julian' as const, writtenDate: input.writtenJulianDate } : {}),
       });
       const result = portable ? portable.chart : engine.computeChart(calculationInput);
+      if (!runIsCurrent()) return;
+      const nextEngine2Notices = noticesModule.resolveEngine2Notices(locale, result.flags, {
+        convertedFromJulian: Boolean(input.oldStyle || input.writtenJulianDate),
+        fromSavedChart: Boolean(input.fromSavedChart),
+      });
       if (!runIsCurrent()) return;
       const computedSun = result.bodies.find((body) => body.body === 'Sun');
       const computedSunSlug = computedSun ? signForLongitude(computedSun.lon).slug : null;
@@ -1507,7 +1616,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         // established. The numerical chart and portable receipt remain the
         // reference result.
         result.moonSignCandidates = referenceAssessment ? await localDateMoonSigns({
-          date: input.date, place: input.city, assessment: referenceAssessment, referenceFlags: resolved.flags,
+          date: input.date, place: input.city, assessment: referenceAssessment, referenceFlags: resolvedFlags,
           moonLongitude: (utc) => engine.bodyLongitude('Moon', utc),
         }) : [];
         nextMoonAmbiguous = moonIsUncertain(result);
@@ -1521,6 +1630,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       setResultCount((count) => count + 1);
       setChart(result);
       setOnMeanTime(resolved.localMeanTime !== undefined);
+      setEngine2Notices(nextEngine2Notices);
       if (portable) {
         const captured: ChartReceiptExport = {
           ...owner, envelopeJson: portable.envelopeJson,
@@ -1723,13 +1833,36 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       return;
     }
     if (!city) return;
-    const start = (entry: { date: string; oldStyle?: string }) => {
+    const start = (entry: { date: string; oldStyle?: string; writtenJulianDate?: string }) => {
       invalidateProfileHandoff();
       setFromLink(false);
       if (subjectMode === 'self') setLinkName(null);
+      const samePlaceForSavedCal = Boolean(
+        savedCalendarContext
+        && city.tz.toLowerCase() === savedCalendarContext.tz.toLowerCase(),
+      );
+      const keepSavedCalendar = Boolean(
+        savedCalendarContext
+        && calendar === savedCalendarContext.calendar
+        && entry.date === savedCalendarContext.date
+        && (savedCalendarContext.fromSavedChart || samePlaceForSavedCal),
+      );
+      if (!keepSavedCalendar && savedCalendarContext) setSavedCalendarContext(null);
       runChart({
         date: entry.date,
         oldStyle: entry.oldStyle,
+        writtenJulianDate: entry.writtenJulianDate,
+        ...(keepSavedCalendar
+          ? {
+              ...(savedCalendarContext!.fromSavedChart ? { fromSavedChart: true } : {}),
+              savedCalendarUnknown: samePlaceForSavedCal
+                ? savedCalendarContext!.savedCalendarUnknown
+                : undefined,
+              ...(samePlaceForSavedCal && savedCalendarContext!.calendarUnverified
+                ? { calendarUnverified: true }
+                : {}),
+            }
+          : {}),
         time,
         timeKnown,
         city,
@@ -2057,6 +2190,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           bodies: chart.bodies.map((b) => ({ body: b.body, lon: b.lon, retrograde: b.retrograde })),
           angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
           flags: chart.flags,
+          ...(!computedInput.fromSavedChart || (computedInput.savedCalendarUnknown !== undefined && !computedInput.calendarUnverified)
+            ? { calendarChecked: true as const }
+            : {}),
         },
       }, explicitName ? { explicitName } : undefined);
       // The requested write may already have completed. Only its UI belongs
@@ -2252,12 +2388,14 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               city={city}
               onDateChange={(value) => {
                 invalidateProfileHandoff();
+                setSavedCalendarContext(null);
                 setDate(value);
                 setFieldErrors((current) => current.date || current.calendar ? { ...current, date: undefined, calendar: undefined } : current);
               }}
               calendar={calendar}
               onCalendarChange={(value) => {
                 invalidateProfileHandoff();
+                setSavedCalendarContext(null);
                 setCalendar(value);
                 setFieldErrors((current) => current.calendar ? { ...current, calendar: undefined } : current);
               }}
@@ -2396,6 +2534,18 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {chart.flags.includes('polar-fallback') && (
             <p class="notice" role="status">{t(locale, 'polarNotice')}</p>
           )}
+          {engine2Notices.map((notice) => (
+            <p
+              key={notice.key}
+              class="notice"
+              role="status"
+              data-polar-angles-notice={notice.key === 'polar-angles' ? '' : undefined}
+              data-calendar-unknown-notice={notice.key.startsWith('calendar-unknown') ? '' : undefined}
+              data-host-zone-differs-notice={notice.key.startsWith('host-zone-data-differs') ? '' : undefined}
+            >
+              {notice.text}
+            </p>
+          ))}
           {chart.flags.includes('no-time') && (
             <p class="notice" role="status">
               {t(locale, 'noTimeNotice')} {t(locale, 'unknownTimeSunReference')}
@@ -2935,7 +3085,17 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   class="btn btn--ghost"
                   href={localizePath(locale, '/birth-chart/')}
                   onClick={shareInput ? (event) => followWithHandoff(event, () => {
-                    const fragment = stashChartHandoff(shareInput, { subjectMode });
+                    const fragment = stashChartHandoff(shareInput, {
+                      subjectMode,
+                      ...(computedInput?.writtenJulianDate ? { oldStyle: true } : {}),
+                      ...(computedInput?.fromSavedChart
+                        ? {
+                            fromSavedChart: true,
+                            savedCalendarUnknown: computedInput.savedCalendarUnknown,
+                            ...(computedInput.calendarUnverified ? { calendarUnverified: true } : {}),
+                          }
+                        : {}),
+                    });
                     return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
                   }) : undefined}
                   data-birth-chart-handoff

@@ -112,8 +112,23 @@ export function saveChart(
   if (existing >= 0) {
     const saved = profile.charts[existing];
     const relationship = options.relationship ?? chart.relationship ?? saved.relationship;
+    const sameCalendarContext = saved.birth.date === chart.birth.date
+      && saved.birth.place?.tz.toLowerCase() === chart.birth.place?.tz.toLowerCase();
+    const keepCheckedCalendar = !chart.summary.calendarChecked
+      && saved.summary.calendarChecked === true
+      && sameCalendarContext;
+    const mergedSummary: SavedChart['summary'] = keepCheckedCalendar
+      ? {
+          ...chart.summary,
+          flags: saved.summary.flags.includes('calendar-unknown')
+            ? [...chart.summary.flags.filter((flag) => flag !== 'calendar-unknown'), 'calendar-unknown' as const]
+            : chart.summary.flags.filter((flag) => flag !== 'calendar-unknown'),
+          calendarChecked: true as const,
+        }
+      : chart.summary;
     const updated = {
       ...chart,
+      summary: mergedSummary,
       id: saved.id,
       name: explicitName ?? saved.name,
       createdAt: saved.createdAt,
@@ -153,6 +168,8 @@ export interface ChartSummaryUpdate {
   id: string;
   /** The stored instant the recomputed summary replaces. */
   utcISO: string;
+  /** Optional snapshot of the stored summary that was refreshed. */
+  previousSummary?: SavedChart['summary'];
   summary: SavedChart['summary'];
 }
 
@@ -169,7 +186,11 @@ export function updateChartSummaries(updates: readonly ChartSummaryUpdate[]): st
   const replaced: string[] = [];
   profile.charts = profile.charts.map((chart) => {
     const update = updates.find((candidate) => candidate.id === chart.id);
-    if (!update || chart.summary.utcISO !== update.utcISO) return chart;
+    if (
+      !update
+      || chart.summary.utcISO !== update.utcISO
+      || (update.previousSummary && JSON.stringify(chart.summary) !== JSON.stringify(update.previousSummary))
+    ) return chart;
     replaced.push(chart.id);
     return { ...chart, summary: update.summary };
   });

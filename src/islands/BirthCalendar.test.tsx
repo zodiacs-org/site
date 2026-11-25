@@ -34,7 +34,7 @@ describe('the calendar choice in the birth forms', () => {
 
   it('reads an Old Style date as the Gregorian date the chart uses, with one line for the result', async () => {
     const entry = await birthDateForChart('en', '1917-10-25', 'julian');
-    expect(entry).toEqual({ date: '1917-11-07', oldStyle: expect.any(String) });
+    expect(entry).toEqual({ date: '1917-11-07', oldStyle: expect.any(String), writtenJulianDate: '1917-10-25' });
     expect(plain((entry as { oldStyle: string }).oldStyle)).toBe('October 25, 1917 (Old Style), November 7, 1917 (New Style)');
     await expect(birthDateForChart('en', '1917-10-25', 'gregorian')).resolves.toEqual({ date: '1917-10-25' });
   });

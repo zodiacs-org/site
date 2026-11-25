@@ -11,6 +11,9 @@ export interface CalculatorWallTime {
   offsetMinutes: number;
   /** The calculator explicitly selects local noon only for unknown time. */
   reference: Extract<NatalReference, 'supplied-instant' | 'local-noon'>;
+  /** Present when the entered date was Old Style (Julian) and converted to `date`. */
+  calendar?: 'gregorian' | 'julian';
+  writtenDate?: string;
 }
 
 /** Capture the actual resolved wall-time assertions without consulting Intl again. */
@@ -44,6 +47,8 @@ export function computeCalculatorReceipt(input: BirthInput, local: CalculatorWal
         offsetMinutes: local.offsetMinutes,
         gapShiftMinutes,
         policy: { fold: 'earlier', gap: 'shift-forward' },
+        ...(local.calendar ? { calendar: local.calendar } : {}),
+        ...(local.writtenDate ? { writtenDate: local.writtenDate } : {}),
       },
     });
     // Strings remain immutable even while the presentation chart is augmented.

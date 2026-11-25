@@ -12,12 +12,13 @@ import { matchTwins, twinSigns, type TwinMatch } from '../../sharing/twins';
 import { signBySlug } from '../../signs';
 import { TRANSIT_ORB } from '../../transits';
 import { resolveLocalToUtc } from '../../time/localToUtc';
+import { hasConfirmedBirthTime } from '../../time/saved-calendar';
 import { personNatal } from './chart';
 import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
 import type { Birth } from './input';
 import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import {
-  chartTwinsResult, compatibilityResult, DuplicatePersonError, groupChartResult, TRANSIT_BODIES, transitsResult,
+  buildTransitsResult, chartTwinsResult, compatibilityResult, DuplicatePersonError, groupChartResult, TRANSIT_BODIES, transitsResult,
 } from './people';
 
 // The refused untimed date is a chart-page rule; these pages read local noon without that check.
@@ -79,7 +80,7 @@ describe('TransitTracker (/transits/)', () => {
   it.each(PEOPLE)('finds the contacts the page draws: %s', async (_label, birth) => {
     const natal = natalFromForm({
       resolveLocalToUtc,
-      wheelFromChart: (...args: unknown[]) => wheelFromChart({}, ...args),
+      wheelFromChart: (...args: unknown[]) => wheelFromChart({ hasConfirmedBirthTime }, ...args),
     }, slot(birth), engine) as { minimal: Array<{ body: string; lon: number }> };
     const computeSky = (when: Date) => engine.computeBodies(when)
       .filter((body) => TRANSIT_BODIES.has(body.body))
@@ -96,6 +97,60 @@ describe('TransitTracker (/transits/)', () => {
     expect(result.contacts.map((contact) => contact.orb)).toEqual(hits.map((hit) => Number(hit.orb.toFixed(4))));
     expect(result.contacts.every((contact) => contact.orb <= TRANSIT_ORB && contact.transiting !== 'Moon')).toBe(true);
     if (birth.time === null) expect(result.contacts.some((contact) => contact.natal === 'Moon')).toBe(false);
+  });
+
+  it('matches TransitTracker Moon filtering on Tehran 1979-05-26 when host tzdata differs', async () => {
+    const tehran: Birth = {
+      date: '1979-05-26',
+      time: '12:00',
+      place: { latitude: 35.6944, longitude: 51.4215, timeZone: 'Asia/Tehran' },
+    };
+    const result = await transitsResult(tehran, at);
+    const natal = natalFromForm({
+      resolveLocalToUtc,
+      wheelFromChart: (...args: unknown[]) => wheelFromChart({ hasConfirmedBirthTime }, ...args),
+    }, slot(tehran), engine) as { minimal: Array<{ body: string; lon: number }> };
+    const computeSky = (when: Date) => engine.computeBodies(when)
+      .filter((body) => TRANSIT_BODIES.has(body.body))
+      .map(({ body, lon, retrograde }) => ({ body, lon, retrograde }));
+    const { hits } = overlay({
+      computeSky, when: at, natal, findInterAspects, TRANSIT_ORB, c: { skyRingLabel: '' },
+      buildTransitOverlay: (_label: string, bodies: unknown, contacts: unknown) => ({ sky: bodies, hits: contacts }),
+    }) as { hits: Array<{ a: string; b: string; type: string; orb: number }> };
+    expect(result.contacts.map(({ transiting, natal: point, type }) => [transiting, point, type]))
+      .toEqual(hits.map((hit) => [hit.a, hit.b, hit.type]));
+    if (result.natal.flags.includes('host-zone-data-differs')) {
+      expect(result.natal.timeKnown).toBe(true);
+      expect(result.natal.rising).toBeNull();
+      expect(result.contacts.some((contact) => contact.natal === 'Moon')).toBe(false);
+    }
+  });
+
+  it('deterministically suppresses natal Moon contacts and rising sign when host-zone-data-differs is flagged', () => {
+    const baseChart = engine.computeChart({
+      utc: new Date('1979-05-26T08:30:00.000Z'),
+      latitude: 35.6944,
+      longitude: 51.4215,
+      houseSystem: 'whole',
+      timeKnown: true,
+      flags: [],
+    });
+    const flaggedChart = engine.computeChart({
+      utc: new Date('1979-05-26T08:30:00.000Z'),
+      latitude: 35.6944,
+      longitude: 51.4215,
+      houseSystem: 'whole',
+      timeKnown: true,
+      flags: ['host-zone-data-differs'],
+    });
+    const unflagged = buildTransitsResult({ chart: baseChart, localMeanTime: false }, at);
+    expect(unflagged.natal.rising).not.toBeNull();
+    expect(unflagged.contacts.some((contact) => contact.natal === 'Moon')).toBe(true);
+
+    const flagged = buildTransitsResult({ chart: flaggedChart, localMeanTime: false }, at);
+    expect(flagged.natal.timeKnown).toBe(true);
+    expect(flagged.natal.rising).toBeNull();
+    expect(flagged.contacts.some((contact) => contact.natal === 'Moon')).toBe(false);
   });
 });
 
