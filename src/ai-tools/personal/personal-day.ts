@@ -124,7 +124,7 @@ export async function personalDay(given: BirthArgs & { currentZone?: string | un
   if (date < args.birthDate) throw new RangeError('date is before the birth date; give a day on or after it.');
 
   const day = await readPersonalDay(
-    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail, clockLimit: onClock.limit },
+    { bodies: natal.chart.bodies, angles: natal.angles, latitude: natal.latitude, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail, clockLimit: onClock.limit },
     // The under-18 rule reads the UTC-12 date from now (readPersonalDay); `zone` and `today` are the reading's clock only.
     { birthDate: args.birthDate, date, zone, today, now: context.now, note },
     context.localTime,

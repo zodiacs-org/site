@@ -110,7 +110,8 @@ describe('locale expansion hreflang blocks', async () => {
 
   it('lists the English paths of each family', () => {
     expect(expansionFamilyPaths('horoscope-daily')).toHaveLength(13);
-    expect(expansionFamilyPaths('horoscope-2027')).toContain('/horoscopes/leo/2027/');
+    expect(expansionFamilyPaths('horoscope-2026')).toEqual([]);
+    expect(expansionFamilyPaths('horoscope-2027')).toEqual(SIGN_SLUGS.map((sign) => `/horoscopes/${sign}/2027/`));
     expect(expansionFamilyPaths('zodiac-dates')).toEqual(['/learn/zodiac-dates/']);
     expect(expansionFamilyPaths('full-moon').every((path: string) => /^\/full-moon\/\d{4}-\d{2}-\d{2}\/$/.test(path))).toBe(true);
   });

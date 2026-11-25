@@ -11,6 +11,12 @@
  * birthplace entered for an earlier date. The refusal sentence is shown at
  * the date field. Pages still check the converted date again on submit.
  *
+ * No request depends on what is entered: the calendar module loads with the
+ * fields, whatever date is typed (so no request tells a date before 1924 from
+ * a later one), and the birthplace search loads the whole city index
+ * (PlaceSearch wholeIndex), so not even a place's first letter shows in a
+ * request address.
+ *
  * Shared, byte for byte, by the personal pages that read a birth chart
  * (retrogrades for you, your day, Vedic signs), so their branches merge in
  * any order. Pure UI: nothing is stored, logged or sent.
@@ -20,7 +26,7 @@ import { useEffect, useState } from 'preact/hooks';
 import type { City } from '../lib/geo/search';
 import type { CatalogLocale as Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
-import { BirthDateField, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { BirthDateField, birthDateForChart, calendarInPlay, loadBirthCalendar, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
 
 /** The converted Gregorian birth date, the sentence for the date field, or null while there is no date to check. */
@@ -113,6 +119,9 @@ export function GatedBirthFields({
   const refusal = check !== null && 'error' in check ? check.error : undefined;
   // A refused date clears a time and birthplace entered for an earlier date, so the form never holds them for it.
   const stale = staleBirthDetails(check, time, city);
+  // The calendar control and its conversion load with the fields, whatever date is entered, so no request tells a
+  // date before 1924 from a later one. BirthDateField and birthDateForChart then reuse the module already loaded.
+  useEffect(() => { loadBirthCalendar().catch(() => {}); }, []);
   useEffect(() => {
     if (stale.time) onTimeChange('');
     if (stale.city) onCityChange(null);
@@ -151,7 +160,7 @@ export function GatedBirthFields({
     <div class="field">
       <label class="field__label" for={placeId}>{t(locale, 'birthplace')}</label>
       {open
-        ? <PlaceSearch id={placeId} selected={city} onSelect={onCityChange} locale={locale} selectionHint={t(locale, 'placePickHint')} required />
+        ? <PlaceSearch id={placeId} selected={city} onSelect={onCityChange} locale={locale} selectionHint={t(locale, 'placePickHint')} required wholeIndex />
         : <input id={placeId} class="field__input" type="text" disabled placeholder={t(locale, 'placePlaceholder')} aria-describedby={`${placeId}-help`} />}
       {shownPlaceHelp !== undefined && <p id={`${placeId}-help`} class="field__help">{shownPlaceHelp}</p>}
     </div>,

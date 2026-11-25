@@ -97,9 +97,11 @@ describe('the Your day form', () => {
 });
 
 describe('the personal pages drive on this branch', () => {
-  const drive = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
+  const runner = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
+  const drive = readFileSync(new URL('../../tests/your-day-drive.mjs', import.meta.url), 'utf8');
   const workflow = readFileSync(new URL('../../.github/workflows/site-check.yml', import.meta.url), 'utf8');
   it('drives Your day, its age gate and share link, and runs in the flag-on job', () => {
+    expect(runner).toContain("'./your-day-drive.mjs'");
     expect(drive).toContain("path: '/your-day/'");
     expect(drive).toContain("check('an under-13 date locks the birth time'");
     expect(drive).toContain("return '[data-your-day-share]'");

@@ -50,6 +50,8 @@ export interface LocalTimeResolution {
    * either side of it.
    */
   jumpMinutes?: number;
+  /** With dst-gap or dst-fold: the instant the clock changed, which need not fall on a whole minute. */
+  transitionAt?: Date;
   /**
    * Present when the birthplace's own mean time read the wall time (also in
    * the gap at the end of its era): the longitude used, and the offset the
@@ -308,7 +310,10 @@ export function resolveLocalToUtc(
     utc: resolved.utc,
     offsetMinutes: resolved.offsetMinutes,
     flags: [...resolved.flags],
-    ...(resolved.jump && resolved.transition ? { jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes) } : {}),
+    ...(resolved.jump && resolved.transition ? {
+      jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes),
+      transitionAt: new Date(resolved.transition.at),
+    } : {}),
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
     ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };

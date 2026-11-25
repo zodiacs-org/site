@@ -34,6 +34,7 @@ import { transitLine } from '../transits';
 import { localDaySpan, readsOnDate, type WallResolution } from '../time/local-day';
 import { MINOR_NOTE, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { earliestToday } from '../birth-date-policy';
+import { isGeographicPole, roundCoordinate } from '../geo/coordinates';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { clockTime, dateOn, dayLabel, nextDate } from './clock';
 import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock } from '../vedic-signs/clock';
@@ -41,7 +42,6 @@ import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointNam
 
 const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
-const SECOND = 1_000;
 const MINUTE = 60_000;
 /** The widest civil offset any clock has kept since 1800, rounded out to whole hours (src/ai-tools/personal/shared.ts). */
 const WIDEST_OFFSET_HOURS = 16;
@@ -57,6 +57,7 @@ export interface DayClock {
 
 /** The birth chart as the day reads it: the natal bodies, the angles with a time and place, and how specific it is. */
 export interface DayNatal {
+  latitude?: number | undefined;
   bodies: readonly { body: string; lon: number }[];
   angles: { asc: number; mc: number } | null;
   timeKnown: boolean;
@@ -127,9 +128,8 @@ const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.n
  * read at its first pass, and clockLimit says so.
  */
 export function castDayNatal(input: { birthDate: string; time?: string | undefined; zone: string; latitude?: number | undefined; longitude?: number | undefined }, clock: DayClock): DayNatal {
-  const round = (value: number) => Math.round(value * 100) / 100;
-  const latitude = input.latitude === undefined ? undefined : round(input.latitude);
-  const longitude = input.longitude === undefined ? undefined : round(input.longitude);
+  const latitude = input.latitude === undefined ? undefined : roundCoordinate(input.latitude);
+  const longitude = input.longitude === undefined ? undefined : roundCoordinate(input.longitude);
   const timeKnown = input.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
   const wall = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(input.birthDate, time, input.zone, { longitude }) : clock.resolveLocalToUtc(input.birthDate, time, input.zone));
@@ -140,7 +140,7 @@ export function castDayNatal(input: { birthDate: string; time?: string | undefin
   const utc = birth.utc;
   const chart = computeChart({ utc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { bodies: chart.bodies, angles, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), clockLimit: onClock.limit };
+  return { bodies: chart.bodies, angles, latitude, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), clockLimit: onClock.limit };
 }
 
 /**
@@ -166,8 +166,8 @@ export async function localDayBounds(date: string, zone: string, clock: DayClock
   await clock.prepareLocalTime(date, zone);
   await clock.prepareLocalTime(nextDate(date), zone);
   const span = localDaySpan(date, (day, time, fold) => clock.resolveLocalToUtc(day, time, zone, { fold }));
-  // The span's end is inclusive to the second; the day ends where the next one starts.
-  return span ? [span[0], new Date(span[1].getTime() + SECOND)] : null;
+  // localDaySpan includes the last millisecond. The exclusive end starts the next day.
+  return span ? [span[0], new Date(span[1].getTime() + 1)] : null;
 }
 
 /**
@@ -178,6 +178,8 @@ export async function localDayBounds(date: string, zone: string, clock: DayClock
  */
 export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; now: Date; today?: string | undefined; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
   const { date, zone } = input;
+  const atPole = natal.timeKnown && natal.placed && natal.latitude !== undefined && isGeographicPole(natal.latitude);
+  const angles = atPole ? null : natal.angles;
   // The local day as the clock showed it, and the moment halfway through it.
   const bounds = await localDayBounds(date, zone, clock);
   // A day the clock skipped has no length.
@@ -189,10 +191,10 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   const justBefore = new Date(midday.getTime() - MINUTE);
   const justAfter = new Date(midday.getTime() + MINUTE);
 
-  const points: NatalPoint[] = [...TRANSIT_BODY_ORDER.filter((body) => natal.timeKnown || body !== 'Moon'), ...(natal.angles ? ['ASC', 'MC'] as const : [])];
+  const points: NatalPoint[] = [...TRANSIT_BODY_ORDER.filter((body) => natal.timeKnown || body !== 'Moon'), ...(angles ? ['ASC', 'MC'] as const : [])];
   const natalBodies = natal.bodies.filter((row) => (TRANSIT_BODY_ORDER as readonly string[]).includes(row.body)).map(({ body, lon }) => ({ body: body as TransitBody, lon }));
   const natalLon = new Map<NatalPoint, number>(natalBodies.map((row) => [row.body, row.lon]));
-  if (natal.angles) { natalLon.set('ASC', natal.angles.asc); natalLon.set('MC', natal.angles.mc); }
+  if (angles) { natalLon.set('ASC', angles.asc); natalLon.set('MC', angles.mc); }
   const sky = new Map(computeBodies(midday).map((row) => [row.body, row.lon]));
 
   // Exact moments inside the local day, from the transit scanner: only with a birth time, which fixes the natal points to the minute.
@@ -202,7 +204,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // resolver reads the engine's zone history, and the span alone decides.
   const onDate = (at: Date) => Number(date.slice(0, 4)) <= 1970 || dateOn(at, zone) === date;
   const exact = new Map<string, Date>();
-  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
     if (!onDate(at)) continue;
@@ -273,7 +275,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
     const crossing = findLongitudeCrossings('Moon', endIndex * 30, dayStart, dayEnd, 0.25)[0];
     if (crossing) entersSign = { sign: SIGNS[endIndex].slug, atUtc: crossing.at.toISOString(), atLocal: clockTime(crossing.at, zone) };
   }
-  const risingSign = natal.angles ? SIGNS[signIndexForLongitude(natal.angles.asc)].slug : null;
+  const risingSign = angles ? SIGNS[signIndexForLongitude(angles.asc)].slug : null;
   const houseNumber = risingSign ? wholeSignHouseFromAsc(moonSign, risingSign) : null;
   const house = houseNumber && !(under18 && MINOR_LEFT_OUT_HOUSES.includes(houseNumber)) ? { number: houseNumber, line: guard(`The Moon is passing through your ${ORDINAL[houseNumber]} house: ${NATAL_HOUSE_THEME[houseNumber]}.`) } : null;
   const moonLine = [
@@ -297,6 +299,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (under18) limits.push(MINOR_NOTE);
   if (!natal.timeKnown) limits.push(UNTIMED_LIMIT);
   else if (!natal.placed) limits.push('No birthplace coordinates were given, so the rising degree, the Midheaven and the Moon\'s house are left out.');
+  else if (atPole) limits.push('At a geographic pole the rising degree is undefined. This reading leaves out the rising degree, the Midheaven and the Moon’s house.');
   if (found.length > contacts.length) limits.push(`Of ${found.length} contacts, ${contacts.length} are listed by score, with up to ${BACKGROUND_LIMIT} in the background.`);
 
   return { date, dayLabel: label, zone, middayUtc: midday.toISOString(), points, theme, moon: { sign: moonSign, entersSign, house, line: moonLine }, contacts, found: found.length, under18, limits };
@@ -332,9 +335,9 @@ export async function settledSunSign(
     [start, end] = span;
   } else {
     // Every clock's version of the date since 1800: tzdb's history runs from UTC-15:56 (Asia/Manila before 1845)
-    // to UTC+15:13 (America/Metlakatla before 1867), so 00:00 at UTC+16 to 23:59:59 at UTC-16.
+    // to UTC+15:13 (America/Metlakatla before 1867), so 00:00 at UTC+16 to the last millisecond at UTC-16.
     start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR);
-    end = new Date(Date.parse(`${birth.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:59.999Z`) + WIDEST_OFFSET_HOURS * HOUR);
   }
   const startIndex = signIndexForLongitude(bodyLongitude('Sun', start));
   const endIndex = signIndexForLongitude(bodyLongitude('Sun', end));

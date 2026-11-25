@@ -21,6 +21,24 @@ import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_SHARE_KEYS }
 const NOW = new Date('2026-11-09T09:00:00Z');
 const SECOND_MS = 1_000;
 const HOUR_MS = 3_600_000;
+
+describe('the personal day near geographic poles', () => {
+  it.each([90, -90, 89.999, -89.999, 89.99, -89.99])('keeps only defined angles and Moon houses at latitude %s', async (latitude) => {
+    const birth = { birthDate: '1990-01-01', time: '12:11', latitude, longitude: 45 };
+    const date = '2026-11-09';
+    const page = await computeYourDay({ ...birth, birthZone: 'UTC', zone: 'UTC', now: NOW, today: date, date });
+    const { data: tool } = await personalDay({ ...birth, zone: 'UTC', currentZone: 'UTC', date }, context);
+    const atPole = Math.abs(latitude) > 89.99;
+    for (const reading of [page, tool]) {
+      expect(reading.points.includes('ASC')).toBe(!atPole);
+      expect(reading.points.includes('MC')).toBe(!atPole);
+      expect(reading.moon.house !== null).toBe(!atPole);
+      expect(reading.limits.some((line) => line.includes('geographic pole'))).toBe(atPole);
+      if (atPole) expect(reading.contacts.some(({ point }) => point === 'ASC' || point === 'MC')).toBe(false);
+    }
+  });
+});
+
 /** The ticket's appetite check, with the longing, heat and pleasure a review found too. */
 const MINOR_CHECK = /loving|appetite|longing|heat|pleasure|romant|attract/iu;
 const context: PersonalToolContext = { now: NOW, localTime: createLocalTimeModule(), resolveZone: async (name) => name, origin: 'https://zodiacs.org', pageOn: true };
@@ -121,7 +139,7 @@ describe('a birth date the clock repeated or skipped, on the /your-day/ page and
     expect(page.sunSign).toBe('taurus');
     expect(tool.shareUrl).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus');
     const ends = await birthDayEnds({ birthDate: '1920-05-02', zone: 'America/St_Johns' }, context.localTime);
-    expect(ends.map((end) => end.toISOString())).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    expect(ends.map((end) => end.toISOString())).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.999Z']);
     // The same jump with the Sun entering Capricorn (2026-12-21T20:50:14Z) in the hour after it: 23:00 on the 21st
     // became 00:00 on the 22nd at 20:30 UTC, so the whole date is Sagittarius. Read to its skipped 23:59, it was not.
     const natal = { bodies: [{ body: 'Sun', lon: 269 }], timeKnown: false };
@@ -142,8 +160,8 @@ describe('a birth date the clock repeated or skipped, on the /your-day/ page and
     // Accra left local mean time at 00:00:52 UTC on 2 November 1915: at 0.25 degrees west the birthplace clock went
     // from 23:59:52 on 1 November to 00:00:52 on 2 November, so the 2nd starts and the 1st ends there, not at 00:01.
     const accra = async (birthDate: string) => (await birthDayEnds({ birthDate, zone: 'Africa/Accra', latitude: 5.55, longitude: -0.25 }, context.localTime)).map((end) => end.toISOString());
-    expect(await accra('1915-11-02')).toEqual(['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.000Z']);
-    expect(await accra('1915-11-01')).toEqual(['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.000Z']);
+    expect(await accra('1915-11-02')).toEqual(['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.999Z']);
+    expect(await accra('1915-11-01')).toEqual(['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.999Z']);
     // The same kind of change four seconds before the Sun entered Capricorn (20:50:14 UTC): at 20:50:10 UTC 23:59:50
     // on 21 December became 00:00:50 on the 22nd. The 21st is Sagittarius to its end and the 22nd begins in it; read
     // to whole minutes, both ends fall after the ingress.
@@ -152,9 +170,9 @@ describe('a birth date the clock repeated or skipped, on the /your-day/ page and
     expect(await settledSunSign({ bodies: [{ body: 'Sun', lon: 271 }], timeKnown: false }, { birthDate: '2026-12-22', zone: 'Etc/Jump' }, clock)).toBeNull();
   });
 
-  it('read a birth date given without a zone from 00:00 at UTC+16 to 23:59:59 at UTC-16', async () => {
+  it('read a birth date given without a zone from 00:00 at UTC+16 to the last millisecond at UTC-16', async () => {
     const ends = await birthDayEnds({ birthDate: '2026-11-09' }, context.localTime);
-    expect(ends.map((end) => end.toISOString())).toEqual(['2026-11-08T08:00:00.000Z', '2026-11-10T15:59:59.000Z']);
+    expect(ends.map((end) => end.toISOString())).toEqual(['2026-11-08T08:00:00.000Z', '2026-11-10T15:59:59.999Z']);
   });
 });
 

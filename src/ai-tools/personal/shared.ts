@@ -18,10 +18,12 @@ import type { LocalTimeFlag, LocalTimeModule } from '../../lib/compute-api/local
 import { computeChart } from '../../lib/engine/full.js';
 import type { Chart } from '../../lib/engine/types';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { birthDaySpan } from '../../lib/time/birth-day-span';
 import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import type { PlaceTable } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { readingDetail, type ReadingDetail } from '../reading-confidence';
+import { SkippedBirthDateError } from '../../lib/vedic-signs/clock';
 
 export const PERSONAL_MIN_YEAR = 1800;
 export const PERSONAL_MAX_YEAR = 2199;
@@ -118,33 +120,36 @@ export function dayLabel(at: Date | string, timeZone: string): string {
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
 
-export interface NatalCast {
+/** The birth instant and place, checked and resolved, before any chart is cast. */
+export interface BirthMoment {
   birthUtc: Date;
-  chart: Chart;
   timeKnown: boolean;
   placed: boolean;
   /** The birthplace rounded to two decimals, as every tool rounds a place it is given. */
   latitude: number | undefined;
   longitude: number | undefined;
-  /** The ascendant and Midheaven, only with a birth time and place. */
-  angles: { asc: number; mc: number } | null;
   detail: ReadingDetail;
   /**
-   * The resolver's flags for the birth's wall time: dst-fold when the clocks showed it twice (the earlier pass is
-   * used), dst-gap when they skipped it (it moved forward by the jump), lmt for local mean time. Empty without a zone.
+   * The resolver's flags for the birth's wall time: dst-gap when the clock skipped it (moved forward by the jump),
+   * dst-fold when it showed it twice (the earlier pass is used), lmt for local mean time. Empty without a zone.
    */
   flags: readonly LocalTimeFlag[];
-  /** With dst-gap or dst-fold: the size of the clock change, minutes, from the offsets on either side of it. */
+  /** Size of a repeated or skipped clock interval, in minutes. */
   jumpMinutes: number | null;
 }
 
+export interface NatalCast extends BirthMoment {
+  chart: Chart;
+  /** The ascendant and Midheaven, only with a birth time and place. */
+  angles: { asc: number; mc: number } | null;
+}
+
 /**
- * The birth chart, cast once: the engine's (src/lib/engine/full.ts), whole-sign
- * houses, from the local time resolved by @zodiacs/engine/geo. Without a time
- * it is cast for local noon (UTC noon without a zone) with no angles, as
- * get_natal_chart and get_personal_transits cast it.
+ * The birth instant from the local time resolved by @zodiacs/engine/geo:
+ * local noon (UTC noon without a zone) without a time. It casts no chart, for
+ * a tool such as get_vedic_signs that runs its own calculation at the instant.
  */
-export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<NatalCast> {
+export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<BirthMoment> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(BIRTH_DATE_REFUSAL);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -159,16 +164,14 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
     await clock.prepareLocalTime(args.birthDate, args.zone);
     const wall = onBirthClock(args, clock);
     // A date the zone's clock never showed (Apia went from 29 to 31 December
-    // 2011) is refused, not moved onto the next date.
-    if (!readsOnDate(args.birthDate, wall('00:00'))) throw new RangeError(BIRTH_DATE_REFUSAL);
+    // 2011) is refused with its own sentence, not moved onto the next date.
+    if (!readsOnDate(args.birthDate, wall('00:00'))) throw new SkippedBirthDateError();
     const resolved = wall(args.time ?? '12:00');
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
     if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
-  const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
+  return { birthUtc, timeKnown, placed, latitude, longitude, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
 
 /**
@@ -189,11 +192,33 @@ function onBirthClock(args: BirthArgs, clock: PersonalToolContext['localTime']) 
  */
 function wallOnBirthplaceClock(args: BirthArgs, clock: PersonalToolContext['localTime']) {
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
-  // The engine's whole resolution (castNatal reads its jump), which localDaySpan takes as a WallResolver.
   return (date: string, time: string, fold: 'earlier' | 'later') => clock.resolveLocalToUtc(date, time, args.zone!, {
     ...(longitude !== undefined ? { longitude } : {}),
     ...(fold === 'later' ? { fold } : {}),
   });
+}
+
+/**
+ * The birth chart, cast once: the engine's (src/lib/engine/full.ts), whole-sign
+ * houses, at the instant resolveBirth gives. Without a time it is cast for
+ * local noon (UTC noon without a zone) with no angles, as get_natal_chart and
+ * get_personal_transits cast it.
+ */
+export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime'], chartOf: (input: Parameters<typeof computeChart>[0]) => Chart = computeChart): Promise<NatalCast> {
+  const moment = await resolveBirth(args, clock);
+  const { birthUtc, timeKnown, placed, latitude, longitude } = moment;
+  const chart = chartOf({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
+  const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
+  return { ...moment, chart, angles };
+}
+
+/**
+ * The birth arguments with the zone checked and spelled as tzdb spells it,
+ * through the context's resolver, before any clock sees it. An unknown zone is
+ * refused with the field named and the value never repeated back.
+ */
+export async function withCheckedZone<A extends BirthArgs>(args: A, context: Pick<PersonalToolContext, 'resolveZone'>): Promise<A> {
+  return args.zone ? { ...args, zone: await context.resolveZone(args.zone, '/zone') } : args;
 }
 
 /**
@@ -211,24 +236,25 @@ export const WIDEST_OFFSET_HOURS = 16;
  * leaves the date (src/lib/time/local-day.ts), so a date the clock showed
  * twice (Apia, 4 July 1892) is covered whole and one it left early (St.
  * John's, 2 May 1920, when 23:00 became 00:00) ends there; else every clock's version of that date, from 00:00 at UTC+16 to
- * 23:59:59 at UTC−16. A placement holds for an untimed birth only when it is the
+ * its last millisecond at UTC−16. A placement holds for an untimed birth only when it is the
  * same at both ends. A date the zone's clock never showed is refused.
  */
 export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59.999Z`) + WIDEST_OFFSET_HOURS * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
   const span = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock));
-  if (!span) throw new RangeError(BIRTH_DATE_REFUSAL);
+  if (!span) throw new SkippedBirthDateError();
   return span;
 }
 
-/**
- * The birth arguments with the zone checked and spelled as tzdb spells it,
- * through the context's resolver, before any clock sees it. An unknown zone is
- * refused with the field named and the value never repeated back.
- */
-export async function withCheckedZone<A extends BirthArgs>(args: A, context: Pick<PersonalToolContext, 'resolveZone'>): Promise<A> {
-  return args.zone ? { ...args, zone: await context.resolveZone(args.zone, '/zone') } : args;
+/** Read the same birth-day span as the Retrogrades page, including a repeated last minute. */
+export async function retrogradeBirthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
+  // Before 1970 a birthplace clock could lie outside the modern civil offsets.
+  if (!args.zone && args.birthDate < '1970-01-01') return birthDayEnds(args, clock);
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59.999Z`) + 12 * HOUR)];
+  await clock.prepareLocalTime(args.birthDate, args.zone);
+  const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+  return birthDaySpan(args.birthDate, args.zone, longitude, (date, time, zone, options) => clock.resolveLocalToUtc(date, time, zone, options));
 }
 
 /**

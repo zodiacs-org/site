@@ -49,6 +49,29 @@ reads the same variable at run time: a tool whose definition names a
 while that flag is exactly `1`, and otherwise returns `null` for each and no
 page link, so the order cannot leave a link to a missing page.
 
+The Guide's line is the exception: the site assistant reads the committed
+`api/_assistant/context.ts`, which is generated with every switch unset, and
+the normal build does not regenerate it. Setting the flag on Vercel therefore
+does not add the page to the Guide, and
+`scripts/build-assistant-context.test.mjs` holds the committed module to the
+switches-unset output. To put a launched page in the Guide, a pull request
+removes its route from `LAUNCH_FLAGGED_ROUTES` in
+`scripts/build-assistant-context.mjs` (for example, `'/retrogrades/for-you/'`
+or `'/astrocartography/'`), runs `npm run data:assistant-context` with no
+switch set, and commits the regenerated `api/_assistant/context.ts`, which
+gains exactly that page's one line. Merge it only after the flag is on in
+production, so the Guide never names a page that is not live. Until then the
+Guide does not mention the page.
+
+`public/llms-full.txt` is a static file and cannot follow a flag, so it keeps
+saying the site uses neither `@zodiacs/engine/timing` nor
+`@zodiacs/engine/vedic` while `PUBLIC_VEDIC_SIGNS_ENABLED` is off. In the
+change that switches Vedic signs on, replace that clause with "the root imports
+neither; this site uses the sidereal one only, for the ayanamsa, sidereal
+longitudes and nakshatras of its Vedic signs page and get_vedic_signs tool, and
+Hellenistic timing not at all." and update its record in
+`docs/claims/ledger.json` to match.
+
 ## How a tool is added
 
 Each tool is one module in `src/ai-tools/personal/` that exports a definition

@@ -5227,6 +5227,13 @@ async function resolveLocal(module, input, longitude2) {
     intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null
   };
 }
+async function clockWentBackAcrossMidnight(module, date3, zone9) {
+  await module.prepareLocalTime(date3, zone9);
+  const first2 = module.resolveLocalToUtc(date3, "00:00", zone9);
+  if (first2.jump?.kind !== "fold" || first2.transition === null) return false;
+  const wallMs = wallMilliseconds({ date: date3, time: "00:00" });
+  return Date.parse(first2.transition.at) + Math.round(first2.transition.offsetAfterMinutes * 6e4) < wallMs;
+}
 function runtimeTzdbVersion() {
   const version2 = typeof process === "object" ? process.versions?.tz : void 0;
   return typeof version2 === "string" && version2 ? version2 : null;
@@ -5719,6 +5726,9 @@ var CONDITION_FIELDS = Object.freeze({
   angular: ["kind", "body", "not"]
 });
 var VALIDATION_MESSAGES = TEXT;
+var LOCAL_DAY_MESSAGES = /* @__PURE__ */ Object.freeze({
+  splitDay: "This date happened in two parts in this zone: its clocks went back across midnight, so no single window holds the whole day."
+});
 
 // src/lib/compute-api/endpoints.ts
 var HOUR_MS = 36e5;
@@ -5910,6 +5920,15 @@ async function dayWindow(day2, dependencies) {
       end: { utc: iso(end.utc), ...localSummary(end) }
     }
   };
+}
+async function refuseSplitDay(request2, dependencies) {
+  const day2 = "day" in request2 ? request2.day : "instant" in request2.when ? null : request2.when;
+  if (day2 === null || day2.zone === null) return;
+  for (const date3 of [day2.date, nextDate(day2.date)]) {
+    if (await clockWentBackAcrossMidnight(dependencies.localTime, date3, day2.zone)) {
+      throw invalidRequest("/date", LOCAL_DAY_MESSAGES.splitDay);
+    }
+  }
 }
 function searchSpan(window) {
   return { from: new Date(window.from.getTime() - 1), to: new Date(window.to.getTime() - 1) };
@@ -43589,6 +43608,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           const verdict = await dependencies.allowEvents();
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
+        await refuseSplitDay(request2, { localTime: localTime2() });
         const calculation = await computeSkyFact(request2, { localTime: localTime2() });
         data = { answer: calculation.result.answer, calculation, interpretation: "The verdict checks an astronomical proposition, not an astrological prediction." };
         links = [methodLink, calendarLink];
