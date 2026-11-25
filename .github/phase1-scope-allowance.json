@@ -1,8 +1,19 @@
 {
   "version": 1,
-  "id": "locale-expansion-hook-2026-11-09",
-  "baseCommit": "a87814ba29d3e22edfd434e1c17971d4413f7197",
+  "id": "generated-sign-pages-f46393af3ff5",
+  "baseCommit": "f46393af3ff519047f3ddd52fbca2de98925aaf9",
   "protectedPaths": [
-    "src/lib/i18n/index.ts"
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/virgo/index.html"
   ]
 }
