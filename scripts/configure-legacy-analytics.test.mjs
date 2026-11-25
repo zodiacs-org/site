@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 import {
   TERMINAL_ANALYTICS_PATHS,
@@ -104,6 +105,16 @@ describe('legacy analytics build injection', () => {
       scriptUrl: 'https://analytics.example/script.js',
       bridgeExistingProvider: true,
     })).toBe(result);
+  });
+
+  it.each(['astrofolio', 'thesis'])('keeps /%s/ private when analytics is configured', async (page) => {
+    const html = await readFile(new URL(`../public/${page}/index.html`, import.meta.url), 'utf8');
+    const result = injectLegacyAnalytics(html, {
+      scriptUrl: 'https://analytics.example/script.js',
+      bridgeExistingProvider: true,
+    });
+    expect(result).toContain('/assets/assistant-ui.js');
+    expect(result).not.toMatch(/analytics\.example|window\.plausible|\/_vercel\/insights|thesis_click/u);
   });
 
   it('upgrades the reviewed click-only Guide hook to the default-visible bootstrap', () => {

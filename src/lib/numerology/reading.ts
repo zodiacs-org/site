@@ -17,7 +17,7 @@ import { dateNumbers, nameNumbers, reduceFully, type Reduction } from './index';
 import { KARMIC_DEBT_MEANINGS, NUMBER_MEANINGS, PERSONAL_YEAR_MEANINGS, type CoreNumber, type KarmicDebt, type SingleDigit } from '../../data/numerology-meanings';
 import { POSITION_READINGS, type ReadingPosition } from '../../data/numerology-readings';
 
-export const NUMEROLOGY_SEPARATE = 'Numerology is a separate tradition from astrology. It works from the letters of a name and the digits of a date, with no planets, signs or sky in it.';
+export const NUMEROLOGY_SEPARATE = 'Numerology is not astrology. It works from the letters of a name and the digits of a date, with no planets, signs or sky in it.';
 
 export interface NumberReading {
   /** 1 to 9, or a master number 11, 22 or 33 kept unreduced. 0 only for a name with no letters of that kind. */

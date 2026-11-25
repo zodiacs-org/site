@@ -90,14 +90,14 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
 
   it('keeps a birth date out of every link: a birthday has no card or share link, and the answer links the page', async () => {
     for (const occasion of ['birthday']) {
-      const result = await executeAiTool('get_occasion_sky', { occasion, date: '2026-05-03', time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London' }, on);
+      const result = await executeAiTool('get_occasion_sky', { occasion, date: '1996-05-03', time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London' }, on);
       if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
       // The published description says to use a returned page link when cardUrl is null.
       expect(result.data.cardUrl).toBeNull();
       expect(result.data.shareUrl).toBeNull();
       expect(result.links.map((link) => link.url)).toContain('https://zodiacs.org/occasions/');
       const links = JSON.stringify(result.links);
-      for (const detail of ['2026-05-03', '05-03', '08:15', '08%3A15', '51.5', '-0.1', 'London']) expect(links).not.toContain(detail);
+      for (const detail of ['1996-05-03', '05-03', '08:15', '08%3A15', '51.5', '-0.1', 'London']) expect(links).not.toContain(detail);
       expect(result.links.map((link) => link.title)).not.toContain('Open the printable card');
       expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);
     }

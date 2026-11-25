@@ -1,64 +1,64 @@
 locale,kp_language,kp_locations,family,subfamily,query,target_url,coverage,monthly_volume,volume_source,competition,notes
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope bélier aujourd'hui,/horoscopes/aries/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope bélier demain,/horoscopes/aries/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope bélier semaine,/horoscopes/aries/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope bélier mois,/horoscopes/aries/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope bélier 2027,/horoscopes/aries/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope taureau aujourd'hui,/horoscopes/taurus/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope taureau demain,/horoscopes/taurus/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope taureau semaine,/horoscopes/taurus/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope taureau mois,/horoscopes/taurus/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope taureau 2027,/horoscopes/taurus/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope gémeaux aujourd'hui,/horoscopes/gemini/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope gémeaux demain,/horoscopes/gemini/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope gémeaux semaine,/horoscopes/gemini/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope gémeaux mois,/horoscopes/gemini/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope gémeaux 2027,/horoscopes/gemini/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope cancer aujourd'hui,/horoscopes/cancer/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope cancer demain,/horoscopes/cancer/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope cancer semaine,/horoscopes/cancer/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope cancer mois,/horoscopes/cancer/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope cancer 2027,/horoscopes/cancer/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope lion aujourd'hui,/horoscopes/leo/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope lion demain,/horoscopes/leo/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope lion semaine,/horoscopes/leo/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope lion mois,/horoscopes/leo/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope lion 2027,/horoscopes/leo/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope vierge aujourd'hui,/horoscopes/virgo/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope vierge demain,/horoscopes/virgo/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope vierge semaine,/horoscopes/virgo/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope vierge mois,/horoscopes/virgo/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope vierge 2027,/horoscopes/virgo/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope balance aujourd'hui,/horoscopes/libra/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope balance demain,/horoscopes/libra/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope balance semaine,/horoscopes/libra/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope balance mois,/horoscopes/libra/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope balance 2027,/horoscopes/libra/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope scorpion aujourd'hui,/horoscopes/scorpio/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope scorpion demain,/horoscopes/scorpio/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope scorpion semaine,/horoscopes/scorpio/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope scorpion mois,/horoscopes/scorpio/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope scorpion 2027,/horoscopes/scorpio/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope sagittaire aujourd'hui,/horoscopes/sagittarius/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope sagittaire demain,/horoscopes/sagittarius/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope sagittaire semaine,/horoscopes/sagittarius/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope sagittaire mois,/horoscopes/sagittarius/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope sagittaire 2027,/horoscopes/sagittarius/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope capricorne aujourd'hui,/horoscopes/capricorn/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope capricorne demain,/horoscopes/capricorn/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope capricorne semaine,/horoscopes/capricorn/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope capricorne mois,/horoscopes/capricorn/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope capricorne 2027,/horoscopes/capricorn/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope verseau aujourd'hui,/horoscopes/aquarius/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope verseau demain,/horoscopes/aquarius/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope verseau semaine,/horoscopes/aquarius/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope verseau mois,/horoscopes/aquarius/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope verseau 2027,/horoscopes/aquarius/2027/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope poissons aujourd'hui,/horoscopes/pisces/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope poissons demain,/horoscopes/pisces/tomorrow/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope poissons semaine,/horoscopes/pisces/weekly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope poissons mois,/horoscopes/pisces/monthly/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope poissons 2027,/horoscopes/pisces/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope bélier aujourd'hui,/fr/horoscopes/aries/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope bélier demain,/fr/horoscopes/aries/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope bélier semaine,/fr/horoscopes/aries/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope bélier mois,/fr/horoscopes/aries/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope bélier 2027,/fr/horoscopes/aries/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope taureau aujourd'hui,/fr/horoscopes/taurus/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope taureau demain,/fr/horoscopes/taurus/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope taureau semaine,/fr/horoscopes/taurus/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope taureau mois,/fr/horoscopes/taurus/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope taureau 2027,/fr/horoscopes/taurus/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope gémeaux aujourd'hui,/fr/horoscopes/gemini/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope gémeaux demain,/fr/horoscopes/gemini/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope gémeaux semaine,/fr/horoscopes/gemini/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope gémeaux mois,/fr/horoscopes/gemini/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope gémeaux 2027,/fr/horoscopes/gemini/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope cancer aujourd'hui,/fr/horoscopes/cancer/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope cancer demain,/fr/horoscopes/cancer/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope cancer semaine,/fr/horoscopes/cancer/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope cancer mois,/fr/horoscopes/cancer/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope cancer 2027,/fr/horoscopes/cancer/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope lion aujourd'hui,/fr/horoscopes/leo/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope lion demain,/fr/horoscopes/leo/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope lion semaine,/fr/horoscopes/leo/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope lion mois,/fr/horoscopes/leo/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope lion 2027,/fr/horoscopes/leo/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope vierge aujourd'hui,/fr/horoscopes/virgo/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope vierge demain,/fr/horoscopes/virgo/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope vierge semaine,/fr/horoscopes/virgo/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope vierge mois,/fr/horoscopes/virgo/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope vierge 2027,/fr/horoscopes/virgo/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope balance aujourd'hui,/fr/horoscopes/libra/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope balance demain,/fr/horoscopes/libra/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope balance semaine,/fr/horoscopes/libra/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope balance mois,/fr/horoscopes/libra/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope balance 2027,/fr/horoscopes/libra/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope scorpion aujourd'hui,/fr/horoscopes/scorpio/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope scorpion demain,/fr/horoscopes/scorpio/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope scorpion semaine,/fr/horoscopes/scorpio/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope scorpion mois,/fr/horoscopes/scorpio/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope scorpion 2027,/fr/horoscopes/scorpio/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope sagittaire aujourd'hui,/fr/horoscopes/sagittarius/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope sagittaire demain,/fr/horoscopes/sagittarius/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope sagittaire semaine,/fr/horoscopes/sagittarius/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope sagittaire mois,/fr/horoscopes/sagittarius/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope sagittaire 2027,/fr/horoscopes/sagittarius/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope capricorne aujourd'hui,/fr/horoscopes/capricorn/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope capricorne demain,/fr/horoscopes/capricorn/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope capricorne semaine,/fr/horoscopes/capricorn/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope capricorne mois,/fr/horoscopes/capricorn/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope capricorne 2027,/fr/horoscopes/capricorn/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope verseau aujourd'hui,/fr/horoscopes/aquarius/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope verseau demain,/fr/horoscopes/aquarius/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope verseau semaine,/fr/horoscopes/aquarius/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope verseau mois,/fr/horoscopes/aquarius/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope verseau 2027,/fr/horoscopes/aquarius/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope poissons aujourd'hui,/fr/horoscopes/pisces/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope poissons demain,/fr/horoscopes/pisces/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope poissons semaine,/fr/horoscopes/pisces/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope poissons mois,/fr/horoscopes/pisces/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope poissons 2027,/fr/horoscopes/pisces/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité bélier bélier,/fr/compatibility/aries-aries/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier taureau,/fr/compatibility/aries-taurus/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier gémeaux,/fr/compatibility/aries-gemini/,full,TBD,TBD,TBD,
@@ -215,8 +215,8 @@ fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,moon-sign,si
 fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,big-three,soleil lune ascendant,/fr/big-three/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,moon-phase,phase de la lune aujourd'hui,/fr/moon-phase/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,moon-phase,lune aujourd'hui,/fr/moon-phase/,full,TBD,TBD,TBD,
-fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,full-moon,pleine lune novembre 2026,/full-moon/2026-11-24/,partial,TBD,TBD,TBD,English page only
-fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,new-moon,nouvelle lune novembre 2026,/new-moon/2026-11-09/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,full-moon,pleine lune novembre 2026,/fr/full-moon/2026-11-24/,held,TBD,TBD,TBD,built in this language and held until its release batch
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,new-moon,nouvelle lune novembre 2026,/fr/new-moon/2026-11-09/,held,TBD,TBD,TBD,built in this language and held until its release batch
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mercury-retrograde,mercure rétrograde 2027,/fr/mercury-retrograde/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mercury-retrograde,mercure rétrograde en ce moment,/fr/mercury-retrograde/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,retrogrades,planètes rétrogrades en ce moment,/fr/retrogrades/,full,TBD,TBD,TBD,

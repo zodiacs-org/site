@@ -80,7 +80,7 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
               mc={wheel.angles?.mc ?? null}
               cusps={wheel.houses?.cusps ?? null}
               aspects={wheel.aspects.filter((aspect) => aspect.orb < 6)}
-              animate
+              animate="fade"
             />
           </div>
         </div>

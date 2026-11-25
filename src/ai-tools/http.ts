@@ -14,6 +14,7 @@ import { SAVE_TOOL_NAME } from './accounts/contracts';
 import { accountsEnabled, configuredAccounts, invalidTokenChallenge, type AccountsService } from './accounts/service';
 import type { AccountContext } from './server';
 import type { CountedToolName } from './usage';
+import { MOMENT_CHART_SWITCH } from './features/moment-chart-contract';
 
 /** The self-contained panels whose resources may exceed the usual reply budget. */
 const LARGE_PANEL_URIS: ReadonlySet<string> = new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS, READINGS_URI, LEGACY_READINGS_URI, READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI]);
@@ -254,12 +255,14 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(goodDays ? { goodDays: true } : {}), ...(personal ? { personal: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), momentChart: env[MOMENT_CHART_SWITCH] === '1', ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(goodDays ? { goodDays: true } : {}), ...(personal ? { personal: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
       } catch { return 'unavailable'; }
     } };
+    // A personal tool links to its website page, and that page's share card, only while the page's own switch is on.
+    if (personal) dependencies.sitePageOn = (flag: string) => env[flag] === '1';
     const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();

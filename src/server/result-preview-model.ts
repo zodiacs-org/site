@@ -21,6 +21,8 @@ import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
+import type { VedicSignsShare } from '../lib/vedic-signs/share.js';
+import { AYANAMSA_NAME, RASHIS } from '../lib/vedic-signs/wording.js';
 import {
   SKY_PLANETS,
   type BigThreeShare,
@@ -579,6 +581,38 @@ export function bigThreeCardModel(share: BigThreeShare): BigThreeCardModel {
     rows,
     title: rows.map((row) => row.text).join(', '),
     about: ['The big three: the Sun sign, the Moon sign and the rising sign.', ...unsettled].join(' '),
+    hue: HUES[share.sun],
+  };
+}
+
+// ── Vedic signs (src/lib/vedic-signs/share.ts) ──
+
+export interface VedicSignsCardModel {
+  sun: ShareSign;
+  /** The sign whose disc the card shows: the sidereal Sun. */
+  signs: PreviewSign[];
+  /** "Dhanu Sun" with "Sagittarius" under it. The link carries the Sun sign only, so the card shows no other sign. */
+  rows: { slug: ShareSign | null; text: string; western: string | null }[];
+  /** "Lahiri (Chitrapaksha) ayanamsa" */
+  ayanamsa: string;
+  /** "Dhanu Sun", for the page. */
+  title: string;
+  about: string;
+  hue: string;
+}
+
+/** The Vedic Sun sign: the sidereal Sun with its Western name and the ayanamsa it was read with. Never a Moon sign, rising sign or nakshatra. */
+export function vedicSignsCardModel(share: VedicSignsShare): VedicSignsCardModel {
+  const rashi = RASHIS[SIGN_SLUGS.indexOf(share.sun)];
+  const rows: VedicSignsCardModel['rows'] = [{ slug: share.sun, text: `${rashi} Sun`, western: signName(share.sun) }];
+  const ayanamsa = `${AYANAMSA_NAME[share.ayanamsa]} ayanamsa`;
+  return {
+    sun: share.sun,
+    signs: [{ slug: share.sun, label: `${rashi} Sun`, hue: HUES[share.sun] }],
+    rows,
+    ayanamsa,
+    title: `${rashi} Sun`,
+    about: `The Sun sign in the sidereal zodiac, read with the ${ayanamsa}.`,
     hue: HUES[share.sun],
   };
 }

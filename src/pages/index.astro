@@ -2,12 +2,14 @@
 import Base from '../layouts/Base.astro';
 import { homeTrustFaq } from '../lib/home-trust';
 import ArtFrame from '../components/ArtFrame.astro';
+import Motion from '../components/Motion.astro';
 import AstroTerm from '../components/AstroTerm.astro';
 import SignIcon from '../components/SignIcon.astro';
 import ToolIcon from '../components/ToolIcon.astro';
 import SkyTicker from '../islands/SkyTicker';
 import DemoChart from '../islands/DemoChart';
 import WelcomeBack from '../islands/WelcomeBack';
+import HomeReturningPrepaint from '../home/HomeReturningPrepaint.astro';
 import glassMaps from '../data/glass-maps.json';
 import daily from '../data/daily.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
@@ -168,6 +170,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     data-zdx-home-first-paint
     set:html={homeFirstPaintCss}
   />
+  <HomeReturningPrepaint slot="head" />
   <!-- Legacy hash deep-links from the old homepage SPA → their new homes. -->
   <script is:inline>
     (function () {
@@ -483,10 +486,8 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     globalThis.__ZDX_UI__ = { locale: 'en', messages: homeUiMessages };
   </script>
 
-  <!-- 01b · Returning visitors with a saved chart get greeted; everyone else sees nothing here.
-       The shared intent/load directive reaches the empty SSR island automatically
-       after load, keeping its module tree out of the poster's initial fetches. -->
-  <WelcomeBack client:interaction />
+  <!-- The selected greeting is visible before the island reads the profile. -->
+  <WelcomeBack client:home-returning />
 
 
   <!-- 02 · The sky, right now: one calm line under the hero. -->
@@ -710,9 +711,10 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
       </div>
       <a class="textlink only-desktop" href="/tools/">All tools <span class="arr" aria-hidden="true">→</span></a>
     </div>
+    <Motion />
     <div class="grid-4 home-tools">
       {tools.map((t) => (
-        <a class="kcard home-tool" href={t.href}>
+        <a class="kcard home-tool" href={t.href} data-enter="rise">
           <ToolIcon name={t.icon} size={52} />
           <h3 class="h-4">{t.title}</h3>
           <p>{t.promise}</p>

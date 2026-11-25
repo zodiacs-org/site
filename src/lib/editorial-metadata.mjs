@@ -30,6 +30,12 @@ export const EDITORIAL_METADATA = Object.freeze(Object.fromEntries([
     `/${locale}/learn/chinese-zodiac/${suffix}`,
     Object.freeze({ type: 'Article', modified: suffix ? '2026-10-26' : '2026-10-24' }),
   ])),
+  // The row of Western sign discs and its caption left every Chinese zodiac page,
+  // hub and animals, in all seven languages on 2026-11-22 (owner request).
+  ...[...locales, 'zh-hans', 'zh-hant'].flatMap((locale) => ['', ...animals.map((animal) => `${animal}/`)].map((suffix) => [
+    `${locale === 'en' ? '' : `/${locale}`}/learn/chinese-zodiac/${suffix}`,
+    Object.freeze({ type: 'Article', modified: '2026-11-22' }),
+  ])),
 ]));
 
 /** @param {string} path */
