@@ -7,7 +7,8 @@
  * from signs.ts; French and Italian put an article before a sign, held here
  * by slug, and Russian takes the prepositional case (signPrepositional).
  * The component formats every date and number; these only place them.
- * No dashes in any line.
+ * No dashes in any line. The article helpers are exported for the pair
+ * angle plate's words (src/lib/pair-angle-words.ts).
  */
 import { elementLabel, signName, signPrepositional, type Element } from './signs';
 import type { CatalogLocale } from './i18n/core.js';
@@ -66,13 +67,13 @@ const FR_ARTICLE: Record<string, 'le' | 'la' | 'les'> = {
   aries: 'le', taurus: 'le', gemini: 'les', cancer: 'le', leo: 'le', virgo: 'la',
   libra: 'la', scorpio: 'le', sagittarius: 'le', capricorn: 'le', aquarius: 'le', pisces: 'les',
 };
-const frThe = (slug: string) => `${FR_ARTICLE[slug]} ${signName(slug, 'fr')}`;
+export const frThe = (slug: string) => `${FR_ARTICLE[slug]} ${signName(slug, 'fr')}`;
 const frOf = (slug: string) => {
   const name = signName(slug, 'fr');
   return { le: `du ${name}`, la: `de la ${name}`, les: `des ${name}` }[FR_ARTICLE[slug]];
 };
 /** "de feu", "de terre", "d’air", "d’eau". */
-const frElement = (element: Element) => {
+export const frElement = (element: Element) => {
   const word = lower(elementLabel(element, 'fr'));
   return /^[aeiou]/u.test(word) ? `d’${word}` : `de ${word}`;
 };
@@ -87,12 +88,17 @@ const itOf = (slug: string) => {
   const name = signName(slug, 'it');
   return { 'l’': `dell’${name}`, il: `del ${name}`, lo: `dello ${name}`, la: `della ${name}`, i: `dei ${name}` }[IT_ARTICLE[slug]];
 };
-const itIn = (slug: string) => {
+/** "l’Ariete", "il Toro", "i Gemelli" (shared with the pair angle plate). */
+export const itThe = (slug: string) => {
+  const name = signName(slug, 'it');
+  return IT_ARTICLE[slug] === 'l’' ? `l’${name}` : `${IT_ARTICLE[slug]} ${name}`;
+};
+export const itIn = (slug: string) => {
   const name = signName(slug, 'it');
   return { 'l’': `nell’${name}`, il: `nel ${name}`, lo: `nello ${name}`, la: `nella ${name}`, i: `nei ${name}` }[IT_ARTICLE[slug]];
 };
 /** "di fuoco", "di terra", "d’aria", "d’acqua". */
-const itElement = (element: Element) => {
+export const itElement = (element: Element) => {
   const word = lower(elementLabel(element, 'it'));
   return /^[aeiou]/u.test(word) ? `d’${word}` : `di ${word}`;
 };

@@ -18,19 +18,32 @@
  * screen) is still waiting. The number in the middle and the words beside
  * the wheel never move. Opacity, transform and stroke-dashoffset only; the
  * whole pass ends inside the runtime's 2.6 s.
+ *
+ * Every word comes from src/lib/pair-angle-words.ts, by the page's `locale`
+ * (English unless given). The Learn link shows only where that language has
+ * the page; a translated plate never links to an English one.
  */
 import SignIcon from '../SignIcon.astro';
 import { SIGNS } from '../../lib/signs';
-import { pairAngle } from '../../lib/pair-angle';
+import { pairAngle, type PairAngleLocale } from '../../lib/pair-angle';
+import { PAIR_ANGLE_WORDS } from '../../lib/pair-angle-words';
+import { localizePath } from '../../lib/i18n';
 
 interface Props {
   /** The pair's two sign slugs, in zodiac order as the pair slug has them. */
   a: string;
   b: string;
+  /** The page's language; the plate's words follow it. */
+  locale?: PairAngleLocale;
 }
 
-const angle = pairAngle(Astro.props.a, Astro.props.b);
+const { locale = 'en' } = Astro.props;
+const angle = pairAngle(Astro.props.a, Astro.props.b, locale);
+const words = PAIR_ANGLE_WORDS[locale];
 const { a, b, same } = angle;
+const learnHref = localizePath(locale, angle.learn.href);
+// Never send a translated page to an English Learn page.
+const learnShown = locale === 'en' || learnHref.startsWith(`/${locale}/`);
 
 const C = 200;
 const R = 126;          // the ring
@@ -190,36 +203,38 @@ const styles = `
     ))}
     <p class="pa-centre" aria-hidden="true">
       <b>{angle.degrees}°</b>
-      <span>{angle.aspect}</span>
+      <span>{angle.aspectName}</span>
     </p>
   </div>
 
   <div class="pa-words">
-    <p class="kicker">The angle between you</p>
+    <p class="kicker">{words.kicker}</p>
     <h2 class="h-2" id="pairangle-title">{angle.heading}</h2>
     <p class="pa-lede">{angle.lede}</p>
     <dl class="pa-facts">
       <div>
-        <dt>Signs apart</dt>
-        <dd>{steps}<span>{same ? 'the same sign' : 'the shorter way round'}</span></dd>
+        <dt>{words.signsApart}</dt>
+        <dd>{steps}<span>{same ? words.sameSign : words.shorterWay}</span></dd>
       </div>
       <div>
-        <dt>Angle</dt>
+        <dt>{words.angle}</dt>
         <dd>{angle.degrees}°<span>{angle.share}</span></dd>
       </div>
       <div>
-        <dt>Elements</dt>
-        <dd>{angle.elements}<span>{angle.sharesElement ? 'shared' : 'not shared'}</span></dd>
+        <dt>{words.elements}</dt>
+        <dd>{angle.elements}<span>{angle.sharesElement ? words.elementShared.yes : words.elementShared.no}</span></dd>
       </div>
       <div>
-        <dt>Modalities</dt>
-        <dd>{angle.modalities}<span>{angle.sharesModality ? 'shared' : 'not shared'}</span></dd>
+        <dt>{words.modalities}</dt>
+        <dd>{angle.modalities}<span>{angle.sharesModality ? words.modalityShared.yes : words.modalityShared.no}</span></dd>
       </div>
     </dl>
-    <p class="pa-more">
-      <a class="textlink" href={angle.learn.href}>{angle.learn.label} <span class="arr" aria-hidden="true">→</span></a>
-    </p>
-    <p class="pa-source">Counted sign to sign, 30 degrees a sign. The exact angle between two Suns depends on the birth dates.</p>
+    {learnShown && (
+      <p class="pa-more">
+        <a class="textlink" href={learnHref}>{angle.learn.label} <span class="arr" aria-hidden="true">→</span></a>
+      </p>
+    )}
+    <p class="pa-source">{words.source}</p>
   </div>
 </section>
 
