@@ -542,18 +542,21 @@ describe('engine 2.0.0 calculator warning notices', () => {
 
     const calendarSub = readFileSync(new URL('./CalendarSubscribe.tsx', import.meta.url), 'utf8');
     expect(calendarSub).toContain('downloadNoteHostZoneDiffers');
+    expect(calendarSub).toContain('downloadNoteCalendarUnknown');
     expect(calendarSub).toContain('Contacts to your natal Moon, Ascendant, and Midheaven are omitted');
     expect(calendarSub).toContain('...(hostZoneDiffers ? { hostZoneDiffers: true } : {})');
     expect(calendarSub).toContain('...(notes?.length ? { notes } : {})');
 
     const search = readFileSync(new URL('./transit/TransitSearch.tsx', import.meta.url), 'utf8');
     expect(search).toContain('calendarNoteHostZoneDiffers');
+    expect(search).toContain('calendarNoteCalendarUnknown');
     expect(search).toContain('Contacts to your natal Moon, Ascendant, and Midheaven are omitted');
     expect(search).toContain('...(hostZoneDiffers ? { hostZoneDiffers: true } : {})');
     expect(search).toContain('...(calendarNotes?.length ? { notes: calendarNotes } : {})');
 
     const itinerary = readFileSync(new URL('./transit/TransitItinerary.tsx', import.meta.url), 'utf8');
     expect(itinerary).toContain('CALENDAR_NOTE_HOST_ZONE_DIFFERS');
+    expect(itinerary).toContain('CALENDAR_NOTE_CALENDAR_UNKNOWN');
     expect(itinerary).toContain('Contacts to your natal Moon, Ascendant, and Midheaven are omitted');
     expect(itinerary).toContain('...(calendarNotes?.length ? { notes: calendarNotes } : {})');
 

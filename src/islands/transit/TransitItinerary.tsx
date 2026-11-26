@@ -39,6 +39,7 @@ function Period({ window }: { window: TransitWindow }) {
 }
 
 const CALENDAR_NOTE = 'The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.';
+const CALENDAR_NOTE_CALENDAR_UNKNOWN = 'These dates depend on which calendar your birth record used. Anyone you share the file with, or any online calendar you import it into, can still work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.';
 const CALENDAR_NOTE_HOST_ZONE_DIFFERS = 'The times in the file come from your supplied birth time using the offset from a device whose time-zone data differed from our historical table near your birth date. Contacts to your natal Moon, Ascendant, and Midheaven are omitted, but anyone you share the file with, or any online calendar you import it into, can still work out your birth time from the remaining planetary contacts.';
 const CALENDAR_NOTE_NO_TIME = 'Without a birth time, the times in the file come from your chart for noon at your birthplace, so anyone you share it with, or any online calendar you import it into, can work out your birth date from them, and the time zone of your birthplace or, before standard time, its longitude.';
 
@@ -123,9 +124,13 @@ export function TransitItinerary({ natal, timeKnown, anchorMs, birthTimeKnown = 
     </div>
     {!!exportable.length && (
       <p class="field__help" data-itinerary-calendar-note>
-        {birthTimeKnown && hostZoneDiffers
-          ? CALENDAR_NOTE_HOST_ZONE_DIFFERS
-          : <>{birthTimeKnown ? CALENDAR_NOTE : CALENDAR_NOTE_NO_TIME}</>}
+        {!birthTimeKnown
+          ? (calendarNotes?.length ? `${CALENDAR_NOTE_NO_TIME} ${calendarNotes.join(' ')}` : CALENDAR_NOTE_NO_TIME)
+          : hostZoneDiffers
+            ? (calendarNotes?.length ? `${CALENDAR_NOTE_HOST_ZONE_DIFFERS} ${calendarNotes.join(' ')}` : CALENDAR_NOTE_HOST_ZONE_DIFFERS)
+            : calendarNotes?.length
+              ? CALENDAR_NOTE_CALENDAR_UNKNOWN
+              : CALENDAR_NOTE}
       </p>
     )}
     <p role="status" aria-live="polite">{status}</p>
