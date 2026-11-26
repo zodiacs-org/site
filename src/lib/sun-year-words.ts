@@ -27,6 +27,8 @@ export interface SunYearWords {
   began: string;
   begins: string;
   ends: string;
+  /** The end of a season already past in the year shown. */
+  ended: string;
   length: string;
   /** Whole days and spare hours, as plural forms with {n}. */
   days: PluralForms;
@@ -50,6 +52,11 @@ export interface SunYearWords {
   sunOn: (date: string, slug: string, degree: number | null) => string;
   /** Added to the ring's accessible name when the Sun mark is drawn. */
   sunMark: (date: string, slug: string) => string;
+  /**
+   * Under the facts when the season drawn is already past: when the sign's
+   * next season begins. The date arrives formatted, with its year.
+   */
+  nextSeason: (slug: string, date: string) => string;
 }
 
 const lower = (text: string) => text.charAt(0).toLocaleLowerCase() + text.slice(1);
@@ -109,6 +116,7 @@ const EN: SunYearWords = {
   began: 'Began',
   begins: 'Begins',
   ends: 'Ends',
+  ended: 'Ended',
   length: 'Length',
   days: { other: '{n} days' },
   hours: { one: '{n} hour', other: '{n} hours' },
@@ -127,6 +135,7 @@ const EN: SunYearWords = {
   },
   sunOn: (date, slug, degree) => `On ${date} the Sun is in ${signName(slug)}${degree === null ? '' : `, at ${degree}° of the sign`}.`,
   sunMark: (date, slug) => `A small Sun mark on the ring shows where the Sun is on ${date}, in ${signName(slug)}.`,
+  nextSeason: (slug, date) => `Next ${signName(slug)} season begins ${date}.`,
 };
 
 const ES: SunYearWords = {
@@ -137,6 +146,7 @@ const ES: SunYearWords = {
   began: 'Empezó',
   begins: 'Empieza',
   ends: 'Termina',
+  ended: 'Terminó',
   length: 'Duración',
   days: { one: '{n} día', other: '{n} días' },
   hours: { one: '{n} hora', other: '{n} horas' },
@@ -149,6 +159,7 @@ const ES: SunYearWords = {
   alt: (slug, from, to, element, family) => `Un anillo que muestra un año desde el equinoccio de marzo, dividido a escala entre los doce signos. La temporada de ${signName(slug, 'es')} va del ${from} al ${to}. Un triángulo une los tres signos de ${lower(elementLabel(element, 'es'))}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `El ${date}, el Sol está en ${signName(slug, 'es')}${degree === null ? '' : `, a ${degree}° del signo`}.`,
   sunMark: (date, slug) => `Una pequeña marca del Sol en el anillo muestra dónde está el Sol el ${date}, en ${signName(slug, 'es')}.`,
+  nextSeason: (slug, date) => `La próxima temporada de ${signName(slug, 'es')} empieza el ${date}.`,
 };
 
 const PT: SunYearWords = {
@@ -159,6 +170,7 @@ const PT: SunYearWords = {
   began: 'Começou',
   begins: 'Começa',
   ends: 'Termina',
+  ended: 'Terminou',
   length: 'Duração',
   days: { one: '{n} dia', other: '{n} dias' },
   hours: { one: '{n} hora', other: '{n} horas' },
@@ -171,6 +183,7 @@ const PT: SunYearWords = {
   alt: (slug, from, to, element, family) => `Um anel que mostra um ano a partir do equinócio de março, dividido em escala entre os doze signos. A temporada de ${signName(slug, 'pt')} vai de ${from} a ${to}. Um triângulo liga os três signos de ${lower(elementLabel(element, 'pt'))}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `Em ${date}, o Sol está em ${signName(slug, 'pt')}${degree === null ? '' : `, a ${degree}° do signo`}.`,
   sunMark: (date, slug) => `Uma pequena marca do Sol no anel mostra onde o Sol está em ${date}, em ${signName(slug, 'pt')}.`,
+  nextSeason: (slug, date) => `A próxima temporada de ${signName(slug, 'pt')} começa em ${date}.`,
 };
 
 const FR: SunYearWords = {
@@ -181,6 +194,7 @@ const FR: SunYearWords = {
   began: 'A commencé',
   begins: 'Commence',
   ends: 'Se termine',
+  ended: 'S’est terminée',
   length: 'Durée',
   days: { one: '{n} jour', other: '{n} jours' },
   hours: { one: '{n} heure', other: '{n} heures' },
@@ -193,6 +207,7 @@ const FR: SunYearWords = {
   alt: (slug, from, to, element, family) => `Un anneau qui montre une année à partir de l’équinoxe de mars, partagée à l’échelle entre les douze signes. La saison ${frOf(slug)} va du ${from} au ${to}. Un triangle relie les trois signes ${frElement(element)} : ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `Le ${date}, le Soleil est dans ${frThe(slug)}${degree === null ? '' : `, à ${degree}° du signe`}.`,
   sunMark: (date, slug) => `Une petite marque du Soleil sur l’anneau montre où il se trouve le ${date}, dans ${frThe(slug)}.`,
+  nextSeason: (slug, date) => `La prochaine saison ${frOf(slug)} commence le ${date}.`,
 };
 
 const IT: SunYearWords = {
@@ -203,6 +218,7 @@ const IT: SunYearWords = {
   began: 'È cominciata',
   begins: 'Comincia',
   ends: 'Finisce',
+  ended: 'È finita',
   length: 'Durata',
   days: { one: '{n} giorno', other: '{n} giorni' },
   hours: { one: '{n} ora', other: '{n} ore' },
@@ -215,6 +231,7 @@ const IT: SunYearWords = {
   alt: (slug, from, to, element, family) => `Un anello che mostra un anno a partire dall’equinozio di marzo, diviso in scala tra i dodici segni. La stagione ${itOf(slug)} va ${itFrom(from)} ${itTo(to)}. Un triangolo unisce i tre segni ${itElement(element)}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `${upper(itOn(date))} il Sole è ${itIn(slug)}${degree === null ? '' : `, a ${degree}° del segno`}.`,
   sunMark: (date, slug) => `Un piccolo simbolo del Sole sull’anello mostra dove si trova ${itOn(date)}, ${itIn(slug)}.`,
+  nextSeason: (slug, date) => `La prossima stagione ${itOf(slug)} comincia ${itOn(date)}.`,
 };
 
 const RU: SunYearWords = {
@@ -225,6 +242,7 @@ const RU: SunYearWords = {
   began: 'Начался',
   begins: 'Начнётся',
   ends: 'Закончится',
+  ended: 'Закончился',
   length: 'Длительность',
   days: { one: '{n} день', few: '{n} дня', many: '{n} дней', other: '{n} дня' },
   hours: { one: '{n} час', few: '{n} часа', many: '{n} часов', other: '{n} часа' },
@@ -237,6 +255,8 @@ const RU: SunYearWords = {
   alt: (slug, from, to, element, family) => `Кольцо показывает один год от мартовского равноденствия, разделённый на двенадцать знаков в масштабе. Солнце находится в ${signPrepositional(slug)} с ${from} по ${to}. Треугольник соединяет три знака ${RU_ELEMENT_GENITIVE[element]}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `Солнце ${date} находится в ${signPrepositional(slug)}${degree === null ? '' : `, в ${degree}° от начала знака`}.`,
   sunMark: (date, slug) => `Небольшая отметка на кольце показывает, где Солнце находится ${date}: в ${signPrepositional(slug)}.`,
+  // The date ends with its year marker ("2027 г."), whose full stop ends the sentence.
+  nextSeason: (slug, date) => `В следующий раз Солнце будет в ${signPrepositional(slug)} с ${date}${date.endsWith('.') ? '' : '.'}`,
 };
 
 export const SUN_YEAR_WORDS: Readonly<Record<SunYearLocale, SunYearWords>> = {

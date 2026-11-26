@@ -17,8 +17,10 @@
  * stroke-dashoffset only; the whole pass ends inside the runtime's 2.6 s.
  *
  * A Sun mark sits on the year line at the edition's date (`now`), with one
- * dated sentence beside it, when that date falls inside the year the ring
- * shows; within a few days of a sign boundary it steps just inside the line
+ * dated sentence beside it. The ring always shows the year that contains that
+ * date, so this sign's season in it may be past, under way or still ahead,
+ * and the facts take the matching tense; once it is past, one still line
+ * gives the next season's start. Within a few days of a sign boundary the mark steps just inside the line
  * so it never covers a tick or the season's end dots. Its degree comes from
  * src/data/daily.json, and only when that file is for the same date.
  *
@@ -28,7 +30,8 @@
  */
 import SignIcon from '../SignIcon.astro';
 import { signBySlug, signName } from '../../lib/signs';
-import { currentSunSeason, signSeasonFocus, sunSeasons } from '../../lib/seasons/windows';
+import { currentSunSeason } from '../../lib/seasons/windows';
+import { sunYearView } from '../../lib/sun-year';
 import { seasonDate, seasonUtcTime } from '../../lib/seasons/dates';
 import { formatDate, intlLocale } from '../../lib/i18n/dates';
 import { localizePath, pluralText } from '../../lib/i18n';
@@ -46,18 +49,14 @@ interface Props {
 const { sign: slug, now, locale = 'en' } = Astro.props;
 const sign = signBySlug(slug);
 const words = SUN_YEAR_WORDS[locale];
-const focus = signSeasonFocus(slug, now);
-const seasons = sunSeasons();
-
 // The year the ring shows: twelve seasons from the March equinox (the Sun's
-// entry into Aries) at or before this sign's season.
-const focusAt = focus ? seasons.findIndex((w) => w.sign === slug && w.start === focus.window.start) : -1;
-let first = -1;
-for (let i = focusAt; i >= 0; i -= 1) {
-  if (seasons[i].sign === 'aries') { first = i; break; }
-}
-const year = first >= 0 ? seasons.slice(first, first + 12) : [];
-const drawn = Boolean(focus) && year.length === 12;
+// entry into Aries) at or before the edition's date, so the date always lies
+// inside it. This sign's arc is its season in that year: past, under way or
+// still ahead (src/lib/sun-year.ts).
+const view = sunYearView(slug, now);
+const year = view ? view.year : [];
+const tense = view?.tense ?? 'ahead';
+const drawn = view !== null;
 
 const C = 200;
 const R = 126;          // the year line
@@ -132,6 +131,11 @@ const nowIso = now.toISOString();
 const sunFraction = drawn ? fraction(nowIso) : -1;
 const sunWindow = currentSunSeason(now);
 const sunShown = drawn && sunWindow !== null && sunFraction >= 0 && sunFraction < 1;
+// When this sign's season in the ring's year is already over, the next one's
+// start date, so the page still answers when the season comes round again.
+const nextLine = tense === 'past' && view?.next
+  ? words.nextSeason(slug, dateIn(view.next.start, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }))
+  : '';
 // The degree only from the daily facts for this same date and sign.
 const dailySun = daily.date === nowIso.slice(0, 10)
   ? daily.bodies.find((body) => body.body === 'Sun')
@@ -146,7 +150,7 @@ const SUN_LIFT = 15;      // how far inside the line it steps near a boundary
 const arcUnits = (f: number) => Math.abs(f) * 2 * Math.PI * R;
 const tickGap = sunShown ? Math.min(...arcs.map((arc) => arcUnits(sunFraction - arc.from)), arcUnits(1 - sunFraction)) : Infinity;
 const endGap = sunShown && mine ? Math.min(arcUnits(sunFraction - mine.from), arcUnits(sunFraction - mine.to)) : Infinity;
-const sunLifted = tickGap < SUN_R + 4 || endGap < SUN_R + 5 + 3;
+const sunLifted = tickGap < SUN_R + 8 || endGap < SUN_R + 5 + 3;
 // Inside the ring, a boundary is clear of the triangle, whose corners sit at
 // mid-season, and of the sign discs outside.
 const sunAt = point(sunFraction, sunLifted ? R - SUN_LIFT : R);
@@ -159,7 +163,7 @@ const seasonHref = localizePath(locale, `/seasons/${slug}/`);
 // Never send a translated page to the English season page.
 const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith(`/${locale}/`)) ? words.seasonLink(slug) : '';
 ---
-{drawn && mine && focus && (
+{drawn && mine && (
   <section class="sunyear" aria-labelledby="sunyear-title" style={`--sign:${sign.hue}`}>
     <div class="sy-wheel" role="img" aria-label={wheelLabel}>
       <span class="sy-go" data-enter="draw" aria-hidden="true"></span>
@@ -213,11 +217,11 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
       )}
       <dl class="sy-facts">
         <div>
-          <dt>{focus.phase === 'under-way' ? words.began : words.begins}</dt>
+          <dt>{tense === 'ahead' ? words.begins : words.began}</dt>
           <dd><time datetime={mine.window.start}>{day(mine.window.start)}<span>{seasonUtcTime(mine.window.start)} UTC</span></time></dd>
         </div>
         <div>
-          <dt>{words.ends}</dt>
+          <dt>{tense === 'past' ? words.ended : words.ends}</dt>
           <dd><time datetime={mine.window.end}>{day(mine.window.end)}<span>{seasonUtcTime(mine.window.end)} UTC</span></time></dd>
         </div>
         <div>
@@ -229,6 +233,9 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
           <dd>{familyNames.join(', ')}<span>{words.thirdApart}</span></dd>
         </div>
       </dl>
+      {nextLine && (
+        <p class="sy-next"><time datetime={view?.next?.start}>{nextLine}</time></p>
+      )}
       {seasonLink && (
         <p class="sy-more">
           <a class="textlink" href={seasonHref}>{seasonLink} <span class="arr" aria-hidden="true">→</span></a>
@@ -319,6 +326,7 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
   .sy-facts dt { font-size: 13px; font-weight: 500; color: var(--faint); }
   .sy-facts dd { margin: 6px 0 0; font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.2; color: var(--ink-0); }
   .sy-facts dd span { display: block; margin-top: 5px; font-family: var(--font-mono); font-size: 12px; letter-spacing: -0.01em; color: var(--muted); }
+  .sy-next { margin: 16px 0 0; max-width: 52ch; font-size: 0.9375rem; line-height: 1.55; color: var(--muted); }
   .sy-more { margin: 22px 0 0; }
   .sy-source { margin: 14px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--faint); }
 
