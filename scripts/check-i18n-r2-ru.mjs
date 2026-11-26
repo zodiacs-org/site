@@ -1,7 +1,7 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
+import { RU_OG_ART_CARDS, RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
 import { EXPANSION_FAMILY_IDS, enabledLocalesForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 
@@ -226,10 +226,14 @@ for (const [route, file] of expectedFiles) {
   if (!/<meta\b[^>]*property=["']og:locale["'][^>]*content=["']ru_RU["']/u.test(html)) {
     fail(`${route}: Russian Open Graph locale is missing`);
   }
-  const expectedCard = RU_OG_ROUTE_CARDS[/^\/ru\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(route) ? '/ru/chart-of-the-day/' : route];
-  const expectedImage = expectedCard
-    ? `https://zodiacs.org/assets/og/v2/ru/${expectedCard}`
-    : null;
+  const cardRoute = /^\/ru\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(route) ? '/ru/chart-of-the-day/' : route;
+  const expectedCard = RU_OG_ROUTE_CARDS[cardRoute];
+  // A route with an art card (the chart twins page since 2026-11-26) shows it in place of its v2 card.
+  const expectedImage = RU_OG_ART_CARDS[cardRoute]
+    ? `https://zodiacs.org${RU_OG_ART_CARDS[cardRoute]}`
+    : expectedCard
+      ? `https://zodiacs.org/assets/og/v2/ru/${expectedCard}`
+      : null;
   const image = ogImage(html);
   const twitterImage = metaContent(html, 'twitter:image');
   if (!expectedImage || image !== expectedImage) {

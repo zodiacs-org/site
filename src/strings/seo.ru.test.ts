@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { SIGNS } from '../lib/signs';
 import { ogImageForPathAndLocale } from './seo';
 import { OG_SIGNS } from './seo.signs.mjs';
+import { chartTwinsArtCard } from '../lib/og-art-cards.mjs';
 import {
+  RU_OG_ART_CARDS,
   RU_OG_COPY_DIGEST_INPUT,
   RU_OG_REQUIRED_CARDS,
   RU_OG_ROUTES,
@@ -44,12 +46,17 @@ describe('Russian R2 Open Graph catalogue', () => {
 
   it('maps every launched route to its localized card', () => {
     for (const entry of RU_OG_ROUTES) {
+      const image = RU_OG_ART_CARDS[entry.publicPath] ?? `/assets/og/v2/ru/${entry.card}`;
       expect(ruOgMetaForPath(entry.publicPath)).toBe(entry);
       expect(ruOgMetaForPath(entry.contentPath)).toBe(entry);
-      expect(ruOgImageForPath(entry.publicPath)).toBe(`/assets/og/v2/ru/${entry.card}`);
-      expect(ogImageForPathAndLocale(entry.contentPath, 'ru'))
-        .toBe(`/assets/og/v2/ru/${entry.card}`);
+      expect(ruOgImageForPath(entry.publicPath)).toBe(image);
+      expect(ogImageForPathAndLocale(entry.contentPath, 'ru')).toBe(image);
     }
+    // The chart twins page alone shows an art card (2026-11-26); its v2 card
+    // stays in the family, published for links already shared.
+    expect(RU_OG_ART_CARDS).toEqual({ '/ru/chart-twins/': chartTwinsArtCard('ru') });
+    expect(chartTwinsArtCard('ru')).toBe('/assets/og/v8/ru/tool/chart-twins.jpg');
+    expect(RU_OG_REQUIRED_CARDS).toContain('tool/chart-twins.png');
 
     expect(ruOgMetaForPath('/ru/aries/?ref=test')).toMatchObject({
       card: 'sign/aries.png',

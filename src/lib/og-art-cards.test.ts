@@ -9,6 +9,9 @@ import {
   CHART_TWINS_ART_CARD_ART,
   CHART_TWINS_ART_CARD_COPY,
   CHART_TWINS_ART_CARD_DISCS,
+  CHART_TWINS_ART_CARD_LOCALES,
+  chartTwinsArtCard,
+  chartTwinsArtCardCopy,
   HOME_ART_CARD,
   HOME_ART_CARD_ALT,
   HOME_ART_CARD_COPY,
@@ -32,7 +35,9 @@ import {
   localizedHoroscopeArtCardCopy,
   localizedSignArtCardCopy,
 } from './og-art-cards.mjs';
-import { ART_CARD_COPY_LOCALES, captionLead, renderLocalizedArtCardCopyModule } from './og-art-cards-copy';
+import { ART_CARD_COPY_LOCALES, CHART_TWINS_COPY_LOCALES, captionLead, renderLocalizedArtCardCopyModule } from './og-art-cards-copy';
+import { additionText } from '../strings/additions';
+import { ruOgImageForPath } from '../strings/seo.ru.mjs';
 import { HOME_COPY } from '../components/localized/home-copy';
 import { LOCALIZED_HOROSCOPE_COPY } from '../components/localized/horoscope-copy';
 import { spanishGuideFor } from '../data/es-guides';
@@ -169,13 +174,70 @@ describe('the chart twins art card (owner-chosen 2026-11-26)', () => {
     }
   });
 
-  it('is what the English chart twins page links, while the localized pages keep the v2 card', () => {
+  it('is what every chart twins page links, the Russian one through its catalogue, with the v2 cards kept', () => {
     const page = read('src/components/sharing/SharingToolPage.astro');
-    expect(page).toContain("const englishTwins = locale === 'en' && kind === 'twins';");
-    expect(page).toContain('const cardImage = englishTwins ? CHART_TWINS_ART_CARD : (');
-    expect(page).toContain("twins: '/assets/og/v2/tool/chart-twins.png'");
-    expect(page).toContain('const cardAlt = englishTwins ? CHART_TWINS_ART_CARD_ALT : s(locale, titleKey);');
-    expect(read('scripts/build-og-void.mjs')).toContain("process.argv.includes('--only-chart-twins-card')");
+    expect(page).toContain("const cardImage = kind === 'twins' ? chartTwinsArtCard(locale) : (");
+    expect(page).toContain("const cardAlt = kind === 'twins' ? chartTwinsArtCardCopy(locale).alt : s(locale, titleKey);");
+    expect(page).toContain("image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : cardImage}");
+    expect(ruOgImageForPath('/ru/chart-twins/')).toBe(chartTwinsArtCard('ru'));
+    expect(chartTwinsArtCard()).toBe(CHART_TWINS_ART_CARD);
+    expect(chartTwinsArtCardCopy()).toEqual({ ...CHART_TWINS_ART_CARD_COPY, alt: CHART_TWINS_ART_CARD_ALT });
+    // The v2 cards stay published for links already shared.
+    for (const kept of ['public/assets/og/v2/tool/chart-twins.png', 'public/assets/og/v2/ru/tool/chart-twins.png']) {
+      expect(readFileSync(new URL(`../../${kept}`, import.meta.url)).length, kept).toBeGreaterThan(0);
+    }
+    const generator = read('scripts/build-og-void.mjs');
+    expect(generator).toContain("process.argv.includes('--only-chart-twins-card')");
+    expect(generator).toContain("process.argv.includes('--only-localized-chart-twins-cards')");
+  });
+});
+
+describe('the chart twins art card in Spanish, French, Italian, Portuguese and Russian (2026-11-26)', () => {
+  const verified = /verif|vérifi|провер/iu;
+
+  it('keeps each card in its locale\'s folder, the Russian one beside the other art cards', () => {
+    expect([...CHART_TWINS_ART_CARD_LOCALES]).toEqual([...CHART_TWINS_COPY_LOCALES]);
+    expect([...CHART_TWINS_ART_CARD_LOCALES]).toEqual(['es', 'fr', 'it', 'pt', 'ru']);
+    for (const locale of CHART_TWINS_ART_CARD_LOCALES) {
+      expect(chartTwinsArtCard(locale)).toBe(`${ART_CARD_DIR}/${locale}/tool/chart-twins.jpg`);
+      expect(LOCALIZED_ART_CARDS).toContain(chartTwinsArtCard(locale));
+    }
+    expect(() => chartTwinsArtCard('ar')).toThrow(/no chart twins card/u);
+  });
+
+  it('takes the four art card locales\' words from their chart twins card copy, without the word for "verified"', () => {
+    for (const locale of ['es', 'fr', 'it', 'pt'] as const) {
+      const copy = chartTwinsArtCardCopy(locale);
+      expect(copy.title, locale).toBe(additionText(locale, 'og.tools.chart-twins.title'));
+      const sub = additionText(locale, 'og.tools.chart-twins.sub');
+      expect(sub, locale).toMatch(verified);
+      expect(copy.line, locale).toBe(sub.replace(/ (?:verificados|vérifiés|verificati)\.$/u, '.'));
+    }
+  });
+
+  it('carries the reviewed words in each language, with no dashes and no word for "verified"', () => {
+    const words = Object.fromEntries(CHART_TWINS_ART_CARD_LOCALES.map((locale) => {
+      const { kicker, title, line } = chartTwinsArtCardCopy(locale);
+      return [locale, { kicker, title, line }];
+    }));
+    expect(words).toEqual({
+      es: { kicker: 'Coinciden Sol y Luna', title: 'Tus gemelos astrales', line: 'Figuras públicas que comparten tus signos solar y lunar.' },
+      fr: { kicker: 'Soleil et Lune en commun', title: 'Tes jumeaux astrologiques', line: 'Des personnalités publiques qui partagent tes signes solaire et lunaire.' },
+      it: { kicker: 'Sole e Luna in comune', title: 'I tuoi gemelli astrologici', line: 'Personaggi pubblici che condividono i tuoi segni solare e lunare.' },
+      pt: { kicker: 'Sol e Lua em comum', title: 'Seus gêmeos astrais', line: 'Figuras públicas que compartilham seus signos solar e lunar.' },
+      ru: { kicker: 'Совпадение по Солнцу и Луне', title: 'Звёздные близнецы', line: 'Известные люди с вашими знаками Солнца и Луны.' },
+    });
+    for (const locale of CHART_TWINS_ART_CARD_LOCALES) {
+      const copy = chartTwinsArtCardCopy(locale);
+      // The alt text names the headline and the line, in the page's language, then the painting.
+      expect(copy.alt.startsWith(copy.title), locale).toBe(true);
+      expect(copy.alt, locale).toMatch(/\.$/u);
+      for (const value of Object.values(copy)) {
+        expect(value, locale).not.toMatch(DASHES);
+        expect(value, locale).not.toMatch(verified);
+      }
+    }
+    expect(chartTwinsArtCardCopy('ru').alt).toMatch(/^[\p{Script=Cyrillic}\s.,:]+$/u);
   });
 });
 
@@ -221,7 +283,8 @@ describe('the Spanish, French, Italian and Portuguese art cards', () => {
   });
 
   it("keeps each locale's cards in its own folder, under their own ceiling", () => {
-    expect(LOCALIZED_ART_CARDS).toHaveLength(4 * (1 + 12) + 2 * 12);
+    // Each locale's homepage, sign guides and chart twins card, the Spanish and Portuguese horoscopes, and the Russian chart twins card.
+    expect(LOCALIZED_ART_CARDS).toHaveLength(4 * (1 + 12 + 1) + 2 * 12 + 1);
     expect(new Set(LOCALIZED_ART_CARDS).size).toBe(LOCALIZED_ART_CARDS.length);
     expect(homeArtCard('en')).toBe(HOME_ART_CARD);
     expect(homeArtCard('es')).toBe(`${ART_CARD_DIR}/es/home.jpg`);

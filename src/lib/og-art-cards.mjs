@@ -17,7 +17,9 @@
  * The Spanish, French, Italian and Portuguese homepages, sign guides and
  * (Spanish and Portuguese) daily horoscopes have the same cards in their own
  * words, which og-art-cards.locales.mjs carries for the generator
- * (`npm run data:og -- --only-localized-art-cards`).
+ * (`npm run data:og -- --only-localized-art-cards`), as do the chart twins
+ * pages in those four languages and in Russian
+ * (`--only-localized-chart-twins-cards` draws those alone).
  *
  * The art runs across the whole picture, so the cards are JPEGs: as PNGs
  * they would pass WhatsApp's 600 KB limit for a link preview. They are never
@@ -26,7 +28,7 @@
  */
 import { HOROSCOPE_OG_SURFACES } from '../strings/seo.en.mjs';
 import { OG_SIGNS } from '../strings/seo.signs.mjs';
-import { LOCALIZED_ART_CARD_COPY } from './og-art-cards.locales.mjs';
+import { LOCALIZED_ART_CARD_COPY, LOCALIZED_CHART_TWINS_ART_CARD_COPY } from './og-art-cards.locales.mjs';
 
 export const ART_CARD_DIR = '/assets/og/v8';
 
@@ -108,10 +110,34 @@ export function horoscopeArtCard(slug, surfaceKey) {
  * own painting, the twin cameos (public/assets/card-art/twins-hero-1200.webp),
  * on the right, and on the left a small Sun and Moon disc, the kicker, the
  * headline and a line. `npm run data:og -- --only-chart-twins-card` draws it
- * alone. The localized chart twins pages keep their cards, and the v2 card
- * (/assets/og/v2/tool/chart-twins.png) stays published for links already shared.
+ * alone. The Spanish, French, Italian, Portuguese and Russian chart twins
+ * pages have the same card in their own words (chartTwinsArtCard), and the v2
+ * cards (/assets/og/v2/tool/chart-twins.png and its Russian twin,
+ * /assets/og/v2/ru/tool/chart-twins.png) stay published for links already shared.
  */
 export const CHART_TWINS_ART_CARD = `${ART_CARD_DIR}/tool/chart-twins.jpg`;
+
+/**
+ * The locales whose chart twins page has the card in its own words
+ * (2026-11-26): the four art card locales and Russian, whose other cards are
+ * the 16-colour v2 family; a painting cannot go through that palette, so its
+ * chart twins card sits here with the other art cards, in `ru/`.
+ */
+export const CHART_TWINS_ART_CARD_LOCALES = Object.freeze([...ART_CARD_LOCALES, 'ru']);
+
+/** @param {string} locale @param {string} caller */
+function chartTwinsLocale(locale, caller) {
+  if (locale !== 'en' && !CHART_TWINS_ART_CARD_LOCALES.includes(locale)) throw new Error(`${caller}: no chart twins card in ${locale}`);
+  return locale;
+}
+
+/**
+ * A chart twins page's card: CHART_TWINS_ART_CARD in English, `es/tool/chart-twins.jpg` in Spanish.
+ * @param {string} [locale]
+ */
+export function chartTwinsArtCard(locale = 'en') {
+  return chartTwinsLocale(locale, 'chartTwinsArtCard') === 'en' ? CHART_TWINS_ART_CARD : `${ART_CARD_DIR}/${locale}/tool/chart-twins.jpg`;
+}
 
 /** The words on the chart twins card. */
 export const CHART_TWINS_ART_CARD_COPY = Object.freeze({
@@ -122,6 +148,19 @@ export const CHART_TWINS_ART_CARD_COPY = Object.freeze({
 
 export const CHART_TWINS_ART_CARD_ALT = 'Your chart twins: public figures who share your Sun and Moon signs, beside a painting of two cameo portraits facing each other.';
 
+/**
+ * A chart twins card's words and alt text, in English or in the page's own
+ * language (og-art-cards.locales.mjs, from src/lib/og-art-cards-copy.ts).
+ * @param {string} [locale]
+ * @returns {{ kicker: string, title: string, line: string, alt: string }}
+ */
+export function chartTwinsArtCardCopy(locale = 'en') {
+  if (chartTwinsLocale(locale, 'chartTwinsArtCardCopy') === 'en') return Object.freeze({ ...CHART_TWINS_ART_CARD_COPY, alt: CHART_TWINS_ART_CARD_ALT });
+  const copy = LOCALIZED_CHART_TWINS_ART_CARD_COPY[locale];
+  if (!copy) throw new Error(`chartTwinsArtCardCopy: no words for ${locale}`);
+  return Object.freeze({ ...copy });
+}
+
 /** Every art card's public path: the homepage, the signs in zodiac order, each sign's horoscopes, then the chart twins card. */
 export const ART_CARDS = Object.freeze([
   HOME_ART_CARD,
@@ -130,12 +169,19 @@ export const ART_CARDS = Object.freeze([
   CHART_TWINS_ART_CARD,
 ]);
 
-/** Every localized card: each locale's homepage, its twelve sign guides, then its daily horoscopes. */
-export const LOCALIZED_ART_CARDS = Object.freeze(ART_CARD_LOCALES.flatMap((locale) => [
-  homeArtCard(locale),
-  ...OG_SIGNS.map((sign) => signArtCard(sign.slug, locale)),
-  ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? OG_SIGNS.map((sign) => localizedHoroscopeArtCard(sign.slug, locale)) : []),
-]));
+/**
+ * Every localized card: each locale's homepage, its twelve sign guides, its
+ * daily horoscopes and its chart twins card, then the Russian chart twins card.
+ */
+export const LOCALIZED_ART_CARDS = Object.freeze([
+  ...ART_CARD_LOCALES.flatMap((locale) => [
+    homeArtCard(locale),
+    ...OG_SIGNS.map((sign) => signArtCard(sign.slug, locale)),
+    ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? OG_SIGNS.map((sign) => localizedHoroscopeArtCard(sign.slug, locale)) : []),
+    chartTwinsArtCard(locale),
+  ]),
+  ...CHART_TWINS_ART_CARD_LOCALES.filter((locale) => !ART_CARD_LOCALES.includes(locale)).map((locale) => chartTwinsArtCard(locale)),
+]);
 
 /**
  * Each card stays well under WhatsApp's 600 KB link-preview limit, the

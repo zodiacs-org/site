@@ -31,7 +31,8 @@
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --only-chart-twins-card # the chart twins art card alone (v8, JPEG)
- *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
+ *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese, with the Russian chart twins card
+ *   npm run data:og -- --only-localized-chart-twins-cards # the chart twins card alone in es, fr, it, pt and ru (v8, JPEG)
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
  *   npm run data:og -- --only-good-days-card # the good day finder's card (good-days/v1, JPEG)
  *   npm run data:og -- --only-events      # the events hub card, and a card for each published event page that has none
@@ -89,6 +90,9 @@ const {
   CHART_TWINS_ART_CARD_COPY,
   CHART_TWINS_ART_CARD_DISCS,
   CHART_TWINS_ART_CARD_SHADE,
+  CHART_TWINS_ART_CARD_LOCALES,
+  chartTwinsArtCard,
+  chartTwinsArtCardCopy,
   HOME_ART_CARD,
   HOME_ART_CARD_COPY,
   HOME_ART_CARD_CROP,
@@ -602,6 +606,61 @@ function artChartTwinsCard(copy = CHART_TWINS_ART_CARD_COPY) {
   </div>`;
   return shell(body, 'zodiacs.org/chart-twins/');
 }
+
+/**
+ * The chart twins card in another language (2026-11-26), in the English
+ * card's layout and words from og-art-cards.locales.mjs, with the localized
+ * route in the footer. A headline line longer than the column steps the
+ * headline down (`data-fit`), and the line steps down until the column fits
+ * (`data-fit-column`). The Russian card sets its words in the Russian cards'
+ * faces (EB Garamond Cyrillic and Golos Text, with the Latin faces for the
+ * punctuation the Cyrillic subsets leave out) in the Russian frame. The
+ * English card above draws as published.
+ */
+function localizedChartTwinsCard(locale) {
+  const copy = chartTwinsArtCardCopy(locale);
+  const art = CHART_TWINS_ART_CARD_ART;
+  const { size, sun, moon } = CHART_TWINS_ART_CARD_DISCS;
+  const sunDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${sun}"/><circle cx="50" cy="50" r="30" fill="none" stroke="${VOID}" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="${VOID}"/></svg>`;
+  const moonDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${moon}"/><path d="M57 24 A27 27 0 1 0 57 76 A20 27 0 1 1 57 24 Z" fill="${VOID}"/></svg>`;
+  const words = copy.title.split(' ');
+  const last = words.pop();
+  const title = `${escapeHtml(words.join(' '))}<br>${escapeHtml(last ?? '')}`;
+  const russian = locale === 'ru';
+  const faces = russian ? `<style>
+    @font-face { font-family: 'Instrument Sans'; font-weight: 100 900; src: url(${FONTS.sans}) format('woff2'); }
+    @font-face { font-family: 'JetBrains Mono'; font-weight: 100 800; src: url(${FONTS.mono}) format('woff2'); }
+    .footer { font-family: 'JetBrains Mono Cyrillic', 'JetBrains Mono', monospace; }
+    .twins-kicker { font-family: 'EB Garamond Cyrillic', 'EB Garamond Lockup', serif; font-weight: 500; font-size: 30px; color: ${INK2}; }
+    .twins-title { font-family: 'EB Garamond Cyrillic', 'EB Garamond Lockup', serif; font-weight: 500; letter-spacing: -0.005em; }
+    .twins-line { font-family: 'Golos Text', 'Instrument Sans', sans-serif; color: ${INK2}; }
+  </style>` : '';
+  const kicker = russian ? 'twins-kicker' : 'kicker';
+  const display = russian ? 'twins-title' : 'display';
+  const line = russian ? 'twins-line' : 'sub';
+  const body = `${faces}
+  <img src="${ART.twins}" width="1200" height="800" alt=""
+    style="position: absolute; top: ${art.top}px; left: ${art.left}px; width: ${art.width}px; height: ${art.height}px; filter: ${art.filter};
+      -webkit-mask-image: ${art.mask}; -webkit-mask-composite: source-in; mask-image: ${art.mask}; mask-composite: intersect;" />
+  <div style="position: absolute; inset: 0; background: ${CHART_TWINS_ART_CARD_SHADE.join(', ')};"></div>
+  <div data-fit-column style="position: absolute; left: 88px; top: 16px; bottom: 96px; width: 520px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: 14px; flex: none;">${sunDisc}${moonDisc}</div>
+    <span class="${kicker}" style="display: block; margin: 22px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="${display}" data-fit="${CHART_TWINS_TITLE_MEASURE}" style="font-size: 104px; margin-top: 6px; line-height: 0.96; white-space: nowrap; width: max-content;">${title}</div>
+    <div class="${line}" data-shrink style="margin-top: 22px; font-size: 25px; line-height: 1.4; max-width: 400px; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>`;
+  const footer = `zodiacs.org${chartTwinsRoute(locale)}`;
+  return russian ? russianShell(body, footer) : shell(body, footer);
+}
+
+/**
+ * The widest a localized headline line may run, in px: as far as the English
+ * card's "Your chart" reaches, short of the first cameo's frame.
+ */
+const CHART_TWINS_TITLE_MEASURE = 430;
+
+/** A chart twins page's address: /chart-twins/, or /es/chart-twins/. */
+const chartTwinsRoute = (locale) => (locale === 'en' ? '/chart-twins/' : `/${locale}/chart-twins/`);
 
 /**
  * Steps a long name down until it fits its measure (`data-fit`, px), a
@@ -1344,7 +1403,7 @@ if (process.argv.includes('--only-terminal-card')) {
 // 400px tier of the canonical icons, drawn at ART_CARD_DISC.
 if (process.argv.includes('--only-localized-art-cards')) {
   // The localized cards only: the English art cards are published and stay as they are.
-  console.log('Rendering the Spanish, French, Italian and Portuguese art cards…');
+  console.log('Rendering the Spanish, French, Italian and Portuguese art cards, and the Russian chart twins card…');
   ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
   for (const s of SIGNS) {
     ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
@@ -1355,6 +1414,8 @@ if (process.argv.includes('--only-localized-art-cards')) {
     ...SIGNS.map((s) => [signArtCard(s.slug, locale), localizedSignCard(s, locale)]),
     ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? SIGNS.map((s) => [localizedHoroscopeArtCard(s.slug, locale), localizedHoroscopeCard(s, locale)]) : []),
   ]);
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  for (const locale of CHART_TWINS_ART_CARD_LOCALES) cards.push([chartTwinsArtCard(locale), localizedChartTwinsCard(locale)]);
   let written = 0;
   for (const [path, html] of cards) {
     const raw = await capture(html, fitArtNames);
@@ -1416,6 +1477,29 @@ if (process.argv.includes('--only-chart-twins-card')) {
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, bytes);
   console.log(`Done: ${CHART_TWINS_ART_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// The chart twins card in Spanish, French, Italian, Portuguese and Russian
+// (2026-11-26), alone, so every other art card keeps its bytes.
+// --only-localized-art-cards draws them with the rest.
+if (process.argv.includes('--only-localized-chart-twins-cards')) {
+  console.log('Rendering the localized chart twins art cards…');
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  let written = 0;
+  for (const locale of CHART_TWINS_ART_CARD_LOCALES) {
+    const path = chartTwinsArtCard(locale);
+    const raw = await capture(localizedChartTwinsCard(locale), fitArtNames);
+    const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+    if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+    const output = resolve(root, `public${path}`);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, bytes);
+    written += bytes.length;
+    console.log(`  ${path}, ${(bytes.length / 1024).toFixed(0)}KB`);
+  }
+  await browser.close();
+  console.log(`Done: ${CHART_TWINS_ART_CARD_LOCALES.length} localized chart twins cards, ${(written / 1024).toFixed(0)}KB.`);
   process.exit(0);
 }
 

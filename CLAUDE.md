@@ -323,9 +323,26 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   300 KB budget, counted in the v8 folder's 12 MiB; words, art placement and
   shade live in `src/lib/og-art-cards.mjs`, which `og-art-cards.test.ts`
   holds to the page. Not in the drift job (Chromium output);
-  `verify-og-cards` checks it. The localized chart twins pages keep their
-  cards, and the v2 `og/v2/tool/chart-twins.png` stays published for links
-  already shared)
+  `verify-og-cards` checks it. The /share/chart-twins/ page shows it when a
+  link carries no share (`src/server/result-preview.ts`). The v2
+  `og/v2/tool/chart-twins.png` stays published for links already shared)
+- `public/assets/og/v8/{es,fr,it,pt,ru}/tool/chart-twins.jpg` ← `npm run
+  data:og -- --only-localized-chart-twins-cards` (the same card on the
+  Spanish, French, Italian, Portuguese and Russian chart twins pages,
+  owner-approved 2026-11-26, with the localized route in the footer;
+  `--only-localized-art-cards` draws them with the rest and neither redraws
+  the English one. A long headline line steps down to the English card's
+  measure. Spanish, French, Italian and Portuguese take the headline and line
+  from their `og.tools.chart-twins` card copy, the line without its word for
+  "verified"; the kickers and the Russian words are written in
+  `src/lib/og-art-cards-copy.ts`, and all reach the generator through
+  `og-art-cards.locales.mjs`. The Russian card is a painting, so it sits here
+  rather than in the 16-colour `og/v2/ru/` family, set in EB Garamond
+  Cyrillic and Golos Text in the Russian frame; `/ru/chart-twins/` reaches it
+  through the route's `artCard` in `src/strings/seo.ru.mjs`, and the v2
+  `og/v2/ru/tool/chart-twins.png` stays in that family, published for links
+  already shared. Counted in the localized cards' 12 MiB; not in the drift
+  job; `verify-og-cards` checks them)
 - `public/assets/og/year-sky/v1/2027.jpg` ← `npm run data:og -- --only-year-sky-card`
   (the share card for /your-2027-sky/; words in `OG_EN.yearSky`. Not in the
   drift job (Chromium output); `verify-og-cards` checks it)

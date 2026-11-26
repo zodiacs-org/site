@@ -24,6 +24,8 @@ import {
   horoscopeCard,
   horoscopeStory,
   handleChartTwinsLinkRequest,
+  CHART_TWINS_PAGE_CARD,
+  CHART_TWINS_PAGE_CARD_ALT,
   handleChartTwinsStoryRequest,
   handleFamousChartImageRequest,
   handleFamousChartLinkRequest,
@@ -85,6 +87,7 @@ import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
 import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading';
+import { CHART_TWINS_ART_CARD, CHART_TWINS_ART_CARD_ALT } from '../lib/og-art-cards.mjs';
 
 const COMPAT = 'as=leo&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
 /** The same result as a link made before the assistant tools stopped writing names (0.6.1): it opens, without them. */
@@ -603,7 +606,14 @@ describe('share link pages', () => {
     // A bare address opens the directory; a named person absent from the directory is not a share.
     expect(await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/'))).text()).toContain('<h1>Famous birth charts</h1>');
     expect((await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=someone-else'))).status).toBe(404);
-    expect(await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&d=1990-05-03'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/chart-twins.png"');
+    // A link that is not a share opens on the chart twins page's art card (2026-11-26).
+    expect(CHART_TWINS_PAGE_CARD).toBe(CHART_TWINS_ART_CARD);
+    expect(CHART_TWINS_PAGE_CARD_ALT).toBe(CHART_TWINS_ART_CARD_ALT);
+    const twinsDefault = await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&d=1990-05-03'))).text();
+    expect(twinsDefault).toContain(`<meta property="og:image" content="https://zodiacs.org${CHART_TWINS_ART_CARD}">`);
+    expect(twinsDefault).toContain('<meta property="og:image:type" content="image/jpeg">');
+    expect(twinsDefault).toContain(`<meta property="og:image:alt" content="${CHART_TWINS_ART_CARD_ALT}">`);
+    expect(twinsDefault).not.toContain('/assets/og/v2/tool/chart-twins.png');
     expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/saturn-return.png"');
     expect((await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'))).headers.get('location'))
       .toBe('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12');

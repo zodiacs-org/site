@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
-import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
+import { RU_OG_ART_CARDS, RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { russianDeferredStyleURLs, russianDeferredStylesReady } from './i18n-r2-deferred-styles.mjs';
@@ -110,7 +110,9 @@ await withPreview({ port: 4418 }, async (baseURL) => {
             `${route}: x-default is not English`,
           );
         }
-        const expectedImage = RU_OG_ROUTE_CARDS[route]
+        const expectedImage = RU_OG_ART_CARDS[route]
+          ? `https://zodiacs.org${RU_OG_ART_CARDS[route]}`
+          : RU_OG_ROUTE_CARDS[route]
           ? `https://zodiacs.org/assets/og/v2/ru/${RU_OG_ROUTE_CARDS[route]}`
           : null;
         check(state.ogImage === expectedImage, `${route}: og:image=${state.ogImage}`);
