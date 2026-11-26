@@ -29,7 +29,7 @@ import type { CatalogLocale as Locale } from './i18n';
 import { shareCardFormat, shareCardText } from './share-card-copy';
 import { communicationRead } from './communication';
 import { approachRead } from './approach';
-import { chartSignature, type ChartSignature } from './chart-signature';
+import { chartSignature, type ChartSignature, type ChartSignatureInput } from './chart-signature';
 import { moonIsUncertain, moonLabel } from './moon-certainty';
 import { t } from './i18n';
 import {
@@ -91,7 +91,7 @@ export function primaryShareCardVariant(locale: Locale, hasAngles: boolean): Pri
 
 /** The authored chart-signature corpus is deliberately unavailable off EN. */
 export function authoredSignatureForLocale(
-  chart: Pick<Chart, 'bodies' | 'angles' | 'aspects' | 'moonSignCandidates'>,
+  chart: ChartSignatureInput,
   locale: Locale,
 ): ChartSignature | null {
   return locale === 'en' ? chartSignature(chart, locale) : null;
@@ -1563,6 +1563,20 @@ async function drawChartSheet(
   return blob;
 }
 
+/** Time and Moon certainty notes for a single-placement share card. */
+export function placementCardNotes(
+  chart: BigThreeCardChart,
+  placement: 'moon' | 'rising',
+  locale: Locale,
+  options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous'> & { moonSettled?: boolean } = {},
+): string[] {
+  const uncertainMoon = placement === 'moon' && moonIsUncertain(chart);
+  return [
+    ...shareCardTimeNotes(locale, { ...options, moonAmbiguous: options.moonAmbiguous || uncertainMoon }),
+    ...(options.moonSettled ? [shareCardText(locale, 'moonSettledNote')] : []),
+  ];
+}
+
 async function drawPlacementCard(
   chart: BigThreeCardChart,
   placement: 'moon' | 'rising',
@@ -1570,13 +1584,13 @@ async function drawPlacementCard(
 ): Promise<Blob> {
   if (options.moonAmbiguous && chart.moonSignCandidates === undefined) chart = { ...chart, moonSignCandidates: [] };
   const locale = options.locale ?? 'en';
-  const timeNotes = [...shareCardTimeNotes(locale, options), ...(options.moonSettled ? [shareCardText(locale, 'moonSettledNote')] : [])];
   const source = placement === 'moon'
     ? chart.bodies.find((body) => body.body === 'Moon')?.lon
     : chart.angles?.asc;
   if (source == null) throw new Error(`chart missing ${placement}`);
   const sign = signForLongitude(source);
   const uncertainMoon = placement === 'moon' && moonIsUncertain(chart);
+  const timeNotes = placementCardNotes(chart, placement, locale, options);
   // A dedicated one-placement composition keeps the existing Big Three card stable.
   await document.fonts.ready;
   const disc = await loadDisc(uncertainMoon ? '' : sign.slug);
@@ -1786,13 +1800,19 @@ export async function preparePlacementCard(
   options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous' | 'birthDate'> = {},
 ): Promise<PreparedChartCard> {
   const drawn = await imagePositions(chart, options.birthDate);
-  // Without a birth time, the Moon's sign only when it held all that date everywhere.
-  const settled = placement === 'moon' && !drawn.angles ? await untimedMoonSign(options.birthDate) : null;
+  // Without a birth time, the Moon's sign only when it held all that date everywhere,
+  // and its uncertainty note follows that same worldwide check so nothing about the birthplace leaks.
+  const untimedMoon = placement === 'moon' && !drawn.angles;
+  const settled = untimedMoon ? await untimedMoonSign(options.birthDate) : null;
   return {
     blob: await drawPlacementCard(
       settled ? { ...drawn, moonSignCandidates: [settled] } : drawn,
       placement,
-      { ...options, locale, ...(settled ? { moonAmbiguous: false, moonSettled: true } : {}) },
+      {
+        ...options,
+        locale,
+        ...(untimedMoon ? { moonAmbiguous: settled === null, ...(settled ? { moonSettled: true } : {}) } : {}),
+      },
     ),
     filename: placement === 'moon' ? 'zodiacs-moon-sign.png' : 'zodiacs-rising-sign.png',
   };

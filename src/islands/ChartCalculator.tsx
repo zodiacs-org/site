@@ -17,7 +17,7 @@ import SignChip from './SignChip';
 import PlanetGlyph from '../components/PlanetGlyph';
 import AspectGlyph from '../components/AspectGlyph';
 import LayerChips from './explorer/LayerChips';
-import { moonCandidates, moonIsUncertain, moonLabel } from '../lib/moon-certainty';
+import { moonAspectsUnsettled, moonCandidates, moonDegreeUnsettled, moonIsUncertain, moonLabel, moonNoticeKey } from '../lib/moon-certainty';
 import { createModuleLoader } from '../lib/module-load';
 import { downloadCalculationReceipt } from '../lib/receipt-download';
 import { savedRecordsEnabled } from '../lib/profile/saved-record-flags';
@@ -40,7 +40,8 @@ import { formatLongitude, signBySlug, signForLongitude, signName, signPrepositio
 import { signInRu } from '../lib/sign-ru';
 import { signIcon } from '../lib/sign-icon';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
-import { assessLocalDateReference } from '../lib/time/local-date-reference';
+import { assessLocalDateReference, type LocalDateReferenceAssessment } from '../lib/time/local-date-reference';
+import { localDateMoonSigns } from '../lib/moon-day-bounds';
 import { houseOf } from '../lib/engine/houses';
 import { moonPhaseNameFromAngle } from '../lib/engine/lite';
 import { decodeChartLink, NAME_MAX } from '../lib/share';
@@ -875,7 +876,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           planetLabel(locale, b.body),
           b.body === 'Moon' && chart && moonIsUncertain(chart)
             ? `${moonLabel(chart, locale)} · ${t(locale, 'needsBirthTime')}`
-            : formatLongitude(b.lon, locale),
+            // A Moon sign settled across the birth date, without a birth time, is the sign alone.
+            : b.body === 'Moon' && chart && moonDegreeUnsettled(chart) ? moonLabel(chart, locale)
+              : formatLongitude(b.lon, locale),
           b.house != null ? `${t(locale, 'house')} ${b.house}` : '',
           b.retrograde ? 'Rx' : '',
         ].filter(Boolean).join(', ');
@@ -1468,10 +1471,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       }
       const effectiveTime = input.timeKnown ? input.time : '12:00';
       const resolved = resolveLocalToUtc(input.date, effectiveTime, input.city.tz, { longitude: input.city.lon });
+      let referenceAssessment: LocalDateReferenceAssessment | null = null;
       if (!input.timeKnown) {
         try {
-          if (assessLocalDateReference(input.date, resolved.utc, input.city.tz).referenceStatus !== 'member') throw localDateReferenceFailure;
+          referenceAssessment = assessLocalDateReference(input.date, resolved.utc, input.city.tz);
         } catch { throw localDateReferenceFailure; }
+        if (referenceAssessment.referenceStatus !== 'member') throw localDateReferenceFailure;
       }
       const calculationInput = {
         utc: resolved.utc,
@@ -1496,9 +1501,15 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
 
       if (!input.timeKnown) {
         // A reference instant does not verify the Moon's possible signs across
-        // the birth date. Empty candidates use the existing unresolved state;
-        // the numerical chart and portable receipt remain the reference result.
-        result.moonSignCandidates = [];
+        // the birth date; the date's own limits can. One sign when the Moon
+        // held it all day, both when it changed sign, and empty candidates
+        // (the existing unresolved state) when those limits are not
+        // established. The numerical chart and portable receipt remain the
+        // reference result.
+        result.moonSignCandidates = referenceAssessment ? await localDateMoonSigns({
+          date: input.date, place: input.city, assessment: referenceAssessment, referenceFlags: resolved.flags,
+          moonLongitude: (utc) => engine.bodyLongitude('Moon', utc),
+        }) : [];
         nextMoonAmbiguous = moonIsUncertain(result);
       }
       if (!runIsCurrent()) return;
@@ -2137,11 +2148,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         };
       });
     const settled = ps.filter((placement) => placement.body !== 'Moon' || !moonIsUncertain(chart));
+    // A Moon sign settled across the birth date still leaves its aspects to the birth time.
+    const moonAspectsOut = moonAspectsUnsettled(chart);
     return {
       ps,
       top: chartActionDockModule.topAspects(
         chart.aspects.filter((aspect) => !aspect.a.includes('Node') && !aspect.b.includes('Node')
-          && (!moonIsUncertain(chart) || (aspect.a !== 'Moon' && aspect.b !== 'Moon'))),
+          && (!moonAspectsOut || (aspect.a !== 'Moon' && aspect.b !== 'Moon'))),
         4,
       ),
       weather: chartActionDockModule.chartWeather(
@@ -2386,7 +2399,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {chart.flags.includes('no-time') && (
             <p class="notice" role="status">
               {t(locale, 'noTimeNotice')} {t(locale, 'unknownTimeSunReference')}
-              {moonAmbiguous && ` ${t(locale, 'moonUnverifiedNotice')}`}
+              {/* Both signs of a date the Moon changed sign on were verified; only which held at birth is not. */}
+              {moonAmbiguous && ` ${t(locale, moonNoticeKey(chart) ?? 'moonUnverifiedNotice')}`}
             </p>
           )}
           {fromLink && (
@@ -2434,8 +2448,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 );
               }
               const s = signForLongitude(lon);
+              // A Moon sign settled across the birth date, without a birth time, is the sign alone: the noon
+              // reference's degree stays with the other reference positions in the table.
+              const signOnly = kind === 'moon' && moonDegreeUnsettled(chart);
               return (
-                <div class="three-card shell tinted" style={`--sign:${s.hue}`} key={kind}>
+                <div class="three-card shell tinted" style={`--sign:${s.hue}`} key={kind} data-moon-sign-only={signOnly || undefined}>
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
@@ -2444,7 +2461,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       </picture>
                       {signName(s, locale)}
                     </span>
-                    <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>
+                    {!signOnly && <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>}
                     {showsEnglishInterpretation && readBigThree && <p class="three-card__read">{readBigThree(kind, s.slug)}</p>}
                     <a class="three-card__more" href={localizePath(locale, `/${s.slug}/`)}>{t(locale, 'read')} {signName(s, locale)} →</a>
                   </div>
@@ -2525,7 +2542,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           mc={chart.angles?.mc ?? null}
                           cusps={viewCusps}
                           aspects={lens === 'natal'
-                            ? chart.aspects.filter((a) => a.orb < 6 && aspectTypes.includes(a.type))
+                            ? chart.aspects.filter((a) => (
+                                a.orb < 6
+                                && aspectTypes.includes(a.type)
+                                && (!tourVisual || (!moonAmbiguous && !moonAspectsUnsettled(chart)) || (a.a !== 'Moon' && a.b !== 'Moon'))
+                              ))
                             : []}
                           renderOverlay={lensRing ?? undefined}
                           animate={firstResult || 'fade'}
@@ -2579,7 +2600,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       </div>
                       <div data-depth="intermediate">
                       {EntityPicker ? <EntityPicker
-                        scene={scene}
+                        scene={viewScene ?? scene}
                         selection={selection}
                         locale={locale}
                         onSelect={(ref) => {
@@ -2613,7 +2634,10 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         {depthOpen && depthMod && (
                           <depthMod.default
                             bodies={chart.bodies}
-                            aspects={chart.aspects.filter((a) => a.orb < 6)}
+                            aspects={chart.aspects.filter((a) => (
+                              a.orb < 6
+                              && (!tourVisual || (!moonAmbiguous && !moonAspectsUnsettled(chart)) || (a.a !== 'Moon' && a.b !== 'Moon'))
+                            ))}
                             cusps={viewCusps}
                             asc={asc}
                             mc={chart.angles?.mc ?? null}
@@ -3101,7 +3125,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                             </td>
                             <td class="mono">{p.label.split(' ')[0]}</td>
                             <td>{p.body === 'Moon' && moonIsUncertain(chart)
-                              ? <>{moonLabel(chart, locale)} · {t(locale, 'needsBirthTime')}</>
+                              ? <><SignChip lon={p.lon} locale={locale} /> · {t(locale, 'needsBirthTime')}</>
                               : <SignChip lon={p.lon} locale={locale} />}</td>
                             {chart.houses && <td class="mono">{p.house}</td>}
                             <td class="mono calc__retro">{p.retrograde ? 'Rx' : ''}</td>
@@ -3121,7 +3145,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       {chart.aspects.map((a) => {
                         const ref: EntityRef = { kind: 'aspect', a: a.a, b: a.b, type: a.type };
                         const inScene = aspectTypes.includes(a.type)
-                          && scene.aspects.some((x) => x.a === a.a && x.b === a.b && x.type === a.type);
+                          && (viewScene ?? scene).aspects.some((x) => x.a === a.a && x.b === a.b && x.type === a.type);
                         const isSel = selection?.kind === 'aspect'
                           && selection.a === a.a && selection.b === a.b && selection.type === a.type;
                         const line = (

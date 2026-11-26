@@ -24,6 +24,7 @@ import { softenHealth } from '../ai-tools/features/reading-guards.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
 import type { VedicSignsShare } from '../lib/vedic-signs/share.js';
 import { AYANAMSA_NAME, RASHIS } from '../lib/vedic-signs/wording.js';
+import type { YourDayShare } from '../lib/personal-day/share.js';
 import {
   SKY_PLANETS,
   type BigThreeShare,
@@ -732,5 +733,38 @@ export function retrogradeForYouCardModel(share: RetrogradeForYouShare, events: 
     confidence: null,
     hue: HUES[sign],
     sign,
+  };
+}
+
+// ── The personal day (src/lib/personal-day/share.ts) ──
+
+export interface YourDayCardModel {
+  /** The person's Sun sign: its hue and its art on the card. */
+  sign: ShareSign;
+  hue: string;
+  /** "My day, 9 November 2026" */
+  kicker: string;
+  /** "Taurus Sun" */
+  title: string;
+  /** "My day, 9 November 2026: Taurus Sun", for the page. */
+  heading: string;
+  /** Plain description of the personal day reading for this Sun sign. */
+  line: string;
+  confidence: string | null;
+}
+
+/**
+ * The shared card for a personal day: the sky date and the person's Sun sign,
+ * with no Moon sign, rising sign, natal point, confidence, or birth details.
+ */
+export function yourDayCardModel(share: YourDayShare): YourDayCardModel {
+  const sign = share.sun;
+  const name = signName(sign);
+  const kicker = `My day, ${fullDate(share.date)}`;
+  const title = `${name} Sun`;
+  return {
+    sign, hue: HUES[sign], kicker, title, heading: `${kicker}: ${title}`,
+    line: `The day’s transits for this ${name} Sun chart, ranked by strength.`,
+    confidence: null,
   };
 }

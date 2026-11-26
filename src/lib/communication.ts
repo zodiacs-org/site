@@ -1,6 +1,6 @@
 import type { AspectType, BodyName, Chart } from './engine/types';
 import { MOON } from './interpretations';
-import { moonIsUncertain, moonLabel } from './moon-certainty';
+import { moonAspectsUnsettled, moonIsUncertain, moonLabel } from './moon-certainty';
 
 export type CommunicationSign = keyof typeof MERCURY_SIGN;
 export type CommunicationAspectTarget = keyof typeof MERCURY_ASPECT;
@@ -127,6 +127,8 @@ export function communicationRead(chart: Chart): CommunicationRead {
   const mars = chart.bodies.find((body) => body.body === 'Mars');
   const mercurySign = mercury ? signForLongitude(mercury.lon) : null;
   const uncertainMoon = moonIsUncertain(chart);
+  // A Moon sign settled across the birth date still leaves its aspects to the birth time.
+  const moonAspectsOut = moonAspectsUnsettled(chart);
   const moonSign = moon && !uncertainMoon ? signForLongitude(moon.lon) : null;
   const marsSign = mars ? signForLongitude(mars.lon) : null;
   const aspects = mercury
@@ -135,7 +137,7 @@ export function communicationRead(chart: Chart): CommunicationRead {
         const target = aspect.a === 'Mercury'
           ? aspect.b
           : aspect.b === 'Mercury' ? aspect.a : null;
-        return target && !(target === 'Moon' && uncertainMoon) && ASPECT_TARGETS.has(target)
+        return target && !(target === 'Moon' && moonAspectsOut) && ASPECT_TARGETS.has(target)
           ? { ...aspect, target: target as CommunicationAspectTarget }
           : null;
       })

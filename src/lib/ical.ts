@@ -73,15 +73,12 @@ function fnv1a32(bytes: Uint8Array, basis: number): number {
  * of a degree.
  */
 export function transitContactUid(contact: TransitContact): string {
-  const shown = encoder.encode([
+  const hash = icalHash([
     formatIcalUtc(contact.exactUtc),
     contact.transitBody,
     contact.aspect,
     contact.natalPoint,
-  ].join('|'));
-  const hash = [0x811c9dc5, 0x050c5d1f]
-    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
-    .join('');
+  ]);
   return `transit-${hash}@zodiacs.org`;
 }
 
@@ -249,17 +246,25 @@ export function alarmLines(alarm: IcalAlarm): string[] {
 }
 
 /**
+ * Two FNV-1a hashes over the parts joined with '|', as 16 hex digits: the
+ * same parts always give the same digits, and they say nothing the parts do
+ * not.
+ */
+export function icalHash(parts: readonly string[]): string {
+  const shown = encoder.encode(parts.join('|'));
+  return [0x811c9dc5, 0x050c5d1f]
+    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
+    .join('');
+}
+
+/**
  * A stable UID from the fields an event shows: two FNV-1a hashes over the
  * joined parts, so the same event keeps its UID from one file to the next
  * and a calendar that imports the file again updates it instead of adding
  * a copy.
  */
 export function stableIcalUid(prefix: string, parts: readonly string[]): string {
-  const shown = encoder.encode(parts.join('|'));
-  const hash = [0x811c9dc5, 0x050c5d1f]
-    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
-    .join('');
-  return `${slug(prefix)}-${hash}@zodiacs.org`;
+  return `${slug(prefix)}-${icalHash(parts)}@zodiacs.org`;
 }
 
 /**
@@ -315,7 +320,11 @@ function personalSortKey(event: PersonalCalendarEvent): string {
  */
 export function serializePersonalEvents(
   events: readonly PersonalCalendarEvent[],
-  options: Pick<TransitCalendarOptions, 'generatedAt' | 'calendarName'>,
+  options: Pick<TransitCalendarOptions, 'generatedAt' | 'calendarName'> & {
+    /** RFC 5546 scheduling method; pass null for a static snapshot without ORGANIZER. */
+    method?: 'PUBLISH' | null;
+    prodId?: string;
+  },
 ): string {
   if (events.length === 0) throw new RangeError('A personal calendar requires at least one event.');
   const dtstamp = formatIcalUtc(options.generatedAt);
@@ -329,12 +338,13 @@ export function serializePersonalEvents(
       return true;
     });
 
+  const method = options.method === undefined ? 'PUBLISH' : options.method;
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Zodiacs.org//Personal Sky 1.0//EN',
+    `PRODID:${options.prodId ?? '-//Zodiacs.org//Personal Sky 1.0//EN'}`,
     'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
+    ...(method ? [`METHOD:${method}`] : []),
     `X-WR-CALNAME:${escapeIcalText(options.calendarName ?? 'Zodiacs.org personal sky')}`,
     ...prepared.flatMap(({ event }) => personalEventLines(event, dtstamp)),
     'END:VCALENDAR',

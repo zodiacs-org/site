@@ -148,7 +148,12 @@ describe('assistant site context', () => {
     expect(context).toContain('historical coverage and tzdb version depend on that host');
     expect(context).toContain('uses 12:00 local civil time as a reference');
     expect(context).toContain('omits the rising sign, angles, and houses');
-    expect(context).toContain('marks the Moon’s sign as unverified, because the Moon can change sign during that local date');
+    // The Moon's sign only where the birth date's own limits settle it, never noon's degree.
+    expect(context).toContain('Because the Moon can change sign during that local date, when the birth date’s start '
+      + 'and end can be confirmed the birth chart and Moon sign calculators name the Moon’s sign, without a degree, if '
+      + 'the Moon held it for the whole birth date, show both signs if the Moon changed sign that day, and otherwise '
+      + 'mark the Moon’s sign as unverified.');
+    expect(context).not.toContain('marks the Moon’s sign as unverified, because');
 
     expect(context).toContain('PAGE INVENTORY — DAILY AND MONTHLY HOROSCOPES');
     expect(context).toContain('Treat “today” as an exact UTC-date claim');

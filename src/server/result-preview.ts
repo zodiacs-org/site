@@ -3,7 +3,7 @@
  * rating, a birthday, the sky calendar's next event, a horoscope (a day, a
  * week, a month or a year), chart twins, a famous chart, a life milestone,
  * the big three, the Chinese zodiac, an invitation to compare charts, Vedic signs
- * (src/lib/vedic-signs/share.ts) and retrogrades (src/lib/retrograde-for-you/share.ts). Each has
+ * (src/lib/vedic-signs/share.ts), retrogrades, astrocartography and the personal day. Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
@@ -71,6 +71,8 @@ import {
   occasionCardModel,
   type OccasionCardModel,
   type PreviewSign,
+  yourDayCardModel,
+  type YourDayCardModel,
   skyCalendarCardModel,
   type SkyCalendarCardModel,
   type SkyData,
@@ -98,6 +100,16 @@ import {
   vedicSignsCleanQuery,
   vedicSignsQuery,
 } from '../lib/vedic-signs/share.js';
+import {
+  YOUR_DAY_PAGE_PATH,
+  YOUR_DAY_SHARE_IMAGE_PATH,
+  YOUR_DAY_SHARE_KEYS,
+  YOUR_DAY_SHARE_PATH,
+  YOUR_DAY_SHARE_STORY_PATH,
+  parseYourDayShare,
+  yourDayCleanQuery,
+  yourDayQuery,
+} from '../lib/personal-day/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -245,6 +257,7 @@ export const RESULT_SHARE_ROUTES = [
   'astrocartography-link', 'astrocartography-image', 'astrocartography-story',
   'vedic-signs-link', 'vedic-signs-image', 'vedic-signs-story',
   'retrograde-for-you-link', 'retrograde-for-you-image', 'retrograde-for-you-story',
+  'your-day-link', 'your-day-image', 'your-day-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -862,6 +875,14 @@ export function vedicSignsCard(model: VedicSignsCardModel, images: Map<ShareSign
     h('div', { style: { display: 'flex', fontSize: 24, lineHeight: 1.3, color: INK_SOFT, marginTop: '18px' } }, `Read with the ${model.ayanamsa}.`)), model.sun);
 }
 
+/**
+ * The personal day: the art of the person's Sun sign, the day in its hue, the Sun sign as the title and a plain line.
+ * It carries no contact, Moon or rising sign, natal point or birth detail, no disc, and keeps the brand's own ring.
+ */
+export function yourDayCard(model: YourDayCardModel, art: string[]) {
+  return frame(art, words({ discs: [], kicker: model.kicker, hue: model.hue, title: [titleBlock(model.title)], line: model.line, confidence: model.confidence }));
+}
+
 const PLATE_LEFT = 480;
 const PLATE_WIDTH = WIDTH - PLATE_LEFT;
 let plateShade: string | null = null;
@@ -1147,6 +1168,14 @@ export async function handleInviteImageRequest(request: Request): Promise<Respon
   if (!share) return errorResponse(400);
   const model = inviteCardModel(share);
   return imageFor(model.signs, artOfSigns(model.signs), (images, art) => inviteCard(model, images, art));
+}
+
+export async function handleYourDayImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseYourDayShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = yourDayCardModel(share);
+  return imageFor([], [model.sign], (_images, art) => yourDayCard(model, art));
 }
 
 // ── Stories (1080×1920) ──────────────────────────────────────────────
@@ -1479,6 +1508,17 @@ export function inviteStory(model: InviteCardModel, images: Map<ShareSign, strin
     storyLine(model.line),
     storyAction('Invite someone to compare charts', 'zodiacs.org/compatibility/invite'),
   ]), model.front, STORY_PAIR_FADE);
+}
+
+/** The personal day (C, the keepsake): the art of the person's Sun sign, the day, the Sun sign and a plain line. */
+export function yourDayStory(model: YourDayCardModel, art: string[]) {
+  return storyFrame(art, storyColumn([
+    storyKicker(model.kicker, model.hue),
+    storyTitle(model.title, storyFit([model.title], 112, 64)),
+    storyLine(model.line),
+    ...storyConfidence(model.confidence),
+    storyAction('Read your day', 'zodiacs.org/your-day'),
+  ]));
 }
 
 const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
@@ -2457,6 +2497,57 @@ export async function handleRetrogradeForYouLinkRequest(request: Request): Promi
   }));
 }
 
+export async function handleYourDayStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseYourDayShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = yourDayCardModel(share);
+  return storyFor([], [model.sign], (_images, art) => yourDayStory(model, art));
+}
+
+/** The personal day's page note: what a day's transits are read as. */
+const YOUR_DAY_NOTE = 'Astrology’s reading of one day’s transits to a birth chart: the weather of the day, not a guarantee of how it will go.';
+const YOUR_DAY_ABOUT = 'Zodiacs measures the day’s Moon, Sun and planets against your birth chart and ranks the contacts by strength. If you give a birth time, the reading shows the local time for contacts that become exact that day. It is worked out in your browser, and nothing about your birth is sent or kept.';
+
+function defaultYourDayPage(origin: string): SharePage {
+  return {
+    title: 'Your day on Zodiacs',
+    description: 'Today’s transits to your birth chart, ranked by strength.',
+    heading: 'Read your day',
+    imageUrl: `${origin}/assets/og/v2/tool/transits.png`,
+    imageType: 'image/png',
+    imageAlt: 'Transits on Zodiacs',
+    explanation: YOUR_DAY_ABOUT,
+    action: { label: 'Read your day', href: YOUR_DAY_PAGE_PATH },
+    note: YOUR_DAY_NOTE,
+  };
+}
+
+export async function handleYourDayLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
+  // has no script to do it, so the browser is sent to the share's own address (the day alone, or the plain page).
+  const clean = yourDayCleanQuery(url.searchParams);
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${YOUR_DAY_SHARE_PATH}${clean ? `?${clean}` : ''}`);
+  const share = parseYourDayShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultYourDayPage(url.origin)));
+  const model = yourDayCardModel(share);
+  return htmlResponse(sharePageHtml({
+    title: `${model.heading} on Zodiacs`,
+    description: model.line,
+    heading: model.heading,
+    imageUrl: `${url.origin}${YOUR_DAY_SHARE_IMAGE_PATH}?${yourDayQuery(share)}`,
+    story: { href: `${YOUR_DAY_SHARE_STORY_PATH}?${yourDayQuery(share)}`, filename: `zodiacs-your-day-${share.date}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `${model.heading}. ${model.line}`,
+    explanation: `${model.line} ${YOUR_DAY_ABOUT}`,
+    action: { label: 'Read your day', href: YOUR_DAY_PAGE_PATH },
+    more: { label: 'Open the transit tracker', href: '/transits/' },
+    note: YOUR_DAY_NOTE,
+  }));
+}
+
 // ── The deployed function's entry ────────────────────────────────────
 
 /**
@@ -2512,6 +2603,9 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'retrograde-for-you-link': { path: RETROGRADE_FOR_YOU_SHARE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouLinkRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', wholeQuery: true },
   'retrograde-for-you-image': { path: RETROGRADE_FOR_YOU_SHARE_IMAGE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouImageRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
   'retrograde-for-you-story': { path: RETROGRADE_FOR_YOU_SHARE_STORY_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouStoryRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
+  'your-day-link': { path: YOUR_DAY_SHARE_PATH, keys: YOUR_DAY_SHARE_KEYS, handle: handleYourDayLinkRequest, flag: 'PUBLIC_YOUR_DAY_ENABLED', wholeQuery: true },
+  'your-day-image': { path: YOUR_DAY_SHARE_IMAGE_PATH, keys: YOUR_DAY_SHARE_KEYS, handle: handleYourDayImageRequest, flag: 'PUBLIC_YOUR_DAY_ENABLED' },
+  'your-day-story': { path: YOUR_DAY_SHARE_STORY_PATH, keys: YOUR_DAY_SHARE_KEYS, handle: handleYourDayStoryRequest, flag: 'PUBLIC_YOUR_DAY_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
