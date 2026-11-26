@@ -1,23 +1,12 @@
 {
   "version": 1,
-  "id": "unknown-time-moon-four-locales-76167d0d65ca",
-  "baseCommit": "76167d0d65ca2908f325c84011deecf7b35e9a80",
+  "id": "sun-year-plate-sign-guides-dea5257151a3",
+  "baseCommit": "dea5257151a37317b7644682545dd8c9ae86cfff",
   "protectedPaths": [
-    "src/pages/es/birth-chart/index.astro",
-    "src/pages/es/index.astro",
-    "src/pages/es/methodology/index.astro",
-    "src/pages/es/moon-sign/index.astro",
-    "src/pages/fr/birth-chart/index.astro",
-    "src/pages/fr/index.astro",
-    "src/pages/fr/methodology/index.astro",
-    "src/pages/fr/moon-sign/index.astro",
-    "src/pages/it/birth-chart/index.astro",
-    "src/pages/it/index.astro",
-    "src/pages/it/methodology/index.astro",
-    "src/pages/it/moon-sign/index.astro",
-    "src/pages/pt/birth-chart/index.astro",
-    "src/pages/pt/index.astro",
-    "src/pages/pt/methodology/index.astro",
-    "src/pages/pt/moon-sign/index.astro"
+    "src/pages/[sign]/index.astro",
+    "src/pages/es/[sign]/index.astro",
+    "src/pages/fr/[sign]/index.astro",
+    "src/pages/it/[sign]/index.astro",
+    "src/pages/pt/[sign]/index.astro"
   ]
 }
