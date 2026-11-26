@@ -37,6 +37,20 @@ describe('transit itinerary calendar', () => {
     const text = unfold(serializeTransitWindows(periods, { ...options, timeKnown: false }));
     expect(text.match(/BEGIN:VEVENT/g)).toHaveLength(1);
     expect(text).toContain('Uses reference natal positions');
+
+    const disputed = serializeTransitWindows(periods, { ...options, timeKnown: false, birthTimeKnown: true, hostZoneDiffers: true });
+    const unfoldedDisputed = unfold(disputed);
+    expect(unfoldedDisputed.match(/BEGIN:VEVENT/g)).toHaveLength(1);
+    expect(unfoldedDisputed).toContain('Calculated from the supplied birth time on a device whose time-zone data differed from our historical table near the birth date\\; its offset was used\\, Moon and angles are excluded\\, and period dates depend on it.');
+    expect(unfoldedDisputed).not.toContain('Birth time is unknown or unverified');
+    expect(disputed.split('\r\n').every((line) => new TextEncoder().encode(line).length <= 75)).toBe(true);
+
+    const untimedDisputed = unfold(serializeTransitWindows(periods, { ...options, timeKnown: false, birthTimeKnown: false, hostZoneDiffers: true }));
+    expect(untimedDisputed).toContain('Uses reference natal positions for local noon from a device whose time-zone data differed from our historical table near the birth date');
+
+    const calendarUnknownNote = 'Some countries switched from the Julian to the Gregorian calendar around this date. Check whether your birth record used the Gregorian (New Style) calendar.';
+    const ambiguous = unfold(serializeTransitWindows([window()], { ...options, notes: [calendarUnknownNote] }));
+    expect(ambiguous).toContain(calendarUnknownNote);
   });
   it('retains real gaps, stable identities and clipped-boundary explanations', () => {
     const a = window({ startClipped: true });

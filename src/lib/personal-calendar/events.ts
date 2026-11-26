@@ -9,6 +9,7 @@ import { signForLongitude, signName } from '../signs';
 import { transitLine } from '../transits';
 import type { PersonalSky } from './compute';
 import { PERSONAL_WORDS, fill, type PersonalAspect, type PersonalPlanet, type PersonalPoint } from './words';
+export { PERSONAL_WORDS };
 
 /** Absolute zodiacs.org pages each kind of event links back to. */
 export interface PersonalLinks {
@@ -23,6 +24,8 @@ export interface PersonalEventOptions {
   links: PersonalLinks;
   /** IANA zone that sets the local date of all-day events (the reader's own). */
   timeZone: string;
+  /** Optional engine warning notices to keep alongside each exported event. */
+  notes?: readonly string[];
 }
 
 /** Remind at 09:00 the day before an all-day event (15 hours before its midnight). */
@@ -59,7 +62,13 @@ function paragraphs(...parts: (string | false | undefined)[]): string {
 export function personalEvents(sky: PersonalSky, options: PersonalEventOptions): PersonalCalendarEvent[] {
   const words = PERSONAL_WORDS[options.locale];
   const { links } = options;
-  const unknown = !sky.timeKnown && words.unknownTime;
+  const timeNote = !sky.timeKnown
+    ? words.unknownTime
+    : sky.hostZoneDiffers
+      ? words.hostZoneDiffersTime
+      : false;
+  const extraNotes = (options.notes ?? []).filter(Boolean);
+  const timeTemplate = (sky.hostZoneDiffers || extraNotes.length > 0) ? words.calculatedAt : words.exactAt;
   const passLine = (pass: number, count: number) => count > 1 && fill(words.pass, { pass, count });
   const passTag = (pass: number, count: number) => (count > 1 ? ` · ${pass}/${count}` : '');
   const allDayAlarm = (summary: string) => [{ trigger: ALL_DAY_ALARM, description: summary }];
@@ -70,8 +79,9 @@ export function personalEvents(sky: PersonalSky, options: PersonalEventOptions):
     summary: words.solarTitle,
     description: paragraphs(
       fill(words.solarAbout, { position: signPosition(sky.sunLon, options.locale) }),
-      fill(words.exactAt, { time: utcMinute(at) }),
-      unknown,
+      fill(timeTemplate, { time: utcMinute(at) }),
+      timeNote,
+      ...extraNotes,
       words.note,
       fill(words.more, { url: links.solarReturn }),
     ),
@@ -89,9 +99,10 @@ export function personalEvents(sky: PersonalSky, options: PersonalEventOptions):
       summary,
       description: paragraphs(
         name.about,
-        fill(words.exactAt, { time: utcMinute(pass.at) }),
+        fill(timeTemplate, { time: utcMinute(pass.at) }),
         passLine(pass.pass, pass.passCount),
-        unknown,
+        timeNote,
+        ...extraNotes,
         words.note,
         fill(words.more, { url }),
       ),
@@ -116,10 +127,11 @@ export function personalEvents(sky: PersonalSky, options: PersonalEventOptions):
       summary,
       description: paragraphs(
         meaning,
-        fill(words.exactAt, { time: utcMinute(contact.exactUtc) }),
+        fill(timeTemplate, { time: utcMinute(contact.exactUtc) }),
         words.slowNote,
         passLine(contact.pass, contact.passCount),
-        unknown,
+        timeNote,
+        ...extraNotes,
         words.note,
         fill(words.more, { url: links.transits }),
       ),

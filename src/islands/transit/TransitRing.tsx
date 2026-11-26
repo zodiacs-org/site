@@ -18,6 +18,7 @@ import Wheel from '../../lib/wheel/Wheel';
 
 /** Reuse the already-lazy static wheel boundary in other calculation results. */
 export const StaticWheel = Wheel;
+export { resolveEngine2Notices } from '../../lib/chart-notices';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import AspectGlyph from '../../components/AspectGlyph';
 import { findInterAspects } from '../../lib/engine/synastry';
@@ -55,6 +56,7 @@ export interface TransitRingProps {
     cusps: number[] | null;
     minimal: MinimalBody[];
     timeKnown: boolean;
+    hostZoneDiffers?: boolean;
     calendarPositions: CalendarPositionsSource | null;
   };
   /** Positions of the transiting bodies at a UTC instant (engine-bound). */
@@ -64,6 +66,8 @@ export interface TransitRingProps {
   /** Exact-date request emitted by the separately lazy transit search. */
   focusRequest?: { contact: TransitContact } | null;
   eventDate?: { active: boolean; onSelect: () => void; onNow: () => void };
+  /** Additional caveats forwarded into the downloaded transit calendar. */
+  calendarNotes?: readonly string[];
 }
 
 const DAY = 86_400_000;
@@ -267,7 +271,7 @@ function NatalPointLabel({ locale, point }: { locale: Locale; point: string }) {
   );
 }
 
-export default function TransitRing({ locale, natal, computeSky, nowMs, focusRequest = null, eventDate }: TransitRingProps) {
+export default function TransitRing({ locale, natal, computeSky, nowMs, focusRequest = null, eventDate, calendarNotes }: TransitRingProps) {
   const c = COPY[locale];
   const showInterpretation = showsEnglishOnlyInterpretation(locale);
   const [offset, setOffset] = useState(0);          // days from now (may be fractional mid-tween)
@@ -535,7 +539,13 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
       <p class="sr-only" role="status">{announced}</p>
 
       {natal.calendarPositions && (
-        <CalendarSubscribe locale={locale} positions={natal.calendarPositions} contacts={events ?? undefined} />
+        <CalendarSubscribe
+          locale={locale}
+          positions={natal.calendarPositions}
+          contacts={events ?? undefined}
+          hostZoneDiffers={natal.hostZoneDiffers}
+          notes={calendarNotes}
+        />
       )}
 
       {/* The selected transit, foregrounded. */}

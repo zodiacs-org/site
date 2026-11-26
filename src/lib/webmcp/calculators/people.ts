@@ -8,6 +8,7 @@ import { findInterAspects, summarizePair } from '../../engine/synastry';
 import { groupReading } from '../../sharing/group';
 import { matchTwins, twinSigns, type TwinPerson } from '../../sharing/twins';
 import { signBySlug } from '../../signs';
+import { hasConfirmedBirthTime } from '../../time/saved-calendar';
 import { TRANSIT_ORB } from '../../transits';
 import { personNatal, type NatalReading } from './chart';
 import { ENGINE, fixed, pageUrl, position } from './format';
@@ -62,26 +63,30 @@ export const TRANSIT_BODIES: ReadonlySet<string> = new Set([
  * natal chart within the page's orb. The transiting Moon makes no contact; without a birth time neither does the
  * natal Moon.
  */
-export async function transitsResult(birth: Birth, at: Date) {
-  const natal = await personNatal(birth);
-  const timeKnown = natal.chart.input.timeKnown;
+export function buildTransitsResult(natal: NatalReading, at: Date) {
+  const confirmedTime = hasConfirmedBirthTime(natal.chart.input.timeKnown, natal.chart.flags);
   const natalPoints = natal.chart.bodies
-    .filter((body) => timeKnown || body.body !== 'Moon')
+    .filter((body) => confirmedTime || body.body !== 'Moon')
     .map(({ body, lon }) => ({ body, lon }));
   const sky = engine.computeBodies(at)
     .filter((body) => TRANSIT_BODIES.has(body.body))
     .map(({ body, lon, retrograde }) => ({ body, lon, retrograde }));
   const transiting = sky.filter((body) => body.body !== 'Moon').map(({ body, lon }) => ({ body, lon }));
   const contacts = findInterAspects(transiting, natalPoints).filter((hit) => hit.orb <= TRANSIT_ORB);
+  const natalPerson = person(natal);
   return {
     at: at.toISOString(),
-    natal: person(natal),
+    natal: confirmedTime ? natalPerson : { ...natalPerson, rising: null },
     sky: sky.map((body) => ({ body: body.body, ...position(body.lon), retrograde: body.retrograde })),
     contacts: contacts.map((hit) => ({ transiting: hit.a, natal: hit.b, type: hit.type, orb: fixed(hit.orb) })),
     orbLimit: TRANSIT_ORB,
     engine: ENGINE,
     page: pageUrl('/transits/'),
   };
+}
+
+export async function transitsResult(birth: Birth, at: Date) {
+  return buildTransitsResult(await personNatal(birth), at);
 }
 
 const signName = (slug: string | null) => (slug === null ? null : signBySlug(slug).name);

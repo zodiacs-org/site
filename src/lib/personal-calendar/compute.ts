@@ -10,6 +10,7 @@ import { solarReturnInstant } from '../engine/solar-return';
 import { lifeMilestones, type MilestoneKind } from '../occasions/milestones';
 import { scanTransitContacts, type TransitContact } from '../engine/transit-scan';
 import { clipToReferenceSpan } from '../engine/reference-span';
+import { hasConfirmedBirthTime } from '../time/saved-calendar';
 
 const DAY = 86_400_000;
 /** The calendar covers this many days from the moment it is made: 24 months. */
@@ -34,6 +35,8 @@ export interface PersonalSky {
   from: string;
   to: string;
   timeKnown: boolean;
+  /** True when the browser's time-zone table differed from our historical table near birth. */
+  hostZoneDiffers?: boolean;
   /** Natal Sun longitude, degrees. */
   sunLon: number;
   solarReturns: string[];
@@ -60,6 +63,8 @@ export function personalSky(chart: Chart, from: Date, to: Date): PersonalSky {
   const sun = chart.bodies.find((body) => body.body === 'Sun');
   if (!sun) throw new RangeError('The chart has no Sun.');
   const timeKnown = chart.input.timeKnown;
+  const hostZoneDiffers = chart.flags.includes('host-zone-data-differs');
+  const confirmedTime = hasConfirmedBirthTime(timeKnown, chart.flags);
 
   // One solar return falls near each birthday; ask for the one nearest the
   // anniversary in every year the window touches and keep those inside it.
@@ -90,7 +95,7 @@ export function personalSky(chart: Chart, from: Date, to: Date): PersonalSky {
     scan.to,
     {
       transitBodies: PERSONAL_TRANSIT_BODIES,
-      natalPoints: timeKnown ? ['Sun', 'Moon'] : ['Sun'],
+      natalPoints: confirmedTime ? ['Sun', 'Moon'] : ['Sun'],
       aspects: PERSONAL_ASPECTS,
     },
   ).filter((contact) => inside(Date.parse(contact.exactUtc), from, end));
@@ -99,6 +104,7 @@ export function personalSky(chart: Chart, from: Date, to: Date): PersonalSky {
     from: from.toISOString(),
     to: end.toISOString(),
     timeKnown,
+    ...(hostZoneDiffers ? { hostZoneDiffers: true } : {}),
     sunLon: sun.lon,
     solarReturns: [...solar].sort((a, b) => a - b).map((at) => new Date(at).toISOString()),
     milestones,

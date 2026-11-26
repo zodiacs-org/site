@@ -184,6 +184,9 @@ export default function SomeoneElseChart() {
   const [currentMine, setCurrentMine] = useState<MineHandoff | null>(null);
   const [pendingProfileMineId, setPendingProfileMineId] = useState<string | null>(null);
   const currentMineProfileOrigin = useRef(false);
+  const consentRef = useRef(false);
+  consentRef.current = consent;
+  const pendingActionRef = useRef(0);
   const manualReadHeading = useRef<HTMLHeadingElement>(null);
   const { profile, ready: profileReady } = useProfile();
   useProfileAccessGeneration(() => {
@@ -214,6 +217,10 @@ export default function SomeoneElseChart() {
   useEffect(() => {
     setLinkError('');
   }, [mode]);
+
+  useEffect(() => () => {
+    pendingActionRef.current += 1;
+  }, []);
 
   // The visitor's own chart arrives as a session handoff (h=), an opaque saved
   // id, or a legacy #mine= link. The fragment leaves the address bar first.
@@ -258,7 +265,12 @@ export default function SomeoneElseChart() {
       <input
         type="checkbox"
         checked={consent}
-        onChange={(event) => setConsent((event.currentTarget as HTMLInputElement).checked)}
+        onChange={(event) => {
+          const checked = (event.currentTarget as HTMLInputElement).checked;
+          consentRef.current = checked;
+          pendingActionRef.current += 1;
+          setConsent(checked);
+        }}
       />
       <span>
         <strong>I have their permission to use this information.</strong>
@@ -268,7 +280,7 @@ export default function SomeoneElseChart() {
   );
 
   /** Their details for the handoff, with a date before 1924 read in its calendar first. */
-  async function fullDetailsInput(): Promise<ShareChartInput | null> {
+  async function fullDetailsInput(): Promise<{ input: ShareChartInput; oldStyle?: boolean } | null> {
     if (!consent || !date || !city || (timeKnown && !time)) return null;
     const entry = await birthDateForChart('en', date, calendar);
     if ('error' in entry) {
@@ -283,15 +295,18 @@ export default function SomeoneElseChart() {
       return null;
     }
     return {
-      date: entry.date,
-      time: timeKnown ? time : null,
-      timeKnown,
-      lat: city.lat,
-      lon: city.lon,
-      tz: city.tz,
-      place: displayPlace(city),
-      houseSystem,
-      ...(name.trim() ? { name: name.trim() } : {}),
+      input: {
+        date: entry.date,
+        time: timeKnown ? time : null,
+        timeKnown,
+        lat: city.lat,
+        lon: city.lon,
+        tz: city.tz,
+        place: displayPlace(city),
+        houseSystem,
+        ...(name.trim() ? { name: name.trim() } : {}),
+      },
+      oldStyle: Boolean(entry.writtenJulianDate),
     };
   }
 
@@ -300,11 +315,13 @@ export default function SomeoneElseChart() {
    * random key. Without sessionStorage the birth chart opens with its normal
    * empty form; no link with details is ever made.
    */
-  function openChart(input: ShareChartInput) {
+  function openChart(input: ShareChartInput, options: { oldStyle?: boolean; fromSavedChart?: boolean } = {}) {
     const fragment = stashChartHandoff(input, {
       subjectMode: 'other',
       mine: comparisonMine,
       mineProfileOrigin: comparisonMineProfileOrigin,
+      ...(options.oldStyle ? { oldStyle: true } : {}),
+      ...(options.fromSavedChart ? { fromSavedChart: true } : {}),
     });
     go(fragment ? `/birth-chart/#${fragment}` : '/birth-chart/');
   }
@@ -315,15 +332,17 @@ export default function SomeoneElseChart() {
 
   async function openFullChart(event: Event) {
     event.preventDefault();
-    const input = await fullDetailsInput();
-    if (!input) return;
-    openChart(input);
+    const actionId = ++pendingActionRef.current;
+    const details = await fullDetailsInput();
+    if (!details || actionId !== pendingActionRef.current || !consentRef.current) return;
+    openChart(details.input, { oldStyle: Boolean(details.oldStyle) });
   }
 
   async function compareFullChart() {
-    const input = await fullDetailsInput();
-    if (!input) return;
-    compareChart(input);
+    const actionId = ++pendingActionRef.current;
+    const details = await fullDetailsInput();
+    if (!details || actionId !== pendingActionRef.current || !consentRef.current) return;
+    compareChart(details.input);
   }
 
   /** A pasted legacy details link is read here; its birth date passes the same policy. */
@@ -357,7 +376,7 @@ export default function SomeoneElseChart() {
       return;
     }
     const input = sharedDetailsInput();
-    if (input) openChart(input);
+    if (input) openChart(input, { fromSavedChart: true });
   }
 
   function compareSharedDetails() {
@@ -383,7 +402,7 @@ export default function SomeoneElseChart() {
               maxlength={NAME_MAX}
               autocomplete="off"
               value={name}
-              onInput={(event) => setName((event.currentTarget as HTMLInputElement).value)}
+              onInput={(event) => { pendingActionRef.current += 1; setName((event.currentTarget as HTMLInputElement).value); }}
               placeholder="A first name or nickname"
             />
             <p>Names stay in this browser unless you intentionally include one in a full-details link. The birth details stay in this browser unless you share them.</p>
@@ -402,7 +421,7 @@ export default function SomeoneElseChart() {
                   type="button"
                   class="other-chart__mode-button"
                   aria-pressed={mode === value}
-                  onClick={() => setMode(value)}
+                  onClick={() => { pendingActionRef.current += 1; setMode(value); }}
                 >
                   <strong>{label}</strong>
                   <span>{help}</span>
@@ -436,13 +455,13 @@ export default function SomeoneElseChart() {
                 time={time}
                 timeKnown={timeKnown}
                 city={city}
-                onDateChange={(value) => { setDate(value); setDateError(''); }}
+                onDateChange={(value) => { pendingActionRef.current += 1; setDate(value); setDateError(''); }}
                 calendar={calendar}
-                onCalendarChange={(value) => { setCalendar(value); setDateError(''); }}
+                onCalendarChange={(value) => { pendingActionRef.current += 1; setCalendar(value); setDateError(''); }}
                 dateError={dateError || undefined}
-                onTimeChange={setTime}
-                onTimeKnownChange={setTimeKnown}
-                onCityChange={setCity}
+                onTimeChange={(value) => { pendingActionRef.current += 1; setTime(value); }}
+                onTimeKnownChange={(value) => { pendingActionRef.current += 1; setTimeKnown(value); }}
+                onCityChange={(value) => { pendingActionRef.current += 1; setCity(value); }}
                 requireKnownTime
                 timeHelp="An exact time gives the Rising sign and houses. Choose “I don’t know it” if needed."
                 placeHelp="Search for the city where they were born."
@@ -453,7 +472,7 @@ export default function SomeoneElseChart() {
                   id="other-house-system"
                   class="field__input"
                   value={houseSystem}
-                  onChange={(event) => setHouseSystem((event.currentTarget as HTMLSelectElement).value as 'whole' | 'placidus')}
+                  onChange={(event) => { pendingActionRef.current += 1; setHouseSystem((event.currentTarget as HTMLSelectElement).value as 'whole' | 'placidus'); }}
                 >
                   <option value="whole">Whole sign (default)</option>
                   <option value="placidus">Placidus</option>

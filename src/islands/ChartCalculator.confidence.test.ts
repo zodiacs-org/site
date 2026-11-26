@@ -5,6 +5,7 @@ import ts from 'typescript';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import * as actualEngine from '../lib/engine/full';
 import * as actualReceipt from '../lib/engine/calculator-receipt';
+import * as actualNotices from '../lib/chart-notices';
 import { localDateContainsUtc, offsetAt, prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
 import type { CompleteTransitionProvider } from '../lib/time/local-date-intervals';
@@ -103,7 +104,7 @@ async function capture(value: ReturnType<typeof input>, mode = 'full', fallback 
     if (args[0] !== 'Moon') throw Error('Unexpected body calculation');
     calls.moonSamples++; return actualEngine.bodyLongitude(...args);
   } };
-  const result = await execute({ input: value, mode, engine, receiptModule, resolveLocalToUtc, assessLocalDateReference: assess,
+  const result = await execute({ input: value, mode, locale: 'en', engine, receiptModule, noticesModule: actualNotices, resolveLocalToUtc, assessLocalDateReference: assess,
     localDateMoonSigns, signForLongitude, moonIsUncertain, runIsCurrent: () => true,
     localDateReferenceFailure: new Error('local-date reference refused'),
   });
