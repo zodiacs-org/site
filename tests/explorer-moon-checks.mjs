@@ -1,31 +1,35 @@
 /**
  * Local-day uncertainty checks in the existing Explorer browser drive.
  *
- * Since `9d180c9f` an unknown birth time yields NO Moon sign candidates:
- * two endpoint samples of a civil date do not establish coverage of it, so
- * a reference instant cannot verify which signs the Moon could occupy. The
- * Moon stays present and explicitly unresolved instead.
+ * An unknown birth time names the Moon's signs only from the birth date's own
+ * limits (src/lib/moon-day-bounds.ts): the browser's complete time zone
+ * transitions or, without them, the date's two midnights confirmed on its
+ * clock. In London on 1 January 1990 the Moon went from Aquarius into Pisces,
+ * so every Moon surface shows that pair and stays unresolved; on 2 January it
+ * was in Pisces all day, so the page names Pisces.
  *
- * These checks therefore assert the absence of a claim, which is easy to
- * pass by accident. They are kept strict by requiring the unresolved label
- * to be present on every surface AND forbidding every sign name on the Moon
- * surfaces -- not merely the old pair -- so reintroducing any inferred sign,
- * single or paired, fails here.
+ * The checks require exactly those signs: the pair together with the
+ * unresolved label on every surface, and no other sign name on a Moon
+ * surface, so a sign inferred from the noon reference alone still fails here.
  */
 import { mkdir } from 'node:fs/promises';
 
 const TIMEOUT = 30_000;
-/** The pair the old endpoint inference produced. Now forbidden, not expected. */
+/** The Moon's two signs over the London boundary date, in the order it took them. */
 const CANDIDATES = 'Aquarius / Pisces';
+const PAIR = ['Aquarius', 'Pisces'];
 const UNRESOLVED = 'Needs a birth time';
-/** Copy belonging to the retired "both neighbours are fair" behaviour. */
-const RETIRED_NOTICE = 'The Moon also changed signs that day';
+/** The no-time notice for a date whose two Moon signs were verified; it belongs in that notice alone. */
+const BOTH_SIGNS_NOTICE = 'The Moon also changed signs that day';
+/** The no-time notice for a date whose Moon signs could not be verified at all. */
+const UNVERIFIED_NOTICE = 'The Moon’s possible signs across this birth date are unverified';
 const SIGN_NAMES = [
   'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
   'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
 ];
 /** Any sign name surfacing on a Moon-only element is an unverified claim. */
 const namesIn = (text) => SIGN_NAMES.filter((name) => new RegExp(`\\b${name}\\b`).test(text));
+const namesOnly = (text, names) => JSON.stringify(namesIn(text)) === JSON.stringify(names);
 const boundaryFragment = `#c=1.${Buffer.from(JSON.stringify({
   d: '1990-01-01', z: 'Europe/London', la: 51.5074, lo: -0.1278, p: 'London',
 })).toString('base64url')}`;
@@ -63,18 +67,20 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
       const readingMoon = page.locator('.reading-path__big-three [data-moon-uncertain]');
       const links = await page.locator('.reading-path__placement-link').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href')).sort());
       const readingMoonText = await readingMoon.innerText();
-      check(`Moon ${width}: London boundary leaves the Moon unresolved in hero and story, with no inferred signs`,
-        heroText.includes(UNRESOLVED) && namesIn(heroText).length === 0
-        && readingMoonText.includes(UNRESOLVED) && namesIn(readingMoonText).length === 0
-        && !heroText.includes(CANDIDATES) && !readingMoonText.includes(CANDIDATES)
-        // No placement link may be offered for a sign the chart cannot establish.
-        && JSON.stringify(links) === JSON.stringify([])
+      check(`Moon ${width}: London boundary shows both of the date's Moon signs, unresolved, in hero and story`,
+        heroText.includes(UNRESOLVED) && heroText.includes(CANDIDATES) && namesOnly(heroText, PAIR)
+        && readingMoonText.includes(CANDIDATES) && readingMoonText.includes('A birth time is needed to settle your Moon sign.')
+        && namesOnly(readingMoonText, PAIR)
+        // A placement link for each of the two signs, and for no other.
+        && JSON.stringify(links) === JSON.stringify(['/learn/placements/moon-in-aquarius/', '/learn/placements/moon-in-pisces/'])
         // No reference degree may stand in for the unresolved position.
         && await hero.locator('.three-card__deg').count() === 0,
         JSON.stringify({ heroText, readingMoonText, links, heroNames: namesIn(heroText), storyNames: namesIn(readingMoonText) }));
-      check(`Moon ${width}: the retired both-neighbours notice is gone from the result`,
-        !(await page.locator('.reading-path').innerText()).includes(RETIRED_NOTICE)
-        && !(await page.locator('.calc__three').innerText()).includes(RETIRED_NOTICE));
+      const notices = (await page.locator('.notice').allInnerTexts()).join(' ');
+      check(`Moon ${width}: the no-time notice says both signs were verified, and no reading repeats it`,
+        notices.includes(BOTH_SIGNS_NOTICE) && !notices.includes(UNVERIFIED_NOTICE)
+        && !(await page.locator('.reading-path').innerText()).includes(BOTH_SIGNS_NOTICE)
+        && !(await page.locator('.calc__three').innerText()).includes(BOTH_SIGNS_NOTICE), notices);
       check(`Moon ${width}: uncertain body is excluded from definitive balance and aspect readings`,
         (await page.locator('.reading-path').innerText()).includes('The Moon is left out of these totals')
         && (await page.locator('.reading-path').innerText()).includes('Moon aspects need a birth time'));
@@ -90,21 +96,20 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
       const inspectorText = await page.locator('.insp__body').innerText();
       const announcement = await page.locator('.calc__wheel .sr-only[role="status"]').innerText();
       const inspectorMoon = await page.locator('.insp__body [data-moon-uncertain]').innerText();
-      check(`Moon ${width}: selecting the reference Moon keeps inspector and announcement unresolved`,
-        inspectorMoon.includes(UNRESOLVED) && namesIn(inspectorMoon).length === 0
+      check(`Moon ${width}: selecting the reference Moon keeps inspector and announcement unresolved between the two signs`,
+        inspectorMoon.includes(UNRESOLVED) && inspectorMoon.includes(CANDIDATES) && namesOnly(inspectorMoon, PAIR)
         // No sign interpretation may be offered for a sign that was not established.
         && !inspectorText.includes('How the sign shapes it')
-        && !inspectorText.includes(CANDIDATES)
-        && announcement.includes(UNRESOLVED) && !announcement.includes(CANDIDATES)
-        && namesIn(announcement).length === 0,
+        && announcement.includes(UNRESOLVED) && announcement.includes(CANDIDATES)
+        && namesOnly(announcement, PAIR),
         JSON.stringify({ inspectorMoon, announcement, announcementNames: namesIn(announcement) }));
 
       await page.locator('[data-explorer-entity-picker]').selectOption('');
       await page.locator('[data-first-reading-start]').click();
       await page.locator('[data-tour-card]').waitFor({ state: 'visible', timeout: TIMEOUT });
       const quickTour = await page.locator('[data-tour-card]').innerText();
-      check(`Moon ${width}: quick tour reports the Moon unresolved and claims no sign`,
-        quickTour.includes(UNRESOLVED) && !quickTour.includes(CANDIDATES)
+      check(`Moon ${width}: quick tour reports the Moon unresolved between the two signs and settles neither`,
+        quickTour.includes(UNRESOLVED) && quickTour.includes(CANDIDATES)
         && await page.locator('[data-tour-card] a[href*="/learn/placements/moon-in-"]').count() === 0, quickTour);
       await page.locator('[data-tour-exit]').click();
       await page.locator('[data-first-reading-dismiss]').click();
@@ -161,9 +166,9 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
         await next.click();
         await page.waitForFunction(() => document.querySelector('.tour__sub-receipt')?.textContent?.trim().startsWith('Moon'), null, { timeout: TIMEOUT });
         const tourReceipt = await page.locator('.tour__sub-receipt').innerText();
-        check(`Moon ${width} ${guideStyles}: full tour Moon receipt stays unresolved, with no sign and no degree`,
-          tourReceipt.includes(UNRESOLVED) && !tourReceipt.includes(CANDIDATES)
-          && namesIn(tourReceipt).length === 0 && !tourReceipt.includes('°'), tourReceipt);
+        check(`Moon ${width} ${guideStyles}: full tour Moon receipt stays unresolved between the two signs, with no degree`,
+          tourReceipt.includes(UNRESOLVED) && tourReceipt.includes(CANDIDATES)
+          && namesOnly(tourReceipt, PAIR) && !tourReceipt.includes('°'), tourReceipt);
         if (outDir && width < 960) await page.locator('[data-tour-card]').screenshot({ path: `${outDir}/moon-tour-guide-${guideStyles === 'bootstrap' ? 'bootstrap' : 'loaded'}-390.png`, animations: 'disabled' });
         await page.locator('[data-tour-exit]').click();
         await launcher.waitFor({ state: usesInlineGuide ? 'hidden' : 'visible', timeout: TIMEOUT });
@@ -194,7 +199,7 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
       check(`Moon ${width}: positions receiver keeps Moon unresolved without inventing a boundary`,
         (await received.locator('[data-moon-uncertain]').innerText()).includes(UNRESOLVED)
         && (await moonRow.locator('td').nth(2).innerText()) === UNRESOLVED
-        && !receivedText.includes(CANDIDATES) && !receivedText.includes(RETIRED_NOTICE)
+        && !receivedText.includes(CANDIDATES) && !receivedText.includes(BOTH_SIGNS_NOTICE)
         && await receiver.locator('#birth-time').inputValue() === '');
       await receiver.close();
 
@@ -206,18 +211,21 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
           knownMoon.includes('Pisces') && !knownMoon.includes('Aquarius')
           && await page.locator('.calc__three [data-moon-uncertain]').count() === 0
           && await page.locator('[data-explorer-entity-picker] option[value="angle:asc"]').count() === 1, knownMoon);
-        // The Moon's endpoints agree on this date, which is exactly the
-        // inference that was withdrawn: agreement at two samples is not
-        // coverage of the date. It must stay unresolved like any other
-        // unknown-time chart, while the angles remain unavailable.
+        // The Moon was in Pisces through the whole of this London date, so
+        // the page names that one sign, from the date's own limits rather
+        // than the noon reference, while the angles remain unavailable.
         await recompute(page, '1990-01-02', false);
-        const endpointAgreeingMoon = await page.locator('.calc__three .three-card').nth(1).innerText();
-        check('Moon: an unknown-time date whose endpoints agree is still unresolved, and angles stay omitted',
-          endpointAgreeingMoon.includes(UNRESOLVED)
-          && namesIn(endpointAgreeingMoon).length === 0
-          && await page.locator('.calc__three [data-moon-uncertain]').count() === 1
+        const wholeDateMoon = await page.locator('.calc__three .three-card').nth(1).innerText();
+        const wholeDateNotices = (await page.locator('.notice').allInnerTexts()).join(' ');
+        check('Moon: an unknown-time date the Moon spent in one sign names that sign alone, and angles stay omitted',
+          namesOnly(wholeDateMoon, ['Pisces']) && !wholeDateMoon.includes(UNRESOLVED)
+          // The sign alone: noon's degree is not the Moon's degree at birth.
+          && !wholeDateMoon.includes('°')
+          && await page.locator('.calc__three [data-moon-sign-only]').count() === 1
+          && await page.locator('.calc__three [data-moon-uncertain]').count() === 0
+          && !wholeDateNotices.includes(BOTH_SIGNS_NOTICE) && !wholeDateNotices.includes(UNVERIFIED_NOTICE)
           && await page.locator('[data-explorer-entity-picker] option[value="angle:asc"]').count() === 0,
-          JSON.stringify({ endpointAgreeingMoon, names: namesIn(endpointAgreeingMoon) }));
+          JSON.stringify({ wholeDateMoon, wholeDateNotices, names: namesIn(wholeDateMoon) }));
       }
     } finally {
       await context.close();

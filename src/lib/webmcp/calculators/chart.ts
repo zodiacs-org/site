@@ -9,9 +9,10 @@ import * as engine from '../../engine/full';
 import { houseOf } from '../../engine/houses';
 import { moonPhaseNameFromAngle } from '../../engine/lite';
 import type { Chart, HouseSystem } from '../../engine/types';
-import { SIGNS, signForLongitude } from '../../signs';
+import { SIGNS, signBySlug, signForLongitude } from '../../signs';
 import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
-import { assessLocalDateReference } from '../../time/local-date-reference';
+import { assessLocalDateReference, type LocalDateReferenceAssessment } from '../../time/local-date-reference';
+import { localDateMoonSigns } from '../../moon-day-bounds';
 import { ENGINE, fixed, pageUrl, position } from './format';
 import { asSite, type Birth } from './input';
 import { LocalDateReferenceError } from './moon-phase';
@@ -24,7 +25,8 @@ export interface NatalReading {
 
 /**
  * ChartCalculator's runChart: without a time, local noon, which must fall within the local date; with `receipt` (the
- * birth chart page), the chart its calculation receipt carries. Without a time no Moon sign is verified.
+ * birth chart page), the chart its calculation receipt carries. Without a time the Moon's signs come only from the
+ * birth date's own limits, as the page takes them (src/lib/moon-day-bounds.ts).
  */
 export async function chartPageNatal(birth: Birth, houseSystem: HouseSystem, { receipt }: { receipt: boolean }): Promise<NatalReading> {
   const { date } = birth;
@@ -33,12 +35,14 @@ export async function chartPageNatal(birth: Birth, houseSystem: HouseSystem, { r
   const timeKnown = birth.time !== null;
   const effectiveTime = birth.time ?? '12:00';
   const resolved = resolveLocalToUtc(date, effectiveTime, city.tz, { longitude: city.lon });
+  let assessment: LocalDateReferenceAssessment | null = null;
   if (!timeKnown) {
     try {
-      if (assessLocalDateReference(date, resolved.utc, city.tz).referenceStatus !== 'member') throw new LocalDateReferenceError();
+      assessment = assessLocalDateReference(date, resolved.utc, city.tz);
     } catch {
       throw new LocalDateReferenceError();
     }
+    if (assessment.referenceStatus !== 'member') throw new LocalDateReferenceError();
   }
   const input = {
     utc: resolved.utc,
@@ -56,7 +60,12 @@ export async function chartPageNatal(birth: Birth, houseSystem: HouseSystem, { r
     reference: timeKnown ? 'supplied-instant' : 'local-noon',
   }) : null;
   const chart = portable ? portable.chart : engine.computeChart(input);
-  if (!timeKnown) chart.moonSignCandidates = [];
+  if (!timeKnown) {
+    chart.moonSignCandidates = assessment ? await localDateMoonSigns({
+      date, place: city, assessment, referenceFlags: resolved.flags,
+      moonLongitude: (utc) => engine.bodyLongitude('Moon', utc),
+    }) : [];
+  }
   return { chart, localMeanTime: resolved.localMeanTime !== undefined };
 }
 
@@ -95,6 +104,12 @@ const body = (chart: Chart, name: string) => chart.bodies.find((entry) => entry.
 
 const MOON_UNVERIFIED = 'Without a birth time the Moon\'s sign across the birth date is not verified, so the page '
   + 'does not name it; give the time from the birth record.';
+const moonChangedSign = ([first, second]: readonly string[]) => 'Two Moon signs are possible for this birth date: the '
+  + `Moon moved from ${first} into ${second} during the date. The page names both; a birth time from the birth record `
+  + 'is needed to know which.';
+const moonHeldSign = (sign: string) => `The Moon was in ${sign} through the whole birth date, so without a birth time `
+  + 'the page names that sign but not a degree: the Moon\'s degree at local noon is a reference, and its degree at '
+  + 'birth needs the time from the birth record.';
 
 /** What every chart result says about its instant. */
 function basis({ chart, localMeanTime }: NatalReading) {
@@ -107,12 +122,27 @@ function basis({ chart, localMeanTime }: NatalReading) {
   };
 }
 
+/**
+ * The Moon as the page shows it: its position when the time is known; its sign alone when the Moon held one sign
+ * through the birth date; both signs, neither chosen, when it changed sign at an instant of the date; and no sign
+ * when the date's limits settle nothing. Without a birth time no degree is given as the Moon's: the noon reference's
+ * stays with the reference positions (the birth chart's bodies, read at local noon).
+ */
 function moonSign(chart: Chart) {
   const candidates = moonCandidates(chart);
   const moon = body(chart, 'Moon');
-  return candidates.length === 1 && moon
-    ? { moon: position(moon.lon), moonSignStatus: 'settled' as const }
-    : { moon: null, moonSignStatus: 'unverified' as const, moonSignNote: MOON_UNVERIFIED };
+  if (candidates.length === 1) {
+    if (chart.input.timeKnown && moon) return { moon: position(moon.lon), moonSignStatus: 'settled' as const };
+    // The sign alone, with no longitude or degree in sign: those would be the noon reference's.
+    const sign = signBySlug(candidates[0]).name;
+    return { moon: { sign }, moonSignStatus: 'settled' as const, moonSignNote: moonHeldSign(sign) };
+  }
+  if (candidates.length === 2) {
+    // In the order the Moon took them, and no position: the noon reference lies in one and would read as the birth sign.
+    const signs = candidates.map((slug) => signBySlug(slug).name);
+    return { moon: null, moonSignStatus: 'changed-sign' as const, moonSignCandidates: signs, moonSignNote: moonChangedSign(signs) };
+  }
+  return { moon: null, moonSignStatus: 'unverified' as const, moonSignNote: MOON_UNVERIFIED };
 }
 
 /** /birth-chart/: the big three, every placement with its house, the angles, the house cusps and the aspects. */

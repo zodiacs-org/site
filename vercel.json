@@ -449,6 +449,42 @@
       "destination": "/api/compatibility?__zodiacs_share=invite-story"
     },
     {
+      "source": "/share/retrograde-for-you/",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-link"
+    },
+    {
+      "source": "/api/og/retrograde-for-you-image",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-image"
+    },
+    {
+      "source": "/api/og/retrograde-for-you-story",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-story"
+    },
+    {
+      "source": "/share/astrocartography/",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-link"
+    },
+    {
+      "source": "/api/og/astrocartography-image",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-image"
+    },
+    {
+      "source": "/api/og/astrocartography-story",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-story"
+    },
+    {
+      "source": "/share/your-day/",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-link"
+    },
+    {
+      "source": "/api/og/your-day-image",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-image"
+    },
+    {
+      "source": "/api/og/your-day-story",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
@@ -463,6 +499,10 @@
     {
       "source": "/api/email/unsubscribe",
       "destination": "/api/email/subscribe?__zodiacs_email_route=unsubscribe"
+    },
+    {
+      "source": "/api/email/birthday-reminder",
+      "destination": "/api/email/subscribe?__zodiacs_email_route=birthday-reminder"
     },
     {
       "source": "/v1/guide/turn",

@@ -2,7 +2,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
 const TIMEOUT = 30_000;
-/** Any sign name on a Moon surface of an unknown-time chart is an unverified claim. */
+/** On a Moon surface of an unknown-time chart, any sign beyond the birth date's own is an unverified claim. */
 const SIGN_NAMES = [
   'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
   'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
@@ -242,26 +242,29 @@ export async function runExplorerCrowdedWheelChecks({ browser, baseURL, check, o
         await chooseWithKeys(page, 'body:Moon');
         const text = await page.locator('.calc__wheel .sr-only[role="status"]').innerText();
         const uncertain = page.locator('.calc__three [data-moon-uncertain]');
-        // `fixture.moon.signAtCivilDayStart/End` and `.uncertain` are the People
-        // pilot's own endpoint analysis of the birth date. They are NOT the
-        // calculator's expectation: since `9d180c9f` an unknown birth time
-        // yields no candidates at all, because two endpoint samples do not
-        // establish coverage of a civil date. Every unknown-time chart is
-        // unresolved here, including `edgar-allan-poe`, whose endpoints agree.
+        // The calculator names the Moon's signs only from the birth date's own
+        // limits (src/lib/moon-day-bounds.ts) and otherwise leaves it
+        // unresolved. `fixture.moon.signAtCivilDayStart/End` are the People
+        // pilot's own analysis of the same date: whatever the page names must
+        // be exactly those signs, and one sign only where the two agree.
+        const daySigns = [...new Set([fixture.moon.signAtCivilDayStart, fixture.moon.signAtCivilDayEnd])]
+          .map((slug) => slug[0].toUpperCase() + slug.slice(1));
+        const sameSigns = (a, b) => JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
         const uncertainCount = await uncertain.count();
         const uncertainText = uncertainCount ? await uncertain.innerText() : '';
         const degreeCount = uncertainCount ? await uncertain.locator('.three-card__deg').count() : -1;
-        check(`${label}: reference Moon never invents a known birth time or definite boundary identity`,
+        const heroMoon = await page.locator('.calc__three .three-card').nth(1).innerText();
+        const shown = namesIn(uncertainCount ? uncertainText : heroMoon);
+        check(`${label}: reference Moon never invents a known birth time or a sign beyond the date's own`,
           await page.locator('#birth-time').inputValue() === ''
-          // No sign may be named for the Moon -- not the endpoint pair, not a
-          // single sign, not the noon reference's.
-          && namesIn(text).length === 0
-          && text.includes('Needs a birth time')
-          && uncertainCount === 1
-          && uncertainText.includes('Needs a birth time')
-          && namesIn(uncertainText).length === 0
-          && degreeCount === 0,
-          JSON.stringify({ text, uncertainText, uncertainCount, degreeCount, names: namesIn(text) }));
+          && (uncertainCount === 1
+            // Unresolved: no sign, or both of a date the Moon changed sign on.
+            ? text.includes('Needs a birth time') && uncertainText.includes('Needs a birth time') && degreeCount === 0
+              && (shown.length === 0 || (daySigns.length === 2 && sameSigns(shown, daySigns)))
+            // Settled: the one sign the Moon held through the whole date.
+            : uncertainCount === 0 && daySigns.length === 1 && sameSigns(shown, daySigns))
+          && sameSigns(namesIn(text), shown),
+          JSON.stringify({ text, uncertainText, heroMoon, uncertainCount, degreeCount, daySigns, names: namesIn(text) }));
       }
       await chooseWithKeys(page, '');
       if (output) await page.locator('.calc__wheel').screenshot({ path: `${output}/${fixture.slug}-${width}.png`, animations: 'disabled' });

@@ -25,6 +25,7 @@ import {
   computePositions,
   computeSkyFact,
   computeTime,
+  refuseSplitDay,
   type ComputeDependencies,
 } from './endpoints.js';
 import { computeElections } from './elections.js';
@@ -54,7 +55,11 @@ async function dispatch(endpoint: ComputeEndpoint, body: unknown): Promise<unkno
     case 'positions': return computePositions(parsePositionsRequest(body));
     case 'events': return computeEvents(parseEventsRequest(body));
     case 'time': return computeTime(await parseTimeRequest(body, zones), dependencies);
-    case 'sky-fact': return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
+    case 'sky-fact': {
+      const request = await parseSkyFactRequest(body, zones);
+      await refuseSplitDay(request, dependencies);
+      return computeSkyFact(request, dependencies);
+    }
     case 'elections': return computeElections(parseElectionsRequest(body));
   }
 }

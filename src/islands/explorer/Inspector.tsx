@@ -17,7 +17,7 @@ import { signDateRange, signTagline } from '../../lib/sign-display';
 import { signIcon } from '../../lib/sign-icon';
 import { NATAL_HOUSE_THEME, natalAspectLine, planetInHouseLine } from '../../lib/natal';
 import { placementContext } from '../../lib/natal-context';
-import { moonCandidates, moonIsUncertain, moonLabel } from '../../lib/moon-certainty';
+import { moonAspectsUnsettled, moonCandidates, moonDegreeUnsettled, moonIsUncertain, moonLabel } from '../../lib/moon-certainty';
 import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
 import { localizePath, t, type CatalogLocale as Locale } from '../../lib/i18n';
 import type { AspectType } from '../../lib/engine/types';
@@ -72,6 +72,15 @@ const DETENT_LABELS = {
   ru: { expand: 'Развернуть объяснение карты', collapse: 'Свернуть объяснение карты' },
 } as const satisfies Record<Locale, { expand: string; collapse: string }>;
 
+const REFERENCE_DATA_LABELS = {
+  en: 'Noon reference data',
+  es: 'Datos de referencia al mediodía',
+  pt: 'Dados de referência ao meio-dia',
+  fr: 'Données de référence à midi',
+  it: 'Dati di riferimento a mezzogiorno',
+  ru: 'Опорные данные на полдень',
+} as const satisfies Record<Locale, string>;
+
 interface Props {
   scene: ChartSceneModel;
   selection: EntityRef | null;
@@ -107,10 +116,10 @@ function Insight({ label, children }: { label: string; children: ComponentChildr
   );
 }
 
-function ExactData({ children }: { children: ComponentChildren }) {
+function ExactData({ children, label = 'Exact chart data' }: { children: ComponentChildren; label?: string }) {
   return (
     <details class="insp__exact">
-      <summary>Exact chart data</summary>
+      <summary>{label}</summary>
       <div class="insp__exact-body">{children}</div>
     </details>
   );
@@ -127,6 +136,12 @@ function Related({ children }: { children: ComponentChildren }) {
 
 function isNode(body: string): boolean {
   return body === 'North Node' || body === 'South Node';
+}
+
+/** Whether an aspect's entity id has the Moon at either end. */
+function touchesMoon(id: string): boolean {
+  const ref = parseEntityId(id);
+  return ref?.kind === 'aspect' && (ref.a === 'Moon' || ref.b === 'Moon');
 }
 
 export default function Inspector({ scene, selection, onSelect, locale, banner }: Props) {
@@ -202,10 +217,19 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
       const sign = signBySlug(sb.sign);
       const context = placementContext(sb.body, sb.sign, sb.house, sb.speed);
       const node = isNode(sb.body);
-      const relatedAspects = node ? [] : sb.aspects;
+      // A Moon sign settled across the birth date, without a birth time, is the sign alone: noon's
+      // degree stays with the reference positions under the no-time notice.
+      const moonSignOnly = sb.body === 'Moon' && moonDegreeUnsettled(scene);
+      // Without a birth time the Moon's aspects are noon's, so no card lists one: not the Moon's,
+      // and not the planet's at the other end.
+      const moonAspectsOut = moonAspectsUnsettled(scene);
+      const listedAspects = node ? [] : sb.aspects;
+      const relatedAspects = moonAspectsOut ? listedAspects.filter((id) => !touchesMoon(id)) : listedAspects;
+      const moonAspectsNote = moonAspectsOut && (sb.body === 'Moon' || relatedAspects.length < listedAspects.length);
       const bodyLabel = planetLabel(locale, sb.body);
       const exact = (
         <>
+          {moonSignOnly && <p class="insp__note">{t(locale, 'noTimeNotice')}</p>}
           <Receipt label={t(locale, 'position')}>{formatLongitude(sb.lon, locale)}</Receipt>
           <Receipt label={t(locale, 'sign')}><SignDisc slug={sb.sign} size={16} /> {signName(sign, locale)}</Receipt>
           {sb.house != null && <Receipt label={t(locale, 'house')}>{sb.house}</Receipt>}
@@ -271,6 +295,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
             <Insight label="Why it matters here">{context.synthesis}</Insight>
             {context.motionNote && <p class="insp__note">{context.motionNote}</p>}
           </div>
+          {moonAspectsNote && <p class="insp__note">Moon aspects need a birth time and are left out of this reading.</p>}
           <Related>{related}</Related>
           <ExactData>{exact}</ExactData>
           {node
@@ -279,9 +304,10 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
         </>
       ) : (
         <>
-          {exact}
+          {!moonSignOnly && exact}
           {sb.house != null && locale !== 'ru' && <p class="insp__read">{planetInHouseLine(sb.body, sb.house)}</p>}
           <div class="insp__related-actions">{related}</div>
+          {moonSignOnly && <ExactData label={REFERENCE_DATA_LABELS[locale]}>{exact}</ExactData>}
           {!node && learn(`/learn/placements/${sb.body.toLowerCase().replace(' ', '-')}-in-${sb.sign}/`, `${bodyLabel} ${locale === 'ru' ? `${t(locale, 'readIn').replace(/(^| )в$/u, '')} ${signInRu(sign)}`.trimStart() : `${t(locale, 'readIn')} ${signName(sign, locale)}`}`)}
         </>
       );
@@ -295,6 +321,8 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
       const occupants = scene.bodies.filter((candidate) => candidate.sign === selection.sign
         && (candidate.body !== 'Moon' || !uncertainMoon));
       const occupantNames = occupants.map((candidate) => planetLabel(locale, candidate.body));
+      // Without a birth time a settled Moon sign is the sign alone, so its chip carries no degree.
+      const moonSignOnly = moonDegreeUnsettled(scene);
       const signWhere = [
         occupants.length > 0
           ? `${occupantNames.join(', ')} ${occupants.length === 1 ? 'uses' : 'use'} this style in your chart.`
@@ -325,7 +353,8 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
       const occupantButtons = occupants.map((candidate) => (
         <button class="insp__chip" type="button" key={candidate.body} onClick={(event) => selectRelated({ kind: 'body', body: candidate.body }, event)}>
           <PlanetGlyph body={candidate.body} size={12} class="insp__pg" />
-          {planetLabel(locale, candidate.body)} · {formatLongitude(candidate.lon, locale).split(' ')[0]}
+          {planetLabel(locale, candidate.body)}
+          {candidate.body === 'Moon' && moonSignOnly ? null : ` · ${formatLongitude(candidate.lon, locale).split(' ')[0]}`}
         </button>
       ));
       const moonNote = possibleMoon ? <p class="insp__note">{planetLabel(locale, 'Moon')} · {moonLabel(scene, locale)} · {t(locale, 'needsBirthTime')}</p> : null;
@@ -426,7 +455,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
           <PlanetGlyph body={sa.b} size={15} class="insp__pg" /> {planetLabel(locale, sa.b)}
         </>
       );
-      if ((sa.a === 'Moon' || sa.b === 'Moon') && moonIsUncertain(scene)) {
+      if ((sa.a === 'Moon' || sa.b === 'Moon') && moonAspectsUnsettled(scene)) {
         body = <>
           <p class="insp__note">{t(locale, 'moon')} · {moonLabel(scene, locale)} · {t(locale, 'needsBirthTime')}</p>
           <Related>{bodyButtons}</Related>

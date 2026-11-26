@@ -60,7 +60,7 @@ for (const variant of baseline ? ['baseline', 'candidate'] : ['candidate']) {
    let text=await readFile(path,'utf8');const originalSha256=hash(text);
    if(path.endsWith('/localToUtc.ts')){
     text=text.replace('): LocalTimeResolution {',"): LocalTimeResolution {\n  window.__referenceEvents.push({kind:'resolve',date,time,zone:tz});");
-    text=text.replace('export function localDateContainsUtc(date: string, utc: Date, timeZone: string): boolean {\n  try {',"export function localDateContainsUtc(date: string, utc: Date, timeZone: string): boolean {\n  window.__referenceEvents.push({kind:'contains'});\n  try {\n    if(window.fixture.failMembership)throw new Error('Synthetic private formatter failure');");
+    text=text.replace('export function localDateContainsUtc(date: string, utc: Date, timeZone: string): boolean {\n  try {',"export function localDateContainsUtc(date: string, utc: Date, timeZone: string): boolean {\n  window.__referenceEvents.push({kind:'contains',date,utc:utc.toISOString()});\n  try {\n    if(window.fixture.failMembership)throw new Error('Synthetic private formatter failure');");
    } else if(path.endsWith('/chart-date-certainty.ts')){
     text=text.replace('export function localDateEndpointsUtc(date: string, timeZone: string): LocalDateEndpoints {',"export function localDateEndpointsUtc(date: string, timeZone: string): LocalDateEndpoints {\n  window.__referenceEvents.push({kind:'endpoints'});");
    } else if(path.endsWith('/portable.ts')){
@@ -183,7 +183,12 @@ try{
    if(action==='unmount')await s.page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));else await settle(s);
    const value=await data(s);
    if(action==='replacement'){
-    assert.equal(value.result,true);assert.equal(value.error,'');assert.equal(value.events.filter(row=>row.kind==='contains').length,1);
+    assert.equal(value.result,true);assert.equal(value.error,'');
+    const contains=value.events.filter(row=>row.kind==='contains');
+    const hasTemporal=await s.page.evaluate(()=>typeof globalThis.Temporal?.ZonedDateTime?.prototype?.getTimeZoneTransition==='function');
+    assert.ok(contains.every(row=>row.date==='2000-01-01'));
+    assert.equal(contains.filter(row=>row.utc==='2000-01-01T23:00:00.000Z').length,1);
+    assert.equal(contains.length,mode==='chart'&&!hasTemporal?5:1);
     assert.ok(value.events.filter(row=>row.kind==='resolve').every(row=>row.date!=='2011-12-30'));
     if(mode==='chart')assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,1);
    }else{

@@ -20,9 +20,11 @@ import { MILESTONE_WORDS } from '../lib/occasions/milestone-words.js';
 import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
+import { softenHealth } from '../ai-tools/features/reading-guards.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
 import type { VedicSignsShare } from '../lib/vedic-signs/share.js';
 import { AYANAMSA_NAME, RASHIS } from '../lib/vedic-signs/wording.js';
+import type { YourDayShare } from '../lib/personal-day/share.js';
 import {
   SKY_PLANETS,
   type BigThreeShare,
@@ -38,6 +40,7 @@ import {
   type SkyEventKind,
   type SkyPlanet,
 } from '../ai-tools/share-links.js';
+import type { RetrogradeForYouShare, ShareRetrogradePlanet } from '../lib/retrograde-for-you/share.js';
 
 /** The ring's colour where a sign is not known. */
 export const NEUTRAL_HUE = '#C6CCDA';
@@ -678,4 +681,90 @@ export function inviteCardModel(share: InviteShare): InviteCardModel {
   const signs = [share.sun, share.partner].filter((slug): slug is ShareSign => slug !== null).map(sunOf);
   const names = signs.length === 2 ? `${signName(signs[0].slug!)} and ${signName(signs[1].slug!)}` : `${signName(signs[0].slug!)} Sun`;
   return { signs, line: `${names}. Two birth charts, read together.`, hue: signs[0].hue, front: share.sun };
+}
+
+// ── A retrograde in one person's chart (src/lib/retrograde-for-you/share.ts) ──
+
+const RETROGRADE_PLANET_NAME: Readonly<Record<ShareRetrogradePlanet, string>> = { mercury: 'Mercury', venus: 'Venus', mars: 'Mars' };
+/** Each planet wears the hue of the sign it rules, as on the page (src/islands/RetrogradeForYou.tsx). */
+export const RETROGRADE_PLANET_SIGN: Readonly<Record<ShareRetrogradePlanet, ShareSign>> = { mercury: 'gemini', venus: 'taurus', mars: 'aries' };
+const DAY_WITH_YEAR = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const yearDay = (at: string) => {
+  const parts = Object.fromEntries(DAY_WITH_YEAR.formatToParts(new Date(at)).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+};
+
+export interface RetrogradeForYouCardModel {
+  planet: string;
+  /** "Mercury retrograde for Taurus Sun", or "Mercury retrograde" when no Sun sign is carried. */
+  title: string;
+  /** "Sat 24 Oct 2026 to Fri 13 Nov 2026", the window's UTC days. */
+  span: string;
+  /** The planet's retrograde in general. */
+  line: string;
+  /** The planet's retrograde in general, said once. */
+  about: string;
+  /** Always null: the card says only what the planet's retrograde means in general, no personal reading to label. */
+  confidence: string | null;
+  hue: string;
+  sign: ShareSign;
+}
+
+const RETROGRADE_ABOUT: Readonly<Record<ShareRetrogradePlanet, string>> = {
+  mercury: 'Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch.',
+  venus: 'Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful.',
+  mars: 'Mars retrograde traditionally slows drive and ambition, and asks you to rework a strategy rather than force it.',
+};
+
+/** The card for a checked link, or null when the sky data lists no such retrograde. */
+export function retrogradeForYouCardModel(share: RetrogradeForYouShare, events: readonly SkyEvent[]): RetrogradeForYouCardModel | null {
+  const event = events.find((candidate) => candidate.kind === 'retrograde' && candidate.planet === share.planet && candidate.date === share.date);
+  if (!event || !event.end) return null;
+  const planet = RETROGRADE_PLANET_NAME[share.planet];
+  const sign = share.sun ?? RETROGRADE_PLANET_SIGN[share.planet];
+  const title = share.sun ? `${planet} retrograde for ${signName(share.sun)} Sun` : `${planet} retrograde`;
+  const about = softenHealth(RETROGRADE_ABOUT[share.planet]);
+  return {
+    planet,
+    title,
+    span: `${yearDay(event.start)} to ${yearDay(event.end)}`,
+    line: about,
+    about,
+    confidence: null,
+    hue: HUES[sign],
+    sign,
+  };
+}
+
+// ── The personal day (src/lib/personal-day/share.ts) ──
+
+export interface YourDayCardModel {
+  /** The person's Sun sign: its hue and its art on the card. */
+  sign: ShareSign;
+  hue: string;
+  /** "My day, 9 November 2026" */
+  kicker: string;
+  /** "Taurus Sun" */
+  title: string;
+  /** "My day, 9 November 2026: Taurus Sun", for the page. */
+  heading: string;
+  /** Plain description of the personal day reading for this Sun sign. */
+  line: string;
+  confidence: string | null;
+}
+
+/**
+ * The shared card for a personal day: the sky date and the person's Sun sign,
+ * with no Moon sign, rising sign, natal point, confidence, or birth details.
+ */
+export function yourDayCardModel(share: YourDayShare): YourDayCardModel {
+  const sign = share.sun;
+  const name = signName(sign);
+  const kicker = `My day, ${fullDate(share.date)}`;
+  const title = `${name} Sun`;
+  return {
+    sign, hue: HUES[sign], kicker, title, heading: `${kicker}: ${title}`,
+    line: `The day’s transits for this ${name} Sun chart, ranked by strength.`,
+    confidence: null,
+  };
 }

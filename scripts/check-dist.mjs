@@ -436,6 +436,9 @@ const discoveryGraph = new Map();
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const sourcePath = builtPageByFile.get(file);
+  if (/^\/(?:es|pt|fr|it)\/horoscopes\/[a-z]+\/2026\/$/u.test(sourcePath)) {
+    fail(`locale expansion: unexpected localized 2026 yearly page ${sourcePath}`);
+  }
   discoveryGraph.set(sourcePath, renderedLinks(sourcePath, html));
   if (!accuracyPublished) {
     for (const path of renderedLinks(sourcePath, html, { discoveryOnly: false })) {
@@ -1379,8 +1382,14 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// Astrocartography follows its launch flag (src/lib/launch-flags.ts) the same way.
+const astrocartographyIndexed = sitemapLocs.has('/astrocartography/');
 // Vedic signs follows its launch flag (src/lib/launch-flags.ts) the same way.
 const vedicSignsIndexed = sitemapLocs.has('/vedic-signs/');
+// Retrogrades for you follows its launch flag (src/lib/launch-flags.ts) the same way.
+const retrogradesForYouIndexed = sitemapLocs.has('/retrogrades/for-you/');
+// Your day follows its launch flag (src/lib/launch-flags.ts) the same way.
+const yourDayIndexed = sitemapLocs.has('/your-day/');
 // The good day finder follows its launch flag (src/lib/launch-flags.ts) the same way.
 const goodDaysIndexed = sitemapLocs.has('/good-days/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
@@ -1463,7 +1472,10 @@ const sitemapPolicy = {
   // +1 for /good-days/, the English-only good day finder, once PUBLIC_GOOD_DAYS_ENABLED is on.
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // +1 for /astrocartography/, the English-only astrocartography map, once PUBLIC_ASTROCARTOGRAPHY_ENABLED is on.
   // +1 for /vedic-signs/, the English-only Vedic signs page, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
+  // +1 for /retrogrades/for-you/, the English-only retrogrades-in-your-chart page, once PUBLIC_RETROGRADES_FOR_YOU_ENABLED is on.
+  // +1 for /your-day/, the English-only personal day page, once PUBLIC_YOUR_DAY_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
@@ -1472,7 +1484,7 @@ const sitemapPolicy = {
   // +1 for /support/, the support page, linked from /about/.
   // +1 for /app/privacy/, the iPhone app policy linked from /support/.
   total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(vedicSignsIndexed) + Number(goodDaysIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(vedicSignsIndexed) + Number(retrogradesForYouIndexed) + Number(astrocartographyIndexed) + Number(yourDayIndexed) + Number(goodDaysIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1544,7 +1556,10 @@ const indexedFamilies = [
   { label: 'Good day finder', pattern: /^\/good-days\/$/, expected: Number(goodDaysIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
+  { label: 'Astrocartography', pattern: /^\/astrocartography\/$/, expected: Number(astrocartographyIndexed), localized: false },
   { label: 'Vedic signs', pattern: /^\/vedic-signs\/$/, expected: Number(vedicSignsIndexed), localized: false },
+  { label: 'Retrogrades for you', pattern: /^\/retrogrades\/for-you\/$/, expected: Number(retrogradesForYouIndexed), localized: false },
+  { label: 'Your day', pattern: /^\/your-day\/$/, expected: Number(yourDayIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },

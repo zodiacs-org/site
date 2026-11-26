@@ -39,6 +39,7 @@ const baseProps = {
   placements,
   topAspects,
   weather,
+  timeKnown: true,
   risingLon: 332,
   housesKnown: true,
   selection: { kind: 'body', body: 'Sun' } as const,
@@ -69,6 +70,7 @@ describe('ReadingPath', () => {
     const markup = render(h(ReadingPath, {
       ...baseProps,
       placements: placements.map((placement) => ({ ...placement, house: null })),
+      timeKnown: false,
       risingLon: null,
       housesKnown: false,
       selection: null,
@@ -98,6 +100,24 @@ describe('ReadingPath', () => {
     expect(markup).toContain('Show on chart: Neptune conjunction Sun');
     expect(markup).toContain('Show on chart: Venus conjunction Pluto');
     expect(markup).toContain('Highlighted on chart');
+  });
+
+  it('names a Moon sign settled across the birth date but leaves its aspects to the birth time', () => {
+    const markup = render(h(ReadingPath, {
+      ...baseProps,
+      placements: placements.map((placement) => ({ ...placement, house: null })),
+      timeKnown: false,
+      risingLon: null,
+      housesKnown: false,
+      moonSignCandidates: ['gemini'],
+      selection: null,
+    }));
+
+    expect(markup).toContain('Show on chart: Moon in Gemini');
+    expect(markup).toContain('Read Moon in Gemini →');
+    expect(markup).toContain('Moon aspects need a birth time and are left out of this reading.');
+    expect(markup).not.toContain('Sun sextile Moon');
+    expect(markup).toContain('Mercury square Saturn');
   });
 
   it('keeps the first step as a locator without repeating sign interpretations', () => {

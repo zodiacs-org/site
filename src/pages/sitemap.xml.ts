@@ -218,6 +218,7 @@ const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/me
 // turned into back-links and datelines, tool discs added to the tools hubs, and
 // em and en dashes in the copy rewritten as commas, periods and range words.
 const DESIGN_SWEEP_LASTMOD = '2026-10-16';
+const ASTROCARTOGRAPHY_LASTMOD = '2026-11-09';
 const DESIGN_SWEEP_ROUTES = [
   '/',
   '/about/',
@@ -447,6 +448,19 @@ const TOOL_MARKS_ROUTES = [
   '/transits/', '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/mercury-retrograde/',
   '/void-of-course-moon/',
 ] as const;
+// Without a birth time the calculator names the Moon's sign from the birth date's own limits, both signs of a day
+// the Moon changed sign, and otherwise marks it unverified: what all six language sets now say about an unknown
+// birth time (rendered content). The day of the daily edition it was built with; listed last in EVERGREEN_LASTMOD
+// so this date wins (coordinate tail with #1210 on /moon-sign/ and #1167 on / if either lands first).
+const UNKNOWN_TIME_MOON_LASTMOD = '2026-11-26';
+const UNKNOWN_TIME_MOON_ROUTES = [
+  '/', '/methodology/', '/moon-sign/', '/birth-chart/', '/big-three/',
+  '/es/', '/es/methodology/', '/es/moon-sign/', '/es/birth-chart/',
+  '/pt/', '/pt/methodology/', '/pt/moon-sign/', '/pt/birth-chart/',
+  '/fr/', '/fr/methodology/', '/fr/moon-sign/', '/fr/birth-chart/',
+  '/it/', '/it/methodology/', '/it/moon-sign/', '/it/birth-chart/',
+  '/ru/', '/ru/methodology/', '/ru/moon-sign/', '/ru/birth-chart/',
+] as const;
 
 // The Big Three page gained its twelve share cards (src/components/share/); the
 // day of the daily edition it was built with, listed after TOOL_MARKS so it wins.
@@ -493,6 +507,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/lunar-return/', '2026-11-16'] as const,
   // The Vedic signs page, first published 2026-11-09, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
   ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [['/vedic-signs/', '2026-11-09'] as const] : []),
+  // The personal day: one day's transits to your own chart, first published 2026-11-09, once PUBLIC_YOUR_DAY_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [['/your-day/', '2026-11-20'] as const] : []),
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -581,6 +597,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
   ...LIFE_PATH_PAGES.map((page) => [`/numerology/life-path/${page.number}/`, page.updated] as const),
   ['/void-of-course-moon/', VOID_OF_COURSE_LASTMOD] as const,
+  // The astrocartography map (2026-11-09), and the pages that link to it: the tools hub, the solar return's relocation answer and the rising sign's.
+  // Only while PUBLIC_ASTROCARTOGRAPHY_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED')
+    ? ['/astrocartography/', '/tools/', '/solar-return/', '/rising-sign/'].map((loc) => [loc, ASTROCARTOGRAPHY_LASTMOD] as const)
+    : []),
   // The ephemeris section now carries a measured comparison against Swiss
   // Ephemeris in place of the upstream library's own arcminute target. Last,
   // so it wins over the numerology cycle's date for the same page.
@@ -736,6 +757,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
   // after the October design sweep dates above, so this wins.
   ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // Retrogrades in your chart, first published, with the retrograde pages' lines and the tools hub's card
+  // linking to it. After the entries above, so this date wins. Only while PUBLIC_RETROGRADES_FOR_YOU_ENABLED is
+  // on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED')
+    ? ['/retrogrades/for-you/', '/retrogrades/', '/mercury-retrograde/', '/tools/'].map((loc) => [loc, '2026-11-09'] as const)
+    : []),
   // The Russian rising-sign calculator writes «во Льве» (2026-11-10), last so this date wins.
   ['/ru/rising-sign/', '2026-11-10'] as const,
   // The privacy page's analytics paragraph names the arrival words a link can
@@ -802,6 +829,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
   ['/big-three/', BIG_THREE_CARDS_LASTMOD] as const,
+  // Uniform three-era compute receipt timeScale convention and MCP adapter 0.1.0-rc.29.
+  ...['/developers/', '/developers/compute/', '/developers/conventions/', '/developers/mcp/'].map(
+    (loc) => [loc, '2026-11-25'] as const,
+  ),
+  // What an unknown birth time does to the Moon's sign (UNKNOWN_TIME_MOON_ROUTES), last so it wins.
+  ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
   ['/app/privacy/', '2026-11-22'] as const,
   ['/support/', '2026-11-22'] as const,
@@ -860,6 +893,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, priority: 0.7 })) : []),
     ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
     ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
+    ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? [{ loc: '/astrocartography/', priority: 0.8 }] : []),
     { loc: '/compatibility/', priority: 0.9 },
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
@@ -876,6 +910,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },
     { loc: '/transits/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [{ loc: '/your-day/', priority: 0.8 }] : []),
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
     { loc: '/your-2027-sky/', priority: 0.8 },
@@ -883,6 +918,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
     { loc: '/retrogrades/', priority: 0.8 },
+    ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') ? [{ loc: '/retrogrades/for-you/', priority: 0.75 }] : []),
     { loc: '/today/', priority: 0.8 },
     ...(eventsPublication.hub.indexEligible
       ? [{ loc: eventsPublication.hub.path, priority: 0.82 }]
@@ -1145,6 +1181,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The tools hub's card for Astrocartography, the rising sign page's question on moving, and the solar return page's line linking to the map (2026-11-09).
+  // Only while PUBLIC_ASTROCARTOGRAPHY_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/rising-sign/' || url.loc === '/solar-return/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+  }
   // The tools hub's card for Vedic signs and the big three and Moon sign pages' lines linking to it (2026-11-09), and
   // the engine page's lines saying the site reads the sidereal entry point (re-dated 2026-11-19 when ZOD-63's engine
   // page rewrite was merged in). Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages read as on main and
@@ -1154,6 +1197,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-09');
     }
     if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-19');
+  }
+  // The tools hub's card for Your day, and the transits page's line linking to it (2026-11-09).
+  // Only while PUBLIC_YOUR_DAY_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/transits/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
   }
   // The share cards (2026-11-10): each pair page offers its pair's card, and
   // the big three pages offer one card per sign, in English and translated

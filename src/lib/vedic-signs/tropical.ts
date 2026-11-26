@@ -8,6 +8,7 @@
  * halves through ./compute. Pure: no network, storage or logging.
  */
 import { computeChart } from '../engine/full';
+import { isGeographicPole } from '../geo/coordinates';
 import type { VedicSignsInstants } from './compute';
 
 /** Tropical longitudes of date at one instant; the ascendant only with a birth time and place. */
@@ -36,7 +37,7 @@ function tropicalAt(utc: Date, place: { latitude: number; longitude: number } | 
 export function tropicalMoments(input: Omit<VedicSignsInstants, 'ayanamsa'>): TropicalMoments {
   const place = input.latitude !== undefined && input.longitude !== undefined ? { latitude: input.latitude, longitude: input.longitude } : null;
   // At a geographic pole the local east direction is undefined. Keep the geocentric positions.
-  const atGeographicPole = place !== null && Math.abs(place.latitude) === 90;
+  const atGeographicPole = place !== null && isGeographicPole(place.latitude);
   const at = tropicalAt(input.birthUtc, atGeographicPole ? null : place, input.timeKnown);
   const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => tropicalAt(end, null, false));
   return { timeKnown: input.timeKnown, placed: place !== null, atGeographicPole, at, ends: ends && ends.length ? ends : null };

@@ -8,7 +8,8 @@ import { EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, PERSONAL_SWITCH_ENV, PE
 import { COUNTED_TOOL_NAMES } from './usage';
 import { PERSONAL_TOOLS } from './personal/registry';
 import { forbiddenClaim, type PersonalToolDefinition } from './personal/shared';
-import { executeAiTool, offeredTools } from './tools';
+import { AGE_FIRST_TOOLS, executeAiTool, offeredTools } from './tools';
+import { UNDER_13_SENTENCE } from '../lib/good-days/find';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
@@ -123,7 +124,7 @@ describe('the personal tools switch on', () => {
       const listed = tools.find((entry) => entry.name === tool.name)!;
       expect(listed).toMatchObject({ title: tool.title, description: tool.description, annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: !tool.clockDependent } });
       expect(listed._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
-      expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market|invest|stock/iu);
+      expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[\u2013\u2014]|crypto|token|blockchain|market|invest|stock/iu);
     }
   });
 
@@ -146,7 +147,7 @@ describe('the personal tools switch on', () => {
       const validate = ajv.compile(tools.find((entry) => entry.name === tool.name)!.outputSchema);
       expect(validate(result.structuredContent), JSON.stringify(validate.errors)).toBe(true);
       expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
-      expect(result.content[0].text).not.toMatch(/[–—]/u);
+      expect(result.content[0].text).not.toMatch(/[\u2013\u2014]/u);
       // Money, career, wellbeing and legal themes are read as tradition reads them; price calls, buy or sell signals,
       // diagnoses or medical timing, death predictions and won or lost cases never appear.
       expect(forbiddenClaim(result.content[0].text), tool.name).toBeNull();
@@ -164,11 +165,13 @@ describe('the personal tools switch on', () => {
       for (const birthDate of ['2016-01-01', '2026-11-09', '2027-03-01']) {
         const result = await call(host, tool.name, { ...tool.example, birthDate });
         expect(result.isError, tool.name).toBe(true);
-        expect(result.structuredContent.error.message).toBe(UNDER_13_REFUSAL);
+        // A tool that takes a birth date reads its age gate first, and refuses with the plain sentence.
+        const refusal = AGE_FIRST_TOOLS.has(tool.name) ? UNDER_13_SENTENCE : UNDER_13_REFUSAL;
+        expect(result.structuredContent.error.message).toBe(refusal);
         expect(result.structuredContent).not.toHaveProperty('data');
         // Called directly, without the server's own check first, the tool refuses it too.
         const direct = await executeAiTool(tool.name as never, { ...tool.example, birthDate }, { occasions: true, coverage: true, personal: true, now: () => NOW, placeTable: async () => loadPlaceTable() });
-        expect(direct).toMatchObject({ ok: false, error: { message: UNDER_13_REFUSAL } });
+        expect(direct).toMatchObject({ ok: false, error: { message: refusal } });
       }
       // Thirteen everywhere is old enough. The refusal counts from the calendar date at UTC-12 (main's #1139, as the
       // site's chart forms do), and at 09:00 UTC on 9 November it is still 8 November there.
