@@ -2146,6 +2146,7 @@
     {"path":"src/islands/RetrogradeForYou.tsx","text":"${…}: the sky data this page uses starts on ${…} and cannot place ${…} on today's date on this device, so ${…} not shown here.","claim":"priv.on-device"},
     {"path":"src/islands/RetrogradeForYou.tsx","text":"Everything is worked out on this device.","claim":"priv.on-device"},
     {"path":"src/islands/RetrogradeForYou.tsx","text":"Read for today on this device’s clock (${…}).","claim":"priv.on-device"},
+    {"path":"src/islands/SaturnReturnCalculator.tsx","text":"Built in your browser; your birth details are not sent to us.","claim":"priv.on-device"},
     {"path":"src/islands/SolarReturnCalculator.tsx","text":"The chart is calculated on this device; nothing is uploaded.","claim":"priv.on-device"},
     {"path":"src/islands/SomeoneElseChart.tsx","text":"A positions-only link opens here as a read-only chart.","claim":"priv.fragment-links"},
     {"path":"src/islands/SomeoneElseChart.tsx","text":"Full details or positions only","exempt":"not-a-claim"},
