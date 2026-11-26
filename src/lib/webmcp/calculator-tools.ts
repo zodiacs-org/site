@@ -119,7 +119,8 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
     title: 'Birth chart',
     description: 'A birth chart, as this page calculates it: the Sun, Moon and rising signs; every body\'s sign, degree, '
       + 'house and motion; the angles, the house cusps and the aspects. Without a birth time it reads local noon, gives '
-      + 'no angles or houses, and leaves the Moon\'s sign unverified. ' + CALCULATED,
+      + 'no angles or houses, and names the Moon\'s sign, but not its degree, only where the birth date\'s own limits '
+      + 'settle it: the one sign the Moon held all day, or both signs when it changed sign that day. ' + CALCULATED,
     inputSchema: object({ ...BIRTH.properties, houseSystem: HOUSE_SYSTEM }, ['date', 'place']),
   },
   {
@@ -127,7 +128,8 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
     path: '/moon-sign/',
     title: 'Moon sign',
     description: 'The Moon\'s sign at birth and the Moon\'s phase, as this page reads them. Without a birth time it '
-      + 'reads local noon and does not name the sign, since the Moon may change sign during the day. ' + CALCULATED,
+      + 'reads local noon and names the sign, but not its degree, only where the birth date\'s own limits settle it: '
+      + 'the one sign the Moon held all day, or both signs, choosing neither, when it changed sign that day. ' + CALCULATED,
     inputSchema: BIRTH,
   },
   {

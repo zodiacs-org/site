@@ -448,6 +448,19 @@ const TOOL_MARKS_ROUTES = [
   '/transits/', '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/mercury-retrograde/',
   '/void-of-course-moon/',
 ] as const;
+// Without a birth time the calculator names the Moon's sign from the birth date's own limits, both signs of a day
+// the Moon changed sign, and otherwise marks it unverified: what all six language sets now say about an unknown
+// birth time (rendered content). The day of the daily edition it was built with; listed last in EVERGREEN_LASTMOD
+// so this date wins (coordinate tail with #1210 on /moon-sign/ and #1167 on / if either lands first).
+const UNKNOWN_TIME_MOON_LASTMOD = '2026-11-26';
+const UNKNOWN_TIME_MOON_ROUTES = [
+  '/', '/methodology/', '/moon-sign/', '/birth-chart/', '/big-three/',
+  '/es/', '/es/methodology/', '/es/moon-sign/', '/es/birth-chart/',
+  '/pt/', '/pt/methodology/', '/pt/moon-sign/', '/pt/birth-chart/',
+  '/fr/', '/fr/methodology/', '/fr/moon-sign/', '/fr/birth-chart/',
+  '/it/', '/it/methodology/', '/it/moon-sign/', '/it/birth-chart/',
+  '/ru/', '/ru/methodology/', '/ru/moon-sign/', '/ru/birth-chart/',
+] as const;
 
 // The Big Three page gained its twelve share cards (src/components/share/); the
 // day of the daily edition it was built with, listed after TOOL_MARKS so it wins.
@@ -820,6 +833,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/', '/developers/compute/', '/developers/conventions/', '/developers/mcp/'].map(
     (loc) => [loc, '2026-11-25'] as const,
   ),
+  // What an unknown birth time does to the Moon's sign (UNKNOWN_TIME_MOON_ROUTES), last so it wins.
+  ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

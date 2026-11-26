@@ -30,6 +30,7 @@ function chart({
   mercuryRetrograde = false,
   aspects = [],
   includeMercury = true,
+  timeKnown = false,
 }: {
   mercuryLon?: number;
   moonLon?: number;
@@ -37,11 +38,12 @@ function chart({
   mercuryRetrograde?: boolean;
   aspects?: Aspect[];
   includeMercury?: boolean;
+  timeKnown?: boolean;
 } = {}): Chart {
   return {
     // These corpus fixtures supply a settled sign explicitly.
     moonSignCandidates: [SIGNS[Math.floor(moonLon / 30)]],
-    input: { utc: new Date('2000-01-01T00:00:00Z'), houseSystem: 'whole', timeKnown: false },
+    input: { utc: new Date('2000-01-01T00:00:00Z'), houseSystem: 'whole', timeKnown },
     bodies: [
       ...(includeMercury ? [body('Mercury', mercuryLon, mercuryRetrograde)] : []),
       body('Moon', moonLon),
@@ -50,7 +52,7 @@ function chart({
     angles: null,
     houses: null,
     aspects,
-    flags: ['no-time'],
+    flags: timeKnown ? [] : ['no-time'],
     engineVersion: 'test',
   };
 }
@@ -108,18 +110,30 @@ describe('Mercury aspect selection', () => {
     ];
     const original = [...source];
 
-    expect(communicationRead(chart({ aspects: source })).aspects.map(({ text }) => text)).toEqual([
+    expect(communicationRead(chart({ aspects: source, timeKnown: true })).aspects.map(({ text }) => text)).toEqual([
       MERCURY_ASPECT.Moon.soft,
       MERCURY_ASPECT.Jupiter.soft,
       MERCURY_ASPECT.Mars.hard,
     ]);
-    expect(communicationRead(chart({ aspects: source })).aspects[0]).toEqual({
+    expect(communicationRead(chart({ aspects: source, timeKnown: true })).aspects[0]).toEqual({
       target: 'Moon',
       type: 'conjunction',
       orb: 0.4,
       text: MERCURY_ASPECT.Moon.soft,
     });
     expect(source).toEqual(original);
+  });
+
+  it('leaves a Moon contact out without a birth time, even with the Moon\'s sign settled across the date', () => {
+    const source = [
+      aspect('Moon', 'Mercury', 'conjunction', 0.4),
+      aspect('Jupiter', 'Mercury', 'trine', 1.1),
+      aspect('Mercury', 'Mars', 'square', 2),
+      aspect('Mercury', 'Pluto', 'opposition', 4),
+    ];
+    const read = communicationRead(chart({ aspects: source, moonLon: 95 }));
+    expect(read.moonSign).toBe('cancer');
+    expect(read.aspects.map(({ target }) => target)).toEqual(['Jupiter', 'Mars', 'Pluto']);
   });
 
   it('classifies conjunction, trine, and sextile as soft; square and opposition as hard', () => {
