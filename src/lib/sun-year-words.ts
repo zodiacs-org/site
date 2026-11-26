@@ -42,6 +42,14 @@ export interface SunYearWords {
   centre: PluralForms;
   /** The ring's accessible name. Dates arrive formatted. */
   alt: (slug: string, from: string, to: string, element: Element, family: readonly string[]) => string;
+  /**
+   * The sentence under the Sun mark: where the Sun is on the edition's date,
+   * always dated, never "today". The date arrives formatted; the degree is
+   * whole and left out when the committed data does not give it.
+   */
+  sunOn: (date: string, slug: string, degree: number | null) => string;
+  /** Added to the ring's accessible name when the Sun mark is drawn. */
+  sunMark: (date: string, slug: string) => string;
 }
 
 const lower = (text: string) => text.charAt(0).toLocaleLowerCase() + text.slice(1);
@@ -85,6 +93,8 @@ const itElement = (element: Element) => {
 const itElides = (date: string) => /^(?:8|11)\s/u.test(date);
 const itFrom = (date: string) => (itElides(date) ? `dall’${date}` : `dal ${date}`);
 const itTo = (date: string) => (itElides(date) ? `all’${date}` : `al ${date}`);
+const itOn = (date: string) => (itElides(date) ? `l’${date}` : `il ${date}`);
+const upper = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1);
 
 /* ── Russian: the elements in the genitive, "знаки огня" ─────────── */
 const RU_ELEMENT_GENITIVE: Record<Element, string> = {
@@ -115,6 +125,8 @@ const EN: SunYearWords = {
     const labels: Record<Element, string> = { fire: 'fire', earth: 'earth', air: 'air', water: 'water' };
     return `A ring showing one year from the March equinox, divided into the twelve signs to scale. ${signName(slug)} runs from ${from} to ${to}. A triangle joins the three ${labels[element]} signs: ${family.join(', ')}.`;
   },
+  sunOn: (date, slug, degree) => `On ${date} the Sun is in ${signName(slug)}${degree === null ? '' : `, at ${degree}° of the sign`}.`,
+  sunMark: (date, slug) => `A small Sun mark on the ring shows where the Sun is on ${date}, in ${signName(slug)}.`,
 };
 
 const ES: SunYearWords = {
@@ -135,6 +147,8 @@ const ES: SunYearWords = {
   source: 'Entradas del Sol en cada signo calculadas por Zodiacs. Horas en UTC.',
   centre: { one: 'día en {sign}', other: 'días en {sign}' },
   alt: (slug, from, to, element, family) => `Un anillo que muestra un año desde el equinoccio de marzo, dividido a escala entre los doce signos. La temporada de ${signName(slug, 'es')} va del ${from} al ${to}. Un triángulo une los tres signos de ${lower(elementLabel(element, 'es'))}: ${family.join(', ')}.`,
+  sunOn: (date, slug, degree) => `El ${date}, el Sol está en ${signName(slug, 'es')}${degree === null ? '' : `, a ${degree}° del signo`}.`,
+  sunMark: (date, slug) => `Una pequeña marca del Sol en el anillo muestra dónde está el Sol el ${date}, en ${signName(slug, 'es')}.`,
 };
 
 const PT: SunYearWords = {
@@ -155,6 +169,8 @@ const PT: SunYearWords = {
   source: 'Entradas do Sol em cada signo calculadas pelo Zodiacs. Horários em UTC.',
   centre: { one: 'dia em {sign}', other: 'dias em {sign}' },
   alt: (slug, from, to, element, family) => `Um anel que mostra um ano a partir do equinócio de março, dividido em escala entre os doze signos. A temporada de ${signName(slug, 'pt')} vai de ${from} a ${to}. Um triângulo liga os três signos de ${lower(elementLabel(element, 'pt'))}: ${family.join(', ')}.`,
+  sunOn: (date, slug, degree) => `Em ${date}, o Sol está em ${signName(slug, 'pt')}${degree === null ? '' : `, a ${degree}° do signo`}.`,
+  sunMark: (date, slug) => `Uma pequena marca do Sol no anel mostra onde o Sol está em ${date}, em ${signName(slug, 'pt')}.`,
 };
 
 const FR: SunYearWords = {
@@ -175,6 +191,8 @@ const FR: SunYearWords = {
   source: 'Entrées du Soleil dans chaque signe calculées par Zodiacs. Heures en UTC.',
   centre: { one: 'jour dans {sign}', other: 'jours dans {sign}' },
   alt: (slug, from, to, element, family) => `Un anneau qui montre une année à partir de l’équinoxe de mars, partagée à l’échelle entre les douze signes. La saison ${frOf(slug)} va du ${from} au ${to}. Un triangle relie les trois signes ${frElement(element)} : ${family.join(', ')}.`,
+  sunOn: (date, slug, degree) => `Le ${date}, le Soleil est dans ${frThe(slug)}${degree === null ? '' : `, à ${degree}° du signe`}.`,
+  sunMark: (date, slug) => `Une petite marque du Soleil sur l’anneau montre où il se trouve le ${date}, dans ${frThe(slug)}.`,
 };
 
 const IT: SunYearWords = {
@@ -195,6 +213,8 @@ const IT: SunYearWords = {
   source: 'Ingressi del Sole nei segni calcolati da Zodiacs. Orari in UTC.',
   centre: { one: 'giorno {in}', other: 'giorni {in}' },
   alt: (slug, from, to, element, family) => `Un anello che mostra un anno a partire dall’equinozio di marzo, diviso in scala tra i dodici segni. La stagione ${itOf(slug)} va ${itFrom(from)} ${itTo(to)}. Un triangolo unisce i tre segni ${itElement(element)}: ${family.join(', ')}.`,
+  sunOn: (date, slug, degree) => `${upper(itOn(date))} il Sole è ${itIn(slug)}${degree === null ? '' : `, a ${degree}° del segno`}.`,
+  sunMark: (date, slug) => `Un piccolo simbolo del Sole sull’anello mostra dove si trova ${itOn(date)}, ${itIn(slug)}.`,
 };
 
 const RU: SunYearWords = {
@@ -215,6 +235,8 @@ const RU: SunYearWords = {
   source: 'Моменты входа Солнца в знаки рассчитаны Zodiacs. Время указано в UTC.',
   centre: { one: 'день в {in}', few: 'дня в {in}', many: 'дней в {in}', other: 'дня в {in}' },
   alt: (slug, from, to, element, family) => `Кольцо показывает один год от мартовского равноденствия, разделённый на двенадцать знаков в масштабе. Солнце находится в ${signPrepositional(slug)} с ${from} по ${to}. Треугольник соединяет три знака ${RU_ELEMENT_GENITIVE[element]}: ${family.join(', ')}.`,
+  sunOn: (date, slug, degree) => `Солнце ${date} находится в ${signPrepositional(slug)}${degree === null ? '' : `, в ${degree}° от начала знака`}.`,
+  sunMark: (date, slug) => `Небольшая отметка на кольце показывает, где Солнце находится ${date}: в ${signPrepositional(slug)}.`,
 };
 
 export const SUN_YEAR_WORDS: Readonly<Record<SunYearLocale, SunYearWords>> = {

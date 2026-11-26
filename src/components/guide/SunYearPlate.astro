@@ -16,16 +16,23 @@
  * The words beside the ring never move. Opacity, transform and
  * stroke-dashoffset only; the whole pass ends inside the runtime's 2.6 s.
  *
+ * A Sun mark sits on the year line at the edition's date (`now`), with one
+ * dated sentence beside it, when that date falls inside the year the ring
+ * shows; within a few days of a sign boundary it steps just inside the line
+ * so it never covers a tick or the season's end dots. Its degree comes from
+ * src/data/daily.json, and only when that file is for the same date.
+ *
  * Every word comes from src/lib/sun-year-words.ts, by the page's `locale`
  * (English unless given). The season link shows only where that language
  * has season pages.
  */
 import SignIcon from '../SignIcon.astro';
 import { signBySlug, signName } from '../../lib/signs';
-import { signSeasonFocus, sunSeasons } from '../../lib/seasons/windows';
+import { currentSunSeason, signSeasonFocus, sunSeasons } from '../../lib/seasons/windows';
 import { seasonDate, seasonUtcTime } from '../../lib/seasons/dates';
 import { formatDate, intlLocale } from '../../lib/i18n/dates';
 import { localizePath, pluralText } from '../../lib/i18n';
+import daily from '../../data/daily.json';
 import { SUN_YEAR_WORDS, sunYearCentreValues, type SunYearLocale } from '../../lib/sun-year-words';
 
 interface Props {
@@ -118,13 +125,43 @@ const centreForms = words.centre;
 const centreCategory = new Intl.PluralRules(intlLocale(locale), { minimumFractionDigits: 1 }).select(Number(length.toFixed(1)));
 const centreValues = sunYearCentreValues(slug, locale);
 const centreLabel = (centreForms[centreCategory] ?? centreForms.other).replace(/\{(\w+)\}/g, (token, name: string) => centreValues[name] ?? token);
+
+// Where the Sun is on the edition's date, when that date lies inside the
+// ring's year. Otherwise neither the mark nor its sentence is drawn.
+const nowIso = now.toISOString();
+const sunFraction = drawn ? fraction(nowIso) : -1;
+const sunWindow = currentSunSeason(now);
+const sunShown = drawn && sunWindow !== null && sunFraction >= 0 && sunFraction < 1;
+// The degree only from the daily facts for this same date and sign.
+const dailySun = daily.date === nowIso.slice(0, 10)
+  ? daily.bodies.find((body) => body.body === 'Sun')
+  : undefined;
+const sunDegree = sunShown && dailySun && dailySun.sign === sunWindow?.sign && Number.isFinite(dailySun.degree)
+  ? Math.floor(dailySun.degree)
+  : null;
+const SUN_R = 5;          // the mark's open circle
+const SUN_LIFT = 15;      // how far inside the line it steps near a boundary
+// Arc distance (SVG units) from the date to the nearest boundary tick, and to
+// this sign's season ends, which carry the larger end dots.
+const arcUnits = (f: number) => Math.abs(f) * 2 * Math.PI * R;
+const tickGap = sunShown ? Math.min(...arcs.map((arc) => arcUnits(sunFraction - arc.from)), arcUnits(1 - sunFraction)) : Infinity;
+const endGap = sunShown && mine ? Math.min(arcUnits(sunFraction - mine.from), arcUnits(sunFraction - mine.to)) : Infinity;
+const sunLifted = tickGap < SUN_R + 4 || endGap < SUN_R + 5 + 3;
+// Inside the ring, a boundary is clear of the triangle, whose corners sit at
+// mid-season, and of the sign discs outside.
+const sunAt = point(sunFraction, sunLifted ? R - SUN_LIFT : R);
+const leaderFrom = point(sunFraction, R - 7);
+const leaderTo = point(sunFraction, R - SUN_LIFT + SUN_R + 1.5);
+const sunDate = sunShown ? dateIn(nowIso, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '';
+const sunLine = sunShown && sunWindow ? words.sunOn(sunDate, sunWindow.sign, sunDegree) : '';
+const wheelLabel = sunShown && sunWindow ? `${alt} ${words.sunMark(sunDate, sunWindow.sign)}` : alt;
 const seasonHref = localizePath(locale, `/seasons/${slug}/`);
 // Never send a translated page to the English season page.
 const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith(`/${locale}/`)) ? words.seasonLink(slug) : '';
 ---
 {drawn && mine && focus && (
   <section class="sunyear" aria-labelledby="sunyear-title" style={`--sign:${sign.hue}`}>
-    <div class="sy-wheel" role="img" aria-label={alt}>
+    <div class="sy-wheel" role="img" aria-label={wheelLabel}>
       <span class="sy-go" data-enter="draw" aria-hidden="true"></span>
       <svg class="sy-svg" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
         <circle class="sy-bed" cx={C} cy={C} r={R} />
@@ -137,9 +174,17 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
           const p = point(arc.mid, R_TRI);
           return <circle class="sy-mate" cx={n(p.x)} cy={n(p.y)} r="4" style={`--hue:${arc.s.hue}`} />;
         })}
+        <circle class="sy-mate sy-mate--me" cx={n(point(mine.mid, R_TRI).x)} cy={n(point(mine.mid, R_TRI).y)} r="4" style={`--hue:${sign.hue}`} />
         <path class="sy-season" pathLength="1" style={`--t:${ms(mine.from)}`} d={arcPath(mine.from, mine.to, R)} />
         <circle class="sy-end sy-end--from" style={`--t:${ms(mine.from)}`} cx={n(point(mine.from, R).x)} cy={n(point(mine.from, R).y)} r="5" />
         <circle class="sy-end sy-end--to" style={`--t:${ms(mine.to)}`} cx={n(point(mine.to, R).x)} cy={n(point(mine.to, R).y)} r="5" />
+        {sunShown && (
+          <g class:list={['sy-sun', sunLifted && 'is-lifted']} style={`--t:${ms(sunFraction)}`}>
+            {sunLifted && <path class="sy-sun-leader" d={`M${n(leaderFrom.x)} ${n(leaderFrom.y)}L${n(leaderTo.x)} ${n(leaderTo.y)}`} />}
+            <circle class="sy-sun-ring" cx={n(sunAt.x)} cy={n(sunAt.y)} r={SUN_R} />
+            <circle class="sy-sun-dot" cx={n(sunAt.x)} cy={n(sunAt.y)} r="1.6" />
+          </g>
+        )}
       </svg>
       {arcs.map((arc) => (
         <span
@@ -160,6 +205,12 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
       <p class="kicker">{kicker}</p>
       <h2 class="h-2" id="sunyear-title">{words.heading(slug)}</h2>
       <p class="sy-lede">{words.ring}{' '}{words.extremes(longest.s.slug, shortest.s.slug)}</p>
+      {sunLine && (
+        <p class="sy-sunline">
+          <svg class="sy-sunglyph" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6" /><circle cx="8" cy="8" r="1.9" /></svg>
+          <time datetime={nowIso.slice(0, 10)}>{sunLine}</time>
+        </p>
+      )}
       <dl class="sy-facts">
         <div>
           <dt>{focus.phase === 'under-way' ? words.began : words.begins}</dt>
@@ -212,6 +263,9 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
   .sy-end { fill: var(--sign); }
   .sy-family { fill: none; stroke: var(--sign); stroke-width: 1.2; stroke-linejoin: round; opacity: 0.7; }
   .sy-mate { fill: var(--hue); }
+  .sy-sun-ring { fill: var(--bg); stroke: var(--ink-0); stroke-width: 1.4; }
+  .sy-sun-dot { fill: var(--ink-0); }
+  .sy-sun-leader { fill: none; stroke: var(--ink-2); stroke-width: 1.2; stroke-linecap: round; }
 
   .sy-sign {
     position: absolute;
@@ -250,6 +304,10 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
   .sy-words .kicker { margin: 0 0 10px; color: var(--muted); }
   .sy-words .h-2 { margin: 0; font-size: clamp(2rem, 1.5rem + 1.7vw, 2.8rem); line-height: 1.05; color: var(--ink-0); }
   .sy-lede { margin: 18px 0 0; max-width: 52ch; font-size: 1.0625rem; line-height: 1.66; color: var(--text-2); text-wrap: pretty; }
+  .sy-sunline { display: flex; align-items: baseline; gap: 10px; margin: 14px 0 0; max-width: 52ch; font-size: 1.0625rem; line-height: 1.66; color: var(--text-2); }
+  .sy-sunglyph { flex: none; width: 15px; height: 15px; align-self: flex-start; margin-top: calc((1.66em - 15px) / 2); overflow: visible; }
+  .sy-sunglyph circle:first-child { fill: none; stroke: var(--ink-0); stroke-width: 1.4; }
+  .sy-sunglyph circle:last-child { fill: var(--ink-0); }
   .sy-facts {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -283,7 +341,8 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
     :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-family { stroke-dasharray: 1; stroke-dashoffset: 1; }
     :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-tick { opacity: 0.2; }
     :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-end,
-    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-mate { opacity: 0; transform: scale(0.4); }
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-mate,
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-sun { opacity: 0; transform: scale(0.4); }
     :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-sign { opacity: 0.14; }
     :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-sign.is-me { opacity: 0.14; transform: translate(-50%, -50%) scale(0.6); }
 
@@ -291,15 +350,17 @@ const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith
     :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-season,
     :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-family { stroke-dasharray: 1; }
     :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-end,
-    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-mate { transform-box: fill-box; transform-origin: center; }
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-mate,
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-sun { transform-box: fill-box; transform-origin: center; }
 
     /* Playing: every delay is the moment the year line reaches that date. */
     :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-year { transition: stroke-dashoffset 1500ms linear; }
     :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-tick { transition: opacity 300ms ease; transition-delay: var(--t); }
     :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-sign { transition: opacity 360ms ease, transform 440ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: var(--t); }
     :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-season { transition: stroke-dashoffset 420ms ease-out; transition-delay: var(--t); }
-    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-end { transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: var(--t); }
-    /* The closing beat: the element's triangle, then its two other corners. */
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-end,
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-sun { transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: var(--t); }
+    /* The closing beat: the element's triangle, then its three corners. */
     :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-family { transition: stroke-dashoffset 600ms ease-out; transition-delay: 1560ms; }
     :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-mate { transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 2060ms; }
   }
