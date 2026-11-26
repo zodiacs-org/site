@@ -125,17 +125,41 @@ const ASPECT_FOCUS_COLOR: Record<string, string> = {
 /** Orb-weight class → chord stroke width (interactive mode only). */
 const ASPECT_STROKE = [0.9, 1.3, 1.8] as const;
 
+/**
+ * The wheel's frame: its centre, its ring radii, and longitude → point, for
+ * a wheel of `size` turned so `anchor` sits at 9 o'clock. Wheel draws with
+ * it, so anything laid over a rendered wheel (the horoscope pages' entrance
+ * veil) can take the same numbers instead of copying them.
+ */
+export function wheelFrame(size: number, anchor: number) {
+  const cx = size / 2;
+  const cy = size / 2;
+  /** Ecliptic longitude → SVG point at radius r. */
+  const pt = (lon: number, r: number) => {
+    const phi = ((180 + (lon - anchor)) * Math.PI) / 180;
+    return { x: cx + r * Math.cos(phi), y: cy - r * Math.sin(phi) };
+  };
+  return {
+    cx,
+    cy,
+    rSigns: size * 0.475,      // outer edge of sign ring
+    rSignsIn: size * 0.395,    // inner edge of sign ring
+    rBodies: size * 0.31,      // planet markers
+    rAspects: size * 0.235,    // aspect hub
+    /** Planet marker radius. */
+    rMarker: size * 0.033,
+    /** The padding round the wheel in its viewBox (without an overlay ring). */
+    pad: size * 0.05,
+    pt,
+  };
+}
+
 export default function Wheel({
   bodies, asc = null, mc = null, cusps = null, aspects = [], size = 420, animate = false,
   interactive, preview = false, deferIcons = false, renderOverlay, ariaLabel = 'Birth chart wheel',
 }: WheelProps) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const rSigns = size * 0.475;      // outer edge of sign ring
-  const rSignsIn = size * 0.395;    // inner edge of sign ring
-  const rBodies = size * 0.31;      // planet markers
-  const rAspects = size * 0.235;    // aspect hub
   const anchor = interactive ? interactive.scene.anchor.lon : (asc ?? 0);
+  const { cx, cy, rSigns, rSignsIn, rBodies, rAspects, rMarker, pt } = wheelFrame(size, anchor);
 
   const ix = interactive ?? null;
   const opacityOf = (id: string) => (ix ? emphasisOpacity(ix.emphasis, id) : 1);
@@ -160,12 +184,6 @@ export default function Wheel({
     'data-spotlight-target': isSpotlight(id) ? id : undefined,
     'data-spotlight-kind': isSpotlight(id) ? kind : undefined,
   });
-
-  /** Ecliptic longitude → SVG point at radius r. */
-  const pt = (lon: number, r: number) => {
-    const phi = ((180 + (lon - anchor)) * Math.PI) / 180;
-    return { x: cx + r * Math.cos(phi), y: cy - r * Math.sin(phi) };
-  };
 
   /**
    * One geometric hit test for the whole wheel (interactive mode). Marks on
@@ -576,7 +594,7 @@ export default function Wheel({
                 />
               </g>
             )}
-            <circle data-body-marker={ix ? b.body : undefined} cx={p.x} cy={p.y} r={size * 0.033} fill="rgba(15,18,26,0.92)" stroke={sign.hue} stroke-opacity="0.55" stroke-width="1" />
+            <circle data-body-marker={ix ? b.body : undefined} cx={p.x} cy={p.y} r={rMarker} fill="rgba(15,18,26,0.92)" stroke={sign.hue} stroke-opacity="0.55" stroke-width="1" />
             <g
               data-body-glyph={ix ? b.body : undefined}
               transform={`translate(${p.x} ${insetRx ? p.y - size * 0.011 : p.y}) scale(${glyphSize / 24}) translate(-12 -12)`}
