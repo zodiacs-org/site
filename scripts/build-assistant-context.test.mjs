@@ -112,14 +112,16 @@ describe('assistant site context', () => {
       // its switch is '1'.
       // The Fortune 500 CEO sign study at /studies/fortune-500-ceo-signs/ adds one more.
       // The support page at /support/ adds one more, and one static page.
-      consumerRoutes: 721 + pagesOn,
+      // The iPhone app privacy policy adds one static page.
+      consumerRoutes: 722 + pagesOn,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 82 + pagesOn,
+      staticPages: 83 + pagesOn,
       tools: 27,
     });
+    expect(context).toContain('- /app/privacy/: How Simastry handles');
     for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
       expect(context.includes(`- ${route} \u2014`)).toBe(switchedRoutes(env).includes(route));
     }

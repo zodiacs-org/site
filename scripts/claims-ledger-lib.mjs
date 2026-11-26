@@ -212,6 +212,7 @@ export const DENSE_FILES = Object.freeze([
   'plugins/zodiacs-sky/plugin.json',
   'public/llms-full.txt',
   'public/llms.txt',
+  'src/pages/app/privacy/index.astro',
   'src/pages/developers/engine/index.astro',
   'src/pages/developers/time-atlas/index.astro',
   'src/pages/methodology/index.astro',

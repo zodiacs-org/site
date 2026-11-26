@@ -835,6 +835,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ),
   // What an unknown birth time does to the Moon's sign (UNKNOWN_TIME_MOON_ROUTES), last so it wins.
   ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
+  // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
+  ['/app/privacy/', '2026-11-22'] as const,
+  ['/support/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -971,6 +974,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/about/', priority: 0.55 },
     { loc: '/corrections/', priority: 0.4 },
     { loc: '/privacy/', priority: 0.4 },
+    { loc: '/app/privacy/', priority: 0.4 },
     { loc: '/es/privacy/', priority: 0.4 },
     { loc: '/terms/', priority: 0.4 },
     { loc: '/support/', priority: 0.4 },

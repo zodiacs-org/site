@@ -1482,7 +1482,8 @@ const sitemapPolicy = {
   // +1 for /studies/fortune-500-ceo-signs/, the CEO Sun sign data story, linked from /people/.
   // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
   // +1 for /support/, the support page, linked from /about/.
-  total: 1539 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /app/privacy/, the iPhone app policy linked from /support/.
+  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(vedicSignsIndexed) + Number(retrogradesForYouIndexed) + Number(astrocartographyIndexed) + Number(yourDayIndexed) + Number(goodDaysIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
