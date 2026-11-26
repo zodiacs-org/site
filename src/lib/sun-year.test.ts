@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { sunYearView } from './sun-year';
-import { SIGN_SLUGS } from './signs';
+import { sunYearView, type SunYearTense } from './sun-year';
+import { SUN_YEAR_WORDS, type SunYearLocale } from './sun-year-words';
+import { SIGN_SLUGS, signBySlug } from './signs';
 
 const at = (iso: string) => new Date(iso);
 
@@ -69,5 +70,37 @@ describe('sunYearView', () => {
   it('renders nothing where the table does not cover the year', () => {
     expect(sunYearView('aries', at('2026-02-01T12:00:00Z'))).toBeNull();
     expect(sunYearView('aries', at('2045-01-01T12:00:00Z'))).toBeNull();
+  });
+});
+
+describe('the ring’s accessible name', () => {
+  const tenses: SunYearTense[] = ['past', 'under-way', 'ahead'];
+  const locales = Object.keys(SUN_YEAR_WORDS) as SunYearLocale[];
+
+  it('is written in all six guide languages', () => {
+    expect(locales.sort()).toEqual(['en', 'es', 'fr', 'it', 'pt', 'ru']);
+  });
+
+  for (const locale of locales) {
+    it(`follows the season’s tense in ${locale}`, () => {
+      for (const slug of SIGN_SLUGS) {
+        const family = ['A', 'B', 'C'];
+        const texts = tenses.map((tense) => SUN_YEAR_WORDS[locale].alt(slug, '22 July', '8 August', signBySlug(slug).element, family, tense));
+        for (const text of texts) {
+          expect(text, `${locale} ${slug}`).not.toMatch(/undefined|null|NaN|[\u2013\u2014]/u);
+          expect(text).toContain('22 July');
+          expect(text).toContain('8 August');
+        }
+        // Past, under way and ahead each read differently.
+        expect(new Set(texts).size, `${locale} ${slug}`).toBe(3);
+      }
+    });
+  }
+
+  it('says ran, runs and will run in English', () => {
+    const say = (tense: SunYearTense) => SUN_YEAR_WORDS.en.alt('leo', 'July 22', 'August 22', 'fire', ['Aries', 'Leo', 'Sagittarius'], tense);
+    expect(say('past')).toContain('Leo ran from July 22 to August 22.');
+    expect(say('under-way')).toContain('Leo runs from July 22 to August 22.');
+    expect(say('ahead')).toContain('Leo will run from July 22 to August 22.');
   });
 });

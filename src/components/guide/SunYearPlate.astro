@@ -19,7 +19,7 @@
  * A Sun mark sits on the year line at the edition's date (`now`), with one
  * dated sentence beside it. The ring always shows the year that contains that
  * date, so this sign's season in it may be past, under way or still ahead,
- * and the facts take the matching tense; once it is past, one still line
+ * and the facts and the ring's accessible name take the matching tense; once it is past, one still line
  * gives the next season's start. Within a few days of a sign boundary the mark steps just inside the line
  * so it never covers a tick or the season's end dots. Its degree comes from
  * src/data/daily.json, and only when that file is for the same date.
@@ -115,7 +115,7 @@ const shortest = arcs[lengths.indexOf(Math.min(...lengths))];
 const familyNames = family.map((arc) => signName(arc.s.slug, locale));
 const kicker = drawn ? words.kicker(new Date(yearStart).getUTCFullYear(), new Date(yearEnd).getUTCFullYear()) : '';
 const alt = drawn && mine
-  ? words.alt(slug, shortDay(mine.window.start), shortDay(mine.window.end), sign.element, familyNames)
+  ? words.alt(slug, shortDay(mine.window.start), shortDay(mine.window.end), sign.element, familyNames, tense)
   : '';
 const lengthText = `${pluralText(locale, words.days, wholeDays)}, ${pluralText(locale, words.hours, spareHours)}`;
 // The centre number always shows one decimal, which sets its plural (30.5 days, 30,5 дня).

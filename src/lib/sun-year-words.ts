@@ -13,6 +13,7 @@
 import { elementLabel, signName, signPrepositional, type Element } from './signs';
 import type { CatalogLocale } from './i18n/core.js';
 import type { PluralForms } from './i18n/plural';
+import type { SunYearTense } from './sun-year';
 
 export type SunYearLocale = CatalogLocale;
 
@@ -43,8 +44,12 @@ export interface SunYearWords {
   source: string;
   /** Under the centre number (always shown with one decimal): "days in Aries". */
   centre: PluralForms;
-  /** The ring's accessible name. Dates arrive formatted. */
-  alt: (slug: string, from: string, to: string, element: Element, family: readonly string[]) => string;
+  /**
+   * The ring's accessible name. Dates arrive formatted. The season sentence
+   * follows the season's tense in the year drawn, as the facts do: it ran,
+   * it runs, it will run.
+   */
+  alt: (slug: string, from: string, to: string, element: Element, family: readonly string[], tense: SunYearTense) => string;
   /**
    * The sentence under the Sun mark: where the Sun is on the edition's date,
    * always dated, never "today". The date arrives formatted; the degree is
@@ -135,9 +140,10 @@ const EN: SunYearWords = {
   seasonLink: (slug) => `${signName(slug)} season in your time zone`,
   source: 'Sun’s sign entries calculated by Zodiacs. Times in UTC.',
   centre: { other: 'days in {sign}' },
-  alt: (slug, from, to, element, family) => {
+  alt: (slug, from, to, element, family, tense) => {
     const labels: Record<Element, string> = { fire: 'fire', earth: 'earth', air: 'air', water: 'water' };
-    return `A ring showing one year from the March equinox, divided into the twelve signs to scale. ${signName(slug)} runs from ${from} to ${to}. A triangle joins the three ${labels[element]} signs: ${family.join(', ')}.`;
+    const runs = { past: 'ran', 'under-way': 'runs', ahead: 'will run' }[tense];
+    return `A ring showing one year from the March equinox, divided into the twelve signs to scale. ${signName(slug)} ${runs} from ${from} to ${to}. A triangle joins the three ${labels[element]} signs: ${family.join(', ')}.`;
   },
   sunOn: (date, slug, degree) => `On ${date} the Sun is in ${signName(slug)}${degree === null ? '' : `, at ${degree}° of the sign`}.`,
   sunMark: (date, slug) => `A small Sun mark on the ring shows where the Sun is on ${date}, in ${signName(slug)}.`,
@@ -162,7 +168,7 @@ const ES: SunYearWords = {
   seasonLink: (slug) => `Temporada de ${signName(slug, 'es')} en tu zona horaria`,
   source: 'Entradas del Sol en cada signo calculadas por Zodiacs. Horas en UTC.',
   centre: { one: 'día en {sign}', other: 'días en {sign}' },
-  alt: (slug, from, to, element, family) => `Un anillo que muestra un año desde el equinoccio de marzo, dividido a escala entre los doce signos. La temporada de ${signName(slug, 'es')} va del ${from} al ${to}. Un triángulo une los tres signos de ${lower(elementLabel(element, 'es'))}: ${family.join(', ')}.`,
+  alt: (slug, from, to, element, family, tense) => `Un anillo que muestra un año desde el equinoccio de marzo, dividido a escala entre los doce signos. La temporada de ${signName(slug, 'es')} ${{ past: 'fue', 'under-way': 'va', ahead: 'irá' }[tense]} del ${from} al ${to}. Un triángulo une los tres signos de ${lower(elementLabel(element, 'es'))}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `El ${date}, el Sol está en ${signName(slug, 'es')}${degree === null ? '' : `, a ${degree}° del signo`}.`,
   sunMark: (date, slug) => `Una pequeña marca del Sol en el anillo muestra dónde está el Sol el ${date}, en ${signName(slug, 'es')}.`,
   nextSeason: (slug, date) => `La próxima temporada de ${signName(slug, 'es')} empieza el ${date}.`,
@@ -186,7 +192,7 @@ const PT: SunYearWords = {
   seasonLink: (slug) => `Temporada de ${signName(slug, 'pt')} no seu fuso horário`,
   source: 'Entradas do Sol em cada signo calculadas pelo Zodiacs. Horários em UTC.',
   centre: { one: 'dia em {sign}', other: 'dias em {sign}' },
-  alt: (slug, from, to, element, family) => `Um anel que mostra um ano a partir do equinócio de março, dividido em escala entre os doze signos. A temporada de ${signName(slug, 'pt')} vai de ${from} a ${to}. Um triângulo liga os três signos de ${lower(elementLabel(element, 'pt'))}: ${family.join(', ')}.`,
+  alt: (slug, from, to, element, family, tense) => `Um anel que mostra um ano a partir do equinócio de março, dividido em escala entre os doze signos. A temporada de ${signName(slug, 'pt')} ${{ past: 'foi', 'under-way': 'vai', ahead: 'irá' }[tense]} de ${from} a ${to}. Um triângulo liga os três signos de ${lower(elementLabel(element, 'pt'))}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `Em ${date}, o Sol está em ${signName(slug, 'pt')}${degree === null ? '' : `, a ${degree}° do signo`}.`,
   sunMark: (date, slug) => `Uma pequena marca do Sol no anel mostra onde o Sol está em ${date}, em ${signName(slug, 'pt')}.`,
   nextSeason: (slug, date) => `A próxima temporada de ${signName(slug, 'pt')} começa em ${date}.`,
@@ -210,7 +216,7 @@ const FR: SunYearWords = {
   seasonLink: (slug) => `Saison ${frOf(slug)} dans ton fuseau horaire`,
   source: 'Entrées du Soleil dans chaque signe calculées par Zodiacs. Heures en UTC.',
   centre: { one: 'jour dans {sign}', other: 'jours dans {sign}' },
-  alt: (slug, from, to, element, family) => `Un anneau qui montre une année à partir de l’équinoxe de mars, partagée à l’échelle entre les douze signes. La saison ${frOf(slug)} va du ${from} au ${to}. Un triangle relie les trois signes ${frElement(element)} : ${family.join(', ')}.`,
+  alt: (slug, from, to, element, family, tense) => `Un anneau qui montre une année à partir de l’équinoxe de mars, partagée à l’échelle entre les douze signes. La saison ${frOf(slug)} ${{ past: 'a duré', 'under-way': 'va', ahead: 'ira' }[tense]} du ${from} au ${to}. Un triangle relie les trois signes ${frElement(element)} : ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `Le ${date}, le Soleil est dans ${frThe(slug)}${degree === null ? '' : `, à ${degree}° du signe`}.`,
   sunMark: (date, slug) => `Une petite marque du Soleil sur l’anneau montre où il se trouve le ${date}, dans ${frThe(slug)}.`,
   nextSeason: (slug, date) => `La prochaine saison ${frOf(slug)} commence le ${date}.`,
@@ -234,7 +240,7 @@ const IT: SunYearWords = {
   seasonLink: (slug) => `Stagione ${itOf(slug)} nel tuo fuso orario`,
   source: 'Ingressi del Sole nei segni calcolati da Zodiacs. Orari in UTC.',
   centre: { one: 'giorno {in}', other: 'giorni {in}' },
-  alt: (slug, from, to, element, family) => `Un anello che mostra un anno a partire dall’equinozio di marzo, diviso in scala tra i dodici segni. La stagione ${itOf(slug)} va ${itFrom(from)} ${itTo(to)}. Un triangolo unisce i tre segni ${itElement(element)}: ${family.join(', ')}.`,
+  alt: (slug, from, to, element, family, tense) => `Un anello che mostra un anno a partire dall’equinozio di marzo, diviso in scala tra i dodici segni. La stagione ${itOf(slug)} ${{ past: 'è durata', 'under-way': 'va', ahead: 'andrà' }[tense]} ${itFrom(from)} ${itTo(to)}. Un triangolo unisce i tre segni ${itElement(element)}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `${upper(itOn(date))} il Sole è ${itIn(slug)}${degree === null ? '' : `, a ${degree}° del segno`}.`,
   sunMark: (date, slug) => `Un piccolo simbolo del Sole sull’anello mostra dove si trova ${itOn(date)}, ${itIn(slug)}.`,
   nextSeason: (slug, date) => `La prossima stagione ${itOf(slug)} comincia ${itOn(date)}.`,
@@ -258,7 +264,7 @@ const RU: SunYearWords = {
   seasonLink: null,
   source: 'Моменты входа Солнца в знаки рассчитаны Zodiacs. Время указано в UTC.',
   centre: { one: 'день в {in}', few: 'дня в {in}', many: 'дней в {in}', other: 'дня в {in}' },
-  alt: (slug, from, to, element, family) => `Кольцо показывает один год от мартовского равноденствия, разделённый на двенадцать знаков в масштабе. Солнце находится в ${signPrepositional(slug)} с ${from} по ${to}. Треугольник соединяет три знака ${RU_ELEMENT_GENITIVE[element]}: ${family.join(', ')}.`,
+  alt: (slug, from, to, element, family, tense) => `Кольцо показывает один год от мартовского равноденствия, разделённый на двенадцать знаков в масштабе. Солнце ${{ past: 'находилось', 'under-way': 'находится', ahead: 'будет находиться' }[tense]} в ${signPrepositional(slug)} с ${from} по ${to}. Треугольник соединяет три знака ${RU_ELEMENT_GENITIVE[element]}: ${family.join(', ')}.`,
   sunOn: (date, slug, degree) => `Солнце ${date} находится в ${signPrepositional(slug)}${degree === null ? '' : `, в ${degree}° от начала знака`}.`,
   sunMark: (date, slug) => `Небольшая отметка на кольце показывает, где Солнце находится ${date}: в ${signPrepositional(slug)}.`,
   // The date ends with its year marker ("2027 г."), whose full stop ends the sentence.
