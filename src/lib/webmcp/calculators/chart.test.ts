@@ -1,12 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import * as receiptModule from '../../engine/calculator-receipt';
 import * as engine from '../../engine/full';
 import type { Chart, HouseSystem } from '../../engine/types';
 import { t } from '../../i18n';
 import { moonCandidates as pageMoonCandidates, moonIsUncertain } from '../../moon-certainty';
-import { signForLongitude } from '../../signs';
-import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
+import { signBySlug, signForLongitude } from '../../signs';
+import { offsetAt, prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
 import { assessLocalDateReference } from '../../time/local-date-reference';
+import { localDateMoonSigns } from '../../moon-day-bounds';
 import {
   bigThreeResult, birthChartResult, chartPageNatal, moonCandidates, moonSignResult, personNatal, risingSignResult,
 } from './chart';
@@ -21,6 +22,39 @@ import { birthDateRefusal, birthDateRefusalText } from '../../birth-date-policy'
 // ChartCalculator's runChart, the code /birth-chart/, /moon-sign/ and /rising-sign/ calculate with.
 const runChart = islandFunction('ChartCalculator.tsx', { function: 'runChart' });
 
+/**
+ * A browser's Temporal, as far as a date's limits read it: Intl's offsets, each change found by an hourly scan and a
+ * bisection to the millisecond. Node has no Temporal; the zones it stands in for here change months apart.
+ */
+function intlTemporal() {
+  const HOUR = 3_600_000;
+  const offset = (zone: string, instant: number) => Math.round(offsetAt(zone, instant) * 60_000);
+  class ZonedDateTime {
+    constructor(private readonly zone: string, private readonly instant: number) {}
+    get offsetNanoseconds() { return offset(this.zone, this.instant) * 1_000_000; }
+    get epochNanoseconds() { return BigInt(this.instant) * 1_000_000n; }
+    getTimeZoneTransition() {
+      const base = offset(this.zone, this.instant);
+      for (let probe = this.instant + HOUR; probe <= this.instant + 80 * HOUR; probe += HOUR) {
+        if (offset(this.zone, probe) === base) continue;
+        let low = probe - HOUR, high = probe;
+        while (high - low > 1) {
+          const middle = Math.floor((low + high) / 2);
+          if (offset(this.zone, middle) === base) low = middle; else high = middle;
+        }
+        return new ZonedDateTime(this.zone, high);
+      }
+      return null;
+    }
+  }
+  class Instant {
+    constructor(private readonly instant: number) {}
+    static fromEpochMilliseconds(instant: number) { return new Instant(instant); }
+    toZonedDateTimeISO(zone: string) { return new ZonedDateTime(zone, this.instant); }
+  }
+  return { Instant, ZonedDateTime };
+}
+
 async function chartPage(mode: 'full' | 'moon' | 'rising', birth: Birth, houseSystem: HouseSystem) {
   const state: { chart: Chart | null; error: string; moonAmbiguous: boolean | null; onMeanTime: boolean | null } = {
     chart: null, error: '', moonAmbiguous: null, onMeanTime: null,
@@ -32,7 +66,7 @@ async function chartPage(mode: 'full' | 'moon' | 'rising', birth: Birth, houseSy
     shareRuntimeRef: ref({}), resultRef: ref(null), chartActionDockModule: null,
     profileAccessAllowed: () => true,
     loadEngine: async () => engine, loadCalculatorReceipt: async () => receiptModule,
-    prepareLocalTime, resolveLocalToUtc, assessLocalDateReference, signForLongitude, moonIsUncertain, t,
+    prepareLocalTime, resolveLocalToUtc, assessLocalDateReference, localDateMoonSigns, signForLongitude, moonIsUncertain, t,
     birthDateRefusal, birthDateRefusalText,
     calculationError: (_error: unknown, _locale: string, fallback: string) => fallback,
     setChart: (chart: Chart) => { state.chart = chart; },
@@ -142,9 +176,17 @@ describe('the chart results', () => {
       const chart = birthChartResult(reading);
       const moon = moonSignResult(reading);
       if (birth.time === null) {
-        expect(chart.bigThree.moon).toBeNull();
-        expect(chart.moonSignStatus).toBe('unverified');
-        expect(moon.moon).toBeNull();
+        // Settled only when the Moon held one sign through the whole birth date, both signs when it changed sign.
+        const candidates = moonCandidates(reading.chart);
+        const status = candidates.length === 1 ? 'settled' : candidates.length === 2 ? 'changed-sign' : 'unverified';
+        expect(chart.moonSignStatus).toBe(status);
+        expect(moon.moonSignStatus).toBe(status);
+        expect(chart.bigThree.moon === null).toBe(status !== 'settled');
+        expect(moon.moon === null).toBe(status !== 'settled');
+        // A settled sign without a time is the sign alone: no longitude or degree from the noon reference.
+        if (status === 'settled') {
+          for (const shown of [chart.bigThree.moon, moon.moon]) expect(shown).toEqual({ sign: signBySlug(candidates[0]).name });
+        }
         expect(chart.angles).toBeNull();
         expect(chart.houses).toBeNull();
         expect(chart.bodies.every((body) => body.house === null)).toBe(true);
@@ -156,6 +198,102 @@ describe('the chart results', () => {
       }
       expect(chart.computedUtc).toBe(reading.chart.input.utc.toISOString());
     }
+  });
+
+  describe('the Moon without a birth time', () => {
+    const untimed = (date: string, place: Birth['place']) => chartPageNatal({ date, time: null, place }, 'whole', { receipt: true });
+    const BANGKOK = { latitude: 13.7563, longitude: 100.5018, timeZone: 'Asia/Bangkok' };
+    const LONDON = { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London' };
+    const TORONTO = { latitude: 43.65, longitude: -79.38, timeZone: 'America/Toronto' };
+
+    it('names the one sign the Moon held through the birth date, and no noon degree as the Moon\'s', async () => {
+      const reading = await untimed('1990-01-04', BANGKOK);
+      expect(reading.chart.moonSignCandidates).toEqual(['aries']);
+      const note = 'The Moon was in Aries through the whole birth date, so without a birth time the page names that sign '
+        + 'but not a degree: the Moon\'s degree at local noon is a reference, and its degree at birth needs the time from '
+        + 'the birth record.';
+      for (const result of [birthChartResult(reading), moonSignResult(reading)]) {
+        expect(result).toMatchObject({ timeKnown: false, basis: 'local-noon', moonSignStatus: 'settled', moonSignNote: note });
+        expect(result).not.toHaveProperty('moonSignCandidates');
+        expect(result.moonSignNote).not.toMatch(/[\u2013\u2014]/);
+      }
+      // The sign alone. Noon's Moon is in Aries too, but its longitude and degree are not the Moon's at birth.
+      expect(moonSignResult(reading).moon).toEqual({ sign: 'Aries' });
+      expect(birthChartResult(reading).bigThree.moon).toEqual({ sign: 'Aries' });
+      const noon = position(reading.chart.bodies.find((row) => row.body === 'Moon')!.lon);
+      expect(noon.sign).toBe('Aries');
+      const moonSign = JSON.stringify(moonSignResult(reading));
+      for (const value of ['"longitude"', '"degreeInSign"', '"label"', String(noon.longitude), noon.label]) {
+        expect(moonSign).not.toContain(value);
+      }
+      // The birth chart keeps noon's Moon only among its bodies, read at local noon, as every other reference position.
+      const chart = birthChartResult(reading);
+      expect(chart.bodies.find((row) => row.body === 'Moon')).toMatchObject(noon);
+      expect(JSON.stringify(chart.bigThree)).not.toContain(noon.label);
+
+      // With the time known, the same instant's Moon is a position.
+      const timed = await chartPageNatal({ date: '1990-01-04', time: '12:00', place: BANGKOK }, 'whole', { receipt: true });
+      expect(timed.chart.input.utc.toISOString()).toBe(reading.chart.input.utc.toISOString());
+      expect(moonSignResult(timed)).not.toHaveProperty('moonSignNote');
+      expect(moonSignResult(timed).moon).toEqual(noon);
+      expect(birthChartResult(timed).bigThree.moon).toEqual(noon);
+    });
+
+    it('gives both signs of a day the Moon changed sign, in the order it took them, and chooses neither', async () => {
+      const reading = await untimed('1990-01-01', LONDON);
+      expect(reading.chart.moonSignCandidates).toEqual(['aquarius', 'pisces']);
+      for (const result of [birthChartResult(reading), moonSignResult(reading)]) {
+        expect(result).toMatchObject({ moonSignStatus: 'changed-sign', moonSignCandidates: ['Aquarius', 'Pisces'] });
+        expect(result.moonSignNote).toBe('Two Moon signs are possible for this birth date: the Moon moved from Aquarius '
+          + 'into Pisces during the date. The page names both; a birth time from the birth record is needed to know which.');
+        expect(result.moonSignNote).not.toMatch(/[\u2013\u2014]/);
+      }
+      expect(moonSignResult(reading).moon).toBeNull();
+      expect(birthChartResult(reading).bigThree.moon).toBeNull();
+      // The noon reference's sign is one of the two, but it is not given as the birth sign.
+      expect(JSON.stringify(moonSignResult(reading))).not.toContain('"sign"');
+    });
+
+    const unverified = {
+      moon: null, moonSignStatus: 'unverified',
+      moonSignNote: 'Without a birth time the Moon\'s sign across the birth date is not verified, so the page does not '
+        + 'name it; give the time from the birth record.',
+    };
+
+    it('keeps the unverified answer, word for word, when the date\'s limits settle nothing', async () => {
+      const reading = await untimed('1919-03-31', TORONTO);
+      expect(reading.chart.moonSignCandidates).toEqual([]);
+      const { moonPhase, engine: _engine, page: _page, timeKnown: _known, basis: _basis, computedUtc: _utc, flags: _flags,
+        localMeanTime: _lmt, ...moon } = moonSignResult(reading);
+      expect(typeof moonPhase).toBe('string');
+      expect(moon).toEqual(unverified);
+      const { bigThree, moonSignStatus, moonSignNote } = birthChartResult(reading);
+      expect(bigThree.moon).toBeNull();
+      expect({ moon: bigThree.moon, moonSignStatus, moonSignNote }).toEqual(unverified);
+      expect(birthChartResult(reading)).not.toHaveProperty('moonSignCandidates');
+    });
+
+    it('names no sign for a date a clock split when the Moon changed sign between its runs', async () => {
+      // St. John's turned its clocks back from 00:01 on 29 October 1989 to 23:01 on the 28th, and the Moon
+      // entered Scorpio in that repeated hour: the 29th had Libra in its first minute and Scorpio after it, but
+      // the Moon did not change sign on the 29th. Node has no Temporal, so the repeated midnight leaves both
+      // dates unverified; a browser's Temporal gives each date's two runs.
+      const ST_JOHNS = { latitude: 47.5615, longitude: -52.7126, timeZone: 'America/St_Johns' };
+      expect((await untimed('1989-10-28', ST_JOHNS)).chart.moonSignCandidates).toEqual([]);
+      vi.stubGlobal('Temporal', intlTemporal());
+      try {
+        const split = await untimed('1989-10-29', ST_JOHNS);
+        expect(split.chart.moonSignCandidates).toEqual([]);
+        expect(moonSignResult(split)).toMatchObject(unverified);
+        const { bigThree, moonSignStatus, moonSignNote } = birthChartResult(split);
+        expect({ moon: bigThree.moon, moonSignStatus, moonSignNote }).toEqual(unverified);
+        // The 28th saw the change, so it gives both signs.
+        expect(moonSignResult(await untimed('1989-10-28', ST_JOHNS)))
+          .toMatchObject({ moonSignStatus: 'changed-sign', moonSignCandidates: ['Libra', 'Scorpio'] });
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
   });
 
   it('keep a degree just short of a sign\'s end in that sign', () => {

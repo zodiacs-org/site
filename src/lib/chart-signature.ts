@@ -2,7 +2,7 @@ import { dignityFor, type Dignity } from './dignities';
 import type { Aspect, BodyName, Chart } from './engine/types';
 import type { Locale } from './i18n';
 import { natalAspectLine } from './natal';
-import { moonCandidates, moonIsUncertain, moonLabel } from './moon-certainty';
+import { moonAspectsUnsettled, moonCandidates, moonIsUncertain, moonLabel, type MoonAspectPresentation } from './moon-certainty';
 import {
   elementLabel,
   modalityLabel,
@@ -262,6 +262,10 @@ function bigThreeSignature(
   };
 }
 
+/** What a signature reads: positions and aspects, and whether there was a birth time, never the birth details. */
+export type ChartSignatureInput = Pick<Chart, 'bodies' | 'angles' | 'aspects' | 'moonSignCandidates'>
+  & Pick<MoonAspectPresentation, 'input' | 'flags'>;
+
 /**
  * Pick one positive, evidence-backed signature without consulting birth input.
  * Priority is deterministic and never calls a pattern rare without population
@@ -269,13 +273,15 @@ function bigThreeSignature(
  * supported dignity, stellium, clear balance, then an honest Big Three fallback.
  */
 export function chartSignature(
-  chart: Pick<Chart, 'bodies' | 'angles' | 'aspects' | 'moonSignCandidates'>,
+  chart: ChartSignatureInput,
   locale: Locale = 'en',
 ): ChartSignature {
   const uncertainMoon = moonIsUncertain(chart);
-  const settled = uncertainMoon ? {
+  // A Moon sign settled across the birth date still leaves its aspects to the birth time.
+  const moonAspectsOut = moonAspectsUnsettled(chart);
+  const settled = uncertainMoon || moonAspectsOut ? {
     ...chart,
-    bodies: chart.bodies.filter((body) => body.body !== 'Moon'),
+    bodies: uncertainMoon ? chart.bodies.filter((body) => body.body !== 'Moon') : chart.bodies,
     aspects: chart.aspects.filter((aspect) => aspect.a !== 'Moon' && aspect.b !== 'Moon'),
   } : chart;
   return aspectSignature(settled)

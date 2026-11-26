@@ -1079,11 +1079,13 @@ try {
         'the Moon hero must retain the same unverified identity as the image');
       assert.equal(await unknownMoonHero.locator('.three-card__deg').count(), 0,
         'the unverified hero must not promote a reference degree to a settled Moon identity');
-      assert.match(
-        (await unknownMoon.locator('.notice').allInnerTexts()).join(' '),
-        /The Moon’s possible signs across this birth date are unverified/,
-        'the no-time result must explain that the possible signs have not been verified',
-      );
+      // The Moon went from Aquarius into Pisces on this London date: both signs were verified, only which held at
+      // birth was not, so the notice says the Moon changed signs that day rather than that nothing was verified.
+      const unknownMoonNotices = (await unknownMoon.locator('.notice').allInnerTexts()).join(' ');
+      assert.match(unknownMoonNotices, /The Moon also changed signs that day/,
+        'the no-time result must say the Moon changed signs that day');
+      assert.doesNotMatch(unknownMoonNotices, /The Moon’s possible signs across this birth date are unverified/,
+        'a date whose two Moon signs were verified must not be called unverified');
       await unknownMoon.locator('[data-share-options]').click();
       const unknownMoonDialog = unknownMoon.locator('[data-share-dialog]');
       await unknownMoonDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
@@ -1101,9 +1103,9 @@ try {
       // time zone, from 10:00 UTC the day before to 12:00 UTC the day after.
       for (const moonCase of [
         // All Aquarius in London on 31 December 1989, but Pisces from 06:11 UTC on 1 January.
-        { date: '1989-12-31', notNamed: 'Aquarius', card: null },
+        { date: '1989-12-31', page: 'Aquarius', notNamed: 'Aquarius', card: null },
         // Virgo from 02:58 UTC on 14 January 1990 to 12:18 UTC on the 16th.
-        { date: '1990-01-15', card: 'Virgo' },
+        { date: '1990-01-15', page: 'Virgo', card: 'Virgo' },
       ]) {
         const moonPage = await trackedPage();
         await open(moonPage, `${baseURL}/moon-sign/`);
@@ -1118,8 +1120,11 @@ try {
           return document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false'
             && action instanceof HTMLButtonElement && !action.disabled;
         }, null, { timeout: TIMEOUT });
-        // The page itself names no Moon sign without a birth time.
-        assert.match(await moonPage.locator('.calc__three [data-moon-uncertain]').innerText(), /Needs a birth time/);
+        // The page names the sign the Moon held through the whole London date,
+        // from that date's own limits; the card keeps its everywhere rule.
+        assert.equal(await moonPage.locator('.calc__three [data-moon-uncertain]').count(), 0,
+          `${moonCase.date}: the page settles the Moon the London date kept in one sign`);
+        assert.match(await moonPage.locator('.calc__three .three-card').first().innerText(), new RegExp(moonCase.page));
         const cardText = await moonPage.evaluate(() => globalThis.__t17CanvasText.map((entry) => entry.value).join(' | '));
         await moonPage.locator('[data-share-options]').click();
         const moonDialog = moonPage.locator('[data-share-dialog]');
