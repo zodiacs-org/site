@@ -30,6 +30,7 @@
  *   npm run data:og -- --only-registry    # the Registry's v4 lot and hub cards (build-registry-og.mjs)
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
+ *   npm run data:og -- --only-chart-twins-card # the chart twins art card alone (v8, JPEG)
  *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
  *   npm run data:og -- --only-good-days-card # the good day finder's card (good-days/v1, JPEG)
@@ -83,6 +84,11 @@ const { HOROSCOPE_OG_SURFACES, OG_EN } = await import(
 const {
   ART_CARD_DISC,
   ART_CARD_MAX_BYTES,
+  CHART_TWINS_ART_CARD,
+  CHART_TWINS_ART_CARD_ART,
+  CHART_TWINS_ART_CARD_COPY,
+  CHART_TWINS_ART_CARD_DISCS,
+  CHART_TWINS_ART_CARD_SHADE,
   HOME_ART_CARD,
   HOME_ART_CARD_COPY,
   HOME_ART_CARD_CROP,
@@ -498,7 +504,7 @@ function signCard(s) {
 // panel behind the words, in the heroes' own shade, with the names and the
 // homepage headline in the display serif and the lockup in the footer row.
 // The art arrives as data: URIs read by the --only-art-cards run alone.
-const ART = { poster: null, signs: {}, icons: {} };
+const ART = { poster: null, signs: {}, icons: {}, twins: null };
 
 /**
  * The homepage: the poster cut at full size, the hero's scrim, its headline
@@ -566,6 +572,35 @@ function localizedSignCard(s, locale) {
 /** A localized daily horoscope's card. */
 function localizedHoroscopeCard(s, locale) {
   return artSignLayout(s, localizedHoroscopeArtCardCopy(s.slug, locale), `zodiacs.org/${locale}/horoscopes/${s.slug}/`, { localized: true });
+}
+
+/**
+ * The chart twins page's card (owner-chosen 2026-11-26): the page's painting
+ * of the twin cameos on the right, fading in from the left and up from the
+ * bottom under the sign cards' kind of shade; on the left a small Sun disc in
+ * Leo's hue and a Moon disc in Cancer's, the kicker, the headline on two
+ * lines and the line, with the lockup in the footer row.
+ */
+function artChartTwinsCard(copy = CHART_TWINS_ART_CARD_COPY) {
+  const art = CHART_TWINS_ART_CARD_ART;
+  const { size, sun, moon } = CHART_TWINS_ART_CARD_DISCS;
+  const sunDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${sun}"/><circle cx="50" cy="50" r="30" fill="none" stroke="${VOID}" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="${VOID}"/></svg>`;
+  const moonDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${moon}"/><path d="M57 24 A27 27 0 1 0 57 76 A20 27 0 1 1 57 24 Z" fill="${VOID}"/></svg>`;
+  const [first, ...rest] = copy.title.split(' ');
+  const last = rest.pop();
+  const title = `${escapeHtml([first, ...rest].join(' '))}<br>${escapeHtml(last ?? '')}`;
+  const body = `
+  <img src="${ART.twins}" width="1200" height="800" alt=""
+    style="position: absolute; top: ${art.top}px; left: ${art.left}px; width: ${art.width}px; height: ${art.height}px; filter: ${art.filter};
+      -webkit-mask-image: ${art.mask}; -webkit-mask-composite: source-in; mask-image: ${art.mask}; mask-composite: intersect;" />
+  <div style="position: absolute; inset: 0; background: ${CHART_TWINS_ART_CARD_SHADE.join(', ')};"></div>
+  <div style="position: absolute; left: 88px; top: 16px; bottom: 96px; width: 520px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: 14px;">${sunDisc}${moonDisc}</div>
+    <span class="kicker" style="margin: 22px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="display" style="font-size: 104px; margin-top: 6px; line-height: 0.96;">${title}</div>
+    <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.4; max-width: 21ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>`;
+  return shell(body, 'zodiacs.org/chart-twins/');
 }
 
 /**
@@ -1368,6 +1403,22 @@ if (process.argv.includes('--only-good-days-card')) {
   process.exit(0);
 }
 
+// The chart twins page's art card (2026-11-26), alone, so the published v8
+// cards keep their bytes. --only-art-cards draws it with the rest.
+if (process.argv.includes('--only-chart-twins-card')) {
+  console.log('Rendering the chart twins art card…');
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  const raw = await capture(artChartTwinsCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${CHART_TWINS_ART_CARD}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${CHART_TWINS_ART_CARD}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${CHART_TWINS_ART_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
 if (process.argv.includes('--only-art-cards')) {
   console.log('Rendering the homepage, sign guide and horoscope art cards…');
   ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
@@ -1375,10 +1426,12 @@ if (process.argv.includes('--only-art-cards')) {
     ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
     ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
   }
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
   const cards = [
     [HOME_ART_CARD, artHomeCard()],
     ...SIGNS.map((s) => [signArtCard(s.slug), artSignCard(s)]),
     ...SIGNS.flatMap((s) => HOROSCOPE_OG_SURFACES.map((surface) => [horoscopeArtCard(s.slug, surface.key), artHoroscopeCard(s, surface)])),
+    [CHART_TWINS_ART_CARD, artChartTwinsCard()],
   ];
   let written = 0;
   for (const [path, html] of cards) {

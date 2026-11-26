@@ -4,6 +4,11 @@ import {
   ART_CARDS,
   ART_CARD_DIR,
   ART_CARD_DISC,
+  CHART_TWINS_ART_CARD,
+  CHART_TWINS_ART_CARD_ALT,
+  CHART_TWINS_ART_CARD_ART,
+  CHART_TWINS_ART_CARD_COPY,
+  CHART_TWINS_ART_CARD_DISCS,
   HOME_ART_CARD,
   HOME_ART_CARD_ALT,
   HOME_ART_CARD_COPY,
@@ -107,8 +112,9 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       HOME_ART_CARD,
       ...SIGNS.map((sign) => `/assets/og/v8/sign/${sign.slug}.jpg`),
       ...SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => `/assets/og/v8/horoscope/${sign.slug}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`)),
+      '/assets/og/v8/tool/chart-twins.jpg',
     ]);
-    expect(ART_CARDS).toHaveLength(97);
+    expect(ART_CARDS).toHaveLength(98);
     // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
     expect(ART_CARD_DISC).toBeGreaterThanOrEqual(128);
     expect(read('scripts/build-og-void.mjs')).toContain('public/assets/zodiac-icons/400/${s.slug}.webp');
@@ -137,6 +143,39 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
     // The 2026 yearly pages have no card of their own and share the sign guide's.
     expect(horoscopes).toContain("const ogImage = surface === 'year2026' ? signArtCard(sign.slug) : horoscopeArtCard(sign.slug, surface);");
     expect(horoscopes).not.toContain('/assets/og/v2/horoscope/');
+  });
+});
+
+describe('the chart twins art card (owner-chosen 2026-11-26)', () => {
+  it('draws the page painting in the sign cards\' filter, with the Sun in Leo\'s hue and the Moon in Cancer\'s', () => {
+    expect(CHART_TWINS_ART_CARD).toBe('/assets/og/v8/tool/chart-twins.jpg');
+    expect(CHART_TWINS_ART_CARD_ART.src).toBe('public/assets/card-art/twins-hero-1200.webp');
+    expect(readFileSync(new URL(`../../${CHART_TWINS_ART_CARD_ART.src}`, import.meta.url)).length).toBeGreaterThan(0);
+    expect(CHART_TWINS_ART_CARD_ART.filter).toBe(SIGN_ART_CARD_ART.filter);
+    expect(CHART_TWINS_ART_CARD_ART.width / CHART_TWINS_ART_CARD_ART.height).toBeCloseTo(1200 / 800, 6);
+    expect(CHART_TWINS_ART_CARD_DISCS.sun).toBe(SIGNS.find((sign) => sign.slug === 'leo')?.hue);
+    expect(CHART_TWINS_ART_CARD_DISCS.moon).toBe(SIGNS.find((sign) => sign.slug === 'cancer')?.hue);
+  });
+
+  it('carries the approved words, with no dashes and without "verified"', () => {
+    expect(CHART_TWINS_ART_CARD_COPY).toEqual({
+      kicker: 'Matched by Sun and Moon',
+      title: 'Your chart twins',
+      line: 'Public figures who share your Sun and Moon signs.',
+    });
+    for (const words of [...Object.values(CHART_TWINS_ART_CARD_COPY), CHART_TWINS_ART_CARD_ALT]) {
+      expect(words).not.toMatch(DASHES);
+      expect(words).not.toMatch(/verified/iu);
+    }
+  });
+
+  it('is what the English chart twins page links, while the localized pages keep the v2 card', () => {
+    const page = read('src/components/sharing/SharingToolPage.astro');
+    expect(page).toContain("const englishTwins = locale === 'en' && kind === 'twins';");
+    expect(page).toContain('const cardImage = englishTwins ? CHART_TWINS_ART_CARD : (');
+    expect(page).toContain("twins: '/assets/og/v2/tool/chart-twins.png'");
+    expect(page).toContain('const cardAlt = englishTwins ? CHART_TWINS_ART_CARD_ALT : s(locale, titleKey);');
+    expect(read('scripts/build-og-void.mjs')).toContain("process.argv.includes('--only-chart-twins-card')");
   });
 });
 

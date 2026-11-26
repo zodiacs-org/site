@@ -313,6 +313,19 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `og-art-cards.test.ts` holds both. Not in the drift job; `verify-og-cards`
   checks them, under their own 12 MiB ceiling. Each locale's homepage card is
   also that locale's fallback
+- `public/assets/og/v8/tool/chart-twins.jpg` ← `npm run data:og --
+  --only-chart-twins-card` (the English /chart-twins/ page's art card,
+  owner-chosen 2026-11-26: the page's twin cameos painting
+  `public/assets/card-art/twins-hero-1200.webp` on the right in the v8 sign
+  cards' filter and shade, a Sun disc in Leo's hue and a Moon disc in
+  Cancer's, the kicker, headline and line, and the lockup's footer row;
+  `--only-art-cards` draws it with the rest. A JPEG under the art cards'
+  300 KB budget, counted in the v8 folder's 12 MiB; words, art placement and
+  shade live in `src/lib/og-art-cards.mjs`, which `og-art-cards.test.ts`
+  holds to the page. Not in the drift job (Chromium output);
+  `verify-og-cards` checks it. The localized chart twins pages keep their
+  cards, and the v2 `og/v2/tool/chart-twins.png` stays published for links
+  already shared)
 - `public/assets/og/year-sky/v1/2027.jpg` ← `npm run data:og -- --only-year-sky-card`
   (the share card for /your-2027-sky/; words in `OG_EN.yearSky`. Not in the
   drift job (Chromium output); `verify-og-cards` checks it)

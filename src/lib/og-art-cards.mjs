@@ -103,11 +103,31 @@ export function horoscopeArtCard(slug, surfaceKey) {
   return `${ART_CARD_DIR}/horoscope/${knownSign(slug, 'horoscopeArtCard')}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`;
 }
 
-/** Every art card's public path: the homepage, the signs in zodiac order, then each sign's horoscopes. */
+/**
+ * The English chart twins page's card (owner-chosen 2026-11-26): the page's
+ * own painting, the twin cameos (public/assets/card-art/twins-hero-1200.webp),
+ * on the right, and on the left a small Sun and Moon disc, the kicker, the
+ * headline and a line. `npm run data:og -- --only-chart-twins-card` draws it
+ * alone. The localized chart twins pages keep their cards, and the v2 card
+ * (/assets/og/v2/tool/chart-twins.png) stays published for links already shared.
+ */
+export const CHART_TWINS_ART_CARD = `${ART_CARD_DIR}/tool/chart-twins.jpg`;
+
+/** The words on the chart twins card. */
+export const CHART_TWINS_ART_CARD_COPY = Object.freeze({
+  kicker: 'Matched by Sun and Moon',
+  title: 'Your chart twins',
+  line: 'Public figures who share your Sun and Moon signs.',
+});
+
+export const CHART_TWINS_ART_CARD_ALT = 'Your chart twins: public figures who share your Sun and Moon signs, beside a painting of two cameo portraits facing each other.';
+
+/** Every art card's public path: the homepage, the signs in zodiac order, each sign's horoscopes, then the chart twins card. */
 export const ART_CARDS = Object.freeze([
   HOME_ART_CARD,
   ...OG_SIGNS.map((sign) => signArtCard(sign.slug)),
   ...OG_SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => horoscopeArtCard(sign.slug, surface.key))),
+  CHART_TWINS_ART_CARD,
 ]);
 
 /** Every localized card: each locale's homepage, its twelve sign guides, then its daily horoscopes. */
@@ -163,6 +183,40 @@ export const SIGN_ART_CARD_SHADE = Object.freeze([
   'linear-gradient(0deg, rgba(6, 7, 9, 0.7) 0%, rgba(6, 7, 9, 0) 34%)',
   'linear-gradient(180deg, rgba(6, 7, 9, 0.55) 0%, rgba(6, 7, 9, 0) 22%)',
 ]);
+
+/**
+ * The chart twins card's painting (1200 × 800, drawn at 810 × 540 from 480 px
+ * in, 8 px above the top) in the sign cards' filter, fading in from the left
+ * and up from the bottom, and the shade over it, in the sign cards' manner.
+ */
+export const CHART_TWINS_ART_CARD_ART = Object.freeze({
+  src: 'public/assets/card-art/twins-hero-1200.webp',
+  left: 480,
+  top: -8,
+  width: 810,
+  height: 540,
+  filter: SIGN_ART_CARD_ART.filter,
+  mask: 'linear-gradient(90deg, transparent 0, #000 9%), linear-gradient(0deg, transparent 0, #000 14%)',
+});
+export const CHART_TWINS_ART_CARD_SHADE = Object.freeze([
+  'linear-gradient(90deg, rgba(6, 7, 9, 0.92) 0%, rgba(6, 7, 9, 0.7) 36%, rgba(6, 7, 9, 0) 50%)',
+  'linear-gradient(0deg, rgba(6, 7, 9, 0.78) 0%, rgba(6, 7, 9, 0) 30%)',
+  'linear-gradient(180deg, rgba(6, 7, 9, 0.5) 0%, rgba(6, 7, 9, 0) 20%)',
+]);
+
+/** @param {string} slug */
+function signHue(slug) {
+  const sign = OG_SIGNS.find((entry) => entry.slug === slug);
+  if (!sign) throw new Error(`signHue: unknown sign ${slug}`);
+  return sign.hue;
+}
+
+/** The Sun's and the Moon's discs on the chart twins card: their size in px and the sign hues they take. */
+export const CHART_TWINS_ART_CARD_DISCS = Object.freeze({
+  size: 64,
+  sun: signHue('leo'),
+  moon: signHue('cancer'),
+});
 
 const ORDINALS = Object.freeze(['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth']);
 
