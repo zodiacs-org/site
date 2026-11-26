@@ -15,20 +15,30 @@
  * when the ring is on screen and not at its first pixel) is still waiting.
  * The words beside the ring never move. Opacity, transform and
  * stroke-dashoffset only; the whole pass ends inside the runtime's 2.6 s.
+ *
+ * Every word comes from src/lib/sun-year-words.ts, by the page's `locale`
+ * (English unless given). The season link shows only where that language
+ * has season pages.
  */
 import SignIcon from '../SignIcon.astro';
-import { signBySlug, ELEMENT_LABEL } from '../../lib/signs';
+import { signBySlug, signName } from '../../lib/signs';
 import { signSeasonFocus, sunSeasons } from '../../lib/seasons/windows';
 import { seasonDate, seasonUtcTime } from '../../lib/seasons/dates';
+import { formatDate, intlLocale } from '../../lib/i18n/dates';
+import { localizePath, pluralText } from '../../lib/i18n';
+import { SUN_YEAR_WORDS, sunYearCentreValues, type SunYearLocale } from '../../lib/sun-year-words';
 
 interface Props {
   sign: string;
   /** The day the page is built for (the daily edition's date). */
   now: Date;
+  /** The page's language; the plate's words and dates follow it. */
+  locale?: SunYearLocale;
 }
 
-const { sign: slug, now } = Astro.props;
+const { sign: slug, now, locale = 'en' } = Astro.props;
 const sign = signBySlug(slug);
+const words = SUN_YEAR_WORDS[locale];
 const focus = signSeasonFocus(slug, now);
 const seasons = sunSeasons();
 
@@ -81,8 +91,14 @@ const trianglePath = corners.length === 3
 
 const pct = (value: number) => `${(value / 4).toFixed(2)}%`;
 const ms = (f: number) => `${Math.round(f * LINE_MS)}ms`;
-const day = (iso: string) => seasonDate('en', iso, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
-const shortDay = (iso: string) => seasonDate('en', iso, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+// Russian has no season pages, so it takes the site's own date formatter.
+// Its year marker stays with the year ("2027 г.").
+const dateIn = (iso: string, options: Intl.DateTimeFormatOptions) => (locale === 'ru'
+  ? formatDate('ru', iso, options).replace(/ г\.$/u, '\u00a0г.')
+  : seasonDate(locale, iso, options));
+const day = (iso: string) => dateIn(iso, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+// English keeps its short months in the ring's name; the translations spell the month.
+const shortDay = (iso: string) => dateIn(iso, { month: locale === 'en' ? 'short' : 'long', day: 'numeric', timeZone: 'UTC' });
 const lengths = arcs.map((arc) => (Date.parse(arc.window.end) - Date.parse(arc.window.start)) / 86_400_000);
 const length = mine ? (Date.parse(mine.window.end) - Date.parse(mine.window.start)) / 86_400_000 : 0;
 const lengthHours = Math.round(length * 24);
@@ -90,13 +106,21 @@ const wholeDays = Math.floor(lengthHours / 24);
 const spareHours = lengthHours % 24;
 const longest = arcs[lengths.indexOf(Math.max(...lengths))];
 const shortest = arcs[lengths.indexOf(Math.min(...lengths))];
-const elementWord = ELEMENT_LABEL[sign.element].toLowerCase();
-const yearLabel = drawn
-  ? `${new Date(yearStart).getUTCFullYear()} to ${new Date(yearEnd).getUTCFullYear()}`
-  : '';
+const familyNames = family.map((arc) => signName(arc.s.slug, locale));
+const kicker = drawn ? words.kicker(new Date(yearStart).getUTCFullYear(), new Date(yearEnd).getUTCFullYear()) : '';
 const alt = drawn && mine
-  ? `A ring showing one year from the March equinox, divided into the twelve signs to scale. ${sign.name} runs from ${shortDay(mine.window.start)} to ${shortDay(mine.window.end)}. A triangle joins the three ${elementWord} signs: ${family.map((arc) => arc.s.name).join(', ')}.`
+  ? words.alt(slug, shortDay(mine.window.start), shortDay(mine.window.end), sign.element, familyNames)
   : '';
+const lengthText = `${pluralText(locale, words.days, wholeDays)}, ${pluralText(locale, words.hours, spareHours)}`;
+// The centre number always shows one decimal, which sets its plural (30.5 days, 30,5 дня).
+const centreNumber = locale === 'en' ? length.toFixed(1) : length.toFixed(1).replace('.', ',');
+const centreForms = words.centre;
+const centreCategory = new Intl.PluralRules(intlLocale(locale), { minimumFractionDigits: 1 }).select(Number(length.toFixed(1)));
+const centreValues = sunYearCentreValues(slug, locale);
+const centreLabel = (centreForms[centreCategory] ?? centreForms.other).replace(/\{(\w+)\}/g, (token, name: string) => centreValues[name] ?? token);
+const seasonHref = localizePath(locale, `/seasons/${slug}/`);
+// Never send a translated page to the English season page.
+const seasonLink = words.seasonLink && (locale === 'en' || seasonHref.startsWith(`/${locale}/`)) ? words.seasonLink(slug) : '';
 ---
 {drawn && mine && focus && (
   <section class="sunyear" aria-labelledby="sunyear-title" style={`--sign:${sign.hue}`}>
@@ -127,41 +151,39 @@ const alt = drawn && mine
         </span>
       ))}
       <p class="sy-centre" aria-hidden="true">
-        <b>{length.toFixed(1)}</b>
-        <span>days in {sign.name}</span>
+        <b>{centreNumber}</b>
+        <span>{centreLabel}</span>
       </p>
     </div>
 
     <div class="sy-words">
-      <p class="kicker">The Sun’s year, {yearLabel}</p>
-      <h2 class="h-2" id="sunyear-title">When the Sun is in {sign.name}</h2>
-      <p class="sy-lede">
-        The ring is one year, read clockwise from the March equinox. Each sign takes the share of the year the Sun
-        spends in it, so the twelve are close to equal and never exactly so.{' '}
-        {longest.s.name} is the longest season and {shortest.s.name} the shortest.
-      </p>
+      <p class="kicker">{kicker}</p>
+      <h2 class="h-2" id="sunyear-title">{words.heading(slug)}</h2>
+      <p class="sy-lede">{words.ring}{' '}{words.extremes(longest.s.slug, shortest.s.slug)}</p>
       <dl class="sy-facts">
         <div>
-          <dt>{focus.phase === 'under-way' ? 'Began' : 'Begins'}</dt>
+          <dt>{focus.phase === 'under-way' ? words.began : words.begins}</dt>
           <dd><time datetime={mine.window.start}>{day(mine.window.start)}<span>{seasonUtcTime(mine.window.start)} UTC</span></time></dd>
         </div>
         <div>
-          <dt>Ends</dt>
+          <dt>{words.ends}</dt>
           <dd><time datetime={mine.window.end}>{day(mine.window.end)}<span>{seasonUtcTime(mine.window.end)} UTC</span></time></dd>
         </div>
         <div>
-          <dt>Length</dt>
-          <dd>{wholeDays} days, {spareHours} {spareHours === 1 ? 'hour' : 'hours'}<span>about a twelfth of the year</span></dd>
+          <dt>{words.length}</dt>
+          <dd>{lengthText}<span>{words.twelfth}</span></dd>
         </div>
         <div>
-          <dt>{ELEMENT_LABEL[sign.element]} signs</dt>
-          <dd>{family.map((arc) => arc.s.name).join(', ')}<span>a third of the year apart</span></dd>
+          <dt>{words.elementRow(sign.element)}</dt>
+          <dd>{familyNames.join(', ')}<span>{words.thirdApart}</span></dd>
         </div>
       </dl>
-      <p class="sy-more">
-        <a class="textlink" href={`/seasons/${slug}/`}>{sign.name} season in your time zone <span class="arr" aria-hidden="true">→</span></a>
-      </p>
-      <p class="sy-source">Sun’s sign entries calculated by Zodiacs. Times in UTC.</p>
+      {seasonLink && (
+        <p class="sy-more">
+          <a class="textlink" href={seasonHref}>{seasonLink} <span class="arr" aria-hidden="true">→</span></a>
+        </p>
+      )}
+      <p class="sy-source">{words.source}</p>
     </div>
   </section>
 )}
