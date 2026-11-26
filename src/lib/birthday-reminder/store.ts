@@ -1,5 +1,5 @@
 /**
- * Birthday reminder storage: seven service-role RPCs from
+ * Birthday reminder storage: service-role RPCs from
  * supabase/migrations/20261112090000_birthday_reminders.sql.
  * Errors carry status codes only, never a request's values.
  */
@@ -55,12 +55,19 @@ export function sweepExpiredRequests(env: Environment = process.env, fetcher: Fe
   return rpc<number>('birthday_reminders_sweep', {}, env, fetcher);
 }
 
-/** Claims this year's email for one reminder before sending it. False when another run has it, it was sent in the last 300 days, or it was stopped. */
+/** Reserve this reminder. An interrupted worker's reservation expires after 20 minutes. */
 export function claimReminder(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<boolean>('birthday_reminder_claim', { p_id: id }, env, fetcher);
+  return rpc<string | null>('birthday_reminder_claim', { p_id: id }, env, fetcher);
 }
 
-/** Gives back today's claim after the email failed. */
-export function releaseReminder(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<boolean>('birthday_reminder_release', { p_id: id }, env, fetcher);
+export function dispatchReminder(id: string, claim: string, on: string, hash: string, env: Environment = process.env, fetcher: Fetch = fetch) {
+  return rpc<boolean>('birthday_reminder_dispatch', { p_id: id, p_claim: claim, p_on: on, p_hash: hash }, env, fetcher);
+}
+
+export function completeReminder(id: string, claim: string, env: Environment = process.env, fetcher: Fetch = fetch) {
+  return rpc<boolean>('birthday_reminder_complete', { p_id: id, p_claim: claim }, env, fetcher);
+}
+
+export function releaseReminder(id: string, claim: string, rejected: boolean, env: Environment = process.env, fetcher: Fetch = fetch) {
+  return rpc<boolean>('birthday_reminder_release', { p_id: id, p_claim: claim, p_rejected: rejected }, env, fetcher);
 }

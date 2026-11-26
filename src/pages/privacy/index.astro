@@ -578,7 +578,8 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
           with a link that expires after 48 hours. We delete expired, unconfirmed
           requests during daily cleanup and when we process another signup. We keep your email
           address, your birthday's month and day, and when you asked and confirmed.
-          We also record when we last sent a reminder and count confirmation
+          We record delivery attempts, a fingerprint of the outgoing message
+          and when it was sent to prevent duplicates. We count confirmation
           requests to limit how often we email you.
           Keep the confirmation email or the Stop and delete link on the
           confirmation page. You can use that link to delete your email address

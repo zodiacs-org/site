@@ -14,6 +14,11 @@ name: Birthday reminders
 # DAILY_EMAIL_POSTAL_ADDRESS, the daily email's postal address, set for the
 # birthday-reminders-production environment: without it the run fails and
 # sends nothing. The log carries counts only, never an address.
+#
+# An interrupted reservation expires after 20 minutes. Rerun promptly if a
+# provider response was lost. A replay requires the original email and key
+# within 23 hours 55 minutes of the first attempt. Outside that window check
+# the provider's delivery record before taking any action on that occurrence.
 
 on:
   schedule:

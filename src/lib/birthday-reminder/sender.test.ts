@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const originalArgv = process.argv;
+const originalExitCode = process.exitCode;
 const run = () => import('../../../scripts/send-birthday-reminders');
 
 describe('the birthday reminder sender', () => {
@@ -24,6 +25,7 @@ describe('the birthday reminder sender', () => {
 
   afterEach(() => {
     process.argv = originalArgv;
+    process.exitCode = originalExitCode;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
@@ -75,4 +77,45 @@ describe('the birthday reminder sender', () => {
     ]);
     expect(console.error).not.toHaveBeenCalled();
   });
+
+  it.each(['accepted', 'rejected', 'key conflict', 'lost response', 'missing receipt', 'lost completion', 'withdrawn'] as const)(
+    'records delivery only after the provider receipt and fences the reservation when %s', async (outcome) => {
+      vi.stubEnv('BIRTHDAY_REMINDERS_SENDING', '1');
+      vi.stubEnv('DAILY_EMAIL_POSTAL_ADDRESS', 'Test postal address');
+      const id = '0f8fad5b-d9cb-469f-a165-70867728950e';
+      const claim = 'd61ab379-2bbb-464d-b914-edc64b6fc937';
+      const operations: string[] = [];
+      const payloads: Record<string, Record<string, unknown>> = {};
+      vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+        const op = url.slice(url.lastIndexOf('/') + 1);
+        operations.push(op);
+        payloads[op] = JSON.parse(String(init.body));
+        switch (op) {
+          case 'birthday_reminders_sweep': return Response.json(0);
+          case 'birthday_reminders_due': return Response.json([{ id, email: 'reader@example.invalid', month: 2, day: 29 }]);
+          case 'birthday_reminder_claim': return Response.json(claim);
+          case 'birthday_reminder_dispatch': return Response.json(outcome !== 'withdrawn');
+          case 'emails':
+            if (outcome === 'lost response') throw new Error('connection closed');
+            if (outcome === 'rejected') return new Response(null, { status: 422 });
+            if (outcome === 'key conflict') return new Response(null, { status: 409 });
+            return Response.json(outcome === 'missing receipt' ? {} : { id: claim });
+          case 'birthday_reminder_complete':
+            return outcome === 'lost completion' ? new Response(null, { status: 503 }) : Response.json(true);
+          case 'birthday_reminder_release': return Response.json(true);
+          default: throw new Error('Unexpected endpoint');
+        }
+      });
+
+      await run();
+      const expected = ['birthday_reminders_sweep', 'birthday_reminders_due', 'birthday_reminder_claim', 'birthday_reminder_dispatch'];
+      if (outcome !== 'withdrawn') expected.push('emails');
+      if (outcome === 'accepted' || outcome === 'lost completion') expected.push('birthday_reminder_complete');
+      if (outcome !== 'accepted') expected.push('birthday_reminder_release');
+      expect(operations).toEqual(expected);
+      expect(payloads.birthday_reminder_dispatch).toEqual({ p_id: id, p_claim: claim, p_on: '2027-02-28', p_hash: expect.stringMatching(/^[0-9a-f]{64}$/u) });
+      if (outcome !== 'accepted') expect(payloads.birthday_reminder_release).toEqual({ p_id: id, p_claim: claim, p_rejected: outcome === 'rejected' });
+      if (expected.includes('birthday_reminder_complete')) expect(payloads.birthday_reminder_complete).toEqual({ p_id: id, p_claim: claim });
+    },
+  );
 });

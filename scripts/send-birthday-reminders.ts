@@ -20,8 +20,9 @@
  */
 import { birthdayReminderEnabled, birthdayReminderSecret, birthdayReminderStorageReady } from '../src/lib/birthday-reminder/config';
 import { birthdayEmail, birthdayEmailKey, birthdaysToSend, unsubscribeToken } from '../src/lib/birthday-reminder/core';
-import { sendPlainEmail } from '../src/lib/birthday-reminder/send';
-import { claimReminder, dueReminders, releaseReminder, sweepExpiredRequests } from '../src/lib/birthday-reminder/store';
+import { BirthdayEmailRejectedError, sendPlainEmail } from '../src/lib/birthday-reminder/send';
+import { claimReminder, completeReminder, dispatchReminder, dueReminders, releaseReminder, sweepExpiredRequests } from '../src/lib/birthday-reminder/store';
+import { ResendRequestWithdrawnError } from '../src/lib/daily-email/resend-request';
 
 const args = process.argv.slice(2);
 const dateArg = args.includes('--date') ? args[args.indexOf('--date') + 1] : undefined;
@@ -51,22 +52,29 @@ if (!postalAddress && !dryRun) {
   process.exit(1);
 }
 const origin = 'https://zodiacs.org';
-const due = await dueReminders(birthdaysToSend(date));
+const birthdays = birthdaysToSend(date);
+const due = await dueReminders(birthdays);
 let sent = 0;
 let skipped = 0;
 let failed = 0;
 for (const reminder of due) {
   if (dryRun) continue;
-  // Claimed before sending, so a second or concurrent run, or a stop since the list was read, sends nothing.
-  if (!await claimReminder(reminder.id)) { skipped++; continue; }
+  const occurrence = birthdays.find(({ month, day }) => month === reminder.month && day === reminder.day);
+  if (!occurrence) throw new Error('Reminder does not match the requested days.');
+  const claim = await claimReminder(reminder.id);
+  if (!claim) { skipped++; continue; }
   const unsubscribeUrl = `${origin}/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(reminder.id, birthdayReminderSecret())}`;
   try {
-    await sendPlainEmail(reminder.email, birthdayEmail(origin, unsubscribeUrl, postalAddress), process.env, fetch, { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }, birthdayEmailKey(reminder.id, date, reminder.month, reminder.day));
+    await sendPlainEmail(reminder.email, birthdayEmail(origin, unsubscribeUrl, postalAddress), process.env, fetch,
+      { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+      birthdayEmailKey(reminder.id, date, reminder.month, reminder.day),
+      (hash) => dispatchReminder(reminder.id, claim, occurrence.on, hash));
+    if (!await completeReminder(reminder.id, claim)) throw new Error('Birthday reminder completion was not recorded.');
     sent++;
-  } catch {
-    failed++;
-    // The next run tries again; the idempotency key keeps Resend from sending twice if this one went out after all.
-    await releaseReminder(reminder.id).catch(() => false);
+  } catch (error) {
+    if (error instanceof ResendRequestWithdrawnError) skipped++;
+    else failed++;
+    await releaseReminder(reminder.id, claim, error instanceof BirthdayEmailRejectedError).catch(() => false);
   }
 }
 console.log(`Birthday reminders: ${due.length} due, ${dryRun ? 'dry run, none' : sent} sent, ${skipped} already claimed or stopped, ${failed} failed.`);

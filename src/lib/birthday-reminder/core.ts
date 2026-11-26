@@ -93,7 +93,7 @@ export function birthdaysToSend(date: string): { month: number; day: number; on:
  * The Resend idempotency key for one birthday email: the reminder and the
  * birthday it celebrates (the UTC date it falls on), not the run's date or
  * year. A 31 December birthday sent on the day and caught up on 1 January
- * gets the same key, so Resend sends it once.
+ * gets the same key. Resend retains that key for 24 hours.
  */
 export function birthdayEmailKey(id: string, runDate: string, month: number, day: number): string {
   const on = birthdaysToSend(runDate).find((birthday) => birthday.month === month && birthday.day === day)?.on ?? runDate;

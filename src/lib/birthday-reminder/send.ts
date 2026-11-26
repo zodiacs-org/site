@@ -2,6 +2,7 @@
  * Plain-text email through Resend, for the birthday reminder. The address is
  * sent to Resend and nowhere else; failures carry the status code only.
  */
+import { createHash } from 'node:crypto';
 import { environmentValue } from '../email/config.js';
 import { createRateLimitedResendRequest, type ResendRequest } from '../daily-email/resend-request.js';
 
@@ -15,13 +16,37 @@ function resendRequest(fetcher: typeof fetch): ResendRequest {
   return request;
 }
 
-/** `idempotencyKey`: Resend sends at most one email per key (24 hours), so a retry after an unclear failure cannot send twice. */
-export async function sendPlainEmail(to: string, email: { subject: string; text: string }, env: Environment = process.env, fetcher: typeof fetch = fetch, headers: Record<string, string> = {}, idempotencyKey?: string): Promise<void> {
+/** A definitive rejection of this attempt. Timeouts and key conflicts are ambiguous. */
+export class BirthdayEmailRejectedError extends Error {}
+
+export async function sendPlainEmail(
+  to: string, email: { subject: string; text: string }, env: Environment = process.env,
+  fetcher: typeof fetch = fetch, headers: Record<string, string> = {}, idempotencyKey?: string,
+  beforeAttempt?: (hash: string) => Promise<boolean>,
+): Promise<void> {
   const request = resendRequest(fetcher);
+  const body = JSON.stringify({
+    from: environmentValue(env, 'RESEND_FROM_EMAIL'), to: [to], subject: email.subject, text: email.text,
+    ...(Object.keys(headers).length ? { headers } : {}),
+  });
+  const control = beforeAttempt && {
+    beforeAttempt: () => beforeAttempt(createHash('sha256')
+      .update('birthday-reminder/email/v1\0').update(idempotencyKey ?? '').update('\0').update(body).digest('hex')),
+  };
   const response = await request('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${environmentValue(env, 'RESEND_API_KEY')}`, 'Content-Type': 'application/json', ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}) },
-    body: JSON.stringify({ from: environmentValue(env, 'RESEND_FROM_EMAIL'), to: [to], subject: email.subject, text: email.text, ...(Object.keys(headers).length ? { headers } : {}) }),
-  });
-  if (!response.ok) throw new Error(`Birthday reminder email failed (${response.status}).`);
+    body, signal: AbortSignal.timeout(30_000),
+  }, control);
+  if (!response.ok) {
+    const message = `Birthday reminder email failed (${response.status}).`;
+    if (response.status >= 400 && response.status < 500 && response.status !== 408 && response.status !== 409) {
+      throw new BirthdayEmailRejectedError(message);
+    }
+    throw new Error(message);
+  }
+  if (beforeAttempt) {
+    const receipt = await response.json().catch(() => null);
+    if (typeof receipt?.id !== 'string' || !receipt.id.trim()) throw new Error('Missing birthday reminder email receipt.');
+  }
 }

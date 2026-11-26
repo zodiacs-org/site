@@ -5,9 +5,9 @@
 -- confirmation link is followed, and a pending request older than 48 hours is
 -- deleted. Unsubscribing deletes the row. Only the service role can reach it.
 -- Besides those, the row keeps when it was asked for and confirmed, when this
--- year's email went, and two operational fields that are not personal details:
--- request_count and window_started_at, the confirmation emails sent to the
--- address in the current 24-hour window (at most six).
+-- year's email went, and the confirmation count and start of its 24-hour
+-- window (at most six). Delivery uses a temporary reservation token and time,
+-- the date being celebrated, the first dispatch time, its token and a request hash.
 -- Additive: a new schema, table and functions; nothing existing changes.
 -- UTC filename; not applied to any database until the owner approves it.
 create schema if not exists zodiacs_reminders_private;
@@ -22,6 +22,13 @@ create table if not exists zodiacs_reminders_private.birthday_reminders (
   requested_at timestamptz not null default pg_catalog.now(),
   confirmed_at timestamptz,
   last_sent_on date,
+  claim_token uuid,
+  claimed_at timestamptz,
+  claim_dispatched boolean not null default false,
+  dispatch_on date,
+  dispatch_started_at timestamptz,
+  dispatch_owner uuid,
+  dispatch_hash text,
   request_count smallint not null default 0 check (request_count between 0 and 6),
   window_started_at timestamptz
 );
@@ -112,28 +119,79 @@ begin
 end;
 $$;
 
--- Claims this year's email before it is sent: true for one caller only, and only while the reminder is
--- still there, confirmed and not sent in the last 300 days. A second run, a concurrent run or a stop link that
--- arrived after the due list was read gets false, so no one is emailed twice or after stopping.
+-- A reservation outlives the 15-minute job but expires if the worker stops.
+-- Only provider acceptance marks the reminder as delivered.
 create or replace function public.birthday_reminder_claim(p_id uuid)
+returns uuid language plpgsql security definer set search_path = '' as $$
+declare token uuid;
+begin
+  update zodiacs_reminders_private.birthday_reminders
+    set claim_token = pg_catalog.gen_random_uuid(), claimed_at = pg_catalog.now(), claim_dispatched = false
+    where id = p_id and confirmed_at is not null
+      and (claimed_at is null or claimed_at <= pg_catalog.now() - interval '20 minutes')
+      and (last_sent_on is null or last_sent_on < (pg_catalog.now() at time zone 'UTC')::date - 300)
+    returning claim_token into token;
+  return token;
+end;
+$$;
+
+-- Run after pacing, immediately before each provider attempt. A retry of an
+-- uncertain send keeps the original clock, occurrence and payload. The
+-- five-minute margin is longer than the bounded provider request.
+create or replace function public.birthday_reminder_dispatch(p_id uuid, p_claim uuid, p_on date, p_hash text)
 returns boolean language plpgsql security definer set search_path = '' as $$
 declare found_id uuid;
 begin
-  update zodiacs_reminders_private.birthday_reminders set last_sent_on = (pg_catalog.now() at time zone 'UTC')::date
-    where id = p_id and confirmed_at is not null
-      and (last_sent_on is null or last_sent_on < (pg_catalog.now() at time zone 'UTC')::date - 300)
+  update zodiacs_reminders_private.birthday_reminders
+    set dispatch_started_at = case when dispatch_on = p_on then dispatch_started_at else pg_catalog.now() end,
+        dispatch_owner = case when dispatch_on = p_on then dispatch_owner else p_claim end,
+        dispatch_on = p_on, dispatch_hash = p_hash, claim_dispatched = true
+    where id = p_id and confirmed_at is not null and claim_token = p_claim
+      and claimed_at > pg_catalog.now() - interval '20 minutes'
+      and p_on is not null and p_hash ~ '^[0-9a-f]{64}$'
+      and (dispatch_on is null
+        or (dispatch_on = p_on and dispatch_hash = p_hash
+            and dispatch_started_at > pg_catalog.now() - interval '23 hours 55 minutes')
+        or (p_on >= dispatch_on + 300 and dispatch_started_at < pg_catalog.now() - interval '300 days'))
+    returning id into found_id;
+  if found_id is not null then return true; end if;
+  if exists (select 1 from zodiacs_reminders_private.birthday_reminders
+             where id = p_id and claim_token = p_claim
+               and claimed_at > pg_catalog.now() - interval '20 minutes') then
+    raise exception 'Birthday reminder dispatch needs reconciliation';
+  end if;
+  return false;
+end;
+$$;
+
+create or replace function public.birthday_reminder_complete(p_id uuid, p_claim uuid)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare found_id uuid;
+begin
+  update zodiacs_reminders_private.birthday_reminders
+    set last_sent_on = (pg_catalog.now() at time zone 'UTC')::date,
+        claim_token = null, claimed_at = null, claim_dispatched = false, dispatch_owner = null, dispatch_hash = null
+    where id = p_id and claim_token = p_claim and claim_dispatched
     returning id into found_id;
   return found_id is not null;
 end;
 $$;
 
--- Gives back today's claim after the email failed, so the next run can try again.
-create or replace function public.birthday_reminder_release(p_id uuid)
+-- A definitive rejection clears a dispatch first attempted by this worker.
+-- A timeout, lost receipt or rejection during recovery preserves the original
+-- attempt, so an expired provider key cannot send that occurrence again.
+create or replace function public.birthday_reminder_release(p_id uuid, p_claim uuid, p_rejected boolean)
 returns boolean language plpgsql security definer set search_path = '' as $$
 declare found_id uuid;
 begin
-  update zodiacs_reminders_private.birthday_reminders set last_sent_on = null
-    where id = p_id and last_sent_on = (pg_catalog.now() at time zone 'UTC')::date
+  if p_rejected then
+    update zodiacs_reminders_private.birthday_reminders
+      set dispatch_on = null, dispatch_started_at = null, dispatch_owner = null, dispatch_hash = null
+      where id = p_id and claim_token = p_claim and dispatch_owner = p_claim;
+  end if;
+  update zodiacs_reminders_private.birthday_reminders
+    set claim_token = null, claimed_at = null, claim_dispatched = false
+    where id = p_id and claim_token = p_claim
     returning id into found_id;
   return found_id is not null;
 end;
@@ -145,11 +203,15 @@ revoke all on function public.birthday_reminder_confirm(text) from public, anon,
 revoke all on function public.birthday_reminder_delete(uuid) from public, anon, authenticated;
 revoke all on function public.birthday_reminders_due(jsonb) from public, anon, authenticated;
 revoke all on function public.birthday_reminder_claim(uuid) from public, anon, authenticated;
-revoke all on function public.birthday_reminder_release(uuid) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_dispatch(uuid, uuid, date, text) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_complete(uuid, uuid) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_release(uuid, uuid, boolean) from public, anon, authenticated;
 grant execute on function public.birthday_reminders_sweep() to service_role;
 grant execute on function public.birthday_reminder_request(text, int, int, text) to service_role;
 grant execute on function public.birthday_reminder_confirm(text) to service_role;
 grant execute on function public.birthday_reminder_delete(uuid) to service_role;
 grant execute on function public.birthday_reminders_due(jsonb) to service_role;
 grant execute on function public.birthday_reminder_claim(uuid) to service_role;
-grant execute on function public.birthday_reminder_release(uuid) to service_role;
+grant execute on function public.birthday_reminder_dispatch(uuid, uuid, date, text) to service_role;
+grant execute on function public.birthday_reminder_complete(uuid, uuid) to service_role;
+grant execute on function public.birthday_reminder_release(uuid, uuid, boolean) to service_role;
