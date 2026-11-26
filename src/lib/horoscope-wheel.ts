@@ -14,14 +14,11 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
-import Wheel, { wheelFrame } from './wheel/Wheel';
+import Wheel from './wheel/Wheel';
 import { collisionNudge } from './scene/layout';
 import type { Daily } from './daily';
 import type { HoroscopeSkyPlanet } from './horoscope-page-data';
 import { SIGNS, signBySlug } from './signs';
-
-/** The size the wheel is drawn at (Wheel's default). */
-const WHEEL_DRAW_SIZE = 420;
 
 /** Wheel size: the viewBox the static wheel draws into (420 plus its 5% pad). */
 export const HOROSCOPE_WHEEL_SIZE = 462;
@@ -35,6 +32,35 @@ export function horoscopeWheelFocus(sky: readonly HoroscopeSkyPlanet[] | undefin
 
 function wheelBodies(daily: Daily) {
   return daily.bodies.map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde }));
+}
+
+/** The size Wheel draws at by default, which the static wheel uses. */
+const WHEEL_DRAW_SIZE = 420;
+
+/**
+ * Wheel's frame for the static wheel, mirrored here rather than imported:
+ * Wheel.tsx is also built into the pinned Chart Studio panel
+ * (scripts/build-chart-studio.mjs), so it stays as published. The same
+ * centre, ring radii, marker radius, viewBox pad and longitude to point
+ * as Wheel draws with, for a wheel turned so `anchor` sits at 9 o'clock.
+ * src/lib/horoscope-wheel-story.test.ts holds every number to the rendered
+ * image, so a change to Wheel's geometry fails there.
+ */
+function wheelFrame(size: number, anchor: number) {
+  const cx = size / 2;
+  const cy = size / 2;
+  const pt = (lon: number, r: number) => {
+    const phi = ((180 + (lon - anchor)) * Math.PI) / 180;
+    return { x: cx + r * Math.cos(phi), y: cy - r * Math.sin(phi) };
+  };
+  return {
+    rSigns: size * 0.475,
+    rSignsIn: size * 0.395,
+    rBodies: size * 0.31,
+    rMarker: size * 0.033,
+    pad: size * 0.05,
+    pt,
+  };
 }
 
 let iconCache: Map<string, string> | null = null;
@@ -63,8 +89,7 @@ export function horoscopeWheelSvg({
   if (signIndex < 0) throw new Error(`Unknown sign ${signSlug}`);
   const signStart = signIndex * 30;
   const markup = render(h(Wheel, {
-    bodies: wheelBodies(daily),
-    size: WHEEL_DRAW_SIZE,
+    bodies: daily.bodies.map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde })),
     asc: signStart,
     cusps: Array.from({ length: 12 }, (_, index) => (signStart + index * 30) % 360),
     preview: true,
@@ -130,7 +155,8 @@ export interface HoroscopeWheelStory {
 /**
  * The geometry of the entrance laid over the wheel image on a horoscope page:
  * the same frame, anchor and nudged planet places the image is drawn with
- * (wheelFrame and collisionNudge), so the veil sits exactly on the picture.
+ * (Wheel's frame, mirrored above, and collisionNudge), so the veil sits
+ * exactly on the picture.
  * Times follow the ring as it goes round from the page's sign; the planets
  * the reading draws on are held for the closing beat.
  */
