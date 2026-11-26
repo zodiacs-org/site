@@ -461,6 +461,8 @@ export default function ReadingPath({
   const moon = placements.find((placement) => placement.body === 'Moon') ?? null;
   const possibleMoonSigns = moonCandidates({ bodies: placements, angles: housesKnown ? {} : null, moonSignCandidates });
   const uncertainMoon = possibleMoonSigns.length !== 1;
+  // A sign settled across the birth date still leaves the Moon's degree, and so its aspects, to the birth time.
+  const moonAspectsOut = uncertainMoon || !timeKnown;
   const settledPlacements = placements.filter((placement) => placement.body !== 'Moon');
   const shownElements = uncertainMoon
     ? Object.fromEntries(ELEMENTS.map(([key]) => [key, settledPlacements.filter((placement) => signForLongitude(placement.lon).element === key).length]))
@@ -561,8 +563,8 @@ export default function ReadingPath({
           title="Find your strongest push-pulls"
           intro="Aspects are conversations between planets. The tightest ones tend to speak the loudest."
         >
-          {uncertainMoon && <p class="reading-path__no-time">Moon aspects need a birth time and are left out of this reading.</p>}
-          <AspectCards aspects={topAspects.filter((aspect) => !uncertainMoon || (aspect.a !== 'Moon' && aspect.b !== 'Moon'))} selection={selection} onShow={onShowOnChart} />
+          {moonAspectsOut && <p class="reading-path__no-time">Moon aspects need a birth time and are left out of this reading.</p>}
+          <AspectCards aspects={topAspects.filter((aspect) => !moonAspectsOut || (aspect.a !== 'Moon' && aspect.b !== 'Moon'))} selection={selection} onShow={onShowOnChart} />
         </StoryCard>
 
         <StoryCard

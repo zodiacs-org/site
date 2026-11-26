@@ -185,6 +185,10 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 4, title: 'Big three card', promise: 'Sun, Moon and Rising, as a card to share.', group: 'you' },
   },
   {
+    href: '/vedic-signs/', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED',
+    hub: { order: 4.5, title: 'Vedic signs', promise: 'Sun, Moon, rising and nakshatra in the sidereal zodiac.', group: 'you' },
+  },
+  {
     href: '/group-charts/',
     hub: { order: 11, title: 'Group charts', promise: 'How three to eight people fit together.', group: 'together' },
   },
@@ -224,6 +228,10 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
       'zh-hans': '今天（英文）', 'zh-hant': '今天（英文）',
     },
     hub: { order: 14, title: 'Today', promise: 'Today’s sky, read against your saved chart.', group: 'sky' },
+  },
+  {
+    href: '/your-day/', flag: 'PUBLIC_YOUR_DAY_ENABLED',
+    hub: { order: 14.5, title: 'Your day', promise: 'Today’s transits to your birth chart, ranked by strength.', group: 'sky' },
   },
   {
     href: '/compatibility/', label: 'compatibility', sublabel: NAV_SUBLABELS.compatibility,
@@ -302,6 +310,10 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 25, title: 'Retrogrades', promise: 'Each planet’s retrograde dates at a glance.', group: 'year' },
   },
   {
+    href: '/retrogrades/for-you/', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
+    hub: { order: 25.5, title: 'Retrogrades for you', promise: 'Mercury, Venus and Mars retrogrades in your own houses.', group: 'year' },
+  },
+  {
     href: '/birthday/', label: 'birthday', sublabel: NAV_SUBLABELS.birthday, navOrder: 8,
     hub: { order: 5, title: 'Birthday sign', promise: 'Your Sun sign, even near a sign change.', group: 'you' },
   },
@@ -312,6 +324,10 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/horoscopes/',
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
+  },
+  {
+    href: '/astrocartography/', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
+    hub: { order: 6.5, title: 'Astrocartography', promise: 'Where each planet sat on an angle when you were born.', group: 'you' },
   },
 ];
 
@@ -368,7 +384,9 @@ interface NavMoreEntry { href: string; label: Record<Locale, string>; flag?: Lau
 export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
+  { href: '/your-day/', flag: 'PUBLIC_YOUR_DAY_ENABLED', label: { en: 'Your day', es: 'Tu día', pt: 'Seu dia', fr: 'Ta journée', it: 'La tua giornata', ru: 'Ваш день', 'zh-hans': '你的今天', 'zh-hant': '你的今天' } },
   { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
+  { href: '/vedic-signs/', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', label: { en: 'Vedic signs', es: 'Signos védicos', pt: 'Signos védicos', fr: 'Signes védiques', it: 'Segni vedici', ru: 'Ведические знаки', 'zh-hans': '吠陀星座', 'zh-hant': '吠陀星座' } },
   { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга', 'zh-hans': '邀请朋友', 'zh-hant': '邀請朋友' } },
   { href: '/solar-return/', label: { en: 'Solar return', es: 'Retorno solar', pt: 'Retorno solar', fr: 'Révolution solaire', it: 'Ritorno solare', ru: 'Соляр', 'zh-hans': '太阳回归', 'zh-hant': '太陽回歸' } },
   { href: '/year-score/', flag: 'PUBLIC_YEAR_SCORE_ENABLED', label: { en: 'Year Ahead Score', es: 'Puntuación del año', pt: 'Nota do ano', fr: 'Score de l’année', it: 'Punteggio dell’anno', ru: 'Оценка года', 'zh-hans': '年度运势评分', 'zh-hant': '年度運勢評分' } },
@@ -376,9 +394,10 @@ export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
+  { href: '/retrogrades/for-you/', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', label: { en: 'Retrogrades for you', es: 'Tus retrógrados', pt: 'Seus retrógrados', fr: 'Tes rétrogrades', it: 'I tuoi retrogradi', ru: 'Ваши ретрограды', 'zh-hans': '你的逆行', 'zh-hant': '你的逆行' } },
+  { href: '/astrocartography/', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', label: { en: 'Astrocartography map', es: 'Mapa de astrocartografía', pt: 'Mapa de astrocartografia', fr: 'Carte d’astrocartographie', it: 'Mappa di astrocartografia', ru: 'Астрокартография', 'zh-hans': '占星地图', 'zh-hant': '占星地圖' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
-
 /** The menu a build shows: an entry behind a switch that is off is left out. */
 export const visibleNavMore = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn) => ALL_NAV_MORE.filter((entry) => !entry.flag || isOn(entry.flag));
 export const NAV_MORE: readonly NavMoreEntry[] = visibleNavMore();

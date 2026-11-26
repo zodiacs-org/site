@@ -67,6 +67,7 @@ an agent merge; agents never merge or re-run them by hand.
   confidence NN%" label (`src/ai-tools/reading-confidence.ts`). No betting
   tips, sports picks, market timing, election forecasts, health predictions
   or guarantees.
+- Numerology and tarot are separate traditions, not astrology. Their answers carry no 'Reading confidence' label, and every answer says they are not astrology.
 - Never store or log users' birth details, and never put them in a URL.
   Links never carry a birth year, a birth time, a birthplace or the names
   you give; a birthday link carries only the month and day.
@@ -82,7 +83,10 @@ an agent merge; agents never merge or re-run them by hand.
   (`src/ai-tools/published-tools.ts`). ZOD-64 changes the Neptune time quoted
   in `get_upcoming_events`' description from 14:31:41 to 14:32 UTC, that
   description only, approved by Dias on 2026-11-17
-  (`src/ai-tools/published-tools.ts`).
+  (`src/ai-tools/published-tools.ts`). Engine 2.0.0's continuous UTC gives
+  `get_sky` and `check_sky_fact` the compute API's time schema (basis
+  `continuous-utc`, source `model`) in their output schemas only, approved by
+  Dias on 2026-11-23 (`src/ai-tools/published-tools.ts`).
   For 0.6.9, Dias approved the new panel addresses and the year-range
   wording in five tools' input descriptions on 2026-11-20.
 - The site is dark only. Do not add a light theme or a theme switch.

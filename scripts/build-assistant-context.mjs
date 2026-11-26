@@ -120,6 +120,10 @@ export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED',
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
   '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
+  '/astrocartography/': 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
+  '/vedic-signs/': 'PUBLIC_VEDIC_SIGNS_ENABLED',
+  '/retrogrades/for-you/': 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
+  '/your-day/': 'PUBLIC_YOUR_DAY_ENABLED',
 });
 const launchedRoute = (route, env) => !LAUNCH_FLAGGED_ROUTES[route] || env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
 
@@ -450,7 +454,7 @@ export async function generateAssistantContext({ repoRoot = repo, env = process.
     '',
     'Zodiacs.org is a free astrology reference. Chart calculations run in the visitor’s browser. Positions are computed astronomy; meanings are interpretation.',
     'Chart calculation does not send birth fields to a chart API. Saved charts are local-first; optional account sync, which starts when a person signs in, uploads their saved charts, including birth details, to that person’s account. The public Guide sends chat messages to Anthropic and sends a placements-only chart summary only after the person explicitly chooses “Attach my chart”, which is offered only with the encrypted sync preview (off on the public site); it never attaches the saved name, birth date, time, place, or coordinates, though the summary’s positions still give the birth date and time and, roughly, the birthplace.',
-    'Historical civil time from 1970 on uses the IANA/ICU history supplied by the visitor’s browser or device runtime, so for those dates historical coverage and tzdb version depend on that host; before 1970 it comes from a pinned tzdb release (2025c) with its backzone records, which tzdb’s maintainers consider less reliable than the rest. A birth from before its place adopted a legal time uses the birthplace’s own local mean time, from its longitude, with the date each place adopted a legal time taken from the same release. When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions, omits the rising sign, angles, and houses, and marks the Moon’s sign as unverified, because the Moon can change sign during that local date. A code shared from such a chart carries the positions at 12:00 UTC on the birth date instead, so it gives nothing about the birthplace.',
+    'Historical civil time from 1970 on uses the IANA/ICU history supplied by the visitor’s browser or device runtime, so for those dates historical coverage and tzdb version depend on that host; before 1970 it comes from a pinned tzdb release (2025c) with its backzone records, which tzdb’s maintainers consider less reliable than the rest. A birth from before its place adopted a legal time uses the birthplace’s own local mean time, from its longitude, with the date each place adopted a legal time taken from the same release. When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions and omits the rising sign, angles, and houses. Because the Moon can change sign during that local date, when the birth date’s start and end can be confirmed the birth chart and Moon sign calculators name the Moon’s sign, without a degree, if the Moon held it for the whole birth date, show both signs if the Moon changed sign that day, and otherwise mark the Moon’s sign as unverified. A code shared from such a chart carries the positions at 12:00 UTC on the birth date instead, so it gives nothing about the birthplace.',
     'The site has English pages and partial Spanish translations. The inventory below lists English routes once; do not invent an English or Spanish page that is not listed.',
     '',
     'CANONICAL LABELS',

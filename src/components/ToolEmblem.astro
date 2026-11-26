@@ -20,8 +20,9 @@ export type ToolEmblemKind = 'birth' | 'today' | 'compat' | 'horoscopes' | 'moon
 
 interface Props {
   kind: ToolEmblemKind;
+  motion?: boolean;
 }
-const { kind } = Astro.props;
+const { kind, motion = false } = Astro.props;
 
 const C = 60; // centre of the 120-unit face
 const n2 = (n: number) => Math.round(n * 100) / 100;
@@ -96,12 +97,15 @@ const [sunX, sunY] = at(SUN_DEG, DAY_R, C, DAY_Y);
 const PAIR_R = 40;
 const PAIR_ICON = 31;
 const pair = [
-  { slug: 'aries', deg: 180 },
-  { slug: 'libra', deg: 0 },
+  { slug: 'aries', deg: 180, delay: 700 },
+  { slug: 'libra', deg: 0, delay: 820 },
 ].map((p) => {
   const [x, y] = at(p.deg, PAIR_R);
   return { ...p, x, y };
 });
+const pairAxis = `M${pair[0].x} ${pair[0].y}H${pair[1].x}`;
+// A normalized dash draws in SVG units. At 72px, 3 viewBox units preserve the 1.8px axis.
+const drawnAxisStyle = 'stroke:#E0A9B4;vector-effect:none;stroke-width:3';
 const pairTicks = Array.from({ length: 12 }, (_, i) => i * 30).filter((d) => d % 180).map((d) => radial(d, PAIR_R - 2.4, PAIR_R + 2.4)).join('');
 
 // ── horoscopes: the current sign season and how far into it we are ───
@@ -182,10 +186,23 @@ const crescent = (() => {
       <g>
         <circle class="te-line te-line--faint" cx="60" cy="60" r={PAIR_R} />
         <path class="te-line te-line--faint" d={pairTicks} />
-        <path class="te-line te-line--hue" d={`M${pair[0].x} ${pair[0].y}H${pair[1].x}`} style="stroke:#E0A9B4" />
-        {pair.map((p) => (
-          <image href={icon(p.slug, 128)} x={n2(p.x - PAIR_ICON / 2)} y={n2(p.y - PAIR_ICON / 2)} width={PAIR_ICON} height={PAIR_ICON} />
-        ))}
+        {motion ? (
+          <g data-enter="draw">
+            <path class="te-line te-line--hue motion-stroke" d={pairAxis} pathLength="1" style={drawnAxisStyle} />
+          </g>
+        ) : (
+          <path class="te-line te-line--hue" d={pairAxis} style="stroke:#E0A9B4" />
+        )}
+        {pair.map((p) => {
+          const disc = (
+            <image href={icon(p.slug, 128)} x={n2(p.x - PAIR_ICON / 2)} y={n2(p.y - PAIR_ICON / 2)} width={PAIR_ICON} height={PAIR_ICON} />
+          );
+          return motion ? (
+            <g data-enter="disc" style={`--motion-delay:${p.delay}ms;--motion-i:0;transform-box:view-box;transform-origin:${p.x}px ${p.y}px`}>
+              {disc}
+            </g>
+          ) : disc;
+        })}
       </g>
     )}
 

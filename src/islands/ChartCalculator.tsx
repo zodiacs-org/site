@@ -10,15 +10,14 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
  *   'moon'   — moon-focused result view (same engine)
  *   'rising' — rising-focused result view (time required)
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import AstroTerm from './AstroTerm';
 import SignChip from './SignChip';
 import PlanetGlyph from '../components/PlanetGlyph';
 import AspectGlyph from '../components/AspectGlyph';
-import Wheel from '../lib/wheel/Wheel';
 import LayerChips from './explorer/LayerChips';
-import { moonCandidates, moonIsUncertain, moonLabel } from '../lib/moon-certainty';
+import { moonAspectsUnsettled, moonCandidates, moonDegreeUnsettled, moonIsUncertain, moonLabel, moonNoticeKey } from '../lib/moon-certainty';
 import { createModuleLoader } from '../lib/module-load';
 import { downloadCalculationReceipt } from '../lib/receipt-download';
 import { savedRecordsEnabled } from '../lib/profile/saved-record-flags';
@@ -38,9 +37,11 @@ import {
   type ChartSceneModel, type EntityRef,
 } from '../lib/scene/types';
 import { formatLongitude, signBySlug, signForLongitude, signName, signPrepositional } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 import { signIcon } from '../lib/sign-icon';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
-import { assessLocalDateReference } from '../lib/time/local-date-reference';
+import { assessLocalDateReference, type LocalDateReferenceAssessment } from '../lib/time/local-date-reference';
+import { localDateMoonSigns } from '../lib/moon-day-bounds';
 import { houseOf } from '../lib/engine/houses';
 import { moonPhaseNameFromAngle } from '../lib/engine/lite';
 import { decodeChartLink, NAME_MAX } from '../lib/share';
@@ -115,6 +116,7 @@ type ChartSignature = import('../lib/chart-signature').ChartSignature;
 type ShareSurfaceModule = typeof import('./PositionsShareSurface');
 type ShareDialogModule = typeof import('./ChartShareDialog');
 type ChartActionDockModule = typeof import('./ChartActionDock');
+const loadWheel = createModuleLoader(() => import('../lib/wheel/Wheel'));
 const loadChartControls = createModuleLoader(() => import('./ChartActionDock'));
 const loadCalculatorReceipt = createModuleLoader(() => import('../lib/engine/calculator-receipt'));
 // The Big Three reading text only shows with a result, so it downloads with the calculation.
@@ -339,6 +341,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [houseSystem, setHouseSystem] = useState<HouseSystem>(initialField('#house-system')?.value === 'placidus'
     ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
+  const [resultCount, setResultCount] = useState(0);
+  const firstResult = resultCount === 1;
+  const [Wheel, setWheel] = useState<Awaited<ReturnType<typeof loadWheel>>['default'] | null>(null);
   // Read on the birthplace's own local mean time. Since engine rc.15 the
   // `lmt` flag says so too, whole minutes included; before, it marked only an
   // offset with seconds, which a whole-minute mean time lacked.
@@ -661,12 +666,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     window.addEventListener('zodiacs:level', sync);
     return () => window.removeEventListener('zodiacs:level', sync);
   }, []);
-  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(true);
   const [announce, setAnnounce] = useState('');
   const [spotlight, setSpotlight] = useState<ChartSpotlight | null>(null);
   const selFromUrl = useRef(false);
   const wheelboxRef = useRef<HTMLDivElement>(null);
-  const detailPreferenceRef = useRef<'open' | 'closed' | null>(null);
+  const detailPreferenceRef = useRef<'open' | 'closed'>('open');
   const spotlightRunRef = useRef(0);
   const spotlightArrivalCleanupRef = useRef<(() => void) | null>(null);
 
@@ -871,7 +876,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           planetLabel(locale, b.body),
           b.body === 'Moon' && chart && moonIsUncertain(chart)
             ? `${moonLabel(chart, locale)} · ${t(locale, 'needsBirthTime')}`
-            : formatLongitude(b.lon, locale),
+            // A Moon sign settled across the birth date, without a birth time, is the sign alone.
+            : b.body === 'Moon' && chart && moonDegreeUnsettled(chart) ? moonLabel(chart, locale)
+              : formatLongitude(b.lon, locale),
           b.house != null ? `${t(locale, 'house')} ${b.house}` : '',
           b.retrograde ? 'Rx' : '',
         ].filter(Boolean).join(', ');
@@ -1027,16 +1034,16 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     }
   }, [scene]);
 
-  // Device-local preference. The server and first client paint stay closed;
-  // the one mount read may restore an explicit choice without tracking it as
-  // a fresh interaction.
+  // Expose placements with the result unless the visitor chose to collapse them.
   useEffect(() => {
     if (mode !== 'full') return;
     try {
       const stored = localStorage.getItem(DETAIL_STORAGE_KEY);
-      detailPreferenceRef.current = stored === 'open' || stored === 'closed' ? stored : null;
-      if (detailPreferenceRef.current === 'open') setDetailOpen(true);
-    } catch { /* storage unavailable — closed default remains */ }
+      if (stored === 'closed') {
+        detailPreferenceRef.current = 'closed';
+        setDetailOpen(false);
+      }
+    } catch { /* Storage unavailable. Keep placements open. */ }
   }, []);
 
   // The first-reading prompt is a device preference, just like exact-data
@@ -1366,7 +1373,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     openDetails(linked, nextMineHandoff, 'shared_details');
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (busy || !focusAfterComputeRef.current) return;
     if (error) {
       errorRef.current?.focus();
@@ -1425,10 +1432,18 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     setSubjectMode(input.subjectMode ?? 'self');
     setMineHandoff(input.mine ?? null);
     if (mode === 'full' && !chartActionDockModule) requestChartControls();
+    if (mode === 'full') {
+      void import('./CalendarSubscribe').then(setCalendarSurface, () => {});
+      if (showsEnglishInterpretation) {
+        void import('./CommunicationRead').then(setCommunicationSurface, () => {});
+        void import('./ApproachRead').then(setApproachSurface, () => {});
+      }
+    }
     try {
       // Early dates also download the local mean time table and the zone's
       // pinned history; the downloads run together. A rejection is observed
       // by the loader itself.
+      const wheelReady = mode === 'full' ? loadWheel() : null;
       const localTimeReady = prepareLocalTime(input.date, input.city.tz);
       // Optional: a failed download leaves the cards without their reading line.
       const readingsReady = showsEnglishInterpretation
@@ -1437,6 +1452,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const engine = await loadEngine();
       if (!runIsCurrent()) return;
       await localTimeReady;
+      const wheel = await wheelReady;
       if (!runIsCurrent()) return;
       if (readingsReady) {
         const read = await readingsReady;
@@ -1455,10 +1471,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       }
       const effectiveTime = input.timeKnown ? input.time : '12:00';
       const resolved = resolveLocalToUtc(input.date, effectiveTime, input.city.tz, { longitude: input.city.lon });
+      let referenceAssessment: LocalDateReferenceAssessment | null = null;
       if (!input.timeKnown) {
         try {
-          if (assessLocalDateReference(input.date, resolved.utc, input.city.tz).referenceStatus !== 'member') throw localDateReferenceFailure;
+          referenceAssessment = assessLocalDateReference(input.date, resolved.utc, input.city.tz);
         } catch { throw localDateReferenceFailure; }
+        if (referenceAssessment.referenceStatus !== 'member') throw localDateReferenceFailure;
       }
       const calculationInput = {
         utc: resolved.utc,
@@ -1483,9 +1501,15 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
 
       if (!input.timeKnown) {
         // A reference instant does not verify the Moon's possible signs across
-        // the birth date. Empty candidates use the existing unresolved state;
-        // the numerical chart and portable receipt remain the reference result.
-        result.moonSignCandidates = [];
+        // the birth date; the date's own limits can. One sign when the Moon
+        // held it all day, both when it changed sign, and empty candidates
+        // (the existing unresolved state) when those limits are not
+        // established. The numerical chart and portable receipt remain the
+        // reference result.
+        result.moonSignCandidates = referenceAssessment ? await localDateMoonSigns({
+          date: input.date, place: input.city, assessment: referenceAssessment, referenceFlags: resolved.flags,
+          moonLongitude: (utc) => engine.bodyLongitude('Moon', utc),
+        }) : [];
         nextMoonAmbiguous = moonIsUncertain(result);
       }
       if (!runIsCurrent()) return;
@@ -1493,6 +1517,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         chart: result, runId, inputRevision: runInputRevision, accessGeneration, requiresProfileAccess,
       };
       resultOwnerRef.current = owner;
+      if (wheel) setWheel(() => wheel.default);
+      setResultCount((count) => count + 1);
       setChart(result);
       setOnMeanTime(resolved.localMeanTime !== undefined);
       if (portable) {
@@ -1525,6 +1551,15 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       });
       void import('./PositionsShareSurface').then(async (surface) => {
         if (!runIsCurrent()) return;
+        // Rasterizing the export can occupy a phone's main thread for several
+        // frames. CSS owns the entrance; only the background export waits.
+        const wheel = resultRef.current?.querySelector('.wheel--settle');
+        if (wheel) {
+          const lastCard = resultRef.current?.querySelector('.calc__three > :last-child');
+          const entrance = [...wheel.getAnimations(), ...(lastCard?.getAnimations() ?? [])];
+          await Promise.allSettled(entrance.map((animation) => animation.finished));
+          if (!runIsCurrent()) return;
+        }
         const prepared = await surface.preparePrimaryShareArtifact(result, mode, locale, nextMoonAmbiguous, input.date);
         if (!runIsCurrent()) return;
         shareRuntimeRef.current.primary = { artifact: prepared, share: surface.sharePrimaryArtifact };
@@ -1536,13 +1571,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const contextId = chartContextIdRef.current + 1;
       chartContextIdRef.current = contextId;
       clearPostChartContext();
-      if (mode === 'full') {
-        void import('./CalendarSubscribe').then(setCalendarSurface, () => {});
-        if (showsEnglishInterpretation) {
-          void import('./CommunicationRead').then(setCommunicationSurface, () => {});
-          void import('./ApproachRead').then(setApproachSurface, () => {});
-        }
-      }
       track('result_rendered', { mode });
       track('chart_computed', { mode, source });
       if (locale !== 'ru') void import('./PwaInstallPrompt').then(setPwaInstallModule, () => {});
@@ -1555,10 +1583,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         },
       }));
       requestAnimationFrame(() => {
-        if (runIsCurrent()) resultRef.current?.scrollIntoView({
-          behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-          block: 'start',
-        });
+        if (!runIsCurrent()) return;
+        // Put the first wheel in view before its entrance. Smooth scrolling
+        // during the reveal also makes the phone lay out intervening sections.
+        const instant = (mode === 'full' && resultCount === 0)
+          || matchMedia('(prefers-reduced-motion: reduce)').matches;
+        resultRef.current?.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'start' });
       });
     } catch (err) {
       if (!runIsCurrent()) return;
@@ -1815,12 +1845,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const autoNames = autoNameLocales.flatMap((candidate) => {
     if (!sunSign) return [''];
     if (candidate === 'ru') {
-      // Russian names read «Солнце в Раке»; charts saved under the earlier
-      // «Рак Солнце» form stay recognizable. Both exceed the share-link cap
+      // Russian names read «Солнце в Раке» («во Льве»); charts saved under the
+      // earlier «Рак Солнце» and «в Льве» forms stay recognizable. Both exceed the share-link cap
       // for most signs, so their capped spellings count as automatic too.
       const forms = [
         `${signName(sunSign, 'ru')} ${russianCopy!.chart.autoNameSun} · ${computedInput?.date ?? date}`,
         `${russianCopy!.chart.autoNameSunTemplate.replace('{sign}', signPrepositional(sunSign))} · ${computedInput?.date ?? date}`,
+        `${russianCopy!.chart.autoNameSunTemplate.replace('в {sign}', signInRu(sunSign))} · ${computedInput?.date ?? date}`,
       ];
       return [...new Set(forms.flatMap(form => [form, form.slice(0, NAME_MAX).trim()]))];
     }
@@ -1830,7 +1861,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const referenceName = `${t(locale, 'referenceChartName')} · ${computedInput?.date ?? date}`;
   autoNames.push(...autoNameLocales.map(candidate => `${AUTO_NAME_REFERENCE[candidate]} · ${computedInput?.date ?? date}`));
   const autoName = computedInput?.timeKnown === false ? referenceName : sunSign
-    ? `${locale === 'ru' ? russianCopy!.chart.autoNameSunTemplate.replace('{sign}', signPrepositional(sunSign)) : `${signName(sunSign, locale)} ${AUTO_NAME_SUN[locale]}`} · ${computedInput?.date ?? date}`
+    ? `${locale === 'ru' ? russianCopy!.chart.autoNameSunTemplate.replace('в {sign}', signInRu(sunSign)) : `${signName(sunSign, locale)} ${AUTO_NAME_SUN[locale]}`} · ${computedInput?.date ?? date}`
     : '';
   const isAutoName = (name: string | null) => name !== null && autoNames.includes(name);
   const personName = linkName && !isAutoName(linkName)
@@ -2117,11 +2148,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         };
       });
     const settled = ps.filter((placement) => placement.body !== 'Moon' || !moonIsUncertain(chart));
+    // A Moon sign settled across the birth date still leaves its aspects to the birth time.
+    const moonAspectsOut = moonAspectsUnsettled(chart);
     return {
       ps,
       top: chartActionDockModule.topAspects(
         chart.aspects.filter((aspect) => !aspect.a.includes('Node') && !aspect.b.includes('Node')
-          && (!moonIsUncertain(chart) || (aspect.a !== 'Moon' && aspect.b !== 'Moon'))),
+          && (!moonAspectsOut || (aspect.a !== 'Moon' && aspect.b !== 'Moon'))),
         4,
       ),
       weather: chartActionDockModule.chartWeather(
@@ -2182,15 +2215,21 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     && firstReadingLoaded
     && !tourOpen
     && (firstReading.status === 'not_started' || firstReading.status === 'in_progress');
-  const shareActionLabel = subjectMode === 'other'
-    ? wheelActionCopy.shareOther
-    : t(locale, 'shareChart');
-  const shareActionStatusLabel = card === 'busy'
+  // The share options work while the first full-size image is being prepared.
+  const preparingChartImage = mode === 'full' && card === 'busy' && !shareRuntimeRef.current.primary;
+  // Prepare the two reading images after the first chart image so their canvas
+  // work also stays outside the entrance. The readings render immediately.
+  const prepareReadingImages = !firstResult || !preparingChartImage;
+  const shareLabel = subjectMode === 'other' ? wheelActionCopy.shareOther : t(locale, 'shareChart');
+  const shareActionLabel = preparingChartImage
+    ? `${shareLabel} · ${t(locale, 'chartActionsMore')}`
+    : shareLabel;
+  const shareActionDisabled = card === 'busy' && !preparingChartImage;
+  const shareActionStatusLabel = shareActionDisabled
     ? t(locale, 'rendering')
     : card === 'saved'
       ? t(locale, 'cardSaved')
       : shareActionLabel;
-  const shareActionDisabled = card === 'busy';
   return (
     <div class="calc" data-subject-mode={subjectMode}>
       <form
@@ -2329,7 +2368,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       )}
 
       {chart && sun && moon && (
-        <div class="calc__result" ref={resultRef}>
+        <div class="calc__result" ref={resultRef} data-wheel-reveal={mode === 'full' ? (firstResult ? 'first' : 'repeat') : undefined}>
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>
             {subjectMode === 'other'
               ? otherSubjectCopy.heading(personName)
@@ -2360,7 +2399,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {chart.flags.includes('no-time') && (
             <p class="notice" role="status">
               {t(locale, 'noTimeNotice')} {t(locale, 'unknownTimeSunReference')}
-              {moonAmbiguous && ` ${t(locale, 'moonUnverifiedNotice')}`}
+              {/* Both signs of a date the Moon changed sign on were verified; only which held at birth is not. */}
+              {moonAmbiguous && ` ${t(locale, moonNoticeKey(chart) ?? 'moonUnverifiedNotice')}`}
             </p>
           )}
           {fromLink && (
@@ -2408,8 +2448,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 );
               }
               const s = signForLongitude(lon);
+              // A Moon sign settled across the birth date, without a birth time, is the sign alone: the noon
+              // reference's degree stays with the other reference positions in the table.
+              const signOnly = kind === 'moon' && moonDegreeUnsettled(chart);
               return (
-                <div class="three-card shell tinted" style={`--sign:${s.hue}`} key={kind}>
+                <div class="three-card shell tinted" style={`--sign:${s.hue}`} key={kind} data-moon-sign-only={signOnly || undefined}>
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
@@ -2418,7 +2461,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       </picture>
                       {signName(s, locale)}
                     </span>
-                    <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>
+                    {!signOnly && <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>}
                     {showsEnglishInterpretation && readBigThree && <p class="three-card__read">{readBigThree(kind, s.slug)}</p>}
                     <a class="three-card__more" href={localizePath(locale, `/${s.slug}/`)}>{t(locale, 'read')} {signName(s, locale)} →</a>
                   </div>
@@ -2441,7 +2484,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             const ruler = chart.bodies.find((b) => b.body === rulerName);
             return ruler ? (
               <p class="calc__phase mono">
-                {t(locale, 'chartRuler')}{locale === 'fr' ? '\u202f:' : ':'} {planetLabel(locale, rulerName)} <PlanetGlyph body={rulerName} size={13} class="calc__pg" /> {t(locale, 'readIn')} {locale === 'ru' ? signPrepositional(signForLongitude(ruler.lon)) : signName(signForLongitude(ruler.lon), locale)} {locale === 'ru' ? '—' : '-'} {t(locale, 'planetSteering')}
+                {t(locale, 'chartRuler')}{locale === 'fr' ? '\u202f:' : ':'} {planetLabel(locale, rulerName)} <PlanetGlyph body={rulerName} size={13} class="calc__pg" /> {locale === 'ru' ? `${t(locale, 'readIn').replace(/(^| )в$/u, '')} ${signInRu(signForLongitude(ruler.lon))}`.trimStart() : `${t(locale, 'readIn')} ${signName(signForLongitude(ruler.lon), locale)}`} {locale === 'ru' ? '—' : '-'} {t(locale, 'planetSteering')}
               </p>
             ) : null;
           })()}
@@ -2470,7 +2513,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             </details>
           )}
 
-          {mode === 'full' && scene && (
+          {mode === 'full' && scene && Wheel && (
             <>
               <div class={`calc__wheel shell${tourOpen ? ' calc__wheel--tour' : ''}`}>
                 <div class="core calc__wheel-core">
@@ -2499,10 +2542,14 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           mc={chart.angles?.mc ?? null}
                           cusps={viewCusps}
                           aspects={lens === 'natal'
-                            ? chart.aspects.filter((a) => a.orb < 6 && aspectTypes.includes(a.type))
+                            ? chart.aspects.filter((a) => (
+                                a.orb < 6
+                                && aspectTypes.includes(a.type)
+                                && (!tourVisual || (!moonAmbiguous && !moonAspectsUnsettled(chart)) || (a.a !== 'Moon' && a.b !== 'Moon'))
+                              ))
                             : []}
                           renderOverlay={lensRing ?? undefined}
-                          animate
+                          animate={firstResult || 'fade'}
                           interactive={{
                             scene: viewScene ?? scene,
                             selection,
@@ -2553,7 +2600,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       </div>
                       <div data-depth="intermediate">
                       {EntityPicker ? <EntityPicker
-                        scene={scene}
+                        scene={viewScene ?? scene}
                         selection={selection}
                         locale={locale}
                         onSelect={(ref) => {
@@ -2587,7 +2634,10 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         {depthOpen && depthMod && (
                           <depthMod.default
                             bodies={chart.bodies}
-                            aspects={chart.aspects.filter((a) => a.orb < 6)}
+                            aspects={chart.aspects.filter((a) => (
+                              a.orb < 6
+                              && (!tourVisual || (!moonAmbiguous && !moonAspectsUnsettled(chart)) || (a.a !== 'Moon' && a.b !== 'Moon'))
+                            ))}
                             cusps={viewCusps}
                             asc={asc}
                             mc={chart.angles?.mc ?? null}
@@ -2830,11 +2880,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               )}
 
               {mode === 'full' && showsEnglishInterpretation && ApproachRead && (
-                <ApproachRead chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} birthDate={computedInput?.date} />
+                <ApproachRead prepareImage={prepareReadingImages} chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} birthDate={computedInput?.date} />
               )}
 
               {mode === 'full' && showsEnglishInterpretation && CommunicationRead && (
-                <CommunicationRead chart={chart} locale={locale} birthDate={computedInput?.date} />
+                <CommunicationRead prepareImage={prepareReadingImages} chart={chart} locale={locale} birthDate={computedInput?.date} />
               )}
             </>
           )}
@@ -3029,7 +3079,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {mode === 'full' && scene && (
             <details
               class="calc__detail"
-              data-depth="advanced"
               data-detail
               data-evidence-disclosure
               open={detailOpen}
@@ -3042,7 +3091,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   : <><span class="mono">{chart.aspects.length}</span>{detailLabels.aspects}</>}
               </summary>
               <div class="calc__detail-body">
-                <p class="calc__receipt mono" data-chart-receipt>
+                <p class="calc__receipt mono" data-depth="advanced" data-chart-receipt>
                   {chart.input.utc.toISOString().replace('T', ' · ').slice(0, 21)} UTC
                   {city ? ` · ${city.lat.toFixed(2)}°, ${city.lon.toFixed(2)}°` : ''}
                   {chart.houses ? <HouseSystemReceipt locale={locale} system={chart.houses.system} /> : ''}
@@ -3076,7 +3125,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                             </td>
                             <td class="mono">{p.label.split(' ')[0]}</td>
                             <td>{p.body === 'Moon' && moonIsUncertain(chart)
-                              ? <>{moonLabel(chart, locale)} · {t(locale, 'needsBirthTime')}</>
+                              ? <><SignChip lon={p.lon} locale={locale} /> · {t(locale, 'needsBirthTime')}</>
                               : <SignChip lon={p.lon} locale={locale} />}</td>
                             {chart.houses && <td class="mono">{p.house}</td>}
                             <td class="mono calc__retro">{p.retrograde ? 'Rx' : ''}</td>
@@ -3088,7 +3137,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 </div>
 
                 {chart.aspects.length > 0 && (
-                  <section class="calc__aspects" aria-labelledby="calc-aspects-title">
+                  <section class="calc__aspects" data-depth="advanced" aria-labelledby="calc-aspects-title">
                     <h3 id="calc-aspects-title">{t(locale, 'aspectsFound')} {locale === 'ru' ? '—' : '-'} {locale === 'ru'
                       ? tp('ru', 'aspects', chart.aspects.length, russianCopy!.plurals)
                       : <>{chart.aspects.length} {t(locale, 'found')}</>}</h3>
@@ -3096,7 +3145,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       {chart.aspects.map((a) => {
                         const ref: EntityRef = { kind: 'aspect', a: a.a, b: a.b, type: a.type };
                         const inScene = aspectTypes.includes(a.type)
-                          && scene.aspects.some((x) => x.a === a.a && x.b === a.b && x.type === a.type);
+                          && (viewScene ?? scene).aspects.some((x) => x.a === a.a && x.b === a.b && x.type === a.type);
                         const isSel = selection?.kind === 'aspect'
                           && selection.a === a.a && selection.b === a.b && selection.type === a.type;
                         const line = (

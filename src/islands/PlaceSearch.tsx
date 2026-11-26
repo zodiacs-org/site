@@ -6,6 +6,10 @@ import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 const loadSearch = () => loadModule(() => import('../lib/geo/search'));
+const loadLabels = () => loadModule(() => import('../lib/geo/place-label'));
+
+/** What tells an option apart from the others listed with it (distinctLabels): its place id and, when needed, its coordinates. */
+interface Distinction { id: string; extra: string }
 
 interface Props {
   onSelect: (city: City | null) => void;
@@ -15,6 +19,13 @@ interface Props {
   validationError?: string;
   selectionHint?: string;
   required?: boolean;
+  /** Load the whole index on focus and search it, so no request depends on what is typed (src/lib/geo/search.ts). */
+  wholeIndex?: boolean;
+  /**
+   * Tell same-named options apart: an option whose name, region and country another option shares also shows its
+   * coordinates, and the choice keeps them (src/lib/geo/place-label.ts). Off by default.
+   */
+  distinctLabels?: boolean;
 }
 
 export default function PlaceSearch({
@@ -25,6 +36,8 @@ export default function PlaceSearch({
   validationError,
   selectionHint,
   required = false,
+  wholeIndex = false,
+  distinctLabels = false,
 }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<City[]>([]);
@@ -32,6 +45,8 @@ export default function PlaceSearch({
   const [active, setActive] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [distinctions, setDistinctions] = useState<Distinction[]>([]);
+  const [chosen, setChosen] = useState<{ city: City; extra: string } | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout>>();
   const requestToken = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -80,10 +95,15 @@ export default function PlaceSearch({
 
     debounce.current = setTimeout(async () => {
       try {
-        const { searchCities } = await loadSearch();
+        const search = await loadSearch();
         if (token !== requestToken.current) return;
-        const cities = await searchCities(value);
+        const cities = await (wholeIndex ? search.searchWholeIndex(value) : search.searchCities(value));
+        const labels = distinctLabels ? await loadLabels() : null;
         if (token === requestToken.current) {
+          if (labels) {
+            const extras = labels.placeDistinctions(cities);
+            setDistinctions(cities.map((city, i) => ({ id: labels.placeId(city), extra: extras[i] })));
+          }
           setResults(cities);
           setActive(0);
           setOpen(true);
@@ -97,6 +117,7 @@ export default function PlaceSearch({
   }
 
   function choose(city: City) {
+    if (distinctLabels) setChosen({ city, extra: distinctions[results.indexOf(city)]?.extra ?? '' });
     clearTimeout(debounce.current);
     ++requestToken.current;
     focusChip.current = true;
@@ -117,7 +138,8 @@ export default function PlaceSearch({
   if (selected) {
     // A real (read-only) input keeps the page's <label for> association
     // alive in the selected state and gives the value back to AT.
-    const chipValue = [selected.name, [selected.admin1, selected.country].filter(Boolean).join(', ')]
+    const extra = distinctLabels && chosen?.city === selected ? chosen.extra : '';
+    const chipValue = [selected.name, [selected.admin1, selected.country].filter(Boolean).join(', ') + (extra ? ` (${extra})` : '')]
       .filter(Boolean)
       .join(' · ');
     return (
@@ -155,7 +177,7 @@ export default function PlaceSearch({
         autocomplete="off"
         // Leave an empty first render alone so hydration preserves early input.
         value={query || undefined}
-        onFocus={() => { void loadSearch().then(({ preloadIndex }) => { void preloadIndex(); }, () => {}); }}
+        onFocus={() => { void loadSearch().then((search) => { void (wholeIndex ? search.preloadWholeIndex() : search.preloadIndex()); }, () => {}); }}
         onInput={(e) => onInput((e.target as HTMLInputElement).value)}
         onKeyDown={onKeyDown}
       />
@@ -182,8 +204,10 @@ export default function PlaceSearch({
       {open && (
         <ul class="place__list" id={`${id}-list`} role="listbox">
           {results.length ? (
-            results.map((c, i) => (
-              <li key={c.name + c.lat + c.lon} role="none">
+            results.map((c, i) => {
+              const distinction = distinctLabels ? distinctions[i] : undefined;
+              return (
+              <li key={distinction?.id ?? c.name + c.lat + c.lon} role="none" data-place-id={distinction?.id}>
                 <button
                   type="button"
                   id={`${id}-opt-${i}`}
@@ -195,10 +219,11 @@ export default function PlaceSearch({
                   onClick={() => choose(c)}
                 >
                   <span class="place__name">{c.name}</span>
-                  <span class="place__meta">{[c.admin1, c.country].filter(Boolean).join(', ')}</span>
+                  <span class="place__meta">{[c.admin1, c.country].filter(Boolean).join(', ')}{distinction?.extra ? ` (${distinction.extra})` : ''}</span>
                 </button>
               </li>
-            ))
+              );
+            })
           ) : (
             <li class="place__empty" role="option" aria-disabled={true}>
               {t(locale, 'placeNoResults')}

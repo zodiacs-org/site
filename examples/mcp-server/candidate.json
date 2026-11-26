@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.27",
+  "version": "0.1.0-rc.29",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -46,11 +46,11 @@
     "note": "The published engine and site comparison are inlined into server.mjs. Planet positions default to DE440.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "1.1.0",
+      "version": "2.1.0",
       "releaseStatus": "published",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac",
+      "artifactSha256": "272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc",
       "registry": "npm"
     },
     "ephemeris": {
@@ -105,7 +105,7 @@
     "esbuild": "0.28.1",
     "target": "node22",
     "format": "esm",
-    "node": "v22.22.2"
+    "node": "v22.23.5"
   },
   "schemas": {
     "record": "zodiacs.natal-envelope.draft-v1",
@@ -115,6 +115,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.26",
-  "changedSince": "Uses the published Zodiacs engine with DE440 for supported dates. The adapter remains a review candidate."
+  "supersedes": "0.1.0-rc.28",
+  "changedSince": "Uses the uniform three-era continuous-UTC time-scale convention across all compute receipts. The adapter remains a review candidate."
 }

@@ -4,8 +4,9 @@ import { computeApiRateLimit } from '../lib/compute-api/handler';
 import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, GOOD_DAYS_SWITCH_ENV, GOOD_DAYS_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
 import { createAiServer } from './server';
 import { describeDe440Tools } from './de440-contract';
-import { coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
+import { AGE_FIRST_TOOLS, ageFirstRefusal, coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
+import { configuredStagingHost } from '../lib/staging-host';
 import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
 import { countAiToolCall, usageHostFamily, type UsageHost } from './usage';
@@ -14,6 +15,7 @@ import { SAVE_TOOL_NAME } from './accounts/contracts';
 import { accountsEnabled, configuredAccounts, invalidTokenChallenge, type AccountsService } from './accounts/service';
 import type { AccountContext } from './server';
 import type { CountedToolName } from './usage';
+import { MOMENT_CHART_SWITCH } from './features/moment-chart-contract';
 
 /** The self-contained panels whose resources may exceed the usual reply budget. */
 const LARGE_PANEL_URIS: ReadonlySet<string> = new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS, READINGS_URI, LEGACY_READINGS_URI, READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI]);
@@ -114,8 +116,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const method = req.method ?? 'GET';
     const host = req.headers?.host;
     // Staging is an exact administrator-configured hostname, never a header-derived wildcard.
-    const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
-    const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes('.') && stagingHost.split('.').every(label => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
+    // The same validator the share handlers' requestOrigin uses (../lib/staging-host.ts), so a link issued here opens there.
+    const stagingHost = configuredStagingHost(env);
+    const validStagingHost = stagingHost !== null;
     const allowedHosts = options.allowedHosts ?? ['zodiacs.org', 'www.zodiacs.org', ...(validStagingHost ? [stagingHost] : [])];
     if (typeof host !== 'string' || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, 'host-not-allowed');
     const origin = req.headers?.origin;
@@ -247,19 +250,27 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     }
     // A 0.6.0 tool's sign arrives as written ("Leo"); it is lower-cased before the SDK checks the published enum.
     if (calledTool && normaliseCoverageCall(body)) text = JSON.stringify(body);
-    const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments, calledTool === SAVE_TOOL_NAME ? undefined : inputSchemaFor(calledTool, skyEvents, { yearScorePeople })) : undefined;
+    // A tool in AGE_FIRST_TOOLS reads its age gate before anything else, so whatever the SDK's schema check would say
+    // about another field, a child's birth date gets the refusal and an unsettled one the date alone (ageFirstRefusal).
+    const ageFirst = calledTool && AGE_FIRST_TOOLS.has(calledTool) ? ageFirstRefusal(calledTool as AiToolName, (message.params as Record<string, unknown>).arguments, options.dependencies?.now?.() ?? new Date()) : null;
+    const refusal = ageFirst ?? (calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments, calledTool === SAVE_TOOL_NAME ? undefined : inputSchemaFor(calledTool, skyEvents, { yearScorePeople })) : undefined);
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(goodDays ? { goodDays: true } : {}), ...(personal ? { personal: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), momentChart: env[MOMENT_CHART_SWITCH] === '1', ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(goodDays ? { goodDays: true } : {}), ...(personal ? { personal: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
       } catch { return 'unavailable'; }
     } };
+    // A personal tool links to its website page, and that page's share card, only while the page's own switch is on.
+    if (personal) dependencies.sitePageOn = (flag: string) => env[flag] === '1';
+    // Those switches are this deployment's, so on the staging host the links go to the staging site, never to zodiacs.org,
+    // whose own switch may be off.
+    if (personal && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
     const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();
@@ -282,6 +293,13 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
           const parsed = JSON.parse(text);
           if (options.de440 && (message.method === 'tools/list' || message.method === 'server/discover')) {
             describeDe440Tools(parsed.result);
+          }
+          // A tool in AGE_FIRST_TOOLS whose arguments the SDK's schema check refused gets its age gate reply instead
+          // (ageFirst, read before the SDK ran), so no birth time, zone or place is asked for until the birth date
+          // reads as an adult's in every way it can be read.
+          if (ageFirst && (parsed.error || (parsed.result?.isError && !parsed.result?.structuredContent))) {
+            const { error: _refused, ...rest } = parsed;
+            return JSON.stringify({ ...rest, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(ageFirst) }], structuredContent: ageFirst } });
           }
           // A 0.6.0 tool's or search_sky_events' arguments refused by the SDK's schema check get the tool's own field-named refusal.
           const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || (PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent

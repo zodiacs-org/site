@@ -8,7 +8,8 @@ import { EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, PERSONAL_SWITCH_ENV, PE
 import { COUNTED_TOOL_NAMES } from './usage';
 import { PERSONAL_TOOLS } from './personal/registry';
 import { forbiddenClaim, type PersonalToolDefinition } from './personal/shared';
-import { executeAiTool, offeredTools } from './tools';
+import { AGE_FIRST_TOOLS, executeAiTool, offeredTools } from './tools';
+import { UNDER_13_SENTENCE } from '../lib/good-days/find';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
@@ -123,7 +124,7 @@ describe('the personal tools switch on', () => {
       const listed = tools.find((entry) => entry.name === tool.name)!;
       expect(listed).toMatchObject({ title: tool.title, description: tool.description, annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: !tool.clockDependent } });
       expect(listed._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
-      expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market|invest|stock/iu);
+      expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[\u2013\u2014]|crypto|token|blockchain|market|invest|stock/iu);
     }
   });
 
@@ -146,7 +147,7 @@ describe('the personal tools switch on', () => {
       const validate = ajv.compile(tools.find((entry) => entry.name === tool.name)!.outputSchema);
       expect(validate(result.structuredContent), JSON.stringify(validate.errors)).toBe(true);
       expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
-      expect(result.content[0].text).not.toMatch(/[–—]/u);
+      expect(result.content[0].text).not.toMatch(/[\u2013\u2014]/u);
       // Money, career, wellbeing and legal themes are read as tradition reads them; price calls, buy or sell signals,
       // diagnoses or medical timing, death predictions and won or lost cases never appear.
       expect(forbiddenClaim(result.content[0].text), tool.name).toBeNull();
@@ -164,23 +165,53 @@ describe('the personal tools switch on', () => {
       for (const birthDate of ['2016-01-01', '2026-11-09', '2027-03-01']) {
         const result = await call(host, tool.name, { ...tool.example, birthDate });
         expect(result.isError, tool.name).toBe(true);
-        expect(result.structuredContent.error.message).toBe(UNDER_13_REFUSAL);
+        // A tool that takes a birth date reads its age gate first, and refuses with the plain sentence.
+        const refusal = AGE_FIRST_TOOLS.has(tool.name) ? UNDER_13_SENTENCE : UNDER_13_REFUSAL;
+        expect(result.structuredContent.error.message).toBe(refusal);
         expect(result.structuredContent).not.toHaveProperty('data');
         // Called directly, without the server's own check first, the tool refuses it too.
         const direct = await executeAiTool(tool.name as never, { ...tool.example, birthDate }, { occasions: true, coverage: true, personal: true, now: () => NOW, placeTable: async () => loadPlaceTable() });
-        expect(direct).toMatchObject({ ok: false, error: { message: UNDER_13_REFUSAL } });
+        expect(direct).toMatchObject({ ok: false, error: { message: refusal } });
       }
-      // Thirteen today is old enough.
-      expect((await call(host, tool.name, { ...tool.example, birthDate: '2013-11-09' })).isError, tool.name).toBe(false);
+      // Thirteen everywhere is old enough. The refusal counts from the calendar date at UTC-12 (main's #1139, as the
+      // site's chart forms do), and at 09:00 UTC on 9 November it is still 8 November there.
+      expect((await call(host, tool.name, { ...tool.example, birthDate: '2013-11-08' })).isError, tool.name).toBe(false);
     }
   }, 120_000);
 
-  it('never repeats a refused value back', async () => {
+  it('never repeats a refused value back, each refused field on its own', async () => {
     const host = await serve(ON);
+    // One bad field per call, so each is refused by its own check and not by an earlier one.
+    const cases: [Record<string, unknown>, RegExp][] = [
+      [{ birthDate: '1990-02-31' }, /1990-02-31/u],
+      [{ zone: 'Mars/Olympus_Mons' }, /Mars|Olympus/u],
+      [{ zone: 'mars/olympus_mons' }, /mars|olympus/iu],
+      [{ secretField: 'Ada Lovelace' }, /Ada|Lovelace/u],
+    ];
     for (const tool of TOOLS) {
-      const result = await call(host, tool.name, { ...tool.example, birthDate: '1990-02-31', zone: 'Mars/Olympus_Mons', secretField: 'Ada Lovelace' });
-      expect(result.isError).toBe(true);
-      expect(result.content[0].text).not.toMatch(/Olympus|Ada Lovelace|1990-02-31/u);
+      for (const [bad, echo] of cases) {
+        const result = await call(host, tool.name, { ...tool.example, ...bad });
+        expect(result.isError, `${tool.name} ${Object.keys(bad)[0]}`).toBe(true);
+        expect(JSON.stringify(result), `${tool.name} ${Object.keys(bad)[0]}`).not.toMatch(echo);
+      }
     }
   });
+
+  it('links to a tool\'s own page and share card only while that page\'s switch is on', async () => {
+    const pageOff = await serve(ON);
+    for (const tool of TOOLS.filter((entry) => entry.pageFlag !== undefined)) {
+      for (const value of [undefined, '', '0', 'true']) {
+        const host = value === undefined ? pageOff : await serve({ ...ON, [tool.pageFlag!]: value });
+        const off = await call(host, tool.name, tool.example);
+        expect(off.isError, tool.name).toBe(false);
+        // With the page off there is no page and no share card to open: neither is linked, from the data or the links.
+        for (const url of urlsIn([off.structuredContent, off.content])) expect(url, `${tool.name} with ${tool.pageFlag}=${JSON.stringify(value)}`).not.toMatch(/\/share\//u);
+        expect((off.structuredContent.data as { pageUrl?: unknown }).pageUrl ?? null, tool.name).toBeNull();
+      }
+      const on = await call(await serve({ ...ON, [tool.pageFlag!]: '1' }), tool.name, tool.example);
+      expect(on.isError, tool.name).toBe(false);
+      expect((on.structuredContent.data as { pageUrl?: unknown }).pageUrl, tool.name).toMatch(/^https:\/\/zodiacs\.org\//u);
+      expect(urlsIn(on.structuredContent).some((url) => url.includes('/share/')), tool.name).toBe(true);
+    }
+  }, 120_000);
 });

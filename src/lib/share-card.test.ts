@@ -29,6 +29,7 @@ import {
   chartSheetContent,
   imageChart,
   imagePositions,
+  placementCardNotes,
   prepareChartCard,
   timedImageChart,
   untimedMoonSign,
@@ -734,5 +735,30 @@ describe('a chart image with birth details hidden', () => {
     const atMinute = computeBodies(new Date('1870-06-15T19:46:00Z'));
     expect((await imagePositions(lmt)).bodies).toEqual(atMinute);
     expect((await imagePositions({ bodies: lmt.bodies, angles: lmt.angles, engineVersion: lmt.engineVersion, utc: lmt.input.utc })).bodies).toEqual(atMinute);
+  });
+
+  it('keeps untimed Moon placement card notes independent of birthplace when the date is not settled worldwide', async () => {
+    const date = '1989-12-31';
+    expect(await untimedMoonSign(date)).toBeNull();
+    const chart = timed('whole');
+    const drawn = await imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion }, date);
+    expect(drawn.moonSignCandidates).toEqual([]);
+    const londonCaller = placementCardNotes(drawn, 'moon', 'en', { referenceTime: true, moonAmbiguous: false });
+    const laCaller = placementCardNotes(drawn, 'moon', 'en', { referenceTime: true, moonAmbiguous: true });
+    expect(londonCaller).toEqual(laCaller);
+    expect(londonCaller).toContain('My Moon may change signs without an exact birth time.');
+    // When the date IS settled worldwide, the card names the sign and swaps to the settled note.
+    let settledDate = '';
+    let settled: string | null = null;
+    for (let day = 1; day <= 30 && !settled; day += 1) {
+      const candidate = `2000-04-${String(day).padStart(2, '0')}`;
+      settled = await untimedMoonSign(candidate);
+      if (settled) settledDate = candidate;
+    }
+    expect(settled).not.toBeNull();
+    const settledDrawn = { ...await imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion }, settledDate), moonSignCandidates: [settled!] };
+    const settledNotes = placementCardNotes(settledDrawn, 'moon', 'en', { referenceTime: true, moonAmbiguous: false, moonSettled: true });
+    expect(settledNotes).not.toContain('My Moon may change signs without an exact birth time.');
+    expect(settledNotes.some((line) => /held/i.test(line) || /sign/i.test(line))).toBe(true);
   });
 });
