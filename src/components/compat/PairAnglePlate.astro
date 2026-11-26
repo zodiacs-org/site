@@ -1,0 +1,262 @@
+---
+/**
+ * The angle between you, on a compatibility pair page: the zodiac wheel with
+ * Aries at the top and the signs clockwise in zodiac order, twelve equal
+ * 30 degree slices, a line joining the pair's two signs and the angle between
+ * them, the shorter way round, in the middle (src/lib/pair-angle.ts).
+ *
+ * A story plate in the /thesis/ manner, played by the shared entrance
+ * runtime (docs/MOTION.md), after SunYearPlate on the sign guides: the ring
+ * is drawn round once and the ten other signs light as it passes them; the
+ * first sign's disc arrives; the line is drawn from it to the second sign,
+ * whose disc arrives as the line reaches it; the closing beat draws the
+ * angle's arc along the ring in the two signs' hues. A same-sign pair draws
+ * no line: a ring is drawn round its one disc instead. The markup is the
+ * finished picture; the hidden states apply only while
+ * html[data-entrance="on"] and the plate's one mark (.pa-go, a 1px line
+ * across the middle of the wheel, so the story starts when the wheel is on
+ * screen) is still waiting. The number in the middle and the words beside
+ * the wheel never move. Opacity, transform and stroke-dashoffset only; the
+ * whole pass ends inside the runtime's 2.6 s.
+ */
+import SignIcon from '../SignIcon.astro';
+import { SIGNS } from '../../lib/signs';
+import { pairAngle } from '../../lib/pair-angle';
+
+interface Props {
+  /** The pair's two sign slugs, in zodiac order as the pair slug has them. */
+  a: string;
+  b: string;
+}
+
+const angle = pairAngle(Astro.props.a, Astro.props.b);
+const { a, b, same } = angle;
+
+const C = 200;
+const R = 126;          // the ring
+const R_ICON = 168;     // the twelve sign discs
+const R_HALO = 36;      // the ring round a same-sign pair's one disc
+const RING_MS = 900;    // the ring's trip round the wheel
+const n = (value: number) => value.toFixed(2);
+const point = (index: number, r: number) => {
+  const t = (index * 30 * Math.PI) / 180;
+  return { x: C + r * Math.sin(t), y: C - r * Math.cos(t) };
+};
+const pct = (value: number) => `${(value / 4).toFixed(2)}%`;
+
+const ia = SIGNS.findIndex((s) => s.slug === a.slug);
+const ib = SIGNS.findIndex((s) => s.slug === b.slug);
+const pa = point(ia, R);
+const pb = point(ib, R);
+const ringPath = `M${C} ${C - R}A${R} ${R} 0 1 1 ${n(C - 0.01)} ${C - R}`;
+const chordPath = `M${n(pa.x)} ${n(pa.y)}L${n(pb.x)} ${n(pb.y)}`;
+const arcPath = `M${n(pa.x)} ${n(pa.y)}A${R} ${R} 0 0 ${angle.clockwise ? 1 : 0} ${n(pb.x)} ${n(pb.y)}`;
+const halo = point(ia, R_ICON);
+// A circle drawn from the top of the disc, clockwise.
+const haloPath = `M${n(halo.x)} ${n(halo.y - R_HALO)}A${R_HALO} ${R_HALO} 0 1 1 ${n(halo.x - 0.01)} ${n(halo.y - R_HALO)}`;
+const ticks = SIGNS.map((_, i) => {
+  const inner = point(i + 0.5, R - 5);
+  const outer = point(i + 0.5, R + 5);
+  return { d: `M${n(inner.x)} ${n(inner.y)}L${n(outer.x)} ${n(outer.y)}`, t: Math.round(((i + 0.5) / 12) * RING_MS) };
+});
+const discs = SIGNS.map((sign, i) => {
+  const p = point(i, R_ICON);
+  const role = sign.slug === a.slug ? 'a' : sign.slug === b.slug ? 'b' : '';
+  return { sign, p, role, t: Math.round((i / 12) * RING_MS) };
+});
+const gradient = `pa-hue-${a.slug}-${b.slug}`;
+const steps = angle.steps;
+---
+<section class="pairangle" aria-labelledby="pairangle-title" style={`--a:${a.hue};--b:${b.hue}`}>
+  <div class="pa-wheel" role="img" aria-label={angle.alt}>
+    <span class="pa-go" data-enter="draw" aria-hidden="true"></span>
+    <svg class="pa-svg" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+      {!same && (
+        <defs>
+          <linearGradient id={gradient} gradientUnits="userSpaceOnUse" x1={n(pa.x)} y1={n(pa.y)} x2={n(pb.x)} y2={n(pb.y)}>
+            <stop offset="0" stop-color={a.hue} />
+            <stop offset="1" stop-color={b.hue} />
+          </linearGradient>
+        </defs>
+      )}
+      <circle class="pa-bed" cx={C} cy={C} r={R} />
+      <path class="pa-ring" pathLength="1" d={ringPath} />
+      {ticks.map((tick) => <path class="pa-tick" style={`--t:${tick.t}ms`} d={tick.d} />)}
+      {!same && <path class="pa-arc" pathLength="1" d={arcPath} stroke={`url(#${gradient})`} />}
+      {!same && <path class="pa-chord" pathLength="1" d={chordPath} stroke={`url(#${gradient})`} />}
+      <circle class="pa-hub" cx={C} cy={C} r="54" />
+      <circle class="pa-end pa-end--a" cx={n(pa.x)} cy={n(pa.y)} r="5" />
+      {!same && <circle class="pa-end pa-end--b" cx={n(pb.x)} cy={n(pb.y)} r="5" />}
+      {same && <path class="pa-halo" pathLength="1" d={haloPath} />}
+    </svg>
+    {discs.map((disc) => (
+      <span
+        class:list={['pa-sign', disc.role && 'is-pair', disc.role && `is-${disc.role}`]}
+        style={`left:${pct(disc.p.x)};top:${pct(disc.p.y)}${disc.role ? '' : `;--t:${disc.t}ms`}`}
+        aria-hidden="true"
+      >
+        <SignIcon sign={disc.sign.slug} size={64} webpOnly />
+      </span>
+    ))}
+    <p class="pa-centre" aria-hidden="true">
+      <b>{angle.degrees}°</b>
+      <span>{angle.aspect}</span>
+    </p>
+  </div>
+
+  <div class="pa-words">
+    <p class="kicker">The angle between you</p>
+    <h2 class="h-2" id="pairangle-title">{angle.heading}</h2>
+    <p class="pa-lede">{angle.lede}</p>
+    <dl class="pa-facts">
+      <div>
+        <dt>Signs apart</dt>
+        <dd>{steps}<span>{same ? 'the same sign' : 'the shorter way round'}</span></dd>
+      </div>
+      <div>
+        <dt>Angle</dt>
+        <dd>{angle.degrees}°<span>{angle.share}</span></dd>
+      </div>
+      <div>
+        <dt>Elements</dt>
+        <dd>{angle.elements}<span>{angle.sharesElement ? 'shared' : 'not shared'}</span></dd>
+      </div>
+      <div>
+        <dt>Modalities</dt>
+        <dd>{angle.modalities}<span>{angle.sharesModality ? 'shared' : 'not shared'}</span></dd>
+      </div>
+    </dl>
+    <p class="pa-more">
+      <a class="textlink" href={angle.learn.href}>{angle.learn.label} <span class="arr" aria-hidden="true">→</span></a>
+    </p>
+    <p class="pa-source">Counted sign to sign, 30 degrees a sign. The exact angle between two Suns depends on the birth dates.</p>
+  </div>
+</section>
+
+<style>
+  .pairangle {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+    margin-top: clamp(48px, 6vw, 80px);
+    padding: clamp(28px, 4vw, 56px);
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: rgba(198, 204, 218, 0.02);
+  }
+
+  /* ── The wheel ───────────────────────────────────────────────── */
+  .pa-wheel { position: relative; width: 100%; max-width: 460px; aspect-ratio: 1; margin-inline: auto; }
+  .pa-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .pa-go { position: absolute; left: 0; top: 55%; width: 100%; height: 1px; pointer-events: none; }
+  .pa-bed { fill: none; stroke: var(--hair-1); stroke-width: 1; }
+  .pa-ring { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
+  .pa-tick { fill: none; stroke: var(--ink-2); stroke-width: 1.2; stroke-linecap: round; }
+  .pa-arc { fill: none; stroke-width: 6; stroke-linecap: butt; }
+  .pa-chord { fill: none; stroke-width: 2; stroke-linecap: round; }
+  /* The middle sits over the line, so the number always reads clean. */
+  .pa-hub { fill: #0a0b0d; stroke: var(--hair-2); stroke-width: 1; }
+  .pa-end--a { fill: var(--a); }
+  .pa-end--b { fill: var(--b); }
+  .pa-halo { fill: none; stroke: var(--a); stroke-width: 1.6; }
+
+  .pa-sign {
+    position: absolute;
+    width: 9.5%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+  }
+  .pa-sign.is-pair { width: 14%; opacity: 1; }
+  .pa-sign :global(.sign-icon), .pa-sign :global(img) { display: block; width: 100%; height: 100%; }
+
+  .pa-centre {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .pa-centre b {
+    font-family: var(--font-serif);
+    font-size: clamp(2.1rem, 1.3rem + 2.8vw, 3.1rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ink-0);
+    /* The degree sign hangs right; this keeps the digits on the centre line. */
+    padding-left: 0.18em;
+  }
+  .pa-centre span { font-size: 0.8125rem; color: var(--muted); }
+
+  /* ── The words ───────────────────────────────────────────────── */
+  .pa-words { min-width: 0; }
+  .pa-words .kicker { margin: 0 0 10px; color: var(--muted); }
+  .pa-words .h-2 { margin: 0; font-size: clamp(2rem, 1.5rem + 1.7vw, 2.8rem); line-height: 1.05; color: var(--ink-0); text-wrap: balance; }
+  .pa-lede { margin: 18px 0 0; max-width: 52ch; font-size: 1.0625rem; line-height: 1.66; color: var(--text-2); text-wrap: pretty; }
+  .pa-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 28px;
+    margin: 26px 0 0;
+    border-top: 1px solid var(--hair-2);
+  }
+  .pa-facts > div { padding: 16px 0 18px; border-bottom: 1px solid var(--hair-1); }
+  .pa-facts dt { font-size: 13px; font-weight: 500; color: var(--faint); }
+  .pa-facts dd { margin: 6px 0 0; font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.2; color: var(--ink-0); }
+  .pa-facts dd span { display: block; margin-top: 5px; font-family: var(--font-mono); font-size: 12px; letter-spacing: -0.01em; color: var(--muted); }
+  .pa-more { margin: 22px 0 0; }
+  .pa-source { margin: 14px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--faint); }
+
+  @media (max-width: 960px) {
+    .pairangle { grid-template-columns: minmax(0, 1fr); }
+    .pa-wheel { max-width: 400px; }
+  }
+  @media (max-width: 760px) {
+    .pairangle { margin-inline: -4px; padding: 22px 18px 24px; border-radius: 20px; gap: 26px; }
+    .pa-sign { width: 10.5%; }
+    .pa-sign.is-pair { width: 15%; }
+    .pa-facts dd { font-size: 1.15rem; }
+  }
+
+  /* ── The story: one pass, then still ─────────────────────────── */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    /* Waiting: nothing drawn, the ten rest dimmer, the pair not yet there. */
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-svg .pa-ring,
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-svg .pa-chord,
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-svg .pa-arc,
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-svg .pa-halo { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-svg .pa-tick { opacity: 0.2; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-svg .pa-end { opacity: 0; transform: scale(0.4); }
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-sign { opacity: 0.14; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-in) ~ .pa-sign.is-pair { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+
+    :global(html[data-entrance='on']) .pa-go ~ .pa-svg .pa-ring,
+    :global(html[data-entrance='on']) .pa-go ~ .pa-svg .pa-chord,
+    :global(html[data-entrance='on']) .pa-go ~ .pa-svg .pa-arc,
+    :global(html[data-entrance='on']) .pa-go ~ .pa-svg .pa-halo { stroke-dasharray: 1; }
+    :global(html[data-entrance='on']) .pa-go ~ .pa-svg .pa-end { transform-box: fill-box; transform-origin: center; }
+
+    /* Playing. The ring goes round in 900 ms and each of the ten lights as
+       it passes; the first sign arrives at 800 ms, the line runs from it from
+       1000 ms to 1700 ms, the second sign arrives as the line reaches it, and
+       the arc closes the pass by 2400 ms. */
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-ring { transition: stroke-dashoffset 900ms linear; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-tick { transition: opacity 300ms ease; transition-delay: var(--t); }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-sign { transition: opacity 360ms ease; transition-delay: var(--t); }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-sign.is-pair { transition: opacity 360ms ease, transform 440ms cubic-bezier(0.23, 1, 0.32, 1); }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-sign.is-a { transition-delay: 800ms; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-sign.is-b { transition-delay: 1560ms; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-end { transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 820ms; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-end--b { transition-delay: 1620ms; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-chord { transition: stroke-dashoffset 700ms cubic-bezier(0.45, 0, 0.25, 1); transition-delay: 1000ms; }
+    /* The closing beat: the angle's arc along the ring, or the ring round a same-sign pair's disc. */
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-arc { transition: stroke-dashoffset 550ms ease-out; transition-delay: 1850ms; }
+    :global(html[data-entrance='on']) .pa-go:not(.is-done) ~ .pa-svg .pa-halo { transition: stroke-dashoffset 800ms ease-out; transition-delay: 1150ms; }
+  }
+</style>
