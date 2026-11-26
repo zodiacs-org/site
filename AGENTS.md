@@ -71,6 +71,11 @@ an agent merge; agents never merge or re-run them by hand.
 - Never store or log users' birth details, and never put them in a URL.
   Links never carry a birth year, a birth time, a birthplace or the names
   you give; a birthday link carries only the month and day.
+- Dias approved the default-off Birthday Reminder design for a consenting
+  subscriber's email and birthday month and day, plus consent, rate-limit
+  and delivery records. Reminder logs carry counts only. Applying its
+  migration, changing its flags and the first real send each require
+  separate owner approval. [ZOD-23](https://linear.app/zodiacs-org/issue/ZOD-23/birthday-reminder-953-no-way-to-delete-for-up-to-a-year-no-daily-cap)
 - Children means under 13. Zodiacs is not directed at children under 13:
   collect nothing about a child under 13 (no name, birth date or
   birthplace), and give no reading for a named child under 13
