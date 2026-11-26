@@ -20,6 +20,7 @@ import GuideLoveClose from '../../components/guide/GuideLoveClose.astro';
 import GuidePlaces from '../../components/guide/GuidePlaces.astro';
 import GuidePlace from '../../components/guide/GuidePlace.astro';
 import GuideWhere from '../../components/guide/GuideWhere.astro';
+import SunYearPlate from '../../components/guide/SunYearPlate.astro';
 import programData from '../../data/horoscope-program.json';
 import { SIGNS, SIGN_SLUGS, signBySlug, ELEMENT_LABEL, MODALITY_LABEL } from '../../lib/signs';
 import { signDateRange, signTagline } from '../../lib/sign-display';
@@ -164,6 +165,8 @@ const jsonLd = [
       <SignGuideFacts facts={factRows} label={`${sign.name} essentials`} />
 
       <GuideHoroscopeBand signName={sign.name} slug={sign.slug} />
+
+      <SunYearPlate sign={sign.slug} now={new Date(`${editionDate}T12:00:00Z`)} />
 
       <div class="guide-read">
         <div class="guide-rail">

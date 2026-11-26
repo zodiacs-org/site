@@ -1,0 +1,284 @@
+---
+/**
+ * The Sun's year, on a sign guide: one ring is one year from the March
+ * equinox, and each sign takes the share of it the Sun spends there, to
+ * scale, from the same table the season pages read
+ * (src/data/sun-ingresses.json through src/lib/seasons/windows.ts).
+ *
+ * A story plate in the /thesis/ manner, played by the shared entrance
+ * runtime (docs/MOTION.md): the year line is drawn once round the ring, each
+ * sign lights as the line reaches it, this sign's season is drawn in its own
+ * hue when the line arrives there, and the closing beat joins the three
+ * signs of its element. The markup is the finished picture; the hidden
+ * states apply only while html[data-entrance="on"] and the plate's one mark
+ * (.sy-go, a 1px line across the middle of the ring, so the story starts
+ * when the ring is on screen and not at its first pixel) is still waiting.
+ * The words beside the ring never move. Opacity, transform and
+ * stroke-dashoffset only; the whole pass ends inside the runtime's 2.6 s.
+ */
+import SignIcon from '../SignIcon.astro';
+import { signBySlug, ELEMENT_LABEL } from '../../lib/signs';
+import { signSeasonFocus, sunSeasons } from '../../lib/seasons/windows';
+import { seasonDate, seasonUtcTime } from '../../lib/seasons/dates';
+
+interface Props {
+  sign: string;
+  /** The day the page is built for (the daily edition's date). */
+  now: Date;
+}
+
+const { sign: slug, now } = Astro.props;
+const sign = signBySlug(slug);
+const focus = signSeasonFocus(slug, now);
+const seasons = sunSeasons();
+
+// The year the ring shows: twelve seasons from the March equinox (the Sun's
+// entry into Aries) at or before this sign's season.
+const focusAt = focus ? seasons.findIndex((w) => w.sign === slug && w.start === focus.window.start) : -1;
+let first = -1;
+for (let i = focusAt; i >= 0; i -= 1) {
+  if (seasons[i].sign === 'aries') { first = i; break; }
+}
+const year = first >= 0 ? seasons.slice(first, first + 12) : [];
+const drawn = Boolean(focus) && year.length === 12;
+
+const C = 200;
+const R = 126;          // the year line
+const R_ICON = 168;     // the twelve sign discs
+const R_TRI = 112;      // the element triangle's corners
+const LINE_MS = 1500;   // the line's trip round the year
+const yearStart = drawn ? Date.parse(year[0].start) : 0;
+const yearEnd = drawn ? Date.parse(year[11].end) : 1;
+const fraction = (iso: string) => (Date.parse(iso) - yearStart) / (yearEnd - yearStart);
+const point = (f: number, r: number) => {
+  const a = (f * 360 - 90) * (Math.PI / 180);
+  return { x: C + r * Math.cos(a), y: C + r * Math.sin(a) };
+};
+const n = (value: number) => value.toFixed(2);
+
+const arcs = year.map((window) => {
+  const from = fraction(window.start);
+  const to = fraction(window.end);
+  const mid = (from + to) / 2;
+  const s = signBySlug(window.sign);
+  return { window, s, from, to, mid, icon: point(mid, R_ICON), tickIn: point(from, R - 5), tickOut: point(from, R + 5) };
+});
+const mine = arcs.find((arc) => arc.s.slug === slug);
+const family = arcs.filter((arc) => arc.s.element === sign.element);
+const mates = family.filter((arc) => arc.s.slug !== slug);
+
+const arcPath = (from: number, to: number, r: number) => {
+  const a = point(from, r);
+  const b = point(to, r);
+  return `M${n(a.x)} ${n(a.y)}A${r} ${r} 0 ${to - from > 0.5 ? 1 : 0} 1 ${n(b.x)} ${n(b.y)}`;
+};
+// The whole year as one stroke, clockwise from the top.
+const yearPath = `M${C} ${C - R}A${R} ${R} 0 1 1 ${n(C - 0.01)} ${C - R}`;
+const corners = family.map((arc) => point(arc.mid, R_TRI));
+const trianglePath = corners.length === 3
+  ? `M${corners.map((p) => `${n(p.x)} ${n(p.y)}`).join('L')}Z`
+  : '';
+
+const pct = (value: number) => `${(value / 4).toFixed(2)}%`;
+const ms = (f: number) => `${Math.round(f * LINE_MS)}ms`;
+const day = (iso: string) => seasonDate('en', iso, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const shortDay = (iso: string) => seasonDate('en', iso, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const lengths = arcs.map((arc) => (Date.parse(arc.window.end) - Date.parse(arc.window.start)) / 86_400_000);
+const length = mine ? (Date.parse(mine.window.end) - Date.parse(mine.window.start)) / 86_400_000 : 0;
+const lengthHours = Math.round(length * 24);
+const wholeDays = Math.floor(lengthHours / 24);
+const spareHours = lengthHours % 24;
+const longest = arcs[lengths.indexOf(Math.max(...lengths))];
+const shortest = arcs[lengths.indexOf(Math.min(...lengths))];
+const elementWord = ELEMENT_LABEL[sign.element].toLowerCase();
+const yearLabel = drawn
+  ? `${new Date(yearStart).getUTCFullYear()} to ${new Date(yearEnd).getUTCFullYear()}`
+  : '';
+const alt = drawn && mine
+  ? `A ring showing one year from the March equinox, divided into the twelve signs to scale. ${sign.name} runs from ${shortDay(mine.window.start)} to ${shortDay(mine.window.end)}. A triangle joins the three ${elementWord} signs: ${family.map((arc) => arc.s.name).join(', ')}.`
+  : '';
+---
+{drawn && mine && focus && (
+  <section class="sunyear" aria-labelledby="sunyear-title" style={`--sign:${sign.hue}`}>
+    <div class="sy-wheel" role="img" aria-label={alt}>
+      <span class="sy-go" data-enter="draw" aria-hidden="true"></span>
+      <svg class="sy-svg" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+        <circle class="sy-bed" cx={C} cy={C} r={R} />
+        <path class="sy-year" pathLength="1" d={yearPath} />
+        {arcs.map((arc) => (
+          <path class="sy-tick" style={`--t:${ms(arc.from)}`} d={`M${n(arc.tickIn.x)} ${n(arc.tickIn.y)}L${n(arc.tickOut.x)} ${n(arc.tickOut.y)}`} />
+        ))}
+        <path class="sy-family" pathLength="1" d={trianglePath} />
+        {mates.map((arc) => {
+          const p = point(arc.mid, R_TRI);
+          return <circle class="sy-mate" cx={n(p.x)} cy={n(p.y)} r="4" style={`--hue:${arc.s.hue}`} />;
+        })}
+        <path class="sy-season" pathLength="1" style={`--t:${ms(mine.from)}`} d={arcPath(mine.from, mine.to, R)} />
+        <circle class="sy-end sy-end--from" style={`--t:${ms(mine.from)}`} cx={n(point(mine.from, R).x)} cy={n(point(mine.from, R).y)} r="5" />
+        <circle class="sy-end sy-end--to" style={`--t:${ms(mine.to)}`} cx={n(point(mine.to, R).x)} cy={n(point(mine.to, R).y)} r="5" />
+      </svg>
+      {arcs.map((arc) => (
+        <span
+          class:list={['sy-sign', arc.s.slug === slug && 'is-me', arc.s.element === sign.element && 'is-family']}
+          style={`left:${pct(arc.icon.x)};top:${pct(arc.icon.y)};--t:${ms(arc.mid)}`}
+          aria-hidden="true"
+        >
+          <SignIcon sign={arc.s.slug} size={48} webpOnly />
+        </span>
+      ))}
+      <p class="sy-centre" aria-hidden="true">
+        <b>{length.toFixed(1)}</b>
+        <span>days in {sign.name}</span>
+      </p>
+    </div>
+
+    <div class="sy-words">
+      <p class="kicker">The Sun’s year, {yearLabel}</p>
+      <h2 class="h-2" id="sunyear-title">When the Sun is in {sign.name}</h2>
+      <p class="sy-lede">
+        The ring is one year, read clockwise from the March equinox. Each sign takes the share of the year the Sun
+        spends in it, so the twelve are close to equal and never exactly so.{' '}
+        {longest.s.name} is the longest season and {shortest.s.name} the shortest.
+      </p>
+      <dl class="sy-facts">
+        <div>
+          <dt>{focus.phase === 'under-way' ? 'Began' : 'Begins'}</dt>
+          <dd><time datetime={mine.window.start}>{day(mine.window.start)}<span>{seasonUtcTime(mine.window.start)} UTC</span></time></dd>
+        </div>
+        <div>
+          <dt>Ends</dt>
+          <dd><time datetime={mine.window.end}>{day(mine.window.end)}<span>{seasonUtcTime(mine.window.end)} UTC</span></time></dd>
+        </div>
+        <div>
+          <dt>Length</dt>
+          <dd>{wholeDays} days, {spareHours} {spareHours === 1 ? 'hour' : 'hours'}<span>about a twelfth of the year</span></dd>
+        </div>
+        <div>
+          <dt>{ELEMENT_LABEL[sign.element]} signs</dt>
+          <dd>{family.map((arc) => arc.s.name).join(', ')}<span>a third of the year apart</span></dd>
+        </div>
+      </dl>
+      <p class="sy-more">
+        <a class="textlink" href={`/seasons/${slug}/`}>{sign.name} season in your time zone <span class="arr" aria-hidden="true">→</span></a>
+      </p>
+      <p class="sy-source">Sun’s sign entries calculated by Zodiacs. Times in UTC.</p>
+    </div>
+  </section>
+)}
+
+<style>
+  .sunyear {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+    margin-top: clamp(56px, 6vw, 88px);
+    padding: clamp(28px, 4vw, 56px);
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: rgba(198, 204, 218, 0.02);
+  }
+
+  /* ── The ring ────────────────────────────────────────────────── */
+  .sy-wheel { position: relative; width: 100%; max-width: 460px; aspect-ratio: 1; margin-inline: auto; }
+  .sy-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .sy-go { position: absolute; left: 0; top: 55%; width: 100%; height: 1px; pointer-events: none; }
+  .sy-bed { fill: none; stroke: var(--hair-1); stroke-width: 1; }
+  .sy-year { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
+  .sy-tick { fill: none; stroke: var(--ink-2); stroke-width: 1.2; stroke-linecap: round; }
+  .sy-season { fill: none; stroke: var(--sign); stroke-width: 7; stroke-linecap: butt; }
+  .sy-end { fill: var(--sign); }
+  .sy-family { fill: none; stroke: var(--sign); stroke-width: 1.2; stroke-linejoin: round; opacity: 0.7; }
+  .sy-mate { fill: var(--hue); }
+
+  .sy-sign {
+    position: absolute;
+    width: 9.5%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    opacity: 0.45;
+  }
+  .sy-sign.is-family { opacity: 1; }
+  .sy-sign.is-me { width: 14%; }
+  .sy-sign :global(.sign-icon), .sy-sign :global(img) { display: block; width: 100%; height: 100%; }
+
+  .sy-centre {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .sy-centre b {
+    font-family: var(--font-serif);
+    font-size: clamp(2.4rem, 1.4rem + 3.4vw, 3.6rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ink-0);
+  }
+  .sy-centre span { font-size: 0.8125rem; color: var(--muted); }
+
+  /* ── The words ───────────────────────────────────────────────── */
+  .sy-words { min-width: 0; }
+  .sy-words .kicker { margin: 0 0 10px; color: var(--muted); }
+  .sy-words .h-2 { margin: 0; font-size: clamp(2rem, 1.5rem + 1.7vw, 2.8rem); line-height: 1.05; color: var(--ink-0); }
+  .sy-lede { margin: 18px 0 0; max-width: 52ch; font-size: 1.0625rem; line-height: 1.66; color: var(--text-2); text-wrap: pretty; }
+  .sy-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 28px;
+    margin: 26px 0 0;
+    border-top: 1px solid var(--hair-2);
+  }
+  .sy-facts > div { padding: 16px 0 18px; border-bottom: 1px solid var(--hair-1); }
+  .sy-facts dt { font-size: 13px; font-weight: 500; color: var(--faint); }
+  .sy-facts dd { margin: 6px 0 0; font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.2; color: var(--ink-0); }
+  .sy-facts dd span { display: block; margin-top: 5px; font-family: var(--font-mono); font-size: 12px; letter-spacing: -0.01em; color: var(--muted); }
+  .sy-more { margin: 22px 0 0; }
+  .sy-source { margin: 14px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--faint); }
+
+  @media (max-width: 960px) {
+    .sunyear { grid-template-columns: minmax(0, 1fr); }
+    .sy-wheel { max-width: 400px; }
+  }
+  @media (max-width: 760px) {
+    .sunyear { margin-inline: -4px; padding: 22px 18px 24px; border-radius: 20px; gap: 26px; }
+    .sy-sign { width: 10.5%; }
+    .sy-sign.is-me { width: 15%; }
+    .sy-facts dd { font-size: 1.15rem; }
+  }
+
+  /* ── The story: one pass, then still ─────────────────────────── */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    /* Waiting: the line is not yet drawn, the twelve rest dim. */
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-year,
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-season,
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-family { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-tick { opacity: 0.2; }
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-end,
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-svg .sy-mate { opacity: 0; transform: scale(0.4); }
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-sign { opacity: 0.14; }
+    :global(html[data-entrance='on']) .sy-go:not(.is-in) ~ .sy-sign.is-me { opacity: 0.14; transform: translate(-50%, -50%) scale(0.6); }
+
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-year,
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-season,
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-family { stroke-dasharray: 1; }
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-end,
+    :global(html[data-entrance='on']) .sy-go ~ .sy-svg .sy-mate { transform-box: fill-box; transform-origin: center; }
+
+    /* Playing: every delay is the moment the year line reaches that date. */
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-year { transition: stroke-dashoffset 1500ms linear; }
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-tick { transition: opacity 300ms ease; transition-delay: var(--t); }
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-sign { transition: opacity 360ms ease, transform 440ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: var(--t); }
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-season { transition: stroke-dashoffset 420ms ease-out; transition-delay: var(--t); }
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-end { transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: var(--t); }
+    /* The closing beat: the element's triangle, then its two other corners. */
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-family { transition: stroke-dashoffset 600ms ease-out; transition-delay: 1560ms; }
+    :global(html[data-entrance='on']) .sy-go:not(.is-done) ~ .sy-svg .sy-mate { transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 2060ms; }
+  }
+</style>
