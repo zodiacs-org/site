@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Motion from '../../components/Motion.astro';
 import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
+import FullMoonYearPlate from '../../components/sky/FullMoonYearPlate.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -69,6 +70,11 @@ const status = next
   : 'Later full moon dates are not available yet.';
 
 const asOf = formatShortDate('en', buildNow);
+
+// The plate shows the calendar year of the same "as of" date, inside the
+// years the table lists.
+const plateYear = Math.min(Math.max(buildNow.getUTCFullYear(), firstYear), lastYear);
+const plateSigns = Object.fromEntries(fulls.map((f) => [f.at.toISOString(), f.sign.slug]));
 
 const faq = [
   {
@@ -174,6 +180,8 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  <FullMoonYearPlate year={plateYear} signs={plateSigns} />
 
   {years.map((year) => (
     <section class="section--tight container container--narrow">
