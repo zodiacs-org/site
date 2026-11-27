@@ -1,9 +1,11 @@
+// First: the hosted runtime calculates on JPL DE440 (src/lib/engine/server-de440.mjs).
+import '../lib/engine/server-de440.mjs';
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
 import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, GOOD_DAYS_SWITCH_ENV, GOOD_DAYS_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
 import { createAiServer } from './server';
-import { describeDe440Tools } from './de440-contract';
+import { DE440_HEALTH_ROUTE, de440Health, describeDe440Tools } from './de440-contract';
 import { AGE_FIRST_TOOLS, ageFirstRefusal, coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { configuredStagingHost } from '../lib/staging-host';
@@ -142,12 +144,18 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const allowedKey = (key: string) => key === AI_ROUTE_PARAM || extraKeys.includes(key);
     if ([...rawQuery.keys()].some(key => !allowedKey(key)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || extraKeys.some(key => rawQuery.getAll(key).length > 1)) return send(res, 400, 'invalid-query');
     const query = req.query ?? Object.fromEntries(rawQuery);
-    const protocolRoutes = options.de440 ? ['1', 'de440', 'health'] : ['1', 'health'];
+    const protocolRoutes = options.de440 ? ['1', 'de440', 'health', DE440_HEALTH_ROUTE] : ['1', 'health'];
     if (Object.keys(query).some(key => !allowedKey(key)) || (query[AI_ROUTE_PARAM] !== undefined && ![...protocolRoutes, ...(accountsOn ? ACCOUNT_ROUTES : [])].includes(query[AI_ROUTE_PARAM]))) return send(res, 400, 'invalid-query');
     if (query.authorization_id !== undefined && (typeof query.authorization_id !== 'string' || !/^[A-Za-z0-9_-]{8,256}$/.test(query.authorization_id))) return send(res, 400, 'invalid-query');
     const accountRoute = accountsOn && ACCOUNT_ROUTES.includes(query[AI_ROUTE_PARAM]);
     if (accountRoute && method !== 'GET') { res.setHeader('Allow', 'GET'); return send(res, 405, 'method-not-allowed'); }
-    if (method !== 'POST' && !(method === 'GET' && (query[AI_ROUTE_PARAM] === 'health' || accountRoute))) {
+    // The status check takes GET: /mcp/health, and on the DE440 route /mcp/de440/health.
+    const de440HealthRoute = options.de440 === true && query[AI_ROUTE_PARAM] === DE440_HEALTH_ROUTE;
+    if (de440HealthRoute && method !== 'GET') {
+      res.setHeader('Allow', 'GET, OPTIONS'); return send(res, 405, 'method-not-allowed');
+    }
+    const healthRoute = query[AI_ROUTE_PARAM] === 'health' || de440HealthRoute;
+    if (method !== 'POST' && !(method === 'GET' && (healthRoute || accountRoute))) {
       res.setHeader('Allow', 'POST, OPTIONS'); return send(res, 405, 'method-not-allowed');
     }
     if (env[AI_SWITCH_ENV] !== '1') return send(res, 503, 'disabled', 3600);
@@ -196,7 +204,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     if (method === 'GET') {
       verdict = await countRequest(); if (verdict !== 'allowed') return refuse(verdict);
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
-      res.end(JSON.stringify({ service: 'zodiacs-mcp', version: AI_VERSION, transport: 'stateless-streamable-http', ready: true })); return;
+      res.end(JSON.stringify(options.de440 ? de440Health() : { service: 'zodiacs-mcp', version: AI_VERSION, transport: 'stateless-streamable-http', ready: true })); return;
     }
     const contentType = req.headers?.['content-type'];
     if (typeof contentType !== 'string' || !/^application\/json(?:\s*;\s*charset\s*=\s*(?:utf-8|"utf-8"))?\s*$/i.test(contentType) || (req.headers?.['content-encoding'] && req.headers['content-encoding'] !== 'identity')) return send(res, 415, 'unsupported-media-type');
@@ -271,7 +279,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     // Those switches are this deployment's, so on the staging host the links go to the staging site, never to zodiacs.org,
     // whose own switch may be off.
     if (personal && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
-    const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
+    const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account, { de440: Boolean(options.de440) }), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();
       for (const key of ['content-type', 'accept', 'mcp-protocol-version', 'mcp-session-id', 'mcp-method', 'mcp-name']) {
