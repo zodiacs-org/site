@@ -339,7 +339,7 @@ const jsonLd = [
     <div class="prose">
       <ul>
         <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> and <code>/calc</code> entry points{vedicInUse ? '' : ', which this site does not use'}. The core has no topocentric parallax; <code>/calc</code> offers a topocentric center.</li>
-        <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
+        <li>The core chart calculator covers Sun through Pluto and the true nodes; the site's chart calculator omits Chiron and the asteroids. The separate <code>@zodiacs/engine/minor-bodies</code> entry point exposes Chiron, Ceres, Pallas, Juno, and Vesta over 1800 to 2200 TT from tables fitted to NASA JPL Horizons.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
         <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>

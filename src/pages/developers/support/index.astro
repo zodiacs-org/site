@@ -80,9 +80,9 @@ const engineRows = [
           <p>
             This revision vendors the {candidate.version} archive below. Its bytes
             match both the verified npm tarball and the engine repository carrier,
-            and passed clean-consumer checks on Node 22 and 24. This archive
-            identifies the local package; hosted data and widgets are separate
-            deployments.
+            passed parity checks on Node 22 and 24, and passed a clean-consumer
+            install check on Node 22. This archive identifies the local package;
+            hosted data and widgets are separate deployments.
           </p>
         </>
       ) : (
@@ -90,9 +90,9 @@ const engineRows = [
           <p>
             This revision vendors the {candidate.version} archive below, a release
             candidate that is not on npm. Its bytes match the engine repository
-            carrier, and it passed clean-consumer checks on Node 22 and 24. This
-            archive identifies the local package; hosted data and widgets are
-            separate deployments.
+            carrier, passed parity checks on Node 22 and 24, and passed a
+            clean-consumer install check on Node 22. This archive identifies the
+            local package; hosted data and widgets are separate deployments.
           </p>
           <p>
             The verified registry read of {candidate.registryObservedOn} records{' '}

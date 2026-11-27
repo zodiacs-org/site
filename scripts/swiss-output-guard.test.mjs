@@ -71,8 +71,21 @@ const KEPT_POLICIES = new Map([
 const KEPT_LICENSING = new Map([
   ['public/developers/engine/reference/release/LICENSING.txt', '683edeab04a404d2a82597939ff9ce5bb9c18714d09026d2a0d292e009829ca9'],
 ]);
-const quotesKeptLicensing = (where, line) => where === 'docs/claims/ledger.json'
-  && [...KEPT_LICENSING.keys()].some((path) => line.trimStart().startsWith(`${JSON.stringify({ path }).slice(0, -1)},"text":`));
+const KEPT_LICENSING_PUBLISHER = ['Astrodienst', 'AG'].join(' ');
+const KEPT_LICENSING_QUOTE = JSON.stringify(
+  `One public precedent is the Swiss Ephemeris of ${KEPT_LICENSING_PUBLISHER}, first released in 1997, whose ephemeris files (the .se1 files its users install) its own page describes as "largely based upon the DExxx ephemerides from NASA's JPL", data "further compressed with sophisticated compression techniques developed by Astrodienst", and which it licenses under the GNU Affero General Public License or its paid Swiss Ephemeris Professional License (https://www.astro.com/swisseph/swephinfo_e.htm, read 2026-11-26).`,
+);
+const quotesKeptLicensing = (where, line, match, matchColumn) => {
+  if (where !== 'docs/claims/ledger.json' || match[0] !== KEPT_LICENSING_PUBLISHER) return false;
+  return [...KEPT_LICENSING.keys()].some((path) => {
+    const prefix = `${JSON.stringify({ path }).slice(0, -1)},"text":`;
+    const start = line.indexOf(prefix);
+    if (start < 0 || !line.slice(start + prefix.length).startsWith(`${KEPT_LICENSING_QUOTE},`)) return false;
+    const textStart = start + prefix.length;
+    const textEnd = textStart + KEPT_LICENSING_QUOTE.length;
+    return matchColumn >= textStart && matchColumn + match[0].length <= textEnd;
+  });
+};
 /** The conformance suite's summary names the pyswisseph run it measured; that run may carry statistics only. */
 const CONFORMANCE = 'src/data/conformance/summary.json';
 /**
@@ -149,8 +162,9 @@ function scan() {
     }
     const keptLicensing = !entry.member && KEPT_LICENSING.get(entry.path) === sha256(entry.bytes);
     for (const match of keptLicensing ? [] : text.matchAll(SOURCE)) {
-      const line = text.slice(text.lastIndexOf('\n', match.index) + 1, (text.indexOf('\n', match.index) + 1 || text.length + 1) - 1);
-      if (!quotesKeptLicensing(where, line)) found.source.push(`${where}:${lineAt(text, match.index)}`);
+      const lineStart = text.lastIndexOf('\n', match.index) + 1;
+      const line = text.slice(lineStart, (text.indexOf('\n', match.index) + 1 || text.length + 1) - 1);
+      if (!quotesKeptLicensing(where, line, match, match.index - lineStart)) found.source.push(`${where}:${lineAt(text, match.index)}`);
     }
     if (entry.name.endsWith('.json') && text.includes('aloistr/swisseph')) {
       try {
