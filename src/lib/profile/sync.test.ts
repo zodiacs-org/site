@@ -1,5 +1,5 @@
 import { AuthSessionMissingError } from '@supabase/supabase-js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const auth = vi.hoisted(() => ({
   getSession: vi.fn(),
@@ -38,13 +38,40 @@ import {
   syncNow,
 } from './sync';
 
+const BIRTH_DATE = '1990-01-01';
+const PLACE = 'London';
+const LAT = 51.5;
+const LON = -0.1278;
+
 function savedChart(id: string, updatedAt: string) {
   return {
     id, name: 'Fixture', relationship: 'self', createdAt: updatedAt, updatedAt,
-    birth: { date: '1990-01-01', time: '12:00', timeKnown: true, place: { name: 'London', admin1: '', country: 'GB', lat: 51.5, lon: 0, tz: 'Europe/London' } },
-    summary: { engineVersion: '0.1.0', utcISO: '1990-01-01T12:00:00Z', houseSystem: 'whole', bodies: [], angles: null, flags: [] },
+    birth: { date: BIRTH_DATE, time: '12:00', timeKnown: true, place: { name: PLACE, admin1: '', country: 'GB', lat: LAT, lon: LON, tz: 'Europe/London' } },
+    summary: { engineVersion: '0.1.0', utcISO: `${BIRTH_DATE}T12:00:00Z`, houseSystem: 'whole', bodies: [], angles: null, flags: [] },
   };
 }
+
+// Keys that only a chart carries. A write may send `id` and `settings.houseSystem`, never these.
+const CHART_KEYS = ['birth', 'summary', 'utcISO', 'date', 'time', 'timeKnown', 'place', 'lat', 'lon', 'tz', 'name', 'bodies', 'angles'];
+
+/** Every object key and every leaf value in what the writes would send, however deeply nested. */
+function walkSent(value: unknown, keys: string[] = [], leaves: unknown[] = []): { keys: string[]; leaves: unknown[] } {
+  if (Array.isArray(value)) {
+    for (const item of value) walkSent(item, keys, leaves);
+  } else if (value !== null && typeof value === 'object') {
+    for (const [key, item] of Object.entries(value)) {
+      keys.push(key);
+      walkSent(item, keys, leaves);
+    }
+  } else {
+    leaves.push(value);
+  }
+  return { keys, leaves };
+}
+
+// The profile upsert stamps updated_at from the clock. The clock is pinned so that stamp is
+// known exactly and is the one value the guards below set aside.
+const SYNC_NOW = new Date('2026-11-27T13:00:00.000Z');
 
 describe('chart sync is paused: read and delete only', () => {
   const kept = '11111111-1111-4111-8111-111111111111';
@@ -54,6 +81,11 @@ describe('chart sync is paused: read and delete only', () => {
   beforeEach(() => {
     fake.client = null;
     device.replaced = null;
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(SYNC_NOW);
+  });
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('reads and merges the account, removes deleted charts, and never sends a chart', async () => {
@@ -76,7 +108,15 @@ describe('chart sync is paused: read and delete only', () => {
     const writes = db.requests.filter((request) => request.op !== 'select');
     expect(writes.filter((request) => request.table === 'charts' && request.op !== 'delete')).toEqual([]);
     expect(writes.map((request) => `${request.table}:${request.op}`).sort()).toEqual(['chart_deletions:upsert', 'charts:delete', 'profiles:upsert']);
-    expect(JSON.stringify(writes)).not.toMatch(/1990-01-01|London|51\.5|"birth"|"summary"|utcISO/u);
+    // The clock's stamp is set aside before any substring check: its digits are not a birth detail.
+    const stamp = SYNC_NOW.toISOString();
+    const { keys, leaves } = walkSent(writes);
+    expect(leaves).toContain(stamp);
+    const sent = leaves.filter((leaf) => leaf !== stamp);
+    expect(keys.filter((key) => CHART_KEYS.includes(key))).toEqual([]);
+    expect(sent.filter((leaf) => leaf === LAT || leaf === LON || leaf === String(LAT) || leaf === String(LON))).toEqual([]);
+    expect(sent.filter((leaf) => typeof leaf === 'string' && (leaf.includes(BIRTH_DATE) || leaf.includes(PLACE)))).toEqual([]);
+    expect(JSON.stringify(writes).replaceAll(JSON.stringify(stamp), '"<now>"')).not.toMatch(/1990-01-01|London|51\.5|-?0\.1278|"birth"|"summary"|utcISO/u);
     expect(writes.find((request) => request.table === 'chart_deletions')!.payload).toEqual([
       { id: removed, user_id: '22222222-2222-4222-8222-222222222222', deleted_at: '2026-11-02T00:00:00Z' },
     ]);
