@@ -1579,6 +1579,7 @@
     {"path":"src/ai-tools/contracts.ts","text":"Nothing is stored.","claim":"priv.ai-occasion-tools"},
     {"path":"src/ai-tools/contracts.ts","text":"Resolves the name of a town or city to a region, a country, coordinates rounded to two decimals, an IANA time zone and the UTC offset for an optional date, historical daylight saving included. get_natal_chart, get_personal_transits, get_compatibility and get_occasion_sky take those coordinates and that time zone.","claim":"time.cities"},
     {"path":"src/ai-tools/contracts.ts","text":"The longitude field is for historical dates when a birthplace kept local mean time, and has no use for a modern birthday.","claim":"time.birthplace-lmt"},
+    {"path":"src/ai-tools/de440-contract.ts","text":"Zodiacs (JPL DE440, engine ${…})","claim":"product.engine-package"},
     {"path":"src/ai-tools/features/birthday.ts","text":"Use only for historical birth dates when the birthplace used local mean time, to convert its clock to UTC.","claim":"time.birthplace-lmt"},
     {"path":"src/ai-tools/features/birthplace.ts","text":"Nothing is stored.","claim":"priv.ai-coverage-tools"},
     {"path":"src/ai-tools/features/birthplace.ts","text":"The name is not sent anywhere, and nothing is stored.","claim":"priv.ai-coverage-tools"},
