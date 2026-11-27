@@ -390,6 +390,13 @@ const CONVENTIONS_LASTMOD = '2026-10-27';
 const CONVENTIONS_ROUTES = ['/developers/conventions/', '/developers/', '/developers/conformance/'] as const;
 // Engine 1.1.0-rc.1 adopted 2026-10-27; the routes are listed where it is applied, last.
 const ENGINE_110_RC1_LASTMOD = '2026-10-27';
+// Engine 3.0.0 adopted 2026-11-26, a vendored candidate with DE440 installed on the server, and MCP adapter
+// 0.1.0-rc.30: the developer pages that name the engine, its release state or the adapter, and the guides.
+const ENGINE_300_LASTMOD = '2026-11-26';
+const ENGINE_300_ROUTES = [
+  '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/', '/developers/conventions/',
+  '/developers/demo/', '/developers/engine/', '/developers/mcp/', '/developers/playground/', '/developers/support/',
+] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -833,6 +840,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/', '/developers/compute/', '/developers/conventions/', '/developers/mcp/'].map(
     (loc) => [loc, '2026-11-25'] as const,
   ),
+  // Engine 3.0.0 and MCP adapter 0.1.0-rc.30 (ENGINE_300_ROUTES and the guides), last so it wins.
+  ...[...ENGINE_300_ROUTES, ...DEVELOPER_GUIDES_ROUTES].map((loc) => [loc, ENGINE_300_LASTMOD] as const),
   // What an unknown birth time does to the Moon's sign (UNKNOWN_TIME_MOON_ROUTES), last so it wins.
   ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.

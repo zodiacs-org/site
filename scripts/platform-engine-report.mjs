@@ -5,6 +5,7 @@
 // (docs/platform/programme/DECISIONS-2026-09-28.md §3). Reports made before
 // then measured against Swiss Ephemeris and name its fixture's digest.
 // Never regenerates reference values or changes predeclared acceptance limits.
+import '../src/lib/engine/server-de440.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';

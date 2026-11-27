@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import '../src/lib/engine/server-de440.mjs';
 import { createHash, randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import {

@@ -1,4 +1,5 @@
 /** Fail-closed physics and schema audit for one committed transit month. */
+import '../src/lib/engine/server-de440.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { readdir } from 'node:fs/promises';

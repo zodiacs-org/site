@@ -17,6 +17,7 @@
  *
  *   npx vite-node --script scripts/calibrate-year-score.ts
  */
+import '../src/lib/engine/server-de440.mjs';
 import { bodyLongitude, computeBodies } from '../src/lib/engine/full';
 import {
   MONTH_SCORE_SCALE,

@@ -96,7 +96,7 @@ const jsonLd = [
       </p>
       <p>
         ESM, TypeScript declarations included, for Node.js 20.19 or a later
-        20.x, Node.js 22.7 and newer, or any browser with a bundler. The code
+        20.x, Node.js 22.12 and newer, or any browser with a bundler. The code
         is MIT; the package is MIT and CC BY 4.0 together, because its ΔT
         module carries 32 values from Stephenson, Morrison and Hohenkerk's
         Table S15, which are CC BY 4.0. It also carries time data: the IERS
@@ -171,18 +171,16 @@ const jsonLd = [
       {!published && (
         <p>
           On npm, the registry read of {candidate.registryObservedOn}{' '}
-          records {candidate.registryVersion} under <code>latest</code> and
-          0.1.1-rc.16 under <code>next</code>.{' '}
+          records {candidate.registryVersion} under <code>latest</code>.{' '}
           <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
           installs {candidate.registryVersion}, the release before this candidate.
-          It computes the same values, but its records list no ids of the{' '}
-          <a href="/developers/conventions/">conventions registry</a>, and it
-          refuses this candidate's records as <code>unsupported_feature</code>.
+          It reads this candidate's records, and computes on its DE440 pack by
+          default, where this candidate computes on Astronomy Engine until{' '}
+          <code>useDe440()</code> installs the same pack.
           It was published from the engine repository's <code>release.yml</code>{' '}
           workflow with SLSA provenance, which names the source repository, the
           workflow and the commit the package was built from, and{' '}
-          <code>npm audit signatures</code> verified it on 11 October 2026 and
-          again on {candidate.registryObservedOn}.
+          <code>npm audit signatures</code> verified it on {candidate.registryObservedOn}.
         </p>
       )}
       <p>
@@ -284,8 +282,10 @@ const jsonLd = [
       <p>
         In the browser engine's comparison with NASA JPL Horizons at two dates,
         1907 and 2020, the largest difference is 14.8 arcseconds (Neptune, 2020).
-        The default DE440 calculation was compared with live NASA JPL
-        Horizons DE441. Across the 160 measurements from 1801 to 2026, the
+        The DE440 calculation, which the engine uses once{' '}
+        <code>useDe440()</code> installs its pack, as the site's server does,
+        was compared with live NASA JPL Horizons DE441. Across the 160
+        measurements from 1801 to 2026, the
         median disagreement in ecliptic longitude was <strong>0.05 arcseconds</strong>{' '}
         and the largest was <strong>0.53 arcseconds</strong>. Across 91,201
         comparisons sampled every tenth day through 2026, the median was

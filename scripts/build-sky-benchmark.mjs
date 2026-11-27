@@ -46,6 +46,7 @@
  * from today's. A change in the engine or in these rules is a new version in
  * a new folder (raise VERSION), and v0 stays as it is.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

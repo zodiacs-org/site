@@ -1,3 +1,5 @@
+// First: the hosted runtime calculates on JPL DE440 (src/lib/engine/server-de440.mjs).
+import '../lib/engine/server-de440.mjs';
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';

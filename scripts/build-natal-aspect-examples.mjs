@@ -1,3 +1,4 @@
+import '../src/lib/engine/server-de440.mjs';
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';

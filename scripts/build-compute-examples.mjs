@@ -11,6 +11,7 @@
  * tests/api/compute-api-openapi.test.ts fails while the committed file
  * differs from what the handler answers.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
