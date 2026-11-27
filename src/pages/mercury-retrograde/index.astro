@@ -4,13 +4,14 @@ import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import Motion from '../../components/Motion.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
+import MercuryYearPlate from '../../components/sky/MercuryYearPlate.astro';
 import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
-import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
 import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
+import { mercuryRetrogradeWindows, mercuryYearShown, type RawRetrograde } from '../../lib/mercury-year';
 
 // The years the committed table covers (sky.json runs to the start of its
 // last year plus one), so the copy names the span the table lists.
@@ -26,21 +27,16 @@ const sources = [
   { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
   { label: 'IANA Time Zone Database', href: 'https://www.iana.org/time-zones' },
 ];
-const windows = (sky.retrogrades as { planet: string; from: string; to: string | null }[])
-  .filter((r) => r.planet === 'Mercury')
-  .map((r) => {
-    const from = new Date(r.from);
-    const to = r.to ? new Date(r.to) : null;
-    const fmt = (d: Date) => formatShortDate('en', d);
-    return {
-      from,
-      to,
-      label: `${fmt(from)} to ${to ? fmt(to) : 'ongoing'}`,
-      stationRx: formatLongitude(bodyLongitude('Mercury', from)),
-      stationDirect: to ? formatLongitude(bodyLongitude('Mercury', to)) : null,
-      state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
-    };
-  });
+// The table's rows (window label and station positions), built once in
+// src/lib/mercury-year.ts so the plate above the table prints the same strings.
+const mercuryLongitude = (d: Date) => bodyLongitude('Mercury', d);
+const rows = mercuryRetrogradeWindows(sky.retrogrades as RawRetrograde[], mercuryLongitude);
+const windows = rows.map((w) => ({
+  ...w,
+  state: w.to && w.to < buildNow ? 'past' : w.from > buildNow ? 'upcoming' : 'active',
+}));
+// The plate shows the calendar year of the same "now" as the box above it.
+const plateYear = mercuryYearShown(buildNow, sky.from, sky.to);
 const upcomingWindows = windows.filter((window) =>
   window.from <= eventHorizon && (!window.to || window.to >= buildNow));
 
@@ -168,6 +164,8 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  <MercuryYearPlate year={plateYear} windows={rows} longitude={mercuryLongitude} data={{ from: sky.from, to: sky.to }} />
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">

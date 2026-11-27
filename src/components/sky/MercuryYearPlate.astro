@@ -1,0 +1,207 @@
+---
+/**
+ * Mercury's year, on the Mercury retrograde page: one calendar year (UTC) to
+ * scale left to right, Mercury's longitude unwrapped up the page so the line
+ * climbs all year through the twelve signs, and folds back at each
+ * retrograde. The retrograde stretches are drawn bright, each station gets a
+ * dot, and each retrograde's shadow (the degrees Mercury crosses three
+ * times) is a faint box whose corners lie on the line
+ * (src/lib/mercury-year.ts).
+ *
+ * The windows, their labels and their station positions are the page table's
+ * own rows (mercuryRetrogradeWindows), so the picture and the table print
+ * the same strings. The longitudes are build-time bodyLongitude values passed
+ * in by the page; nothing here runs in the browser.
+ *
+ * A story plate in the /thesis/ manner, after FullMoonYearPlate, played by
+ * the shared entrance runtime (docs/MOTION.md): the line draws through the
+ * year at one speed in time (many short strokes, each given its share of the
+ * year as its delay and duration), and the closing beat brings in the
+ * station dots, the date labels and then the shadows. The markup is the
+ * finished picture; the hidden states apply only while
+ * html[data-entrance="on"] and the plate's one mark (.my-go, a 1px line
+ * across the middle of the figure) is still waiting. The words never move.
+ * Opacity, transform and stroke-dashoffset only; the pass ends at 2.5 s,
+ * inside the runtime's 2.6 s.
+ *
+ * Wide screens and phones get two drawings of the same data. Inline SVG, no
+ * images. The mono face it uses is the one the page's table already loads.
+ */
+import { LINE_MS, NARROW, WIDE, mercuryYear, mercuryYearPlot, type Longitude, type MercuryWindow, type YearWindow } from '../../lib/mercury-year';
+import { signBySlug } from '../../lib/signs';
+import { formatDate } from '../../lib/i18n/dates';
+
+interface Props {
+  year: number;
+  /** The page table's rows (mercuryRetrogradeWindows). */
+  windows: MercuryWindow[];
+  /** Mercury's longitude at a date, evaluated at build time. */
+  longitude: Longitude;
+  /** The span the sky data covers. */
+  data: { from: string; to: string };
+}
+
+const { year, windows, longitude, data } = Astro.props;
+const view = mercuryYear(year, windows, longitude, data);
+const wide = view ? mercuryYearPlot(view, WIDE) : null;
+const narrow = view ? mercuryYearPlot(view, NARROW) : null;
+
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+const TIMES = ['no times', 'once', 'twice', 'three times', 'four times', 'five times'];
+const listJoin = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')}${items.length > 2 ? ',' : ''} and ${items[items.length - 1]}`);
+// Long dates for the sentence, with the year only where it is not the year shown.
+const day = (t: number) => {
+  const d = new Date(t);
+  const base = formatDate('en', d, { month: 'long', day: 'numeric', timeZone: 'UTC' });
+  return d.getUTCFullYear() === year ? base : `${base}, ${d.getUTCFullYear()}`;
+};
+const signNames = (w: YearWindow) => listJoin(w.signs.map((slug) => signBySlug(slug).name));
+const span = (w: YearWindow) => `${day(w.from)} to ${day(w.to)} in ${signNames(w)}`;
+
+const yearStart = Date.UTC(year, 0, 1);
+const carried = view ? view.windows.filter((w) => w.from < yearStart) : [];
+const turns = view ? view.windows.filter((w) => w.from >= yearStart) : [];
+const days = view ? Math.round(view.retrogradeDays) : 0;
+const lede = view
+  ? `${carried.length
+    ? `Mercury begins ${year} retrograde, until ${day(carried[0].to)}, and turns retrograde ${TIMES[turns.length] ?? `${turns.length} times`} more: ${listJoin(turns.map(span))}.`
+    : `Mercury turns retrograde ${TIMES[turns.length] ?? `${turns.length} times`} in ${year}: ${listJoin(turns.map(span))}.`} That is ${days} days retrograde in all, counted station to station.`
+  : '';
+const heading = view ? `Mercury’s ${WORDS[view.windows.length] ?? view.windows.length} retrogrades in ${year}` : '';
+const key = 'Up is Mercury’s place in the zodiac, left to right is the year. The bright stretches are the retrogrades, with a dot at each station. The faint box round each one is its shadow: the degrees Mercury crosses three times, forward, back and forward again.';
+const alt = view
+  ? `Mercury’s position in the zodiac through ${year}, climbing all year and stepping back ${TIMES[view.windows.length] ?? `${view.windows.length} times`}. Retrograde ${listJoin(view.windows.map(span))}.`
+  : '';
+const titleId = `mercyear-${year}-title`;
+
+const n = (v: number) => v.toFixed(1);
+// The closing beat, after the line (LINE_MS): station dots, then labels, then shadows.
+const DOTS_AT = LINE_MS + 40;
+const LABELS_AT = LINE_MS + 180;
+const SHADOWS_AT = LINE_MS + 400;
+const STEP = 60;
+
+// The plate's styles travel in the body, just before its markup, as one
+// inline block, so they never join the page's head stylesheets (see
+// SunYearPlate). Every class is my- prefixed; .mercyear leads the rules that
+// reach the site's .kicker and .h-2.
+const styles = `
+.my-plate { margin-top: clamp(8px, 2vw, 24px); padding: clamp(24px, 4vw, 44px); border: 1px solid var(--hair-1); border-radius: var(--r-xl); background: rgba(198, 204, 218, 0.02); }
+.mercyear .my-plate .kicker { margin: 0 0 10px; color: var(--muted); }
+.mercyear .my-plate .h-2 { margin: 0; font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem); line-height: 1.06; color: var(--ink-0); }
+.my-lede { margin: 16px 0 0; max-width: 62ch; font-size: 1.0625rem; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
+.my-figure { position: relative; margin: clamp(22px, 3vw, 32px) 0 0; }
+.my-go { position: absolute; left: 0; top: 50%; width: 100%; height: 1px; pointer-events: none; }
+.my-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.my-svg--wide { aspect-ratio: ${WIDE.w} / ${WIDE.h}; }
+.my-svg--narrow { display: none; aspect-ratio: ${NARROW.w} / ${NARROW.h}; }
+.my-grid { fill: none; stroke: var(--hair-1); stroke-width: 1; }
+.my-axis, .my-tick { fill: none; stroke: var(--hair-3); stroke-width: 1; }
+.my-chip { fill: var(--hue); opacity: 0.32; }
+.my-chip.is-rx { opacity: 0.9; }
+.my-sign { fill: var(--faint); font-family: var(--font-sans); }
+.my-sign.is-rx { fill: var(--text-2); }
+.my-month { fill: var(--faint); font-family: var(--font-sans); text-anchor: middle; }
+.my-shadow { fill: rgba(198, 204, 218, 0.06); stroke: var(--hair-2); stroke-width: 1; }
+.my-line { fill: none; stroke: var(--ink-3); stroke-width: 1.4; stroke-linecap: butt; stroke-linejoin: round; }
+.my-line.is-rx { stroke: var(--ink-0); stroke-width: 2.4; }
+.my-dot { fill: var(--ink-0); stroke: var(--bg); stroke-width: 1.6; }
+.my-label { fill: var(--text-2); font-family: var(--font-mono); letter-spacing: -0.01em; text-anchor: middle; paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+.my-key { margin: 18px 0 0; max-width: 64ch; font-size: 0.9375rem; line-height: 1.55; color: var(--muted); }
+.my-facts { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 0 24px; margin: 24px 0 0; border-top: 1px solid var(--hair-2); }
+.my-facts > div { min-width: 0; padding: 14px 0 16px; border-bottom: 1px solid var(--hair-1); }
+.my-facts dt { font-size: 13px; font-weight: 500; color: var(--faint); }
+.my-facts dd { margin: 6px 0 0; font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.2; color: var(--ink-0); }
+.my-facts dd span { display: block; margin-top: 5px; font-family: var(--font-mono); font-size: 12px; letter-spacing: -0.01em; color: var(--muted); }
+.my-facts dd span + span { margin-top: 2px; }
+.my-source { margin: 16px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--faint); }
+@media (max-width: 760px) {
+  .my-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+}
+@media (max-width: 600px) {
+  .my-plate { margin-inline: -4px; padding: 22px 16px 24px; border-radius: 20px; }
+  .my-svg--wide { display: none; }
+  .my-svg--narrow { display: block; }
+  .my-facts { grid-template-columns: minmax(0, 1fr); }
+  .my-facts dd { font-size: 1.1rem; }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-entrance='on'] .my-go ~ .my-svg .my-line { stroke-dasharray: 1; }
+  html[data-entrance='on'] .my-go ~ .my-svg .my-dot { transform-box: fill-box; transform-origin: center; }
+  html[data-entrance='on'] .my-go:not(.is-in) ~ .my-svg .my-line { stroke-dashoffset: 1; }
+  html[data-entrance='on'] .my-go:not(.is-in) ~ .my-svg .my-dot { opacity: 0; transform: scale(0.4); }
+  html[data-entrance='on'] .my-go:not(.is-in) ~ .my-svg :is(.my-label, .my-shadow) { opacity: 0; }
+  html[data-entrance='on'] .my-go:not(.is-done) ~ .my-svg .my-line { transition: stroke-dashoffset var(--d) linear var(--t); }
+  html[data-entrance='on'] .my-go:not(.is-done) ~ .my-svg .my-dot { transition: opacity 260ms ease var(--t), transform 320ms cubic-bezier(0.23, 1, 0.32, 1) var(--t); }
+  html[data-entrance='on'] .my-go:not(.is-done) ~ .my-svg .my-label { transition: opacity 360ms ease var(--t); }
+  html[data-entrance='on'] .my-go:not(.is-done) ~ .my-svg .my-shadow { transition: opacity 400ms ease var(--t); }
+}
+`;
+---
+{view && wide && narrow && (
+  <Fragment>
+  <style is:inline set:html={styles}></style>
+  <section class="mercyear container container--narrow" aria-labelledby={titleId}>
+    <div class="my-plate">
+      <p class="kicker">Mercury through {year}</p>
+      <h2 class="h-2" id={titleId}>{heading}</h2>
+      <p class="my-lede">{lede}</p>
+      <div class="my-figure" role="img" aria-label={alt}>
+        <span class="my-go" data-enter="draw" aria-hidden="true"></span>
+        {[wide, narrow].map((plot) => {
+          const L = plot.layout;
+          const signFont = L === WIDE ? 11.5 : 10.5;
+          const monthFont = L === WIDE ? 11.5 : 10.5;
+          return (
+            <svg
+              class:list={['my-svg', L === WIDE ? 'my-svg--wide' : 'my-svg--narrow']}
+              viewBox={`0 0 ${L.w} ${L.h}`}
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path class="my-grid" d={plot.bands.slice(1).map((b) => `M${L.x0} ${b.yBottom}H${L.x1}`).join('')} />
+              {plot.bands.map((b) => (
+                <Fragment>
+                  <rect class:list={['my-chip', b.hasRetrograde && 'is-rx']} style={`--hue:${signBySlug(b.sign).hue}`} x="0" y={n(b.yTop + 3)} width="3" height={n(b.yBottom - b.yTop - 6)} rx="1.5" />
+                  <text class:list={['my-sign', b.hasRetrograde && 'is-rx']} x="11" y={n(b.yMid + signFont * 0.36)} font-size={signFont}>{signBySlug(b.sign).name}</text>
+                </Fragment>
+              ))}
+              <path class="my-axis" d={`M${L.x0} ${L.bottom}H${L.x1}`} />
+              <path class="my-tick" d={plot.ticks.map((x) => `M${x} ${L.bottom}v5`).join('')} />
+              {plot.months.map((m) => <text class="my-month" x={m.x} y={L.monthY} font-size={monthFont}>{L === WIDE ? m.label : m.label.charAt(0)}</text>)}
+              {plot.marks.map((m) => m.shadow && (
+                <rect class="my-shadow" style={`--t:${SHADOWS_AT + m.index * STEP}ms`} x={m.shadow.x} y={m.shadow.y} width={m.shadow.w} height={m.shadow.h} />
+              ))}
+              {plot.chunks.map((c) => (
+                <path class:list={['my-line', c.retro && 'is-rx']} pathLength="1" style={`--t:${c.delay}ms;--d:${c.dur}ms`} d={c.d} />
+              ))}
+              {plot.marks.flatMap((m) => [m.rx, m.direct].filter(Boolean).map((p) => (
+                <circle class="my-dot" style={`--t:${DOTS_AT + m.index * STEP}ms`} cx={p!.x} cy={p!.y} r={L === WIDE ? 3.4 : 3} />
+              )))}
+              {plot.marks.map((m) => (
+                <text class="my-label" style={`--t:${LABELS_AT + m.index * STEP}ms`} x={m.label.x} y={m.label.y[0]} font-size={L.font}>
+                  {m.label.lines.map((line, i) => <tspan x={m.label.x} y={m.label.y[i]}>{line}</tspan>)}
+                </text>
+              ))}
+            </svg>
+          );
+        })}
+      </div>
+      <p class="my-key">{key}</p>
+      <dl class="my-facts" style={`--cols:${Math.min(view.windows.length, 4)}`}>
+        {view.windows.map((w) => (
+          <div>
+            <dt><time datetime={w.window.from.toISOString()}>{w.window.label}</time></dt>
+            <dd>
+              {signNames(w)}
+              <span>Retrograde at {w.window.stationRx}</span>
+              <span>Direct at {w.window.stationDirect}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p class="my-source">Dates in universal time. Positions: Astronomy Engine, as in the table below.</p>
+    </div>
+  </section>
+  </Fragment>
+)}
