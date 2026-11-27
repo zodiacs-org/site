@@ -47,18 +47,52 @@ describe('public trust-surface claims', () => {
   });
 
   it('states the complete no-time policy on every methodology page', async () => {
-    // Since 9d180c9f the calculator marks the Moon's sign unverified on every
-    // date without a birth time. The es/pt/fr/it pages still describe the
-    // earlier sign-change flag and are protected; docs/claims/ledger.json
-    // records those sentences as stale until an allowance lets them change,
-    // so this test no longer pins them.
+    // Without a birth time, the calculator names the Moon's sign only where
+    // the birth date's own limits show it (src/lib/moon-day-bounds.ts): one
+    // sign all day, both signs on a sign-change day, or unverified otherwise.
     const rules = {
-      en: [/12:00 local civil time/, /rising sign, angles, and houses/, /marks the Moon's sign as unverified/],
-      es: [/12:00 del tiempo civil local/, /ascendente, ángulos y casas/],
-      pt: [/12:00 no horário civil local/, /ascendente, ângulos e casas/],
-      fr: [/12 h en heure civile locale/, /l’ascendant, les angles et les maisons/],
-      it: [/12:00 dell’ora civile locale/, /ascendente, angoli e case/],
-      ru: [/12:00 местного гражданского времени/, /асцендент, углы и дома/, /знак Луны как непроверенный/],
+      en: [
+        /12:00 local civil time/, /rising sign, angles, and houses/,
+        /If the Moon stayed in one sign for the whole date, the result names that sign/,
+        /if the Moon changed sign that day, it shows both signs/,
+        /if the date's start and end cannot be confirmed, it marks the Moon's sign as unverified/,
+        /the result names the Moon's sign without a degree/,
+      ],
+      es: [
+        /12:00 del tiempo civil local/, /ascendente, ángulos y casas/,
+        /Si la Luna permaneció en un solo signo durante toda la fecha, el resultado nombra ese signo/,
+        /si cambió de signo ese día, muestra ambos signos/,
+        /si no se pueden confirmar el inicio y el final de la fecha, marca el signo de la Luna como no verificado/,
+        /el resultado nombra el signo sin grado/,
+      ],
+      pt: [
+        /12:00 no horário civil local/, /ascendente, ângulos e casas/,
+        /Se a Lua permaneceu em um único signo durante toda a data, o resultado informa esse signo/,
+        /se mudou de signo naquele dia, mostra os dois signos/,
+        /se o início e o fim da data não puderem ser confirmados, marca o signo da Lua como não verificado/,
+        /o resultado informa o signo sem grau/,
+      ],
+      fr: [
+        /12 h en heure civile locale/, /l’ascendant, les angles et les maisons/,
+        /Si la Lune est restée dans un seul signe toute la journée, le résultat nomme ce signe/,
+        /si elle a changé de signe ce jour-là, il affiche les deux signes/,
+        /si le début et la fin du jour ne peuvent pas être confirmés, il marque le signe de la Lune comme non vérifié/,
+        /le résultat nomme le signe sans degré/,
+      ],
+      it: [
+        /12:00 dell’ora civile locale/, /ascendente, angoli e case/,
+        /Se la Luna è rimasta in un solo segno per tutta la data, il risultato indica quel segno/,
+        /se ha cambiato segno quel giorno, mostra entrambi i segni/,
+        /se inizio e fine della data non possono essere confermati, segnala il segno della Luna come non verificato/,
+        /il risultato indica il segno senza grado/,
+      ],
+      ru: [
+        /12:00 местного гражданского времени/, /асцендент, углы и дома/,
+        /Если Луна весь день оставалась в одном знаке, результат называет этот знак/,
+        /если в тот день она сменила знак, показывает оба/,
+        /если начало и конец даты подтвердить не удаётся, отмечает знак Луны как непроверенный/,
+        /результат называет знак Луны без градуса/,
+      ],
     };
     for (const [locale, patterns] of Object.entries(rules)) {
       const path = locale === 'en'
@@ -66,6 +100,39 @@ describe('public trust-surface claims', () => {
         : `src/pages/${locale}/methodology/index.astro`;
       const copy = await text(path);
       for (const pattern of patterns) expect(copy, `${path}: ${pattern}`).toMatch(pattern);
+    }
+  });
+
+  it('states the unknown-time Moon rule on every unprotected English and Russian surface that describes it', async () => {
+    // One sign when the Moon held it through the whole birth date, both signs of
+    // a day it changed sign, and unverified otherwise (src/lib/moon-day-bounds.ts).
+    const english = {
+      single: /names? (?:your |the )?Moon(?:’s|'s)? sign(?:, without a degree,)? (?:when|if|only when) the Moon (?:stayed in one sign|held it) (?:all day|for the whole (?:birth )?date)/u,
+      both: /shows? both (?:Moon )?signs (?:when|if) (?:the Moon|it) changed sign that day/u,
+      otherwise: /otherwise[^.]*?(?:marks?|is marked)[^.]*?unverified|marks the Moon(?:’s|'s) sign as unverified when the date(?:’s|'s) start and end cannot be confirmed/u,
+    };
+    const russian = {
+      single: /называет (?:лунный знак|этот знак|знак Луны), если Луна весь день (?:рождения )?оставалась в одном знаке/u,
+      both: /показывает оба знака, если в тот день она сменила знак/u,
+      otherwise: /а иначе (?:помечает|отмечает) лунный знак как (?:неподтверждённый|непроверенный)/u,
+    };
+    const surfaces = [
+      ['src/pages/index.astro', english], ['src/pages/moon-sign/index.astro', english],
+      ['src/pages/birth-chart/index.astro', english], ['src/pages/big-three/index.astro', english],
+      ['public/llms.txt', english], ['public/llms-full.txt', english],
+      ['scripts/build-assistant-context.mjs', english], ['api/_assistant/context.ts', english],
+      ['src/pages/ru/index.astro', russian], ['src/pages/ru/moon-sign/index.astro', russian],
+      ['src/pages/ru/birth-chart/index.astro', russian],
+    ];
+    for (const [path, rule] of surfaces) {
+      const copy = await text(path);
+      for (const [state, pattern] of Object.entries(rule)) expect(copy, `${path}: ${state}`).toMatch(pattern);
+      // The line that states the rule claims no more than the date's limits show, in plain punctuation.
+      const line = copy.split('\n').find((entry) => rule.single.test(entry));
+      expect(line, `${path}: one line states the rule`).toBeDefined();
+      expect(line, path).not.toMatch(/[\u2013\u2014]/u);
+      expect(line, path).not.toMatch(/\balways\b|\bevery (?:date|birth)|exact (?:Moon )?degree|всегда|точн(?:ый|ого) градус/iu);
+      expect(copy, path).not.toMatch(/marks the Moon(?:’s|'s)? sign as unverified,? (?:because|until you add a time, because)|помечает лунный знак как неподтверждённый, пока вы не укажете время: Луна|Поскольку Луна может сменить знак в течение дня, результат помечает|отмечает знак Луны как непроверенный, потому что/u);
     }
   });
 

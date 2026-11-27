@@ -93,7 +93,10 @@ export async function savedChartFromRemote(input: unknown): Promise<{
       parsed.birth.date,
       parsed.birth.timeKnown && parsed.birth.time ? parsed.birth.time : '12:00',
       parsed.birth.place.tz,
-      { longitude: parsed.birth.place.lon },
+      {
+        longitude: parsed.birth.place.lon,
+        reconstructedCalendar: true,
+      },
     );
     const computed = computeChart({
       utc: resolved.utc,

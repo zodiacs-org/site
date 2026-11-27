@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { handleResultShareNodeRequest, type ResultShareRoute } from './result-preview';
 
 /** The launch switches the share routes follow (src/lib/launch-flags.ts), read from process.env at run time. */
-const FLAGS = ['PUBLIC_YEAR_SCORE_ENABLED', 'PUBLIC_YEAR_PEOPLE_ENABLED', 'PUBLIC_BIRTHDAY_REPORT_ENABLED', 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED'] as const;
+const FLAGS = ['PUBLIC_YEAR_SCORE_ENABLED', 'PUBLIC_YEAR_PEOPLE_ENABLED', 'PUBLIC_BIRTHDAY_REPORT_ENABLED', 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', 'PUBLIC_VEDIC_SIGNS_ENABLED', 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', 'PUBLIC_YOUR_DAY_ENABLED'] as const;
 
 /** Each switched route, its switch and a query its handler accepts. */
 const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]; query: Record<string, string> }[] = [
@@ -12,6 +12,18 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', t: '17' } },
   { route: 'solar-return-link', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
   { route: 'solar-return-image', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
+  { route: 'astrocartography-link', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', query: { p: 'venus', a: 'mc' } },
+  { route: 'astrocartography-image', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', query: { p: 'venus', a: 'mc' } },
+  { route: 'astrocartography-story', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', query: { p: 'venus', a: 'mc' } },
+  { route: 'vedic-signs-link', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
+  { route: 'vedic-signs-image', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
+  { route: 'vedic-signs-story', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
+  { route: 'retrograde-for-you-link', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'retrograde-for-you-image', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'retrograde-for-you-story', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'your-day-link', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', s: 'taurus' } },
+  { route: 'your-day-image', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', s: 'taurus' } },
+  { route: 'your-day-story', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', s: 'taurus' } },
 ];
 
 function nodeResponse() {
@@ -61,7 +73,7 @@ describe('share routes behind a launch switch', () => {
   it.each(SWITCHED)('$route answers as before once its switch is 1', async ({ route, flag, query }) => {
     process.env[flag] = '1';
     expect(await statusOf(route, query)).toBe(200);
-    expect(await statusOf(route, {})).toBe(route.endsWith('-image') ? 400 : 200);
+    expect(await statusOf(route, {})).toBe(route.endsWith('-link') ? 200 : 400);
   }, 30_000);
 
   it.each(['year-score-link', 'year-score-image'] as const)('%s keeps a public figure (p=) a 404 until the people switch is on as well', async (route) => {

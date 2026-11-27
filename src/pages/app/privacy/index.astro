@@ -1,0 +1,75 @@
+---
+import Base from '../../../layouts/Base.astro';
+
+const path = '/app/privacy/';
+const title = 'Simastry iPhone app privacy policy';
+const description = 'How Simastry handles your birth details, saved records, calendar events and purchases on iPhone.';
+const modifiedAt = '2026-11-22';
+const jsonLd = [{
+  '@type': 'WebPage',
+  name: title,
+  url: new URL(path, 'https://zodiacs.org').href,
+  description,
+  dateModified: modifiedAt,
+}];
+---
+<Base title={`${title} | Zodiacs.org`} description={description} path={path} jsonLd={jsonLd}>
+  <section class="section container container--narrow">
+    <em class="kicker">Simastry for iPhone</em>
+    <h1 class="method-title display">iPhone app privacy policy</h1>
+
+    <div class="prose">
+      <p class="lede">
+        You can use Simastry without creating an account. The app uses your birth details
+        to calculate your chart on your iPhone. The app does not send those details or your chart to Zodiacs.
+      </p>
+
+      <h2>What stays on your iPhone</h2>
+      <p>
+        The app keeps your birth details, saved people, readings, notes and Guide conversations on your iPhone.
+        If you choose a contact or photo to add, the app saves only the contact or photo you select on your iPhone.
+        Cloud Guide and live voice conversations are off in this version.
+      </p>
+      <p>
+        The app sends no analytics about how you use it. It has no ads and does not track you across apps or websites.
+      </p>
+
+      <h2>Your calendar</h2>
+      <p>
+        If you give the app access, it reads events from the calendars you choose on your device.
+        The app does not send those events to Zodiacs. You can turn calendar access off in iPhone Settings.
+        If you choose to add an event, the app writes it to your calendar, which may sync according to your calendar settings.
+      </p>
+
+      <h2>Purchases</h2>
+      <p>
+        Apple handles in-app purchases, bills you for subscriptions and lets you restore past purchases. The app checks your purchase status
+        on your device to see whether you have Plus. The app does not receive your card or bank details.
+      </p>
+
+      <h2>Sharing and deleting records</h2>
+      <p>
+        When you choose to share a reading or another record, a copy goes to the destination you select.
+        Saved records do not expire automatically. You can delete individual records on your device.
+        Earlier imports, recovery copies and device backups may still contain a deleted record.
+        Deleting it from the app cannot recall a copy you shared.
+      </p>
+
+      <h2>Who operates the app</h2>
+      <p>
+        Zodiacs LLC, a New Mexico limited liability company, operates Simastry and is responsible for this privacy policy.
+        For privacy questions or deletion requests, email <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a>.
+        If you email us, we receive your email address and anything you choose to include.
+      </p>
+
+      <p>The <a href="/privacy/">website privacy policy</a> covers Zodiacs.org.</p>
+      <p class="method-updated mono">Last updated: <time datetime={modifiedAt}>22 November 2026</time></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .method-title { margin: 6px 0 8px; }
+  .prose .lede { font-size: var(--text-lg); color: var(--text); }
+  .method-updated { margin-top: 40px; color: var(--faint); font-size: 12px; letter-spacing: 0.04em; }
+</style>

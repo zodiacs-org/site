@@ -1,9 +1,10 @@
+import { MOMENT_CHART_TOOL, MOMENT_ROUTING } from './features/moment-chart-contract';
 import { moonPhase } from '@zodiacs/engine';
 import { eventTimes, localIso, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
-import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-api/endpoints';
+import { computeEvents, computePositions, computeSkyFact, refuseSplitDay } from '../lib/compute-api/endpoints';
 import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
 import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
 import type { LocalTimeModule } from '../lib/compute-api/local-time';
@@ -36,11 +37,14 @@ import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
 import { earliestToday } from '../lib/birth-date-policy';
+import { birthDateAgeGate } from './birth-date-age-gate';
+import { UNDER_13_SENTENCE as AGE_FIRST_UNDER_13 } from '../lib/good-days/find';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
 import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, softenMinorAnswer, softenMinorPanel, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
+import { castMomentChart } from './features/moment-chart';
 import { PERSONAL_TOOL_NAMES, isPersonalTool, personalTool, type PersonalToolName } from './personal/registry';
 
 export interface AiDependencies {
@@ -56,6 +60,7 @@ export interface AiDependencies {
   occasions?: boolean;
   /** The 0.6.0 tools (ZODIACS_COVERAGE_ENABLED=1), offered only with the occasion tools. */
   coverage?: boolean;
+  momentChart?: boolean;
   /**
    * search_sky_events, the natal chart's house system and nodes, and explain_astrology's event and house topics
    * (ZODIACS_SKY_EVENTS_ENABLED=1), in effect only with the coverage and occasion tools (skyEventsOn).
@@ -81,6 +86,16 @@ export interface AiDependencies {
    * coverage and occasion tools (personalOn).
    */
   personal?: boolean;
+  /**
+   * Whether a website page's own switch (its PUBLIC_*_ENABLED variable, exactly '1') is on. A personal tool whose
+   * definition names a pageFlag links to its page and share card only then; unset, it links to neither.
+   */
+  sitePageOn?: (flag: string) => boolean;
+  /**
+   * The site a personal tool's links go to, when it is not zodiacs.org: the staging host the call came in on, whose
+   * page switches sitePageOn reads. Unset, ORIGIN.
+   */
+  siteOrigin?: string;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -198,7 +213,7 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   // get_numerology comes after get_solar_return, so every entry before it keeps its place.
   // find_good_days comes after them all, so every entry before it keeps its place.
   // The personal tools come after everything else, so every entry before them keeps its place.
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : []), ...(personalOn(dependencies) ? PERSONAL_TOOL_NAMES : [])];
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : []), ...(dependencies.momentChart ? [MOMENT_CHART_TOOL] as const : []), ...(personalOn(dependencies) ? PERSONAL_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
@@ -334,6 +349,33 @@ export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date
 }
 
 /**
+ * The tools whose child refusal comes before any other sentence: every personal tool that takes a birth date (its
+ * input names birthDate), so a call that carries a child's birth date, alone or with a birth time, zone, place or
+ * field this tool cannot use, is refused for the age and is never asked for a birth time or birthplace. The hosted
+ * server reads this set too (./server.ts, ./http.ts); every other tool keeps its replies.
+ */
+export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<string>(PERSONAL_TOOL_NAMES.filter((name) => {
+  const input = personalTool(name).input as { shape?: Record<string, unknown> };
+  return input.shape !== undefined && 'birthDate' in input.shape;
+}));
+
+/**
+ * The reply for a tool in AGE_FIRST_TOOLS before any other field is read, from the one age gate
+ * (./birth-date-age-gate.ts): UNDER_13 gets the plain under-13 refusal (src/lib/good-days/find.ts), never the
+ * birthday card wording of UNDER_13_REFUSAL; NEEDS_DATE gets the birth date asked for alone, "birthDate is required."
+ * when it is missing and the date's form otherwise, never a birth time, zone or place; ADULT gets null, and the call
+ * goes on, read as sent. The tool (executeAiTool) and the hosted server (./server.ts, and ./http.ts before the SDK's
+ * schema check can name another field) reply with this.
+ */
+export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date) {
+  const birthDate = fieldOf(args, 'birthDate');
+  const gate = birthDateAgeGate(birthDate, now);
+  if (gate === 'UNDER_13') return failure(tool, 'invalid-request', AGE_FIRST_UNDER_13);
+  if (gate === 'NEEDS_DATE') return failure(tool, 'invalid-request', birthDate === undefined ? 'birthDate is required.' : `birthDate must be ${FIELD_FORMAT.birthDate}.`);
+  return null;
+}
+
+/**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
  * zone only with the place's coordinates, so a zone without them gets no link rather than one that
  * opens on a different card. A birthday, a baby's arrival, or a coming of age gets no card link: the
@@ -420,22 +462,29 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
+    // A tool that refuses a child's birth date before naming any missing field (AGE_FIRST_TOOLS).
+    if (AGE_FIRST_TOOLS.has(tool)) { const child = ageFirstRefusal(tool, input, dependencies.now?.() ?? new Date()); if (child) return child; }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
+    const child = childBirthDateRefusal(tool, parsed.data, dependencies.now?.() ?? new Date(), context.hostZone);
+    if (child) return child;
     let data: unknown;
     let links: { title: string; url: string }[] = [methodLink];
     if (isPersonalTool(tool)) {
       // A personal tool: computed by its own module from the engine and pre-written wording, for this call only.
       const now = dependencies.now?.() ?? new Date();
-      const child = childBirthDateRefusal(tool, input, now, context.hostZone);
-      if (child) return child;
+      // The age is read on the birth date as given and as the tool will read it, so a date its schema rewrites is checked too.
+      const child = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed.data, now, context.hostZone);
+      // A tool in AGE_FIRST_TOOLS refuses with its own plain sentence, the same as its age gate's.
+      if (child) return AGE_FIRST_TOOLS.has(tool) ? failure(tool, 'invalid-request', AGE_FIRST_UNDER_13) : child;
       const definition = personalTool(tool);
       const result = await feature(() => definition.run(definition.input.parse(input) as never, {
-        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: ORIGIN,
+        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: dependencies.siteOrigin ?? ORIGIN,
+        pageOn: definition.pageFlag === undefined || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
         ...(dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}),
       }));
@@ -485,6 +534,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes('find_birthplace') ? ' a town or city named instead of coordinates, find_birthplace;' : ''} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
           if (skyEvents) capabilities.limitations.push('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet\'s next retrograde, when a planet changes sign, every full Moon next year or this week\'s void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.');
           // Numerology is a separate tradition from astrology, and the line says so.
+          if (dependencies.momentChart) capabilities.limitations.push(MOMENT_ROUTING);
           if (numerologyOn(dependencies)) capabilities.limitations.push(
             'get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.',
             'For a numerology reading, use get_numerology, not explain_astrology.',
@@ -515,6 +565,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.privacy += ' Sky Watch preview saves public-sky filters, owner, expiration and encrypted callback credentials. Stopping or expiring a watch clears its credentials; subscription metadata is retained for up to 30 days afterward. Public event records and delivery status are retained for up to 30 days. No birth details are accepted.';
           capabilities.limitations[2] = 'Sky Watch delivers selected public-sky events through verified callbacks. Delivery can be delayed or repeated. Eclipses are listed by get_sky_calendar. No personal predictions or birth-time rectification.';
         }
+        break;
+      }
+      case MOMENT_CHART_TOOL: {
+        data = castMomentChart(INPUT_SCHEMAS.get_moment_chart.parse(input), dependencies.now?.() ?? new Date());
+        links = [{ title: 'The sky today', url: `${ORIGIN}/today/` }];
         break;
       }
       case 'get_sky': {
@@ -561,6 +616,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
+        await refuseSplitDay(request, { localTime: localTime() });
         const rawCalculation = await computeSkyFact(request, { localTime: localTime() });
         const zoneName = rawCalculation.result.fact.zone;
         const fixedZone = zoneName !== null && isFixedOffsetZone(zoneName);

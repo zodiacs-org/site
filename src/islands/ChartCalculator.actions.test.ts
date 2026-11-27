@@ -44,8 +44,14 @@ describe('Chart result action contract', () => {
     ]);
   });
 
-  it.each(['ChartCalculator.tsx', 'BigThreeQuick.tsx'])('respects reduced motion when %s scrolls to a result', async (file) => {
-    const source = await readFile(new URL(`./${file}`, import.meta.url), 'utf8');
+  it('puts the first birth chart in view immediately and respects reduced motion on recalculation', async () => {
+    const source = await readFile(new URL('./ChartCalculator.tsx', import.meta.url), 'utf8');
+    expect(source).toMatch(/const instant = \(mode === 'full' && resultCount === 0\)\s*\|\| matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches/);
+    expect(source).toContain("scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'start' })");
+  });
+
+  it('respects reduced motion when the quick calculator scrolls to a result', async () => {
+    const source = await readFile(new URL('./BigThreeQuick.tsx', import.meta.url), 'utf8');
     expect(source).toContain("behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'");
     expect(source).not.toContain("scrollIntoView({ behavior: 'smooth', block: 'start' })");
   });

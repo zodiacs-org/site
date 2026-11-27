@@ -1,4 +1,5 @@
 import type { VNode } from 'preact';
+import { resolveEngine2Notices } from '../lib/chart-notices';
 import type { Profile, SavedChart } from '../lib/profile/schema';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -239,6 +240,7 @@ describe('return calculator file recovery', () => {
 describe('event transit ownership', () => {
   const instant = '2026-09-16T08:31:12.865Z';
   const Ring = () => null;
+  const ringModule = { default: Ring, resolveEngine2Notices };
   const chart = {
     bodies: [{ body: 'Sun', lon: 30 }, { body: 'Moon', lon: 100 }],
     angles: { asc: 5, mc: 275 }, houses: { system: 'whole', cusps: Array.from({ length: 12 }, (_, i) => i * 30) },
@@ -252,7 +254,7 @@ describe('event transit ownership', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'location', { value: { search: `?at=${encodeURIComponent(instant)}` } });
     harness.compute.mockReturnValue(chart);
-    harness.solarImport.mockResolvedValue({ default: Ring });
+    harness.solarImport.mockResolvedValue(ringModule);
   });
 
   it('opens the exact event instant and resets state independently for Event date, Now and recalculation', async () => {
@@ -297,11 +299,11 @@ describe('event transit ownership', () => {
     const old = submit(transit);
     nodes(render(transit)).find((node) => node.type === BirthFields)!.props.onDateChange('1992-01-01');
     const current = submit(transit);
-    resolveOld({ default: Ring }); await old;
+    resolveOld(ringModule); await old;
     expect(harness.compute).not.toHaveBeenCalled();
     expect(nodes(render(transit)).find((node) => node.type === 'form')!.props['aria-busy']).toBe(true);
     expect(ring()).toBeUndefined();
-    resolveNew({ default: Ring }); await current;
+    resolveNew(ringModule); await current;
     expect(harness.compute).toHaveBeenCalledOnce();
     expect(harness.compute.mock.calls[0][0].utc.getUTCFullYear()).toBe(1992);
     expect(ring().props.nowMs).toBe(Date.parse(instant));
@@ -333,7 +335,7 @@ describe('event transit ownership', () => {
     const old = submit(transit);
     harness.profile.charts[0].summary.bodies[0].lon = 75;
     window.dispatchEvent(new Event('zodiacs:profile'));
-    resolve({ default: Ring }); await old;
+    resolve(ringModule); await old;
     expect(ring()).toBeUndefined();
     await submit(transit);
     expect(ring().props.natal.bodies[0].lon).toBe(75);

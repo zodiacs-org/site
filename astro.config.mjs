@@ -15,6 +15,10 @@ function interactionDirective() {
           name: 'interaction',
           entrypoint: './src/client-directives/interaction.ts',
         });
+        addClientDirective({
+          name: 'home-returning',
+          entrypoint: './src/client-directives/home-returning.ts',
+        });
       },
     },
   };

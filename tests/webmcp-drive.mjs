@@ -8,7 +8,8 @@
  * Search registers on English pages. Every calculator page, and every page that embeds a calculator, registers that
  * calculator's tool in every locale it is built in (Track A2): the drive visits each, calls the tool with a synthetic input and with one its schema refuses, and checks
  * that the calculations load only on the first call. On /birth-chart/ it also opens the page itself on the same birth
- * and compares the Sun, Moon and rising the page prints with the tool's.
+ * and compares the Sun, Moon and rising the page prints with the tool's, and on an untimed birth whose Moon held one
+ * sign all day checks that both name that sign without a degree.
  */
 import { access, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -32,6 +33,8 @@ const LONDON = { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London
 const TOKYO = { latitude: 35.6762, longitude: 139.6503, timeZone: 'Asia/Tokyo' };
 const BIRTH = { date: '1990-06-15', time: '14:30', place: LONDON };
 const UNTIMED = { date: '1985-03-02', place: TOKYO };
+// The Moon was in Aries through the whole of 4 January 1990 in Bangkok.
+const BANGKOK_UNTIMED = { date: '1990-01-04', place: { latitude: 13.7563, longitude: 100.5018, timeZone: 'Asia/Bangkok' } };
 const LOCALES = ['es', 'pt', 'fr', 'it', 'ru'];
 const NOWHERE = { ...LONDON, timeZone: 'Mars/Olympus_Mons' };
 
@@ -68,7 +71,9 @@ const CALCULATORS = [
   },
   {
     name: 'zodiacs.moon_sign', path: '/moon-sign/', locales: LOCALES, call: UNTIMED,
-    holds: (data) => data.moon === null && data.moonSignStatus === 'unverified' && typeof data.moonPhase === 'string',
+    // The Moon went from Gemini into Cancer on 1985-03-02 in Tokyo: both signs, neither chosen.
+    holds: (data) => data.moon === null && data.moonSignStatus === 'changed-sign'
+      && data.moonSignCandidates?.join() === 'Gemini,Cancer' && typeof data.moonPhase === 'string',
     refuse: { ...UNTIMED, time: '25:00' }, unread: { ...UNTIMED, place: NOWHERE },
   },
   {
@@ -277,6 +282,38 @@ async function chartPageAgainstTool(newPage, baseURL) {
   return { shown, told };
 }
 
+/**
+ * /birth-chart/ opened on an untimed birth whose Moon held one sign through the whole date: the page and the tool
+ * name that sign, and neither gives the noon reference's degree as the Moon's.
+ */
+async function untimedChartPageAgainstTool(newPage, baseURL) {
+  const { date, place } = BANGKOK_UNTIMED;
+  const wire = { d: date, z: place.timeZone, la: place.latitude, lo: place.longitude };
+  const link = `1.${Buffer.from(JSON.stringify(wire)).toString('base64url')}`;
+  const page = await newPage();
+  await page.goto(`${baseURL}/birth-chart/#c=${link}`, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => document.querySelector('.calc__three [data-moon-sign-only]'), null, { timeout: 30_000 });
+  await page.waitForFunction(() => (
+    navigator.modelContextTesting?.listTools().some((tool) => tool.name === 'zodiacs.birth_chart')
+  ));
+  const hero = await page.locator('.calc__three [data-moon-sign-only]').innerText();
+  const heroDegrees = await page.locator('.calc__three [data-moon-sign-only] .three-card__deg').count();
+  const answer = await page.evaluate(async (call) => {
+    const decoded = JSON.parse(await navigator.modelContextTesting.executeTool('zodiacs.birth_chart', JSON.stringify(call)));
+    return decoded?.structuredContent ?? decoded;
+  }, { date, place });
+  await page.close();
+  const told = answer.data;
+  if (!hero.includes('Aries') || hero.includes('°') || heroDegrees !== 0) {
+    throw new Error(`/birth-chart/ untimed: the Moon card must name Aries alone, got ${JSON.stringify(hero)}`);
+  }
+  if (told.basis !== 'local-noon' || told.moonSignStatus !== 'settled'
+    || JSON.stringify(told.bigThree.moon) !== JSON.stringify({ sign: 'Aries' })) {
+    throw new Error(`/birth-chart/ untimed: the tool must settle Aries with no degree, got ${JSON.stringify(told).slice(0, 400)}`);
+  }
+  return { hero, told: told.bigThree.moon, moonSignNote: told.moonSignNote };
+}
+
 async function enumerateAndCall(page) {
   await page.waitForFunction(() => (
     navigator.modelContextTesting?.listTools()
@@ -390,6 +427,7 @@ async function drive(baseURL) {
     }
     polyfill.calculators = await checkCalculatorPages('MCP-B 4.0.0', () => context.newPage(), baseURL);
     chartPage = await chartPageAgainstTool(() => context.newPage(), baseURL);
+    chartPage.untimed = await untimedChartPageAgainstTool(() => context.newPage(), baseURL);
 
     // Pages without a calculator outside English, the someone-else hand-off, and the wings register nothing.
     exclusions = {};

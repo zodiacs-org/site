@@ -9,6 +9,7 @@ import ToolIcon from '../components/ToolIcon.astro';
 import SkyTicker from '../islands/SkyTicker';
 import DemoChart from '../islands/DemoChart';
 import WelcomeBack from '../islands/WelcomeBack';
+import HomeReturningPrepaint from '../home/HomeReturningPrepaint.astro';
 import glassMaps from '../data/glass-maps.json';
 import daily from '../data/daily.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
@@ -30,7 +31,7 @@ const faq = [
   },
   {
     q: "What if I don't know my birth time?",
-    a: 'Choose “I don’t know it.” The calculator uses 12:00 as a reference, leaves out the rising sign and houses instead of inventing them, and marks the Moon sign as unverified until you add a time, because the Moon can change sign during a day.',
+    a: 'Choose “I don’t know it.” The calculator uses 12:00 as a reference and leaves out the rising sign and houses instead of inventing them. Because the Moon can change sign during a day, it checks your whole birth date when its start and end can be confirmed: it names your Moon sign when the Moon stayed in one sign all day, shows both signs when the Moon changed sign that day, and otherwise marks the Moon sign as unverified until you add a time.',
   },
 ];
 
@@ -169,6 +170,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     data-zdx-home-first-paint
     set:html={homeFirstPaintCss}
   />
+  <HomeReturningPrepaint slot="head" />
   <!-- Legacy hash deep-links from the old homepage SPA → their new homes. -->
   <script is:inline>
     (function () {
@@ -484,10 +486,8 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     globalThis.__ZDX_UI__ = { locale: 'en', messages: homeUiMessages };
   </script>
 
-  <!-- 01b · Returning visitors with a saved chart get greeted; everyone else sees nothing here.
-       The shared intent/load directive reaches the empty SSR island automatically
-       after load, keeping its module tree out of the poster's initial fetches. -->
-  <WelcomeBack client:interaction />
+  <!-- The selected greeting is visible before the island reads the profile. -->
+  <WelcomeBack client:home-returning />
 
 
   <!-- 02 · The sky, right now: one calm line under the hero. -->

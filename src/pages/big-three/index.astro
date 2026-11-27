@@ -1,4 +1,5 @@
 ---
+import BigThreeCardSection from '../../components/share/BigThreeCardSection.astro';
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import { sharingText } from '../../lib/sharing/copy';
 import Base from '../../layouts/Base.astro';
@@ -6,6 +7,7 @@ import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { SHARING_COPY } from '../../lib/sharing/copy';
 import BigThreeQuick from '../../islands/BigThreeQuick';
+import { launchFlagOn } from '../../lib/launch-flags';
 import Motion from '../../components/Motion.astro';
 import '../../styles/calculator.css';
 
@@ -19,7 +21,7 @@ const faq = [
   },
   {
     q: 'Why does it need my birth time?',
-    a: 'The Rising sign changes roughly every two hours, so the time decides it. The Sun and Moon usually do not need it (the Moon changes sign about every two and a half days), but on a boundary day the time matters for them too. Without a time, the calculators show reference positions and mark the Moon sign as unverified instead of guessing.',
+    a: 'The Rising sign changes roughly every two hours, so the time decides it. The Sun and Moon usually do not need it (the Moon changes sign about every two and a half days), but on a boundary day the time matters for them too. Without a time, the calculators show reference positions instead of guessing. When the birth date’s start and end can be confirmed, the birth chart and Moon sign calculators name your Moon sign if the Moon stayed in one sign all day and show both signs if it changed sign that day; otherwise the Moon sign is marked as unverified.',
   },
   {
     q: 'Where does my birth data go?',
@@ -71,6 +73,8 @@ const jsonLd = [
     <SharingToolLinks current="/big-three/" />
   </section>
 
+  <BigThreeCardSection locale="en" />
+
   <section class="section--tight container container--narrow">
     <div class="prose">
       <HeroCrop crop="sun-moon-signs" />
@@ -80,7 +84,10 @@ const jsonLd = [
         the aspects between them, and it explains what each placement means. The button under your result
         carries your details across so you do not type them twice. If you only know the date, start with the{' '}
         <a href="/moon-sign/">moon sign calculator</a>; if you want a second person's chart,{' '}
-        <a href="/compatibility/">compatibility</a> reads two charts together.
+        <a href="/compatibility/">compatibility</a> reads two charts together.{launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') && (
+          <> For the sidereal zodiac of Vedic astrology, where the three usually sit one sign earlier,{' '}
+          <a href="/vedic-signs/">find your Vedic signs</a>.</>
+        )}
       </p>
     </div>
   </section>

@@ -36,12 +36,29 @@ export interface ChartHandoffOptions {
   mineProfileOrigin?: boolean;
   /** The chart itself came from a guarded saved-chart session (possibly after an edit). */
   profileOrigin?: boolean;
+  /** True when the chart's date was entered in the Old Style (Julian) calendar. */
+  oldStyle?: boolean;
+  /** True when the chart originated from a saved profile chart (for example after a time-only edit). */
+  fromSavedChart?: boolean;
+  /** Resolved 1-bit `calendar-unknown` state for historical changeover-era handoffs (never raw country). */
+  savedCalendarUnknown?: boolean;
+  /** True when `savedCalendarUnknown` came from reconstructing a saved chart without `calendarChecked`. */
+  calendarUnverified?: boolean;
 }
 
 /** What a session handoff carries, once read. */
 export type ChartHandoff =
   /** A chart to open on the birth chart page, with the visitor's own unsaved chart when known. */
-  | { kind: 'chart'; input: ShareChartInput; mine: ShareChartInput | null; profileOrigin?: boolean }
+  | {
+      kind: 'chart';
+      input: ShareChartInput;
+      mine: ShareChartInput | null;
+      profileOrigin?: boolean;
+      oldStyle?: true;
+      fromSavedChart?: true;
+      savedCalendarUnknown?: boolean;
+      calendarUnverified?: true;
+    }
   /** A date and optional time without a place (the Moon lookup, a birthday page). */
   | { kind: 'date'; date: string; time: string | null }
   /** The visitor's own unsaved chart, carried to the someone-else page. */
@@ -51,7 +68,7 @@ export type ChartHandoff =
 
 /** The wire form kept in sessionStorage. Charts are stored as v1 tokens so the reader reuses decodeChartLink's checks. */
 type StoredHandoff =
-  | { k: 'chart'; c: string; m?: string; p?: true }
+  | { k: 'chart'; c: string; m?: string; p?: true; j?: true; f?: true; u?: boolean; uv?: true }
   | { k: 'date'; d: string; t: string | null }
   | { k: 'mine'; c: string }
   | { k: 'pair'; a?: string; b?: string };
@@ -187,6 +204,14 @@ export function stashChartHandoff(
   const entry: StoredHandoff = { k: 'chart', c: encodeChartLink(input) };
   if (options.mine?.kind === 'input') entry.m = encodeChartLink(options.mine.input);
   if (options.profileOrigin) entry.p = true;
+  if (options.oldStyle) entry.j = true;
+  if (options.fromSavedChart) {
+    entry.f = true;
+    if (typeof options.savedCalendarUnknown === 'boolean' && input.date >= '1582-10-05' && input.date <= '1918-02-26') {
+      entry.u = options.savedCalendarUnknown;
+      if (options.calendarUnverified) entry.uv = true;
+    }
+  }
   const params = new URLSearchParams();
   if (options.mine?.kind === 'saved') {
     if (options.mineProfileOrigin) {
@@ -284,9 +309,13 @@ function readStored(value: unknown): ChartHandoff | null {
     const input = typeof entry.c === 'string' ? decodeChartLink(entry.c) : null;
     const mine = decodeOptional(entry.m);
     if (!input || mine === undefined) return null;
-    return entry.p === true
-      ? { kind: 'chart', input, mine, profileOrigin: true }
-      : { kind: 'chart', input, mine };
+    const result: Extract<ChartHandoff, { kind: 'chart' }> = { kind: 'chart', input, mine };
+    if (entry.p === true) result.profileOrigin = true;
+    if (entry.j === true) result.oldStyle = true;
+    if (entry.f === true) result.fromSavedChart = true;
+    if (typeof entry.u === 'boolean') result.savedCalendarUnknown = entry.u;
+    if (entry.uv === true) result.calendarUnverified = true;
+    return result;
   }
   if (entry.k === 'date') {
     const { d, t } = entry;

@@ -55,6 +55,17 @@ describe('the playground\'s browser run', () => {
     }
   });
 
+  it('refuses a date its zone lived in two parts as the handler does, in the source and the built file', async () => {
+    // St. John's went from 00:01 back to 23:01 on 29 October 1989.
+    const text = JSON.stringify({ kind: 'ingress', body: 'Moon', sign: 'scorpio', date: '1989-10-28', zone: 'America/St_Johns' });
+    const hosted = await run(handler, { endpoint: 'sky-fact', body: text });
+    expect(hosted.status).toBe(400);
+    const here = await answerHere('sky-fact', text);
+    expect({ status: here.status, body: here.body }).toEqual({ status: hosted.status, body: hosted.json });
+    const bundle = await import(pathToFileURL(resolve(root, BUNDLE_PATH)).href);
+    expect(await bundle.answerHere('sky-fact', text)).toEqual(here);
+  });
+
   it('refuses an address that names no endpoint as the handler does', async () => {
     const hosted = await run(handler, { endpoint: null, body: '{}' });
     expect(await answerHere('nowhere', '{}')).toEqual({ status: hosted.status, body: hosted.json });

@@ -137,7 +137,7 @@ describe('stateless MCP HTTP boundary', () => {
       expect((horoscopes._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(HOROSCOPE_URI);
       expect(horoscopes._meta?.['openai/widgetAccessible']).toBe(true);
       expect(horoscopes._meta?.['openai/outputTemplate']).toBe(HOROSCOPE_URI);
-      const reading = await client.callTool({ name: 'get_horoscope', arguments: { sign: 'leo', zone: 'Asia/Bangkok' } });
+      const reading = await client.callTool({ name: 'get_horoscope', arguments: { sign: 'leo', zone: 'Asia/Bangkok', date: committedWindow.generatedFor } });
       expect(reading.isError).toBe(false);
       const parsed = OUTPUT_SCHEMAS.get_horoscope.parse(reading.structuredContent);
       expect(parsed.ok && parsed.data.status).toBe('available');

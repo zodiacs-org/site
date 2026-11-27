@@ -295,6 +295,7 @@ try {
       assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
         'computed tool results must omit collection links outside the shared navigation');
 
+      await source.getByRole('button', { name: 'Share your chart', exact: true }).waitFor({ timeout: TIMEOUT });
       const preparedSheet = await source.evaluate(() => {
         const all = globalThis.__t17CanvasText.slice();
         const titleIndex = all.findLastIndex((entry) => entry.value === 'Birth chart');
@@ -1078,11 +1079,13 @@ try {
         'the Moon hero must retain the same unverified identity as the image');
       assert.equal(await unknownMoonHero.locator('.three-card__deg').count(), 0,
         'the unverified hero must not promote a reference degree to a settled Moon identity');
-      assert.match(
-        (await unknownMoon.locator('.notice').allInnerTexts()).join(' '),
-        /The Moon’s possible signs across this birth date are unverified/,
-        'the no-time result must explain that the possible signs have not been verified',
-      );
+      // The Moon went from Aquarius into Pisces on this London date: both signs were verified, only which held at
+      // birth was not, so the notice says the Moon changed signs that day rather than that nothing was verified.
+      const unknownMoonNotices = (await unknownMoon.locator('.notice').allInnerTexts()).join(' ');
+      assert.match(unknownMoonNotices, /The Moon also changed signs that day/,
+        'the no-time result must say the Moon changed signs that day');
+      assert.doesNotMatch(unknownMoonNotices, /The Moon’s possible signs across this birth date are unverified/,
+        'a date whose two Moon signs were verified must not be called unverified');
       await unknownMoon.locator('[data-share-options]').click();
       const unknownMoonDialog = unknownMoon.locator('[data-share-dialog]');
       await unknownMoonDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
@@ -1100,9 +1103,9 @@ try {
       // time zone, from 10:00 UTC the day before to 12:00 UTC the day after.
       for (const moonCase of [
         // All Aquarius in London on 31 December 1989, but Pisces from 06:11 UTC on 1 January.
-        { date: '1989-12-31', notNamed: 'Aquarius', card: null },
+        { date: '1989-12-31', page: 'Aquarius', notNamed: 'Aquarius', card: null },
         // Virgo from 02:58 UTC on 14 January 1990 to 12:18 UTC on the 16th.
-        { date: '1990-01-15', card: 'Virgo' },
+        { date: '1990-01-15', page: 'Virgo', card: 'Virgo' },
       ]) {
         const moonPage = await trackedPage();
         await open(moonPage, `${baseURL}/moon-sign/`);
@@ -1117,8 +1120,11 @@ try {
           return document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false'
             && action instanceof HTMLButtonElement && !action.disabled;
         }, null, { timeout: TIMEOUT });
-        // The page itself names no Moon sign without a birth time.
-        assert.match(await moonPage.locator('.calc__three [data-moon-uncertain]').innerText(), /Needs a birth time/);
+        // The page names the sign the Moon held through the whole London date,
+        // from that date's own limits; the card keeps its everywhere rule.
+        assert.equal(await moonPage.locator('.calc__three [data-moon-uncertain]').count(), 0,
+          `${moonCase.date}: the page settles the Moon the London date kept in one sign`);
+        assert.match(await moonPage.locator('.calc__three .three-card').first().innerText(), new RegExp(moonCase.page));
         const cardText = await moonPage.evaluate(() => globalThis.__t17CanvasText.map((entry) => entry.value).join(' | '));
         await moonPage.locator('[data-share-options]').click();
         const moonDialog = moonPage.locator('[data-share-dialog]');
@@ -1221,13 +1227,39 @@ try {
         baseURL, errors, outputDir: HYDRATION_EVIDENCE_DIR,
       }));
       await open(mobile, `${baseURL}/birth-chart/`);
+      // Hold the calculator's first sheet until the sharing dialog has opened.
+      await mobile.evaluate(() => {
+        const original = HTMLCanvasElement.prototype.toBlob;
+        globalThis.__mobileChartSheetRenders = 0;
+        HTMLCanvasElement.prototype.toBlob = function (callback, type, quality) {
+          if (this.width === 1800 && this.height === 2400) {
+            globalThis.__mobileChartSheetRenders++;
+            if (globalThis.__mobileChartSheetRenders === 1) {
+              globalThis.__releaseMobileChartSheet = () => original.call(this, callback, type, quality);
+              return;
+            }
+          }
+          return original.call(this, callback, type, quality);
+        };
+      });
       await computeChart(mobile);
+      await mobile.waitForFunction(() => typeof globalThis.__releaseMobileChartSheet === 'function', null, { timeout: TIMEOUT });
+      await mobile.getByRole('button', { name: 'Share your chart · More ways to use this chart', exact: true }).click();
+      const pendingDialog = mobile.locator('[data-share-dialog]');
+      await pendingDialog.locator('[data-positions-link]').waitFor({ state: 'visible', timeout: TIMEOUT });
+      assert.ok(await pendingDialog.locator('[data-share-card-action="sheet"]').isDisabled());
+      await mobile.evaluate(() => globalThis.__releaseMobileChartSheet());
       await mobile.waitForFunction(() => {
-        const action = document.querySelector('[data-share-card]');
-        return action instanceof HTMLButtonElement && !action.disabled;
+        const actions = document.querySelectorAll('[data-share-dialog] [data-share-card-action]');
+        return actions.length === 2 && [...actions].every(button => !button.disabled);
       }, null, { timeout: TIMEOUT });
+      assert.equal(await mobile.evaluate(() => globalThis.__mobileChartSheetRenders), 1,
+        'opening share options during preparation must reuse the first sheet');
+      await pendingDialog.locator('.calc-share-dialog__close').click();
+      const preparedShare = mobile.getByRole('button', { name: 'Share your chart', exact: true });
+      await preparedShare.waitFor({ timeout: TIMEOUT });
       const mobileTapStart = await mobile.evaluate(() => performance.now());
-      await mobile.locator('[data-share-card]').click();
+      await preparedShare.click();
       await mobile.waitForFunction(() => globalThis.__mobileShareCalls === 1, null, { timeout: TIMEOUT });
       const mobilePayload = await mobile.evaluate(() => globalThis.__mobileSharePayload);
       assert.equal(mobilePayload.files.length, 1, 'one mobile tap must share one prepared file');

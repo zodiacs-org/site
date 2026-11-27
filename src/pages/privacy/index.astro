@@ -11,6 +11,8 @@ const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
+// The birthday reminder is named only while the site offers it (src/lib/birthday-reminder/).
+const birthdayReminderOffered = (import.meta.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED ?? process.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED) === '1';
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
 // Google and Apple sign-in and saved pages are build flags, off until set up.
 const oauthProviders = enabledOAuthProviders({
@@ -495,6 +497,23 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
           While it is off, no email uses your chart. Turning it off, or
           withdrawing chart sync, stops your chart being used for the next
           email.
+        </p>
+      )}
+      {birthdayReminderOffered && (
+        <p>
+          After scoring your year you can ask for one email a year, on your
+          birthday. We send a confirmation through <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>
+          with a link that expires after 48 hours. We delete expired, unconfirmed
+          requests during daily cleanup and when we process another signup. We keep your email
+          address, your birthday's month and day, and when you asked and confirmed.
+          We record delivery attempts, a fingerprint of the outgoing message
+          and when it was sent to prevent duplicates. We count confirmation
+          requests to limit how often we email you.
+          Keep the confirmation email or the Stop and delete link on the
+          confirmation page. You can use that link to delete your email address
+          and birthday from the reminder list at any time. Every birthday email
+          has the same link. Deleting your Zodiacs account leaves the reminder
+          active until you stop it.
         </p>
       )}
       <p>

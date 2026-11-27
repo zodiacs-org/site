@@ -1,6 +1,9 @@
 // The site's own code, what src/ and api/ deploy, imports @zodiacs/engine's
-// root and other entry points but never ./calc or ./vedic, as the engine
-// page and llms-full.txt say. Evidence tools under docs/ may import either.
+// root and other entry points but never ./calc, and ./vedic only in
+// src/lib/engine/vedic.ts, the boundary the Vedic signs page and the
+// get_vedic_signs tool read the ayanamsa and nakshatras through, as the engine
+// page and llms-full.txt say. Tests, which are not deployed, and evidence tools
+// under docs/ may import either.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -45,11 +48,12 @@ describe('the engine entry points the site imports', () => {
     expect(forms.map((form) => [...form.matchAll(ENGINE_IMPORT)].map(([, entry = '']) => entry))).toEqual([['calc'], ['vedic'], ['calc'], ['']]);
   });
 
-  it('imports neither @zodiacs/engine/calc nor @zodiacs/engine/vedic in src/ and api/', () => {
+  it('imports @zodiacs/engine/calc nowhere in src/ and api/, and @zodiacs/engine/vedic only at the Vedic signs boundary', () => {
     const entries = engineImports(['src', 'api']);
+    const deployed = (entry) => [...(entries.get(entry) ?? [])].filter((path) => !/\.test\.[cm]?[jt]sx?$/u.test(path)).sort();
     // The site does import the engine: the root entry, among others.
     expect(entries.has('')).toBe(true);
-    expect([...(entries.get('calc') ?? [])], 'importers of @zodiacs/engine/calc').toEqual([]);
-    expect([...(entries.get('vedic') ?? [])], 'importers of @zodiacs/engine/vedic').toEqual([]);
+    expect(deployed('calc'), 'importers of @zodiacs/engine/calc').toEqual([]);
+    expect(deployed('vedic'), 'importers of @zodiacs/engine/vedic').toEqual(['src/lib/engine/vedic.ts']);
   });
 });

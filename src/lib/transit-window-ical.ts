@@ -12,7 +12,7 @@ export function calendarTransitWindows(windows: readonly TransitWindow[], timeKn
 
 export function serializeTransitWindows(
   windows: readonly TransitWindow[],
-  options: TransitCalendarOptions & { timeKnown: boolean },
+  options: TransitCalendarOptions & { timeKnown: boolean; birthTimeKnown?: boolean },
 ): string {
   const periods = calendarTransitWindows(windows, options.timeKnown)
     .sort((a, b) => a.startUtc.localeCompare(b.startUtc) || a.id.localeCompare(b.id));
@@ -28,7 +28,13 @@ export function serializeTransitWindows(
       'Estimated tropical transit period within a 3-degree orb. Dates are approximate, not predictions of events.',
       window.startClipped ? 'Already in orb at the start of the searched range; earlier entry is unknown.' : 'Starts at the estimated entry into orb.',
       window.endClipped ? 'Still in orb at the end of the searched range; later exit is unknown.' : 'Ends at the estimated exit from orb.',
-      !options.timeKnown ? 'Uses reference natal positions. Birth time is unknown or unverified; Moon and angles are excluded.' : '',
+      options.hostZoneDiffers
+        ? options.birthTimeKnown === false
+          ? 'Uses reference natal positions for local noon from a device whose time-zone data differed from our historical table near the birth date; its offset was used, Moon and angles are excluded, and period dates depend on it.'
+          : 'Calculated from the supplied birth time on a device whose time-zone data differed from our historical table near the birth date; its offset was used, Moon and angles are excluded, and period dates depend on it.'
+        : !options.timeKnown
+          ? 'Uses reference natal positions. Birth time is unknown or unverified; Moon and angles are excluded.'
+          : '',
     ];
     if (window.exactTopologyStatus === 'uncertain' || window.peak.kind === 'uncertain') {
       details.push('Close alignment over this period; exact timing and number of passes are unresolved. No precise peak is asserted.');
@@ -42,6 +48,10 @@ export function serializeTransitWindows(
       details.push(`Model-estimated exact passes (UTC): ${window.exactPassesUtc.join(', ')}.`);
     } else {
       details.push('No verified peak lies within this searched portion.');
+    }
+    for (const note of options.notes ?? []) {
+      const trimmed = note.trim();
+      if (trimmed) details.push(trimmed);
     }
     return [
       'BEGIN:VEVENT', `UID:${escapeIcalText(uid)}`, `DTSTAMP:${stamp}`,

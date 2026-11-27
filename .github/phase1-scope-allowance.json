@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "legal-pages-locale-privacy-d831daea0b36",
-  "baseCommit": "d831daea0b361e55b9c154a1135141114c783675",
+  "id": "legal-pages-locale-privacy-dea5257151a3",
+  "baseCommit": "dea5257151a37317b7644682545dd8c9ae86cfff",
   "protectedPaths": [
     "public/assets/app.js",
     "scripts/registry-risk.test.mjs",

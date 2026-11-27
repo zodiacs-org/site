@@ -98,7 +98,7 @@ function countryMatches(country: string, hint: string): boolean {
 }
 
 /** "St Louis", "St. Louis" and "Saint Louis" are one name to a person; the index writes each place one way. */
-function queryVariants(place: string): string[] {
+export function queryVariants(place: string): string[] {
   const query = foldedQuery(place);
   if (!query) return [];
   const rest = /^(?:st\.?|saint)\s+(.+)$/u.exec(query)?.[1];

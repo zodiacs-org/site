@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ASSISTANT_CONTEXT } from '../api/_assistant/context.ts';
+import { LAUNCH_FLAGS } from '../src/lib/launch-flags.ts';
 import {
   BANNED_CONSUMER_VOCABULARY,
   LAUNCH_FLAGGED_ROUTES,
@@ -17,11 +18,23 @@ import {
 
 let temporaryDirectory;
 
-// The committed module is the output with every launch switch unset; the
-// good day finder joins the inventory only while its switch is exactly '1'.
+// The committed module is the output with every launch switch unset. Each
+// page in LAUNCH_FLAGGED_ROUTES joins the inventory, as one static page and
+// one line, only while its own switch is exactly '1', so the expectations
+// below follow whichever switches an env has on, for any number of pages.
 const FLAGS_OFF = Object.freeze({});
-const GOOD_DAYS_ON = Object.freeze({ PUBLIC_GOOD_DAYS_ENABLED: '1' });
-const GOOD_DAYS_LINE = '- /good-days/ —';
+const switchedRoutes = (env) => Object.entries(LAUNCH_FLAGGED_ROUTES)
+  .filter(([, flag]) => env[flag] === '1')
+  .map(([route]) => route);
+const allSwitches = (value) => Object.fromEntries(LAUNCH_FLAGS.map((flag) => [flag, value]));
+// Every switch off, every switch on, each switch alone and each switch off
+// with the rest on: the states a merge of the flagged pages can be built in.
+const SWITCH_STATES = [
+  ['unset', FLAGS_OFF],
+  ['all on', allSwitches('1')],
+  ...LAUNCH_FLAGS.map((only) => [`only ${only} on`, { ...allSwitches('0'), [only]: '1' }]),
+  ...LAUNCH_FLAGS.map((except) => [`all on but ${except}`, { ...allSwitches('1'), [except]: '0' }]),
+];
 
 afterEach(async () => {
   if (temporaryDirectory) {
@@ -33,9 +46,9 @@ afterEach(async () => {
 describe('assistant site context', () => {
   it.each([
     ['unset', FLAGS_OFF],
-    ['on', GOOD_DAYS_ON],
-  ])('contains every tool route and the complete live route families (good day finder switch %s)', async (_mode, env) => {
-    const goodDays = env.PUBLIC_GOOD_DAYS_ENABLED === '1';
+    ['all on', allSwitches('1')],
+  ])('contains every tool route and the complete live route families (launch switches %s)', async (_mode, env) => {
+    const pagesOn = switchedRoutes(env).length;
     const { context, counts } = await generateAssistantContext({ env });
 
     expect(TOOL_ROUTES).toEqual([
@@ -95,18 +108,23 @@ describe('assistant site context', () => {
       // PUBLIC_GOOD_DAYS_ENABLED is '1'.
       // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
+      // Each page in LAUNCH_FLAGGED_ROUTES adds one static page, only while
+      // its switch is '1'.
       // The Fortune 500 CEO sign study at /studies/fortune-500-ceo-signs/ adds one more.
       // The support page at /support/ adds one more, and one static page.
-      consumerRoutes: 721 + Number(goodDays),
+      // The iPhone app privacy policy adds one static page.
+      consumerRoutes: 722 + pagesOn,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 82 + Number(goodDays),
+      staticPages: 83 + pagesOn,
       tools: 27,
     });
-    if (goodDays) expect(context).toContain(GOOD_DAYS_LINE);
-    else expect(context).not.toContain('/good-days/');
+    expect(context).toContain('- /app/privacy/: How Simastry handles');
+    for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
+      expect(context.includes(`- ${route} \u2014`)).toBe(switchedRoutes(env).includes(route));
+    }
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
     expect(context).toContain('- /learn/placements/sun-in-aries/ — What Sun in Aries means in a birth chart.');
@@ -132,7 +150,12 @@ describe('assistant site context', () => {
     expect(context).toContain('historical coverage and tzdb version depend on that host');
     expect(context).toContain('uses 12:00 local civil time as a reference');
     expect(context).toContain('omits the rising sign, angles, and houses');
-    expect(context).toContain('marks the Moon’s sign as unverified, because the Moon can change sign during that local date');
+    // The Moon's sign only where the birth date's own limits settle it, never noon's degree.
+    expect(context).toContain('Because the Moon can change sign during that local date, when the birth date’s start '
+      + 'and end can be confirmed the birth chart and Moon sign calculators name the Moon’s sign, without a degree, if '
+      + 'the Moon held it for the whole birth date, show both signs if the Moon changed sign that day, and otherwise '
+      + 'mark the Moon’s sign as unverified.');
+    expect(context).not.toContain('marks the Moon’s sign as unverified, because');
 
     expect(context).toContain('PAGE INVENTORY — DAILY AND MONTHLY HOROSCOPES');
     expect(context).toContain('Treat “today” as an exact UTC-date claim');
@@ -194,24 +217,63 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     expect(ASSISTANT_CONTEXT).toBe(first.context);
   });
 
-  it('commits the switches-unset output, and the good day finder switch adds exactly its one line', async () => {
-    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED', '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED', '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED' });
-    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
+  it('names a known launch switch for every flagged page', () => {
+    expect(Object.keys(LAUNCH_FLAGGED_ROUTES).length).toBeGreaterThan(0);
+    for (const [route, flag] of Object.entries(LAUNCH_FLAGGED_ROUTES)) {
+      expect(route).toMatch(/^\/[a-z0-9/-]+\/$/u);
+      expect(LAUNCH_FLAGS).toContain(flag);
+    }
+  });
 
+  it('leaves the retrogrades-in-your-chart Guide line out of the deployed context, and the feature doc says how it joins', async () => {
+    // The site assistant serves the committed module (api/assistant.ts), which the build does not regenerate, so
+    // switching PUBLIC_RETROGRADES_FOR_YOU_ENABLED on adds no Guide line by itself; the doc names the step that does.
+    expect(LAUNCH_FLAGGED_ROUTES['/retrogrades/for-you/']).toBe('PUBLIC_RETROGRADES_FOR_YOU_ENABLED');
+    expect(ASSISTANT_CONTEXT).not.toContain('/retrogrades/for-you/');
+    const on = await generateAssistantContext({ env: { PUBLIC_RETROGRADES_FOR_YOU_ENABLED: '1' } });
+    expect(on.context.split('\n').filter((line) => line.startsWith('- /retrogrades/for-you/'))).toHaveLength(1);
+    const doc = (await readFile(new URL('../docs/platform/zodiacs-ai/PERSONAL_TOOLS.md', import.meta.url), 'utf8')).replace(/\s+/gu, ' ');
+    for (const step of ['api/_assistant/context.ts', 'LAUNCH_FLAGGED_ROUTES', "'/retrogrades/for-you/'", 'npm run data:assistant-context', 'Merge it only after the flag is on in production']) {
+      expect(doc, step).toContain(step);
+    }
+  });
+
+  it('leaves the astrocartography Guide line out of the deployed context, and the feature doc says how it joins', async () => {
+    // The site assistant serves the committed module (api/assistant.ts), which the build does not regenerate, so
+    // switching PUBLIC_ASTROCARTOGRAPHY_ENABLED on adds no Guide line by itself; the doc names the step that does.
+    expect(LAUNCH_FLAGGED_ROUTES['/astrocartography/']).toBe('PUBLIC_ASTROCARTOGRAPHY_ENABLED');
+    expect(ASSISTANT_CONTEXT).not.toContain('/astrocartography/');
+    const on = await generateAssistantContext({ env: { PUBLIC_ASTROCARTOGRAPHY_ENABLED: '1' } });
+    expect(on.context.split('\n').filter((line) => line.startsWith('- /astrocartography/'))).toHaveLength(1);
+    const doc = (await readFile(new URL('../docs/platform/zodiacs-ai/PERSONAL_TOOLS.md', import.meta.url), 'utf8')).replace(/\s+/gu, ' ');
+    for (const step of ['api/_assistant/context.ts', 'LAUNCH_FLAGGED_ROUTES', "'/astrocartography/'", 'npm run data:assistant-context', 'Merge it only after the flag is on in production']) {
+      expect(doc, step).toContain(step);
+    }
+  });
+
+  it('commits the switches-unset output, and a switch that is not exactly 1 adds nothing', async () => {
+    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
     expect(ASSISTANT_CONTEXT).toBe(off.context);
-    expect(off.context).not.toContain('/good-days/');
+    for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) expect(off.context).not.toContain(route);
 
     for (const value of ['', '0', 'true', ' 1']) {
-      const notOn = await generateAssistantContext({ env: { PUBLIC_GOOD_DAYS_ENABLED: value } });
+      const notOn = await generateAssistantContext({ env: allSwitches(value) });
       expect(notOn.context).toBe(off.context);
     }
+  });
 
-    const on = await buildAssistantContext({ output: join(temporaryDirectory, 'on.ts'), env: GOOD_DAYS_ON });
+  it.each(SWITCH_STATES)('with launch switches %s, adds exactly one line for each flagged page that is on', async (_state, env) => {
+    const off = await generateAssistantContext({ env: FLAGS_OFF });
+    const { context, counts } = await generateAssistantContext({ env });
+    const on = switchedRoutes(env);
     const offLines = off.context.split('\n');
-    const added = on.context.split('\n').filter((line) => !offLines.includes(line));
-    expect(added).toHaveLength(1);
-    expect(added[0].startsWith(GOOD_DAYS_LINE)).toBe(true);
-    expect(on.context.split('\n').filter((line) => line !== added[0])).toEqual(offLines);
+    const added = context.split('\n').filter((line) => !offLines.includes(line));
+
+    expect(added).toHaveLength(on.length);
+    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} \u2014`))).toHaveLength(1);
+    expect(context.split('\n').filter((line) => !added.includes(line))).toEqual(offLines);
+    expect(counts.staticPages).toBe(off.counts.staticPages + on.length);
+    expect(counts.consumerRoutes).toBe(off.counts.consumerRoutes + on.length);
   });
 });

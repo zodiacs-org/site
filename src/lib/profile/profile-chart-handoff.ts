@@ -1,5 +1,6 @@
 import type { HouseSystem } from '../engine/types';
 import type { City } from '../geo/search';
+import { calendarUnknownCanApply, hasVerifiedSavedCalendarFlags } from '../time/saved-calendar';
 import { loadProfile } from './read-store';
 import type { SavedChart } from './schema';
 
@@ -11,6 +12,9 @@ export interface ProfileChartRunInput {
   houseSystem: HouseSystem;
   subjectMode: 'self' | 'other';
   name?: string;
+  fromSavedChart?: boolean;
+  /** Saved `calendar-unknown` provenance when saved by engine 2.0.0+. */
+  savedCalendarUnknown?: boolean;
 }
 
 /** Resolve only within the profile already admitted by the synchronous access guard. */
@@ -21,6 +25,7 @@ export function profileChartRunInput(
   const chart = charts.find((candidate) => candidate.id === chartId);
   const place = chart?.birth.place;
   if (!chart || !place) return null;
+  const verifiedCalendarFlags = hasVerifiedSavedCalendarFlags(chart.summary);
   return {
     date: chart.birth.date,
     time: chart.birth.time ?? '',
@@ -31,6 +36,10 @@ export function profileChartRunInput(
     // Legacy, unclassified charts remain in the safer people/naming flow.
     subjectMode: chart.relationship === 'self' ? 'self' : 'other',
     name: chart.name,
+    fromSavedChart: true,
+    ...(verifiedCalendarFlags ? {
+      savedCalendarUnknown: calendarUnknownCanApply(chart.birth.date) && chart.summary.flags.includes('calendar-unknown'),
+    } : {}),
   };
 }
 
