@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { sunYearView, type SunYearTense } from './sun-year';
-import { SUN_YEAR_WORDS, type SunYearLocale } from './sun-year-words';
+import { SUN_YEAR_WORDS, sunYearCentreValues, type SunYearLocale } from './sun-year-words';
 import { SIGN_SLUGS, signBySlug } from './signs';
 
 const at = (iso: string) => new Date(iso);
@@ -102,5 +102,44 @@ describe('the ring’s accessible name', () => {
     expect(say('past')).toContain('Leo ran from July 22 to August 22.');
     expect(say('under-way')).toContain('Leo runs from July 22 to August 22.');
     expect(say('ahead')).toContain('Leo will run from July 22 to August 22.');
+  });
+});
+
+describe('the Russian plate', () => {
+  const ru = SUN_YEAR_WORDS.ru;
+  const tenses: SunYearTense[] = ['past', 'under-way', 'ahead'];
+  const centre = (slug: string, form: 'one' | 'few' | 'many' | 'other') => {
+    const values = sunYearCentreValues(slug, 'ru');
+    return (ru.centre[form] ?? ru.centre.other).replace(/\{(\w+)\}/g, (token, name: string) => values[name] ?? token);
+  };
+  const lines = (slug: string) => [
+    ru.heading(slug),
+    ru.extremes(slug, slug),
+    ...tenses.map((tense) => ru.alt(slug, '22 июля', '22 августа', signBySlug(slug).element, ['A', 'B', 'C'], tense)),
+    ru.sunOn('27 ноября 2026 г.', slug, 5),
+    ru.sunOn('27 ноября 2026 г.', slug, null),
+    ru.sunMark('27 ноября 2026 г.', slug),
+    ru.nextSeason(slug, '23 июля 2027 г.'),
+    ...(['one', 'few', 'many', 'other'] as const).map((form) => centre(slug, form)),
+  ];
+
+  it('says "во Льве" in every line about Leo, never "в Льве"', () => {
+    for (const text of lines('leo')) {
+      expect(text).toContain('во Льве');
+      expect(text).not.toMatch(/(?:^|\s)в Льве/u);
+    }
+    expect(`31,3 ${centre('leo', 'few')}`).toBe('31,3 дня во Льве');
+  });
+
+  it('puts one preposition before every sign', () => {
+    for (const slug of SIGN_SLUGS) {
+      for (const text of lines(slug)) {
+        expect(text, slug).not.toMatch(/(?:^|\s)в Льве|(?:^|\s)(?:в|во) (?:в|во) /u);
+        expect(text, slug).not.toMatch(/undefined|null|NaN|[\u2013\u2014]/u);
+      }
+    }
+    expect(`30,5 ${centre('aries', 'other')}`).toBe('30,5 дня в Овне');
+    expect(ru.sunOn('27 ноября 2026 г.', 'leo', 5)).toBe('27 ноября 2026 г. Солнце находится во Льве, на 5° знака.');
+    expect(ru.sunMark('27 ноября 2026 г.', 'aries')).toContain('показывает, где находится Солнце 27 ноября 2026 г.: в Овне.');
   });
 });
