@@ -114,4 +114,18 @@ describe('pairAngle', () => {
     expect(pairAngle('scorpio', 'scorpio', 'it').lede).toContain('sono nello Scorpione');
     expect(pairAngle('gemini', 'libra', 'it').lede).toContain('I Gemelli e la Bilancia');
   });
+
+  it('agrees the Italian one-apart lede with its mixed nouns, and names one sign the same', () => {
+    for (const [a, b] of ALL_PAIRS) {
+      const angle = pairAngle(a, b, 'it');
+      expect(angle.lede, `${a}-${b}`).not.toContain('tutte e tre');
+      if (angle.steps === 1) expect(angle.lede, `${a}-${b}`).toContain('cambiano tutti e tre da un segno al successivo');
+    }
+    expect(pairAngle('aries', 'aries', 'it').heading).toBe('Ariete e Ariete, lo stesso segno');
+  });
+
+  it('words the Portuguese twelfth as the plate’s other fractions', () => {
+    expect(pairAngle('aries', 'taurus', 'pt').share).toBe('um doze avos da roda');
+    expect(pairAngle('aries', 'virgo', 'pt').share).toBe('cinco doze avos da roda');
+  });
 });
