@@ -1,10 +1,39 @@
 # Vendored @zodiacs/engine artifact
 
-The site installs `zodiacs-engine-2.1.0.tgz` from this directory. The archive
-is npm's `@zodiacs/engine@2.1.0`. Its computed SHA-512 matches npm's
-`dist.integrity`, and `zodiacs-engine-2.1.0.sha256` records its SHA-256. The
-release carries its LICENSE, LICENSING.md and NOTICE. The registry and pack
-measurements are in [the adoption evidence](../docs/platform/evidence/site-engine-2-1-0/).
+The site installs `zodiacs-engine-3.0.0.tgz` from this directory. It is a
+**vendored candidate, not on npm**: the engine's 3.0.0 archive, awaiting the
+owner's review, neither tagged nor published. The registry read of 2026-11-26
+records `2.1.0` under `latest` and `2.0.0-rc.3` under `next`, and no 3.0.0
+(`docs/platform/evidence/site-engine-3-0-0/npm-view.txt`).
+`zodiacs-engine-3.0.0.sha256` records its SHA-256. The archive carries its
+LICENSE, LICENSING.md and NOTICE. The adoption evidence is in
+[site-engine-3-0-0](../docs/platform/evidence/site-engine-3-0-0/).
+
+- Source commit: `2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322`
+- Carrier commit: `b5bfdb473b396a4f8c083e5689cf9560789784dd` (engine branch
+  `admin/engine-3.0.0-r4`)
+- Artifact SHA-256: `0addb2f4d39ea4d8e87f54ad82a033a16a94859c78845f055d2208e04259a9a3`
+- Packed size: 2,891,330 bytes; 107 files.
+
+3.0.0 computes on astronomy-engine until a caller installs the DE440 pack it
+ships, with `useDe440()` from `@zodiacs/engine/de440/pack`; 2.1.0 loaded the
+pack on import. The site installs it in every server process
+(`src/lib/engine/server-de440.mjs`): the compute API, the hosted AI runtime and
+Sky Watch, the local MCP adapter, the Astro build, the data and publishing
+scripts and the tests. Their positions are 2.1.0's: the evidence compares both
+releases field by field on each ephemeris. The browser stays on
+astronomy-engine, as with 2.1.0, now without a bundle-time rewrite, and
+`scripts/lib/browser-engine.mjs` refuses the pack in every browser build. The
+site's code uses none of 3.0.0's additions (True Black Moon Lilith, the
+`./minor-bodies` entry) and does not import `@zodiacs/engine/calc`. The
+engine's `CHANGELOG.md` lists every change.
+
+# Previous release: 2.1.0
+
+`zodiacs-engine-2.1.0.tgz` and its checksum remain archived; the site installed
+it from 2026-11-24 until 3.0.0. It is npm's `@zodiacs/engine@2.1.0`. Its
+computed SHA-512 matches npm's `dist.integrity`. The registry and pack
+measurements are in [its adoption evidence](../docs/platform/evidence/site-engine-2-1-0/).
 
 - Source commit: `92825deeeb5c74c5f56b37d5d612c3439347087e`
 - Artifact SHA-256: `272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc`

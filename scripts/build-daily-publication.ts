@@ -1,4 +1,5 @@
 /** Materialize the exact daily copy and its deterministic provenance record. */
+import '../src/lib/engine/server-de440.mjs';
 import { writeFile } from 'node:fs/promises';
 import {
   MANIFEST_PATH,

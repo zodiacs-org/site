@@ -15,6 +15,7 @@
  * sign is read from the full engine at that instant, exactly as the journal
  * page reads it at build time.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import webPush from 'web-push';

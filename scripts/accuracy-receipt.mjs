@@ -8,6 +8,7 @@
  * Mars through Pluto use their DE441 system barycentres, targets 4 to 9.
  * See conformance/arbiters/l1/build.py at the pinned commit in suite/source.json.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

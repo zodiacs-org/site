@@ -19,6 +19,7 @@
  * the AI runtime and the published developer plugin. This file carries no
  * generation timestamp, so a rebuild is byte-identical and `--check` holds.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';

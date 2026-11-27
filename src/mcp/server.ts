@@ -20,6 +20,8 @@
  * guard, so a malformed request produces a refusal and leaves the session able
  * to serve the next valid one.
  */
+// First: planet positions default to JPL DE440, as candidate.json says (src/lib/engine/server-de440.mjs).
+import '../lib/engine/server-de440.mjs';
 import { Transform } from 'node:stream';
 import { StdioServerTransport, serveStdio } from '@modelcontextprotocol/server/stdio';
 import { ENGINE_VERSION } from '@zodiacs/engine';
