@@ -88,8 +88,6 @@ import {
 } from './og-art-cards.mjs';
 import { OG_EN, ogImageForPath } from '../strings/seo.en.mjs';
 import { CHINESE_ZODIAC_ANIMALS, CHINESE_ZODIAC_COPY, chineseZodiacText } from '../data/chinese-zodiac';
-import { TOOLS_HUB } from './nav-tools';
-import { isHiddenChildPage } from '../data/hidden-child-pages.mjs';
 import { RETURN_EN } from './return-visits/copy';
 import birthdays from '../data/birthdays.json';
 
@@ -449,13 +447,13 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     expect(spec('birthday').kicker).toBe(tool('birthday').kicker);
     expect(spec('birthday').title.join(' ')).toBe(tool('birthday').title);
     expect(page('src/pages/birthday/index.astro')).toContain(`<h1 class="display">${spec('birthday').title.join(' ')}.</h1>`);
-    // The tools hub: its kicker, headline and the first sentence of its lede, with the count the hub prints.
+    // The tools hub: its kicker, headline and its lede without the count, which a launch flag changes.
     const tools = page('src/pages/tools/index.astro');
     expect(tools).toContain(`<span class="kicker">${spec('tools').kicker}</span>`);
     expect(tools).toContain(`<h1 class="tools-hub__title">${spec('tools').title.join(' ')}</h1>`);
-    expect(tools).toContain('{countTitle} tools, sorted by what you want to know.');
-    expect(TOOLS_HUB.filter((entry) => !isHiddenChildPage(entry.href))).toHaveLength(28);
-    expect(spec('tools').line).toBe('Twenty-eight tools, sorted by what you want to know.');
+    expect(tools).toContain('{countTitle} tools, sorted by what you want to know. New here? Start with your birth chart.');
+    expect(spec('tools').line).toBe('Sorted by what you want to know. New here? Start with your birth chart.');
+    expect(spec('tools').line).not.toMatch(/\d|twenty/i);
     // Learn: the hero's kicker, headline and the first sentence of its lede.
     const learn = page('src/pages/learn/index.astro');
     expect(learn).toContain(`<span class="kicker">${spec('learn').kicker}</span>`);

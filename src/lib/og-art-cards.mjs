@@ -502,8 +502,8 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
   {
     key: 'tools', routes: ['/tools/'],
     art: placed('lens', 700, 360, 0.9, { cx: 880 }), accent: null,
-    kicker: 'Free, no signup', title: ['Free astrology', 'tools'], size: 98, line: 'Twenty-eight tools, sorted by what you want to know.',
-    alt: 'Free astrology tools, no signup: twenty-eight tools, sorted by what you want to know, beside a painting of a lens and a compass over an old star map.',
+    kicker: 'Free, no signup', title: ['Free astrology', 'tools'], size: 98, line: 'Sorted by what you want to know. New here? Start with your birth chart.',
+    alt: 'Free astrology tools, no signup: sorted by what you want to know, beside a painting of a lens and a compass over an old star map.',
   },
   {
     key: 'learn', routes: ['/learn/'],
