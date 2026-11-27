@@ -1,4 +1,5 @@
 /** Writes src/data/horoscope-window.json around the committed daily program. */
+import '../src/lib/engine/server-de440.mjs';
 import { writeFile } from 'node:fs/promises';
 import { HOROSCOPE_WINDOW_PATH, expectedHoroscopeWindow, serializeWindow } from './horoscope-window-files';
 

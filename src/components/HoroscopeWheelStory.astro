@@ -1,0 +1,96 @@
+---
+/**
+ * The entrance laid over the wheel image on a horoscope page (docs/MOTION.md),
+ * a story plate in the /thesis/ manner like SunYearPlate and PairAnglePlate,
+ * told over the published image instead of a second figure. The image stays
+ * exactly as published; this is a thin veil on top of it, in the card's own
+ * colour, placed by the image's own geometry (horoscopeWheelStory in
+ * src/lib/horoscope-wheel.ts):
+ *
+ *   1. the ring is drawn round once, from the start of the page's sign, in
+ *      zodiac order, and each sign is uncovered as the ring passes it;
+ *   2. each planet grows into its place, from 40 percent, as the ring passes
+ *      its longitude (a hole opening in the veil over it);
+ *   3. the closing beat: the planets the reading draws on, the ones the image
+ *      shows in colour, arrive last.
+ *
+ * The veil is shown only while the story can play: motion on, the image
+ * loaded while the whole box was still below the screen (the small script
+ * below, which adds .is-armed), and the plate's one mark (.hw-go, a 1px line
+ * across the middle of the wheel) not yet settled. Otherwise, with no
+ * JavaScript, with reduced motion, in print, before the image loads or after
+ * the story, the plain image shows. Opacity, transform and stroke-dashoffset
+ * only; the whole pass ends inside the runtime's 2.6 s.
+ *
+ * The script (inline, as the site's policy allows no event attributes) arms
+ * the story only when the image has loaded while the box is still below the
+ * screen, so the veil never covers a picture someone is already looking at.
+ */
+import type { HoroscopeWheelStory } from '../lib/horoscope-wheel';
+
+interface Props {
+  story: HoroscopeWheelStory;
+}
+
+const { story } = Astro.props;
+const [x, y, w] = story.viewBox.split(' ');
+---
+<span class="hw-go" data-enter="draw" aria-hidden="true"></span>
+<svg class="hw-veil" viewBox={story.viewBox} aria-hidden="true" focusable="false">
+  <linearGradient id="hw-g" gradientUnits="userSpaceOnUse" x1="0" y1={y} x2="0" y2={Number(y) + Number(w)}><stop /><stop offset="1" /></linearGradient>
+  <mask id="hw-m">
+    <rect x={x} y={y} width={w} height={w} fill="#fff" />
+    {story.planets.map((p) => <circle class="hw-h" cx={p.x} cy={p.y} r={Math.round((p.r + 1) * 10) / 10} style={`--t:${p.t}ms`} />)}
+  </mask>
+  <g class="hw-w" stroke-width={story.band.width}>
+    {story.signs.map((s) => <path d={s.d} style={`--t:${s.t}ms`} />)}
+  </g>
+  <g class="hw-p" mask="url(#hw-m)">
+    {story.planets.map((p) => <circle cx={p.x} cy={p.y} r={p.r} />)}
+  </g>
+  <path class="hw-ring" pathLength="1" d={story.ring} />
+</svg>
+<script is:inline>(function(){try{var b=document.currentScript.parentNode,i=b.querySelector('img'),a=function(){if(b.getBoundingClientRect().top>=innerHeight)b.classList.add('is-armed')};if(i.complete&&i.naturalWidth)a();else i.addEventListener('load',a,{once:true})}catch(e){}})()</script>
+
+<style is:global>
+  .hw-go { position: absolute; left: 0; top: 55%; width: 100%; height: 1px; pointer-events: none; }
+  .hw-veil {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  /* The card's own colour behind the wheel, top to bottom (its gradient over the void). */
+  .hw-veil stop { stop-color: #0c0d10; }
+  .hw-veil stop + stop { stop-color: #090a0c; }
+  .hw-w { fill: none; stroke: url(#hw-g); }
+  .hw-w path { opacity: 0; }
+  .hw-p { fill: url(#hw-g); opacity: 0.86; }
+  .hw-h { fill: #000; transform-box: fill-box; transform-origin: center; }
+  .hw-ring { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 1; opacity: 0; }
+
+  /* Stacked, the wheel sits mid-card, where the card's gradient is flatter. */
+  @media (max-width: 1020px) {
+    .hw-veil stop { stop-color: #0c0e10; }
+    .hw-veil stop + stop { stop-color: #0b0c0f; }
+  }
+
+  @media screen and (prefers-reduced-motion: no-preference) {
+    html[data-entrance='on'] .is-armed > .hw-go:not(.is-done) ~ .hw-veil { display: block; }
+    /* Waiting: the ring not drawn, the signs and planets dim under the veil. */
+    html[data-entrance='on'] .hw-go:not(.is-in) ~ .hw-veil .hw-w path { opacity: 0.86; }
+    html[data-entrance='on'] .hw-go:not(.is-in) ~ .hw-veil .hw-h { opacity: 0; transform: scale(0.4); }
+    html[data-entrance='on'] .hw-go:not(.is-in) ~ .hw-veil .hw-ring { opacity: 1; stroke-dashoffset: 1; }
+    /* Playing: each delay is the moment the ring reaches that sign or planet.
+       The ring goes round in 1300 ms and fades into the image's own by 1900;
+       the reading's planets arrive from 1700 ms, and all is still by 2500. */
+    html[data-entrance='on'] .hw-go.is-in:not(.is-done) ~ .hw-veil .hw-w path { transition: opacity 380ms ease var(--t); }
+    html[data-entrance='on'] .hw-go.is-in:not(.is-done) ~ .hw-veil .hw-h {
+      transition: opacity 440ms var(--motion-ease) var(--t), transform 440ms var(--motion-ease) var(--t);
+    }
+    html[data-entrance='on'] .hw-go.is-in:not(.is-done) ~ .hw-veil .hw-ring { transition: stroke-dashoffset 1300ms linear, opacity 400ms ease 1500ms; }
+  }
+</style>

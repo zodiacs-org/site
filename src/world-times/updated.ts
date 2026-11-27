@@ -11,9 +11,13 @@
  * solved on NASA JPL Horizons, as each event's own page does (Linear ZOD-211).
  * Two printed minutes moved: the full moon of 15 October 2027 reads 13:47 UTC
  * and the eclipse of 18 July 2027 peaks at 16:02 UTC.
+ *
+ * 26 November 2026: the full moon year page draws the year's full Moons by
+ * their distance (src/components/sky/FullMoonYearPlate.astro), on the day of
+ * the daily edition it was built with.
  */
 export const MERCURY_RETROGRADE_2027_UPDATED = '2026-11-18';
-export const FULL_MOON_CALENDAR_2027_UPDATED = '2026-11-18';
+export const FULL_MOON_CALENDAR_2027_UPDATED = '2026-11-26';
 export const ECLIPSES_2027_UPDATED = '2026-11-14';
 export const BIRTHDAY_HUB_UPDATED = '2026-11-13';
 /** The template every /birthday/{month}-{day}/ page shares. */

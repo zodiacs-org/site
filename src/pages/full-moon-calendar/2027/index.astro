@@ -1,5 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import Motion from '../../../components/Motion.astro';
+import FullMoonYearPlate from '../../../components/sky/FullMoonYearPlate.astro';
 import '../../../styles/rx-table.css';
 import sky from '../../../data/sky.json';
 import { bodyLongitude } from '../../../lib/engine/full';
@@ -45,6 +47,7 @@ const fulls = (sky.moons as { type: string; at: string }[])
     const id = `full-moon-${at.slice(0, 10)}`;
     return {
       id,
+      skyAt: at,
       // Use the Horizons result when the committed lookup matches this calculation.
       at: new Date(nasaLunationAt('full', at) ?? at),
       name: second ? 'Blue' : MONTH_NAMES[date.getUTCMonth()],
@@ -79,6 +82,7 @@ const km = (n: number) => n.toLocaleString('en-US');
 // Full moons whose calendar date differs between two of the five clocks.
 const dateMoves = fulls.filter((f) => new Set(worldTimes(f.at).map((t) => t.ymd)).size > 1);
 const supermoons = fulls.filter((f) => f.supermoon);
+const plateSigns = Object.fromEntries(fulls.map((f) => [f.skyAt, f.sign.slug]));
 
 // The first full moon after this year, from the same sky data.
 const nextRaw = (sky.moons as { type: string; at: string }[]).find((m) => m.type === 'full' && new Date(m.at).getUTCFullYear() > YEAR);
@@ -151,6 +155,7 @@ const jsonLd = [
   sources={sources}
 >
   <section class="section--tight container container--narrow">
+    <Motion />
     <div class="tool-hero reveal">
       <a class="crumb" href="/full-moon-calendar/"><span class="crumb__arrow" aria-hidden="true">←</span>Full moon calendar</a>
       <h1 class="display">The full moons of {YEAR}.</h1>
@@ -175,6 +180,8 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  <FullMoonYearPlate year={YEAR} signs={plateSigns} />
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">

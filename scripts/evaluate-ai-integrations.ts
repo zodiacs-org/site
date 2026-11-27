@@ -1,3 +1,4 @@
+import '../src/lib/engine/server-de440.mjs';
 import assert from 'node:assert/strict';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { performance } from 'node:perf_hooks';

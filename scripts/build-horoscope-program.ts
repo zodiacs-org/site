@@ -1,3 +1,4 @@
+import '../src/lib/engine/server-de440.mjs';
 import { writeFile } from 'node:fs/promises';
 import {
   HOROSCOPE_PROGRAM_PATH,

@@ -6,6 +6,7 @@
  *
  * The shared builder is side-effect free; this CLI is the only writer.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';

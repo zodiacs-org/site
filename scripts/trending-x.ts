@@ -18,6 +18,7 @@
  *
  *   npx vite-node --script scripts/trending-x.ts -- --names-list "Elon Musk,#JensenHuang" --out trending-report
  */
+import '../src/lib/engine/server-de440.mjs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createLocalTimeModule } from '../api/_compute/local-time.mjs';

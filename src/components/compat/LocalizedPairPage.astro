@@ -11,6 +11,8 @@ import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
 import ArtFrame from '../ArtFrame.astro';
+import Motion from '../Motion.astro';
+import PairAnglePlate from './PairAnglePlate.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
 import { SIGNS, signName, elementLabel, modalityLabel, type Sign } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
@@ -237,6 +239,8 @@ const jsonLd = [
 >
   <link slot="head" rel="preload" href="/fonts/eb-garamond-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
   <article class="ph ph--localized" style={`--a:${a.hue};--b:${b.hue}`}>
+    {/* The entrance runtime (docs/MOTION.md), inside the first wrapper and before the plate's one mark. The Russian pair pages (held in the locale expansion) have no plate words yet, so they take neither. */}
+    {locale !== 'ru' && <Motion />}
     <header class="ph-hero">
       <div class="ph-hero__art">
         <ArtFrame sign={a.slug} locale={locale} flip eager avif class="ph-pane ph-pane--a" sizes="(max-width: 760px) 128vw, 66vw" />
@@ -276,6 +280,13 @@ const jsonLd = [
         <a class="textlink" href="#basis">{c.basisTitle} <span class="arr" aria-hidden="true">→</span></a>
       </div>
     </div>
+
+    {/* The angle between the two signs on the wheel, as on the English page: under the pattern strip, above the read. */}
+    {locale !== 'ru' && (
+      <div class="kwrap">
+        <PairAnglePlate a={a.slug} b={b.slug} locale={locale} />
+      </div>
+    )}
 
     <section class="ksection ph-readsec ph-readsec--localized">
       <div class="kwrap kwrap--narrow">

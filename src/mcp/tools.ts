@@ -181,7 +181,8 @@ export function describeCapabilities(): ToolOutcome {
   const receipt = capabilitiesReceipt();
   const value: CapabilitiesOutput = {
     adapter: { name: ADAPTER_NAME, version: ADAPTER_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' },
-    engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'published', registry: 'npm' },
+    // 3.0.0 is a vendored candidate, not on npm (src/data/platform-engine-candidate.json).
+    engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'unpublished-candidate' },
     schemas: { envelope: NATAL_ENVELOPE_SCHEMA, receipt: NATAL_RECEIPT_SCHEMA, diagnostic: NATAL_DIAGNOSTIC_SCHEMA },
     supported: {
       houseSystems: [...HOUSE_SYSTEMS],

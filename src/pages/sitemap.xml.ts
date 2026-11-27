@@ -390,6 +390,14 @@ const CONVENTIONS_LASTMOD = '2026-10-27';
 const CONVENTIONS_ROUTES = ['/developers/conventions/', '/developers/', '/developers/conformance/'] as const;
 // Engine 1.1.0-rc.1 adopted 2026-10-27; the routes are listed where it is applied, last.
 const ENGINE_110_RC1_LASTMOD = '2026-10-27';
+// Engine 3.0.0 adopted 2026-11-27, with DE440 installed on the server, and MCP adapter
+// 0.1.0-rc.30: the developer pages, methodology page, and guides that describe the engine.
+const ENGINE_300_LASTMOD = '2026-11-27';
+const ENGINE_300_ROUTES = [
+  '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/', '/developers/conventions/',
+  '/developers/demo/', '/developers/engine/', '/developers/mcp/', '/developers/playground/', '/developers/support/',
+  '/methodology/',
+] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -857,9 +865,21 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-11-26'] as const,
   // What an unknown birth time does to the Moon's sign (UNKNOWN_TIME_MOON_ROUTES), last so it wins.
   ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
+  // Engine 3.0.0 and MCP adapter 0.1.0-rc.30 (ENGINE_300_ROUTES, /methodology/, and the guides), last so it wins.
+  ...[...ENGINE_300_ROUTES, ...DEVELOPER_GUIDES_ROUTES].map((loc) => [loc, ENGINE_300_LASTMOD] as const),
+  // This PR's Origin and Host rules on the MCP developer page remain after
+  // main's 27 November engine 3.0.0 lastmod, so the sitemap date must be later.
+  ['/developers/mcp/', '2026-11-28'] as const,
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
   ['/app/privacy/', '2026-11-22'] as const,
   ['/support/', '2026-11-22'] as const,
+  // The full moon calendar's plate of the year's full Moons by distance (src/components/sky/FullMoonYearPlate.astro),
+  // on the day of the daily edition it was built with, last so it wins. The 2027 page takes the same day through
+  // FULL_MOON_CALENDAR_2027_UPDATED, which it prints.
+  ['/full-moon-calendar/', '2026-11-26'] as const,
+  // The Mercury retrograde page's plate of the year's loops (src/components/sky/MercuryYearPlate.astro), on the day
+  // of the daily edition it was built with, last so it wins.
+  ['/mercury-retrograde/', '2026-11-26'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -1160,6 +1180,15 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
   }
+  // The Sun's year plate on the sign guides (src/components/guide/SunYearPlate.astro), in English, Spanish, French,
+  // Italian and Portuguese (the Russian guides are not listed), on the day of the daily edition it was built with.
+  // Dated here, after making localized copies, so the guides' own dates (and the English guides' dateModified) stay.
+  const SUN_YEAR_PLATE_PAGES = new Set(['', '/es', '/fr', '/it', '/pt'].flatMap((prefix) => (
+    SIGNS.map((sign) => `${prefix}/${sign.slug}/`)
+  )));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (SUN_YEAR_PLATE_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-26');
+  }
   // The natal planet-pair release links each geometry guide to the same
   // angle on the three pair pages.
   if (natalAspectsPublished) {
@@ -1236,6 +1265,15 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   ]));
   for (const url of [...urls, ...localizedUrls]) {
     if (SHARE_CARD_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-10');
+  }
+  // The plate drawing the angle between the two signs on the wheel (src/components/compat/PairAnglePlate.astro):
+  // every pair page, in English and translated (the Russian pairs are not listed), on the day of the daily edition it
+  // was built with.
+  const PAIR_ANGLE_PLATE_PAGES = new Set(['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => (
+    pairs.map((pair) => `${prefix}/compatibility/${pair.id}/`)
+  )));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (PAIR_ANGLE_PLATE_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-26');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no

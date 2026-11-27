@@ -22,6 +22,7 @@
  * Refresh yearly alongside sky.json so the fast planets stay ahead of
  * the calendar.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';

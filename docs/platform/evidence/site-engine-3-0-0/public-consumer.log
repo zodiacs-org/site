@@ -1,0 +1,8 @@
+Public chart, receipt and crossing example from a separate consumer directory.
+Installed vendor/zodiacs-engine-3.0.0.tgz into an empty package with TypeScript 5.9.3 on v22.23.5; public-consumer-example.ts (synthetic birth) calls useDe440() as 3.0.0 asks, was type-checked with tsc --strict, then compiled and run: {"version":"3.0.0","ephemeris":"jpl-de440","sun":"pisces","crossings":1}
+{
+  "version": "3.0.0",
+  "sha256": "0addb2f4d39ea4d8e87f54ad82a033a16a94859c78845f055d2208e04259a9a3",
+  "publicExamples": "passed",
+  "types": "passed"
+}

@@ -1,8 +1,11 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
+import Motion from '../../../components/Motion.astro';
 import SignGuideHero from '../../../components/SignGuideHero.astro';
 import SignGuideFacts from '../../../components/SignGuideFacts.astro';
+import SunYearPlate from '../../../components/guide/SunYearPlate.astro';
+import programData from '../../../data/horoscope-program.json';
 import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
@@ -24,6 +27,9 @@ const guide = italianGuideFor(sign);
 const idx = SIGNS.findIndex((s) => s.slug === sign.slug);
 const prev = SIGNS[(idx + 11) % 12];
 const next = SIGNS[(idx + 1) % 12];
+// The Sun's year plate reads the same day as the English guide: the daily
+// edition's date.
+const editionDate = (programData as { anchorDate: string }).anchorDate;
 const easeful = {
   aries: ['leo', 'sagittarius', 'gemini'],
   taurus: ['virgo', 'capricorn', 'cancer'],
@@ -93,12 +99,15 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <article style={`--sign:${sign.hue}`}>
+    <Motion />
     <SignGuideHero sign={sign.slug} locale="it" title={signName(sign, 'it')} sub={guide.intro[0]}>
       <a class="btn btn--primary btn--lg" href={localizePath('it', '/birth-chart/')}><span>Calcola il tuo tema natale gratis</span><span class="orb" aria-hidden="true">↗</span></a>
       <a class="btn btn--glass btn--lg" href={localizePath('it', '/compatibility/')}><span>Vedi la compatibilità</span></a>
     </SignGuideHero>
     <div class="kwrap guide-locale-facts">
       <SignGuideFacts facts={heroFacts} />
+
+      <SunYearPlate sign={sign.slug} now={new Date(`${editionDate}T12:00:00Z`)} locale="it" />
     </div>
 
     <div class="container container--narrow guide-es-body">

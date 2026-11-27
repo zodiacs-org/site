@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
+import { ENGINE_VERSION } from '@zodiacs/engine';
 import { expect, it } from 'vitest';
 import transition from '../../docs/platform/evidence/site-engine-1-1-0/connector-transition.json';
 import publishedReplies from '../../src/ai-tools/accounts/flag-off.fixture.json';
@@ -40,7 +41,8 @@ it('keeps the published connector reply while a separate route advertises and re
       const client = new Client({ name: 'transition-test', version: '1' });
       clients.push(client);
       await client.connect(new StreamableHTTPClientTransport(new URL(path, base)));
-      expect(client.getServerVersion()?.version).toBe(expected.serverVersion);
+      // /mcp/de440 names its route and engine in the version's build metadata (src/ai-tools/de440-contract.ts).
+      expect(client.getServerVersion()?.version).toBe(path === '/mcp/de440' ? `${expected.serverVersion}+de440.${ENGINE_VERSION}` : expected.serverVersion);
       const list = await client.listTools();
       expect(list.tools.find(tool => tool.name === 'get_upcoming_events')?.description).toContain(expected.description);
       const call = { name: 'get_upcoming_events', arguments: { from: '2026-01-26', to: '2026-01-27', bodies: ['Neptune'], kinds: ['ingress'] } };
