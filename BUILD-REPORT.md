@@ -184,7 +184,7 @@ There are 186 PNGs under `/assets/og/v2/`. The exhaustive directive-required set
 
 - Required sign guides (12): `/assets/og/v2/sign/{aquarius,aries,cancer,capricorn,gemini,leo,libra,pisces,sagittarius,scorpio,taurus,virgo}.png`, kept for links already shared; the guides show `/assets/og/v8/sign/{sign}.jpg` since 2026-10-19.
 - Required Registry lots (12): `/assets/og/v2/registry/{aquarius,aries,cancer,capricorn,gemini,leo,libra,pisces,sagittarius,scorpio,taurus,virgo}.png`.
-- Required standalone cards (3): `/assets/og/v2/registry.png`, `/assets/og/v2/thesis.png`, `/assets/og/v2/disclosure.png`.
+- Required standalone cards (3): `/assets/og/v2/registry.png`, `/assets/og/v2/thesis.png`, `/assets/og/v2/disclosure.png`; the thesis card is kept for links already shared, and the thesis shows `/assets/og/v8/thesis.jpg` since 2026-11-27.
 - Required tool/content cards (18): `/assets/og/v2/tool/{baby-zodiac,birth-chart,birthday,compatibility,eclipses,full-moon-calendar,horoscopes,how-to-read-a-birth-chart,learn,mercury-retrograde,moon-phase,moon-sign,retrogrades,rising-sign,saturn-return,today,tools,transits}.png`.
 - Additional generated compatibility-pair cards (78): `/assets/og/v2/pair/{canonical-sign1-sign2}.png`; one file for every generated pair.
 - Additional monthly horoscope cards (12): `/assets/og/v2/horoscope/{sign}.png`, kept for links already shared; the horoscope pages show `/assets/og/v8/horoscope/{sign}[-{surface}].jpg` since 2026-10-19.

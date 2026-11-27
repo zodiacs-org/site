@@ -343,6 +343,22 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `og/v2/ru/tool/chart-twins.png` stays in that family, published for links
   already shared. Counted in the localized cards' 12 MiB; not in the drift
   job; `verify-og-cards` checks them)
+- `public/assets/og/v8/thesis.jpg` ← `npm run data:og -- --only-thesis-art-card`
+  (the thesis page's art card, owner-chosen 2026-11-27: the page's own
+  painting of the old astronomical clock, `public/assets/art/zodiac-clock-1280.jpg`,
+  on the right, fading into the void, and on the left the twelve canonical
+  sign discs in one row, Aries to Pisces (the icons' 128px tier), the kicker,
+  the headline "Why Zodiacs Matter" on two lines, the line, and the lockup's
+  footer row; `--only-art-cards` draws it with the rest. The kicker and the
+  line are the thesis film's first two sentences word for word, from
+  `filmScript()` in `scripts/build-thesis-film.mjs`, and `og-art-cards.test.ts`
+  holds them to it; words, art placement, shade and disc row live in
+  `src/lib/og-art-cards.mjs`. A JPEG under the art cards' 300 KB budget,
+  counted in the v8 folder's 12 MiB. Not in the drift job (Chromium output);
+  `verify-og-cards` checks it. `public/thesis/index.html` names it in
+  og:image, twitter:image and the Article's image with one alt text. The v2
+  `og/v2/thesis.png` stays published, in the v2 family, for links already
+  shared)
 - `public/assets/og/year-sky/v1/2027.jpg` ← `npm run data:og -- --only-year-sky-card`
   (the share card for /your-2027-sky/; words in `OG_EN.yearSky`. Not in the
   drift job (Chromium output); `verify-og-cards` checks it)

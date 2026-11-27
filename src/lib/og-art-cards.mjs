@@ -161,12 +161,34 @@ export function chartTwinsArtCardCopy(locale = 'en') {
   return Object.freeze({ ...copy });
 }
 
-/** Every art card's public path: the homepage, the signs in zodiac order, each sign's horoscopes, then the chart twins card. */
+/**
+ * The thesis's card (owner-chosen 2026-11-27): the page's own painting, the
+ * old astronomical clock (public/assets/art/zodiac-clock-1280.jpg), on the
+ * right, and on the left the twelve sign discs in a row, the kicker, the
+ * headline and a line. The kicker and the line are the first scene of the
+ * thesis film, word for word (filmScript() in scripts/build-thesis-film.mjs,
+ * which checks each sentence against its data), and og-art-cards.test.ts holds
+ * them to it. `npm run data:og -- --only-thesis-art-card` draws it alone. The
+ * v2 card (/assets/og/v2/thesis.png) stays published for links already shared.
+ */
+export const THESIS_ART_CARD = `${ART_CARD_DIR}/thesis.jpg`;
+
+/** The words on the thesis card: the page's headline between the film's first two sentences. */
+export const THESIS_ART_CARD_COPY = Object.freeze({
+  kicker: 'The twelve signs are about 2,400 years old.',
+  title: 'Why Zodiacs Matter',
+  line: 'They outlived every medium that carried them.',
+});
+
+export const THESIS_ART_CARD_ALT = 'Why Zodiacs Matter: the twelve signs are about 2,400 years old and outlived every medium that carried them. The twelve sign discs in a row beside a painting of an old astronomical clock with the zodiac on its dial.';
+
+/** Every art card's public path: the homepage, the signs in zodiac order, each sign's horoscopes, the chart twins card, then the thesis card. */
 export const ART_CARDS = Object.freeze([
   HOME_ART_CARD,
   ...OG_SIGNS.map((sign) => signArtCard(sign.slug)),
   ...OG_SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => horoscopeArtCard(sign.slug, surface.key))),
   CHART_TWINS_ART_CARD,
+  THESIS_ART_CARD,
 ]);
 
 /**
@@ -263,6 +285,33 @@ export const CHART_TWINS_ART_CARD_DISCS = Object.freeze({
   sun: signHue('leo'),
   moon: signHue('cancer'),
 });
+
+/**
+ * The thesis card's painting (1280 × 720, drawn at 1260 × 709 from 500 px in,
+ * 40 px above the top, so the clock's dial fills the right of the card),
+ * fading in from the left, and the shade over it.
+ */
+export const THESIS_ART_CARD_ART = Object.freeze({
+  src: 'public/assets/art/zodiac-clock-1280.jpg',
+  left: 500,
+  top: -40,
+  width: 1260,
+  height: 709,
+  filter: 'saturate(0.9) brightness(0.95)',
+  mask: 'linear-gradient(90deg, transparent 0, #000 22%)',
+});
+export const THESIS_ART_CARD_SHADE = Object.freeze([
+  'linear-gradient(90deg, rgba(6, 7, 9, 0.94) 0%, rgba(6, 7, 9, 0.72) 38%, rgba(6, 7, 9, 0) 56%)',
+  'linear-gradient(0deg, rgba(6, 7, 9, 0.85) 0%, rgba(6, 7, 9, 0) 28%)',
+  'linear-gradient(180deg, rgba(6, 7, 9, 0.45) 0%, rgba(6, 7, 9, 0) 18%)',
+]);
+
+/**
+ * The twelve sign discs above the thesis card's kicker, Aries to Pisces in one
+ * row (the canonical icons' 128px tier): each disc's size and the gap between
+ * them, in px.
+ */
+export const THESIS_ART_CARD_DISCS = Object.freeze({ size: 32, gap: 7 });
 
 const ORDINALS = Object.freeze(['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth']);
 

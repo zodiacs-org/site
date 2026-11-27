@@ -19,6 +19,11 @@ import {
   HOME_ART_CARD_SCRIM,
   SIGN_ART_CARD_ART,
   SIGN_ART_CARD_SHADE,
+  THESIS_ART_CARD,
+  THESIS_ART_CARD_ALT,
+  THESIS_ART_CARD_ART,
+  THESIS_ART_CARD_COPY,
+  THESIS_ART_CARD_DISCS,
   horoscopeArtCard,
   horoscopeArtCardCopy,
   signArtCard,
@@ -50,6 +55,7 @@ import { HOROSCOPE_OG_SURFACES } from '../strings/seo.en.mjs';
 import { guideFacts, signOrdinal } from './guide-facts';
 import { signTagline } from './sign-display';
 import { SIGNS } from './signs';
+import { loadFilmScript } from '../../scripts/build-thesis-film.mjs';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const DASHES = /[‒-―−]/u;
@@ -118,8 +124,9 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       ...SIGNS.map((sign) => `/assets/og/v8/sign/${sign.slug}.jpg`),
       ...SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => `/assets/og/v8/horoscope/${sign.slug}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`)),
       '/assets/og/v8/tool/chart-twins.jpg',
+      '/assets/og/v8/thesis.jpg',
     ]);
-    expect(ART_CARDS).toHaveLength(98);
+    expect(ART_CARDS).toHaveLength(99);
     // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
     expect(ART_CARD_DISC).toBeGreaterThanOrEqual(128);
     expect(read('scripts/build-og-void.mjs')).toContain('public/assets/zodiac-icons/400/${s.slug}.webp');
@@ -189,6 +196,50 @@ describe('the chart twins art card (owner-chosen 2026-11-26)', () => {
     const generator = read('scripts/build-og-void.mjs');
     expect(generator).toContain("process.argv.includes('--only-chart-twins-card')");
     expect(generator).toContain("process.argv.includes('--only-localized-chart-twins-cards')");
+  });
+});
+
+describe('the thesis art card (owner-chosen 2026-11-27)', () => {
+  it('draws the page\'s own painting with the twelve canonical sign discs in a row', () => {
+    expect(THESIS_ART_CARD).toBe('/assets/og/v8/thesis.jpg');
+    expect(THESIS_ART_CARD_ART.src).toBe('public/assets/art/zodiac-clock-1280.jpg');
+    expect(read('public/thesis/index.html')).toContain('/assets/art/zodiac-clock-');
+    expect(readFileSync(new URL(`../../${THESIS_ART_CARD_ART.src}`, import.meta.url)).length).toBeGreaterThan(0);
+    expect(THESIS_ART_CARD_ART.width / THESIS_ART_CARD_ART.height).toBeCloseTo(1280 / 720, 2);
+    // One row of twelve discs, as wide as the kicker and short of the clock.
+    const { size, gap } = THESIS_ART_CARD_DISCS;
+    expect(size).toBeGreaterThanOrEqual(30);
+    expect(size).toBeLessThanOrEqual(36);
+    expect(88 + 12 * size + 11 * gap).toBeLessThanOrEqual(THESIS_ART_CARD_ART.left + 80);
+    const generator = read('scripts/build-og-void.mjs');
+    expect(generator).toContain("process.argv.includes('--only-thesis-art-card')");
+    expect(generator).toContain('const discs = SIGNS.map((s) => `<img src="${DISCS[s.slug]}"');
+    expect(generator).toContain('[THESIS_ART_CARD, artThesisCard()]');
+  });
+
+  it('prints the thesis film\'s first two sentences word for word', async () => {
+    const script = await loadFilmScript();
+    const [opening] = script.scenes;
+    expect(opening.lines).toEqual([THESIS_ART_CARD_COPY.kicker]);
+    expect(opening.then).toEqual([THESIS_ART_CARD_COPY.line]);
+    expect(THESIS_ART_CARD_COPY.title).toBe('Why Zodiacs Matter');
+    for (const words of [...Object.values(THESIS_ART_CARD_COPY), THESIS_ART_CARD_ALT]) {
+      expect(words).not.toMatch(DASHES);
+      expect(words).not.toMatch(/N\u00ba|\bNo\. ?\d/u);
+    }
+  });
+
+  it('is what the thesis page shares, with the one alt text in both places', () => {
+    const page = read('public/thesis/index.html');
+    const url = `https://zodiacs.org${THESIS_ART_CARD}`;
+    expect(page).toContain(`<meta property="og:image" content="${url}" />`);
+    expect(page).toContain('<meta property="og:image:type" content="image/jpeg" />');
+    expect(page).toContain(`<meta name="twitter:image" content="${url}" />`);
+    expect(page).toContain(`"image": "${url}",`);
+    expect(page).toContain(`<meta property="og:image:alt" content="${THESIS_ART_CARD_ALT}" />`);
+    expect(page).toContain(`<meta name="twitter:image:alt" content="${THESIS_ART_CARD_ALT}" />`);
+    // The v2 card stays published for links already shared.
+    expect(readFileSync(new URL('../../public/assets/og/v2/thesis.png', import.meta.url)).subarray(1, 4).toString('ascii')).toBe('PNG');
   });
 });
 

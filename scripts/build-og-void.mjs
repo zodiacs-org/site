@@ -31,6 +31,7 @@
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --only-chart-twins-card # the chart twins art card alone (v8, JPEG)
+ *   npm run data:og -- --only-thesis-art-card # the thesis art card alone (v8, JPEG)
  *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese, with the Russian chart twins card
  *   npm run data:og -- --only-localized-chart-twins-cards # the chart twins card alone in es, fr, it, pt and ru (v8, JPEG)
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
@@ -99,6 +100,11 @@ const {
   HOME_ART_CARD_SCRIM,
   SIGN_ART_CARD_ART,
   SIGN_ART_CARD_SHADE,
+  THESIS_ART_CARD,
+  THESIS_ART_CARD_ART,
+  THESIS_ART_CARD_COPY,
+  THESIS_ART_CARD_DISCS,
+  THESIS_ART_CARD_SHADE,
   horoscopeArtCard,
   horoscopeArtCardCopy,
   signArtCard,
@@ -508,7 +514,7 @@ function signCard(s) {
 // panel behind the words, in the heroes' own shade, with the names and the
 // homepage headline in the display serif and the lockup in the footer row.
 // The art arrives as data: URIs read by the --only-art-cards run alone.
-const ART = { poster: null, signs: {}, icons: {}, twins: null };
+const ART = { poster: null, signs: {}, icons: {}, twins: null, clock: null };
 
 /**
  * The homepage: the poster cut at full size, the hero's scrim, its headline
@@ -605,6 +611,34 @@ function artChartTwinsCard(copy = CHART_TWINS_ART_CARD_COPY) {
     <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.4; max-width: 21ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
   </div>`;
   return shell(body, 'zodiacs.org/chart-twins/');
+}
+
+/**
+ * The thesis's card (owner-chosen 2026-11-27): the page's painting of the old
+ * astronomical clock on the right, fading in from the left under its shade;
+ * on the left the twelve sign discs in a row, Aries to Pisces, the film's
+ * first sentence as the kicker, the headline on two lines and the film's
+ * second sentence as the line, with the lockup in the footer row.
+ */
+function artThesisCard(copy = THESIS_ART_CARD_COPY) {
+  const art = THESIS_ART_CARD_ART;
+  const { size, gap } = THESIS_ART_CARD_DISCS;
+  const discs = SIGNS.map((s) => `<img src="${DISCS[s.slug]}" width="${size}" height="${size}" alt="" class="disc" style="width: ${size}px; height: ${size}px;" />`).join('');
+  const words = copy.title.split(' ');
+  const last = words.pop();
+  const title = `${escapeHtml(words.join(' '))}<br>${escapeHtml(last ?? '')}`;
+  const body = `
+  <img src="${ART.clock}" width="1280" height="720" alt=""
+    style="position: absolute; top: ${art.top}px; left: ${art.left}px; width: ${art.width}px; height: ${art.height}px; filter: ${art.filter};
+      -webkit-mask-image: ${art.mask}; mask-image: ${art.mask};" />
+  <div style="position: absolute; inset: 0; background: ${THESIS_ART_CARD_SHADE.join(', ')};"></div>
+  <div style="position: absolute; left: 88px; top: 10px; bottom: 96px; width: 560px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: ${gap}px;">${discs}</div>
+    <span class="kicker" style="margin: 24px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="display" style="font-size: 108px; margin-top: 10px; line-height: 0.95;">${title}</div>
+    <div class="sub" style="margin-top: 24px; font-size: 26px; line-height: 1.4; max-width: 22ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>`;
+  return shell(body, 'zodiacs.org/thesis/');
 }
 
 /**
@@ -1480,6 +1514,22 @@ if (process.argv.includes('--only-chart-twins-card')) {
   process.exit(0);
 }
 
+// The thesis's art card (2026-11-27), alone, so the published v8 cards keep
+// their bytes. --only-art-cards draws it with the rest.
+if (process.argv.includes('--only-thesis-art-card')) {
+  console.log('Rendering the thesis art card…');
+  ART.clock = await b64(THESIS_ART_CARD_ART.src, 'image/jpeg');
+  const raw = await capture(artThesisCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${THESIS_ART_CARD}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${THESIS_ART_CARD}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${THESIS_ART_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
 // The chart twins card in Spanish, French, Italian, Portuguese and Russian
 // (2026-11-26), alone, so every other art card keeps its bytes.
 // --only-localized-art-cards draws them with the rest.
@@ -1511,11 +1561,13 @@ if (process.argv.includes('--only-art-cards')) {
     ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
   }
   ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  ART.clock = await b64(THESIS_ART_CARD_ART.src, 'image/jpeg');
   const cards = [
     [HOME_ART_CARD, artHomeCard()],
     ...SIGNS.map((s) => [signArtCard(s.slug), artSignCard(s)]),
     ...SIGNS.flatMap((s) => HOROSCOPE_OG_SURFACES.map((surface) => [horoscopeArtCard(s.slug, surface.key), artHoroscopeCard(s, surface)])),
     [CHART_TWINS_ART_CARD, artChartTwinsCard()],
+    [THESIS_ART_CARD, artThesisCard()],
   ];
   let written = 0;
   for (const [path, html] of cards) {
