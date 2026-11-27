@@ -93,7 +93,9 @@ describe('a link to one saved result', () => {
       const page = PAGES.find(([path]) => path.test(record.href))?.[1];
       expect(page, record.href).toBeDefined();
       expect(pageSource(page!), record.href).toContain(FORWARD_LINE);
-      expect(record.href).not.toMatch(/1990|1988|2012|08:30|Ana|Mia|Luis|Madrid|40\.4/u);
+      // The id is a random UUID, whose hex digits can spell a year, so it is set aside first.
+      expect(record.href.split(`saved=${id}`)).toHaveLength(2);
+      expect(record.href.replace(`saved=${id}`, 'saved=<id>')).not.toMatch(/1990|1988|2012|08:30|Ana|Mia|Luis|Madrid|40\.4/u);
     }
   });
 });
