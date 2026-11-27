@@ -60,7 +60,7 @@ const jsonLd = [
     description,
     url: 'https://zodiacs.org/developers/engine/',
     applicationCategory: 'DeveloperApplication',
-    operatingSystem: 'Node.js 20.19 or a later 20.x, Node.js 22.7 and newer, or a browser through a bundler',
+    operatingSystem: 'Node.js 20.19 or a later 20.x, Node.js 22.12 and newer, or a browser through a bundler',
     softwareVersion: candidate.version,
     // The archive this page's install block fetches and checks.
     downloadUrl: candidate.artifactUrl,
@@ -96,7 +96,7 @@ const jsonLd = [
       </p>
       <p>
         ESM, TypeScript declarations included, for Node.js 20.19 or a later
-        20.x, Node.js 22.7 and newer, or any browser with a bundler. The code
+        20.x, Node.js 22.12 and newer, or any browser with a bundler. The code
         is MIT; the package is MIT and CC BY 4.0 together, because its ΔT
         module carries 32 values from Stephenson, Morrison and Hohenkerk's
         Table S15, which are CC BY 4.0. It also carries time data: the IERS
@@ -171,18 +171,16 @@ const jsonLd = [
       {!published && (
         <p>
           On npm, the registry read of {candidate.registryObservedOn}{' '}
-          records {candidate.registryVersion} under <code>latest</code> and
-          0.1.1-rc.16 under <code>next</code>.{' '}
+          records {candidate.registryVersion} under <code>latest</code>.{' '}
           <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
           installs {candidate.registryVersion}, the release before this candidate.
-          It computes the same values, but its records list no ids of the{' '}
-          <a href="/developers/conventions/">conventions registry</a>, and it
-          refuses this candidate's records as <code>unsupported_feature</code>.
+          It reads this candidate's records, and computes on its DE440 pack by
+          default, where this candidate computes on Astronomy Engine until{' '}
+          <code>useDe440()</code> installs the same pack.
           It was published from the engine repository's <code>release.yml</code>{' '}
           workflow with SLSA provenance, which names the source repository, the
           workflow and the commit the package was built from, and{' '}
-          <code>npm audit signatures</code> verified it on 11 October 2026 and
-          again on {candidate.registryObservedOn}.
+          <code>npm audit signatures</code> verified it on {candidate.registryObservedOn}.
         </p>
       )}
       <p>
@@ -284,8 +282,10 @@ const jsonLd = [
       <p>
         In the browser engine's comparison with NASA JPL Horizons at two dates,
         1907 and 2020, the largest difference is 14.8 arcseconds (Neptune, 2020).
-        The default DE440 calculation was compared with live NASA JPL
-        Horizons DE441. Across the 160 measurements from 1801 to 2026, the
+        The DE440 calculation, which the engine uses once{' '}
+        <code>useDe440()</code> installs its pack, as the site's server does,
+        was compared with live NASA JPL Horizons DE441. Across the 160
+        measurements from 1801 to 2026, the
         median disagreement in ecliptic longitude was <strong>0.05 arcseconds</strong>{' '}
         and the largest was <strong>0.53 arcseconds</strong>. Across 91,201
         comparisons sampled every tenth day through 2026, the median was
@@ -339,11 +339,11 @@ const jsonLd = [
     <div class="prose">
       <ul>
         <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> and <code>/calc</code> entry points{vedicInUse ? '' : ', which this site does not use'}. The core has no topocentric parallax; <code>/calc</code> offers a topocentric center.</li>
-        <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
+        <li>The core chart calculator covers Sun through Pluto and the true nodes; the site's chart calculator omits Chiron and the asteroids. The separate <code>@zodiacs/engine/minor-bodies</code> entry point exposes Chiron, Ceres, Pallas, Juno, and Vesta over 1800 to 2200 TT from tables fitted to NASA JPL Horizons.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
         <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
-        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this release is Node 22.22.2 and Node 24.21.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.23.3 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
+        <li>The manifest declares Node 20.19 or a later 20.x, and 22.12 and newer. What has actually been executed for this release is narrower than the declaration: Node 22.23.5 and Node 24.13.0 here for the parity check, and Node 22.23.5 for the packed-archive consumer check.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>
       <p>

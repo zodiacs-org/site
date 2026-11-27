@@ -52,8 +52,10 @@ describe('independent true node and polar references', () => {
       .digest('hex');
     // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
     // Horizons responses and engine version metadata; policies and gates are unchanged.
+    // 3.0.0 rebuild: engine version metadata and the digest of tools/engine-clock.ts, which installs
+    // the DE440 pack with useDe440() as the server does; Horizons responses, policies and gates are unchanged.
     expect(digest('independent-node-polar.json'))
-      .toBe('32181e51747ec4381c147a21da75d4ea0a944ab6ba73fc1f5c998b5f5c6d94bc');
+      .toBe('0a3b94cd2f5d5035d4620f1b4b9feccd1bd25e9ff95acab71d8e47092a1abdd0');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -114,8 +116,10 @@ describe('independent representative supported epochs', () => {
     // returned-chart references were re-evaluated there, with every gate unchanged.
     // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
     // Horizons responses and engine version metadata; every gate is unchanged.
+    // 3.0.0 rebuild: engine version metadata and the digest of tools/engine-clock.ts, which installs
+    // the DE440 pack with useDe440() as the server does; Horizons responses and every gate are unchanged.
     expect(digest('independent-eight-cases.json'))
-      .toBe('14cd1de6c6d7d49396a2026f7448554277c751537a43a50e0304edc271f28d67');
+      .toBe('f54b1c0c5e31d595cff36b6792b30ca1ef217a4e7ffff2f0ffb6bac33e347651');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });

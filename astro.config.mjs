@@ -1,3 +1,8 @@
+// Pages computed at build time, and by astro dev, read JPL DE440 as the
+// server does (src/lib/engine/server-de440.mjs). Astro renders them in this
+// process, where the engine, which Vite leaves external to the server bundle,
+// is this same module; the browser bundles refuse the pack (browserEngineVite).
+import './src/lib/engine/server-de440.mjs';
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';

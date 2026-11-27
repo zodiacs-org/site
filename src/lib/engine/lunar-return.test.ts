@@ -118,8 +118,10 @@ describe('independent lunar return references', () => {
     // references at those instants, retaining the independent crossings and gates.
     // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
     // Horizons responses and engine version metadata; policies and gates are unchanged.
+    // 3.0.0 rebuild: engine version metadata and the digest of tools/engine-clock.ts, which installs
+    // the DE440 pack with useDe440() as the server does; Horizons responses, policies and gates are unchanged.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('5e901f7404331b238771f80cb5205f06d06a6149612a695cddb0ecdde4fc7c9c');
+      .toBe('3cbe5ba288128d08e48bcb37665b82e07fd436f51b5e96d4113d2a5a3d6eebf8');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.29",
+  "version": "0.1.0-rc.30",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -43,15 +43,14 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "The published engine and site comparison are inlined into server.mjs. Planet positions default to DE440.",
+    "note": "The engine, a vendored candidate not on npm, and the site comparison are inlined into server.mjs. Planet positions default to DE440, which server.mjs installs with useDe440().",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "2.1.0",
-      "releaseStatus": "published",
+      "version": "3.0.0",
+      "releaseStatus": "unpublished-candidate",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc",
-      "registry": "npm"
+      "artifactSha256": "0addb2f4d39ea4d8e87f54ad82a033a16a94859c78845f055d2208e04259a9a3"
     },
     "ephemeris": {
       "name": "jpl-de440",
@@ -115,6 +114,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.28",
-  "changedSince": "Uses the uniform three-era continuous-UTC time-scale convention across all compute receipts. The adapter remains a review candidate."
+  "supersedes": "0.1.0-rc.29",
+  "changedSince": "Bundles @zodiacs/engine 3.0.0, a vendored candidate, in place of 2.1.0, and installs its DE440 pack with useDe440(), so its positions are 2.1.0's. get_capabilities labels the engine an unpublished candidate. The adapter remains a review candidate."
 }

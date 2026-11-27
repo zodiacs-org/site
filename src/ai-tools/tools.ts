@@ -1,3 +1,5 @@
+// First: the tools calculate on JPL DE440 wherever they run (src/lib/engine/server-de440.mjs).
+import '../lib/engine/server-de440.mjs';
 import { MOMENT_CHART_TOOL, MOMENT_ROUTING } from './features/moment-chart-contract';
 import { moonPhase } from '@zodiacs/engine';
 import { eventTimes, localIso, moonPhaseLabel } from './clear-time';

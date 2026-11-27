@@ -1,4 +1,5 @@
 /** Read-only, secret-free gate over the committed daily publication package. */
+import '../src/lib/engine/server-de440.mjs';
 import {
   canonicalJson,
   expectedDailyPackage,

@@ -801,7 +801,7 @@ describe('updateChartSummaries', () => {
       ...makeChart('almaty-1918'),
       birth: { date: '1918-02-16', time: '12:00', timeKnown: true, place: almaty },
       summary: {
-        engineVersion: '2.1.0',
+        engineVersion: ENGINE_VERSION,
         utcISO,
         houseSystem: 'whole' as const,
         bodies: [],
@@ -835,7 +835,7 @@ describe('updateChartSummaries', () => {
       ...makeChart('moscow-checked'),
       birth: { date: '1918-02-07', time: '12:00', timeKnown: true, place: moscow },
       summary: {
-        engineVersion: '2.1.0',
+        engineVersion: ENGINE_VERSION,
         utcISO: '1918-02-07T09:29:41.000Z',
         houseSystem: 'whole' as const,
         bodies: [],

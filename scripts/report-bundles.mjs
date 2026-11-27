@@ -310,6 +310,7 @@ const engineInternalImporters = [];
 const engineMathImporters = [];
 const engineTimeImporters = [];
 const engineLiteImporters = [];
+const engineDe440PackImporters = [];
 const windowRuntimeImporters = [];
 const sourceRuntimeImports = new Map();
 for (const path of sourceFiles) {
@@ -323,6 +324,7 @@ for (const path of sourceFiles) {
   if (specifiers.includes('@zodiacs/engine/internal/math')) engineMathImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/time')) engineTimeImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/lite')) engineLiteImporters.push(relativePath);
+  if (specifiers.includes('@zodiacs/engine/de440/pack')) engineDe440PackImporters.push(relativePath);
   if(runtimeWindowImport(source,relativePath))windowRuntimeImporters.push(relativePath);
   sourceRuntimeImports.set(relativePath,runtimeLocalImports(source,relativePath));
 }
@@ -405,6 +407,15 @@ if (
   || engineLiteImporters.some((path, index) => path !== allowedLiteImporters[index])
 ) {
   fail(`engine lite isolation: expected ${allowedLiteImporters.join(', ')}; found ${engineLiteImporters.join(', ') || 'none'}`);
+}
+// Since engine 3.0.0 the DE440 pack (2.4 MB) loads only when useDe440() installs
+// it. One server module does that; browser builds refuse it and the pack
+// (scripts/lib/browser-engine.mjs), and the pack marker check above fails a
+// build whose browser files carry it anyway.
+const allowedDe440PackImporters = ['src/lib/engine/server-de440.mjs'];
+const unexpectedDe440PackImporters = engineDe440PackImporters.filter((path) => !allowedDe440PackImporters.includes(path));
+if (unexpectedDe440PackImporters.length) {
+  fail(`engine DE440 isolation: only ${allowedDe440PackImporters.join(', ')} may import @zodiacs/engine/de440/pack; found ${unexpectedDe440PackImporters.join(', ')}`);
 }
 
 const homepage = routeRows.find(({ route }) => route === '/');

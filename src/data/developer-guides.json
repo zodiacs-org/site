@@ -9,7 +9,7 @@
         "heading": "Install and run",
         "paragraphs": [
           "Use an ESM project. Create package.json with npm init -y, then install the package with the command below in that directory. Save this example as chart.mjs and run node chart.mjs.",
-          "The package supports Node 20.19 or later in the 20 series, and Node 22.7 or newer. Earlier releases cannot load the astronomy dependency's ESM in the required way."
+          "The package supports Node 20.19 or later in the 20 series, and Node 22.12 or newer: the releases whose require() loads ES modules."
         ],
         "code": {
           "language": "javascript",

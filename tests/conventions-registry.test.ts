@@ -31,7 +31,7 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 }
 
 // The engine versions that wrote the natal conventions sets, in package order.
-const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 2.1.0', '2.0.0-rc.3 to 2.1.0', '2.0.0-rc.3 to 2.1.0'];
+const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 3.0.0', '2.0.0-rc.3 to 3.0.0', '2.0.0-rc.3 to 3.0.0'];
 
 // The registry cites the vector files in which it first catalogued each level.
 // Suite 0.3.0 reissued L1 to L3 with new file digests.

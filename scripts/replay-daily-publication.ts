@@ -3,6 +3,7 @@
  * wall clock. This catches astronomy/data/template combinations that a single
  * current-day fixture cannot exercise.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
