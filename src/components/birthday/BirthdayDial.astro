@@ -124,8 +124,67 @@ const aria = sign
   : `The zodiac ring with the ${cusp!.a.name} and ${cusp!.b.name} boundary at the top. On ${label} the Sun stands between ${formatLongitude(lonMin)} and ${formatLongitude(lonMax)}, ${signOf(lonMin) === signOf(lonMax) ? '' : 'across the boundary, '}depending on the year.`;
 const hue = (sign ?? cusp!.a).hue;
 const gradient = `bday-dial-beam-${label.toLowerCase().replace(/\s+/gu, '-')}`;
+
+/* The dial's story (docs/MOTION.md), played once by the shared entrance
+   runtime when the dial's middle comes into view, then still:
+     1. the ring draws round from the top in zodiac order (counter-clockwise),
+        each sign lighting as the ring passes its middle (RING_MS);
+     2. the decans of the date's sign (or the two cusp signs) arrive in zodiac order;
+     3. the arc of the date's noon Sun across the years draws from its earliest
+        position to its latest, and the beam reaches out to it;
+     4. the Sun marker grows into its place from 40 percent, fading in;
+     5. the closing beat: the date's own tick on the ring comes to full strength.
+   The markup is the finished picture. Timing and drawing use only classes on
+   the SVG's elements and two custom properties on the HTML box (the arc's real
+   length and the sign offset of the ring's sweep), so what the SVG draws, and
+   the page's sitemap fingerprint, stay exactly as they were. The styles travel
+   in the body, just before the dial, so the page's head is untouched. */
+const RING_MS = 1000;
+const ringStart = sign ? focusIndex[0] : focusIndex[1];
+const ringStep = (i: number) => (((i - ringStart) % 12) + 12) % 12;
+const arcLength = (R_TRACK * (hi - lo) * Math.PI) / 180;
+const storyVars = [
+  `--bdd-arc:${(arcLength + 0.05).toFixed(2)}`,
+  `--bdd-o:${cusp ? Math.round((RING_MS * 15) / 360) : 0}ms`,
+  `--bdd-ds:${decans.length > 3 ? 80 : 120}ms`,
+].join(';');
+const styles = `
+.bday-dial__go { position: absolute; left: 0; top: 50%; width: 100%; height: 1px; pointer-events: none; }
+.bdd-k0{--k:0}.bdd-k1{--k:1}.bdd-k2{--k:2}.bdd-k3{--k:3}.bdd-k4{--k:4}.bdd-k5{--k:5}
+.bdd-k6{--k:6}.bdd-k7{--k:7}.bdd-k8{--k:8}.bdd-k9{--k:9}.bdd-k10{--k:10}.bdd-k11{--k:11}
+.bdd-d0{--d:0}.bdd-d1{--d:1}.bdd-d2{--d:2}.bdd-d3{--d:3}.bdd-d4{--d:4}.bdd-d5{--d:5}
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* While the story can still play: the ring's stroke turned to start at the
+     top and run counter-clockwise (a circle turned about its own centre draws
+     the same), the dashes set to the ring's and the arc's real lengths, and
+     the pivots of the beam (the dial's centre) and of the Sun (its own). */
+  html[data-entrance='on'] .bday-dial__go:not(.is-done) ~ svg .bdd-ring { stroke-dasharray: 943 1000; transform: rotate(-90deg) scaleY(-1); transform-box: view-box; transform-origin: 0 0; }
+  html[data-entrance='on'] .bday-dial__go:not(.is-done) ~ svg .bdd-arc { stroke-dasharray: var(--bdd-arc) 1000; }
+  html[data-entrance='on'] .bday-dial__go:not(.is-done) ~ svg .bdd-beam { transform-box: view-box; transform-origin: 0 0; }
+  html[data-entrance='on'] .bday-dial__go:not(.is-done) ~ svg .bdd-sun { transform-box: fill-box; transform-origin: center; }
+  /* Waiting: nothing of the story is there yet but the scale, the words and the tick, dim. */
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ svg .bdd-ring { stroke-dashoffset: 943; }
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ svg :is(.bdd-s, .bdd-dec) { opacity: 0; }
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ .bday-dial__disc { opacity: 0; }
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ svg .bdd-arc { opacity: 0; stroke-dashoffset: var(--bdd-arc); }
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ svg .bdd-beam { opacity: 0; transform: scale(0.2); }
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ svg .bdd-sun { opacity: 0; transform: scale(0.4); }
+  html[data-entrance='on'] .bday-dial__go:not(.is-in) ~ svg .bdd-tick { opacity: 0.2; }
+  /* Playing: each delay is the moment its beat reaches it; all still by 2.45 s. */
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-ring { transition: stroke-dashoffset ${RING_MS}ms linear; }
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-s,
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ .bday-dial__disc { transition: opacity 320ms ease calc(var(--bdd-o) + var(--k) * ${Math.round(RING_MS / 12)}ms); }
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-dec { transition: opacity 300ms ease calc(950ms + var(--d) * var(--bdd-ds)); }
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-arc { transition: opacity 100ms linear 1350ms, stroke-dashoffset 600ms cubic-bezier(0.45, 0, 0.55, 1) 1350ms; }
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-beam { transition: opacity 600ms ease 1350ms, transform 600ms cubic-bezier(0.23, 1, 0.32, 1) 1350ms; }
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-sun { transition: opacity 440ms cubic-bezier(0.23, 1, 0.32, 1) 1900ms, transform 440ms cubic-bezier(0.23, 1, 0.32, 1) 1900ms; }
+  html[data-entrance='on'] .bday-dial__go.is-in:not(.is-done) ~ svg .bdd-tick { transition: opacity 400ms ease 2050ms; }
+}
+`;
 ---
-<div class="bday-dial">
+<style is:inline set:html={styles}></style>
+<div class="bday-dial" style={storyVars}>
+  <span class="bday-dial__go" data-enter="draw" aria-hidden="true"></span>
   <svg viewBox="-180 -200 360 362" role="img" aria-label={aria}>
     <defs>
       <linearGradient id={gradient} x1="0" y1="0" x2={f(pt(R_DEC, mid)[0])} y2={f(pt(R_DEC, mid)[1])} gradientUnits="userSpaceOnUse">
@@ -133,20 +192,20 @@ const gradient = `bday-dial-beam-${label.toLowerCase().replace(/\s+/gu, '-')}`;
         <stop offset="1" stop-color={hue} stop-opacity="0.3" />
       </linearGradient>
     </defs>
-    <circle r={R_OUT} fill="#0c0e15" stroke="rgba(198,204,218,0.22)" />
-    {slices.map(({ sign: s, path, lit }) => (
-      <path d={path} fill={s.hue} fill-opacity={lit ? 0.22 : 0.045} stroke="rgba(198,204,218,0.14)" />
+    <circle class="bdd-ring" r={R_OUT} fill="#0c0e15" stroke="rgba(198,204,218,0.22)" />
+    {slices.map(({ sign: s, path, lit }, i) => (
+      <path class={`bdd-s bdd-k${ringStep(i)}`} d={path} fill={s.hue} fill-opacity={lit ? 0.22 : 0.045} stroke="rgba(198,204,218,0.14)" />
     ))}
-    {decans.map((d) => (
+    {decans.map((d, n) => (
       <>
-        <path d={d.path} fill={hue} fill-opacity={d.lit ? 0.5 : 0.12} />
-        <text x={d.tx} y={d.ty} text-anchor="middle" dominant-baseline="central" font-size="7.5" font-weight="600" fill={d.lit ? '#060709' : 'rgba(198,204,218,0.55)'}>{d.label}</text>
+        <path class={`bdd-dec bdd-d${n}`} d={d.path} fill={hue} fill-opacity={d.lit ? 0.5 : 0.12} />
+        <text class={`bdd-dec bdd-d${n}`} x={d.tx} y={d.ty} text-anchor="middle" dominant-baseline="central" font-size="7.5" font-weight="600" fill={d.lit ? '#060709' : 'rgba(198,204,218,0.55)'}>{d.label}</text>
       </>
     ))}
     {ticks.map((t) => <line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke={t.fine ? 'rgba(198,204,218,0.28)' : 'rgba(198,204,218,0.12)'} />)}
     <circle r={R_DEC} fill="none" stroke="rgba(198,204,218,0.12)" />
     <circle r="84" fill="none" stroke="rgba(198,204,218,0.12)" />
-    <path d={beam} fill={`url(#${gradient})`} />
+    <path class="bdd-beam" d={beam} fill={`url(#${gradient})`} />
     <circle r={R_TRACK} fill="none" stroke="rgba(198,204,218,0.08)" />
     {ends.map((e) => (
       <>
@@ -154,19 +213,19 @@ const gradient = `bday-dial-beam-${label.toLowerCase().replace(/\s+/gu, '-')}`;
         <text x={e.tx} y={e.ty} text-anchor={e.anchor} dominant-baseline="central" font-size="10" fill="rgba(198,204,218,0.62)">{e.text}</text>
       </>
     ))}
-    <path d={`M${f(ax1)},${f(ay1)} A${R_TRACK},${R_TRACK} 0 0 0 ${f(ax2)},${f(ay2)}`} fill="none" stroke="#EEF1F7" stroke-width="4" stroke-linecap="round" />
-    <line x1={f(kx1)} y1={f(ky1)} x2={f(kx2)} y2={f(ky2)} stroke="rgba(238,241,247,0.55)" />
-    <circle cx={f(sx)} cy={f(sy)} r="11.5" fill="#EEF1F7" stroke="#060709" stroke-width="3" />
-    <circle cx={f(sx)} cy={f(sy)} r="5.2" fill="none" stroke="#060709" stroke-width="1.4" />
-    <circle cx={f(sx)} cy={f(sy)} r="1.3" fill="#060709" />
+    <path class="bdd-arc" d={`M${f(ax1)},${f(ay1)} A${R_TRACK},${R_TRACK} 0 0 0 ${f(ax2)},${f(ay2)}`} fill="none" stroke="#EEF1F7" stroke-width="4" stroke-linecap="round" />
+    <line class="bdd-tick" x1={f(kx1)} y1={f(ky1)} x2={f(kx2)} y2={f(ky2)} stroke="rgba(238,241,247,0.55)" />
+    <circle class="bdd-sun" cx={f(sx)} cy={f(sy)} r="11.5" fill="#EEF1F7" stroke="#060709" stroke-width="3" />
+    <circle class="bdd-sun" cx={f(sx)} cy={f(sy)} r="5.2" fill="none" stroke="#060709" stroke-width="1.4" />
+    <circle class="bdd-sun" cx={f(sx)} cy={f(sy)} r="1.3" fill="#060709" />
     <text x={f(lx)} y={f(ly)} text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="600" fill="#EEF1F7">{label}</text>
     <text x="0" y="-28" text-anchor="middle" font-size="10" fill="rgba(198,204,218,0.62)">The Sun on {label}</text>
     <text class="bday-dial__name" x="0" y="4" text-anchor="middle" font-size={sign ? 33 : 22} fill="#EEF1F7">{centerName}</text>
     <text x="0" y="24" text-anchor="middle" font-size="10" fill="#C6CCDA">{spanText}</text>
     <text x="0" y="42" text-anchor="middle" font-size="9.5" font-weight="600" fill={hue}>{decanText}</text>
   </svg>
-  {slices.map(({ sign: s, icon, lit }) => (
-    <span class:list={['bday-dial__disc', lit && 'bday-dial__disc--lit']} style={`left:${icon.left.toFixed(3)}%;top:${icon.top.toFixed(3)}%`}>
+  {slices.map(({ sign: s, icon, lit }, i) => (
+    <span class:list={['bday-dial__disc', lit && 'bday-dial__disc--lit', `bdd-k${ringStep(i)}`]}style={`left:${icon.left.toFixed(3)}%;top:${icon.top.toFixed(3)}%`}>
       <SignIcon sign={s.slug} size={24} webpOnly />
     </span>
   ))}
