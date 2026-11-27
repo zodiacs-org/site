@@ -9,6 +9,7 @@ import { TOOLS_HUB, type ToolGroup } from '../../lib/nav-tools';
 import { HERO_CROP_SIZE, heroCropSrc, heroCropSrcset, type HeroCropName } from '../../lib/hero-crops';
 import { isHiddenChildPage } from '../../data/hidden-child-pages.mjs';
 import '../../styles/tools-hub.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // The birth chart leads on its own; every other tool sits in one of four
 // groups named for the question a visitor arrives with. Membership, order,
@@ -71,8 +72,8 @@ const jsonLd = [
   title="Free Astrology Tools & Calculators | Zodiacs.org"
   description="Free astrology tools, no signup: birth chart, compatibility, moon sign, rising sign, transits, returns, eclipses, and more."
   path="/tools/"
-  image="/assets/og/v2/tool/tools.png"
-  imageAlt="Free astrology tools, Zodiacs.org"
+  image={artPageCard('tools')}
+  imageAlt={artPageCardAlt('tools')}
   jsonLd={jsonLd}
 >
   <header class="tools-hub kwrap">

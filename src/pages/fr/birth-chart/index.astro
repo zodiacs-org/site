@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
 import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -66,7 +67,7 @@ const jsonLd = [
   description="Calcule gratuitement ton thème astral : Soleil, Lune, ascendant, planètes et maisons, avec leur signification. Tout reste dans ton navigateur."
   path="/fr/birth-chart/"
   locale="fr"
-  image="/assets/og/v2/tool/birth-chart.png"
+  image={artPageCard('birth-chart')}
   imageAlt="Calculateur gratuit de thème astral, Zodiacs.org"
   jsonLd={jsonLd}
 >

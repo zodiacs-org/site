@@ -25,7 +25,7 @@ import {
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged, boundaryMargin, preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
-import { signArtCard } from '../../lib/og-art-cards.mjs';
+import { birthdayArtCard, birthdayArtCardCopy, signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_PEOPLE_VISIBLE, peopleForBirthday } from '../../lib/people';
 import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
 import { BIRTHDAY_DAY_UPDATED, updatedIso, updatedLabel } from '../../world-times/updated';
@@ -199,10 +199,11 @@ const famousParts = famousItems.map((item, index) => ({
 }));
 
 // A one-sign share card contradicts a boundary page such as August 23,
-// whose answer is explicitly year-and-time dependent. Use the birthday card
-// for every computed cusp and advance schema/sitemap freshness together.
+// whose answer is explicitly year-and-time dependent. Every computed cusp
+// shows its own cusp card, with both signs (2026-11-27; the v2 birthday card
+// it showed before stays published for links already shared).
 const ogImage = cusp
-  ? '/assets/og/v2/tool/birthday.png'
+  ? birthdayArtCard(slug)
   : signArtCard(heroSign!.slug);
 const engineUpdated = de440UpdatedDate(`/birthday/${slug}/`);
 const pageModifiedAt = latestModifiedAt(
@@ -254,7 +255,7 @@ const jsonLd = [
   description={entry.data.description}
   path={`/birthday/${slug}/`}
   image={ogImage}
-  imageAlt={`${label} birthday astrology, Zodiacs.org`}
+  imageAlt={cusp ? birthdayArtCardCopy(slug).alt : `${label} birthday astrology, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
 >

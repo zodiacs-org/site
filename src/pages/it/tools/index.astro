@@ -9,6 +9,7 @@ import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
 import { ENGLISH_ONLY_COPY, localizePath, t } from '../../../lib/i18n';
 import { toolIconForPath } from '../../../lib/tool-icons';
 import '../../../styles/tools-hub.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const englishOnly = ENGLISH_ONLY_COPY.it;
 const tools = [
@@ -41,7 +42,7 @@ const jsonLd = [
   description="Strumenti astrologici gratuiti: tema natale, compatibilità, segno lunare, ascendente, fase lunare e ritorno di Saturno, calcolati nel tuo browser."
   path="/it/tools/"
   locale="it"
-  image="/assets/og/v2/tool/tools.png"
+  image={artPageCard('tools')}
   imageAlt="Strumenti astrologici gratuiti, Zodiacs.org"
   jsonLd={jsonLd}
 >

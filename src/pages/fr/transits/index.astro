@@ -7,6 +7,7 @@ import PlanetGlyph from '../../../components/PlanetGlyph';
 import { dayLabel, eventList, transitMonthForEdition, monthLabel } from '../../../lib/horoscopes';
 import daily from '../../../data/daily.json';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const month = transitMonthForEdition(daily.date);
 const events = month ? eventList(month, 'fr') : [];
@@ -58,7 +59,7 @@ const jsonLd = [
   description="Les transits du jour sur tes planètes natales, à 3° d’orbe au plus, et un curseur pour avancer ou reculer le ciel jusqu’à un an. Calculé sur ton appareil."
   path="/fr/transits/"
   locale="fr"
-  image="/assets/og/v2/tool/transits.png"
+  image={artPageCard('transits')}
   imageAlt="Suivi des transits, Zodiacs.org"
   jsonLd={jsonLd}
   glass

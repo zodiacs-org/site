@@ -140,7 +140,7 @@ describe('technical audit remediation contracts', () => {
       read('src/pages/birthday/[slug].astro'),
       read('src/pages/sitemap.xml.ts'),
     ]);
-    expect(birthdayPage).toContain("? '/assets/og/v2/tool/birthday.png'");
+    expect(birthdayPage).toContain('? birthdayArtCard(slug)');
     expect(birthdayPage).toContain('dateModified: pageModifiedAt');
     expect(sitemap).toContain('birthdayFacts.days[b.id]?.cusp');
     expect(sitemap).toContain('BIRTHDAY_CUSP_OG_MODIFIED_AT');

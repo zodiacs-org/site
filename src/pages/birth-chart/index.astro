@@ -29,6 +29,7 @@ import {
 import '../../styles/calculator.css';
 import '../../styles/explorer.css';
 import '../../styles/post-chart-daily.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const postChartDailyEnabled = hasDailyChartEmailProvider(process.env);
 
@@ -135,8 +136,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   title="Free Birth Chart Calculator: Sun, Moon & Rising | Zodiacs.org"
   description="Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser."
   path="/birth-chart/"
-  image="/assets/og/v2/tool/birth-chart.png"
-  imageAlt="Free birth chart calculator, Zodiacs.org"
+  image={artPageCard('birth-chart')}
+  imageAlt={artPageCardAlt('birth-chart')}
   jsonLd={jsonLd}
 >
   {/* A chart saved from an assistant links here by its digest alone (#saved=…): it opens on the profile's saved list. */}

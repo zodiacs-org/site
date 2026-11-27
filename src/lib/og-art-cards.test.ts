@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   ART_CARDS,
@@ -56,6 +56,42 @@ import { guideFacts, signOrdinal } from './guide-facts';
 import { signTagline } from './sign-display';
 import { SIGNS } from './signs';
 import { loadFilmScript } from '../../scripts/build-thesis-film.mjs';
+import {
+  ART_CARDS_MAX_TOTAL_BYTES,
+  ART_CARD_MAX_BYTES,
+  ART_PAGE_CARD_KEYS,
+  ART_PAGE_CARD_QUALITY,
+  ART_PAGE_CARDS,
+  ART_PAGE_PAINTINGS,
+  BIRTHDAY_ART_CARD_DIR,
+  BIRTHDAY_ART_CARDS,
+  BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES,
+  BIRTHDAY_CUSP_DATES,
+  CHINESE_ZODIAC_ART_CARD_ANIMALS,
+  CHINESE_ZODIAC_ART_CARD_DIR,
+  CHINESE_ZODIAC_ART_CARD_KICKER,
+  CHINESE_ZODIAC_ART_CARDS,
+  CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES,
+  PAIR_ART_CARD_DIR,
+  PAIR_ART_CARDS,
+  PAIR_ART_CARDS_MAX_TOTAL_BYTES,
+  PAIR_SLUGS,
+  artPageCard,
+  artPageCardAlt,
+  artPageCardSpec,
+  birthdayArtCard,
+  birthdayArtCardCopy,
+  chineseZodiacArtCard,
+  chineseZodiacArtCardCopy,
+  pairArtCard,
+  pairArtCardCopy,
+} from './og-art-cards.mjs';
+import { OG_EN, ogImageForPath } from '../strings/seo.en.mjs';
+import { CHINESE_ZODIAC_ANIMALS, CHINESE_ZODIAC_COPY, chineseZodiacText } from '../data/chinese-zodiac';
+import { TOOLS_HUB } from './nav-tools';
+import { isHiddenChildPage } from '../data/hidden-child-pages.mjs';
+import { RETURN_EN } from './return-visits/copy';
+import birthdays from '../data/birthdays.json';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const DASHES = /[‒-―−]/u;
@@ -125,8 +161,9 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       ...SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => `/assets/og/v8/horoscope/${sign.slug}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`)),
       '/assets/og/v8/tool/chart-twins.jpg',
       '/assets/og/v8/thesis.jpg',
+      ...ART_PAGE_CARD_KEYS.map((key) => `/assets/og/v8/tool/${key}.jpg`),
     ]);
-    expect(ART_CARDS).toHaveLength(99);
+    expect(ART_CARDS).toHaveLength(99 + 13);
     // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
     expect(ART_CARD_DISC).toBeGreaterThanOrEqual(128);
     expect(read('scripts/build-og-void.mjs')).toContain('public/assets/zodiac-icons/400/${s.slug}.webp');
@@ -353,5 +390,227 @@ describe('the Spanish, French, Italian and Portuguese art cards', () => {
     expect(read('src/components/programmatic/LocalizedBirthdayPage.astro')).toContain('const ogImage = signArtCard(heroSign!.slug, locale);');
     // es and pt have horoscope cards; the held fr and it daily editions (locale expansion) use their sign guide card.
     expect(read('src/components/localized/LocalizedHoroscope.astro')).toContain("image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale === 'ru' ? 'en' : locale)}");
+  });
+});
+
+describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
+  // No accuracy words, no new claims, no token or market words, no dashes.
+  const BANNED = /\b(?:verified|accurate|accuracy|precise|precisely|exact|exactly|token|tokens|crypto|market|markets|buy|price|invest\w*)\b/iu;
+  const words = (...values: string[]) => {
+    for (const value of values) {
+      expect(value).not.toMatch(DASHES);
+      expect(value).not.toMatch(BANNED);
+    }
+  };
+  const tool = (key: string) => {
+    const entry = OG_EN.tools.find((candidate) => candidate.key === key);
+    if (!entry) throw new Error(`no OG_EN tool ${key}`);
+    return entry;
+  };
+  const deDash = (value: string) => value.replace(' — ', ', ');
+
+  it('draws the thirteen single page cards in the English folder, each from its page\'s own painting', () => {
+    expect([...ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits']);
+    expect([...ART_PAGE_CARDS]).toEqual(ART_PAGE_CARD_KEYS.map((key) => `${ART_CARD_DIR}/tool/${key}.jpg`));
+    for (const card of ART_PAGE_CARDS) expect(ART_CARDS).toContain(card);
+    for (const painting of Object.values(ART_PAGE_PAINTINGS)) expect(readFileSync(new URL(`../../${painting.src}`, import.meta.url)).length, painting.src).toBeGreaterThan(0);
+    for (const key of ART_PAGE_CARD_KEYS) {
+      const spec = artPageCardSpec(key);
+      expect(spec.title.length, key).toBe(2);
+      words(spec.kicker, ...spec.title, spec.line, spec.alt);
+      expect(spec.alt.length, key).toBeGreaterThan(60);
+      expect(artPageCardAlt(key)).toBe(spec.alt);
+      for (const route of spec.routes) expect(route, key).toMatch(/^\/[a-z0-9/-]*\/$/u);
+    }
+    expect(() => artPageCard('moon-sign')).toThrow(/no art page card/u);
+    expect(ART_CARDS_MAX_TOTAL_BYTES).toBe(12 * 1024 * 1024);
+    expect(ART_CARD_MAX_BYTES).toBe(300 * 1024);
+  });
+
+  it('takes each single card\'s words from its page and its v2 card', () => {
+    const page = (path: string) => read(path);
+    const spec = artPageCardSpec;
+    // The birth chart: the v2 card's kicker and title, the hero's lede.
+    expect(spec('birth-chart').kicker).toBe(tool('birth-chart').kicker);
+    expect(spec('birth-chart').title.join(' ')).toBe(tool('birth-chart').title);
+    expect(page('src/pages/birth-chart/index.astro')).toContain(`<p class="bc-lede">${spec('birth-chart').line.replace(/\.$/u, '')}, and what each one means.</p>`);
+    // Today: the hero's headline.
+    expect(page('src/pages/today/index.astro')).toContain(`<EditionText current="${spec('today').title.join(' ')}"`);
+    expect(page('src/pages/today/index.astro')).toContain('Planets, Moon Phase and Retrogrades');
+    // The rising sign: the v2 card's words, the dash written as a comma.
+    expect(spec('rising-sign').kicker).toBe(tool('rising-sign').kicker);
+    expect(spec('rising-sign').title.join(' ')).toBe(tool('rising-sign').title);
+    expect(spec('rising-sign').line).toBe(deDash(tool('rising-sign').sub));
+    // The big three: the v2 title, the tools catalogue's Sun, Moon and Rising.
+    expect(spec('big-three').title.join(' ')).toBe(tool('big-three').title);
+    expect(read('src/lib/nav-tools.ts')).toContain(`'${spec('big-three').kicker}, as a card to share.'`);
+    expect(tool('big-three').sub.startsWith(spec('big-three').line.replace(' a card to share.', ''))).toBe(true);
+    // The birthday hub: the v2 kicker, the hero's headline.
+    expect(spec('birthday').kicker).toBe(tool('birthday').kicker);
+    expect(spec('birthday').title.join(' ')).toBe(tool('birthday').title);
+    expect(page('src/pages/birthday/index.astro')).toContain(`<h1 class="display">${spec('birthday').title.join(' ')}.</h1>`);
+    // The tools hub: its kicker, headline and the first sentence of its lede, with the count the hub prints.
+    const tools = page('src/pages/tools/index.astro');
+    expect(tools).toContain(`<span class="kicker">${spec('tools').kicker}</span>`);
+    expect(tools).toContain(`<h1 class="tools-hub__title">${spec('tools').title.join(' ')}</h1>`);
+    expect(tools).toContain('{countTitle} tools, sorted by what you want to know.');
+    expect(TOOLS_HUB.filter((entry) => !isHiddenChildPage(entry.href))).toHaveLength(28);
+    expect(spec('tools').line).toBe('Twenty-eight tools, sorted by what you want to know.');
+    // Learn: the hero's kicker, headline and the first sentence of its lede.
+    const learn = page('src/pages/learn/index.astro');
+    expect(learn).toContain(`<span class="kicker">${spec('learn').kicker}</span>`);
+    expect(learn).toContain(`<h1 class="display">${spec('learn').title.join(' ')}</h1>`);
+    expect(learn).toContain(`<p class="klede">${spec('learn').line} `);
+    // The sky calendar: the page's headline and the v2 kicker.
+    expect(RETURN_EN.calendarTitle).toBe(spec('sky-calendar').title.join(' '));
+    expect(spec('sky-calendar').kicker).toBe(tool('sky-calendar').kicker);
+    expect(tool('sky-calendar').sub.startsWith(spec('sky-calendar').line.replace(' in your calendar.', ''))).toBe(true);
+    // The Saturn return: the v2 kicker and title.
+    expect(spec('saturn-return').kicker).toBe(tool('saturn-return').kicker);
+    expect(spec('saturn-return').title.join(' ')).toBe(tool('saturn-return').title);
+    // The invitation: the page's title and description, the v2 card's line.
+    const invite = page('src/pages/c/index.astro');
+    expect(invite).toContain(`title="${spec('compatibility-invite').title.join(' ')} | Zodiacs.org"`);
+    expect(invite).toContain(`description="${spec('compatibility-invite').kicker}. `);
+    expect(read('scripts/build-og-void.mjs')).toContain(spec('compatibility-invite').line);
+    // The baby zodiac: the v2 kicker and title, the start of its line.
+    expect(spec('baby-zodiac').kicker).toBe(tool('baby-zodiac').kicker);
+    expect(spec('baby-zodiac').title.join(' ')).toBe(tool('baby-zodiac').title);
+    expect(tool('baby-zodiac').sub.startsWith(spec('baby-zodiac').line.replace(', and the week’s possible Moons.', ''))).toBe(true);
+    // Mercury retrograde: the v2 card's words, its line cut before "and the themes to watch".
+    expect(spec('mercury-retrograde').kicker).toBe(tool('mercury-retrograde').kicker);
+    expect(spec('mercury-retrograde').title.join(' ')).toBe(tool('mercury-retrograde').title);
+    expect(tool('mercury-retrograde').sub).toBe(`${spec('mercury-retrograde').line.replace(/\.$/u, '')} and the themes to watch.`);
+    // Transits: the v2 kicker and the hero's headline.
+    expect(spec('transits').kicker).toBe(tool('transits').kicker);
+    expect(page('src/pages/transits/index.astro')).toContain(`<h1 class="display">${spec('transits').title.join(' ')}</h1>`);
+  });
+
+  it('is what each of those pages links, and the English catalogue for the pages that read it', () => {
+    const tools = OG_EN.tools as readonly { key: string; path: string; artCard?: string }[];
+    for (const entry of tools) {
+      if (ART_PAGE_CARD_KEYS.includes(entry.key)) {
+        expect(entry.artCard, entry.key).toBe(artPageCard(entry.key));
+        expect(ogImageForPath(entry.path), entry.key).toBe(artPageCard(entry.key));
+      } else {
+        expect(entry.artCard, entry.key).toBeUndefined();
+        expect(ogImageForPath(entry.path), entry.key).toBe(`/assets/og/v2/tool/${entry.key}.png`);
+      }
+    }
+    for (const [file, key] of [
+      ['src/pages/birth-chart/index.astro', 'birth-chart'],
+      ['src/pages/birth-chart/someone-else/index.astro', 'birth-chart'],
+      ['src/pages/birth-chart/three-dimensions/index.astro', 'birth-chart'],
+      ['src/pages/today/index.astro', 'today'],
+      ['src/pages/rising-sign/index.astro', 'rising-sign'],
+      ['src/pages/big-three/index.astro', 'big-three'],
+      ['src/pages/birthday/index.astro', 'birthday'],
+      ['src/pages/tools/index.astro', 'tools'],
+      ['src/pages/learn/index.astro', 'learn'],
+      ['src/pages/saturn-return/index.astro', 'saturn-return'],
+      ['src/pages/c/index.astro', 'compatibility-invite'],
+      ['src/pages/baby-zodiac/index.astro', 'baby-zodiac'],
+      ['src/pages/mercury-retrograde/index.astro', 'mercury-retrograde'],
+      ['src/pages/mercury-retrograde/2027/index.astro', 'mercury-retrograde'],
+      ['src/pages/transits/index.astro', 'transits'],
+    ] as const) {
+      const source = read(file);
+      expect(source, file).toContain(`image={artPageCard('${key}')}`);
+      expect(source, file).toContain(`imageAlt={artPageCardAlt('${key}')}`);
+    }
+    // The Spanish, French, Italian and Portuguese pages that showed the English v2 card show the English art card.
+    for (const locale of ['es', 'fr', 'it', 'pt']) {
+      for (const key of ['birth-chart', 'tools', 'baby-zodiac', 'saturn-return', 'transits', 'rising-sign']) {
+        expect(read(`src/pages/${locale}/${key}/index.astro`), `${locale} ${key}`).toContain(`image={artPageCard('${key}')}`);
+      }
+    }
+    expect(read('src/components/sky/LocalizedMercuryRetrogradePage.astro')).toContain("image={artPageCard('mercury-retrograde')}");
+    expect(read('src/components/sharing/SharingToolPage.astro')).toContain("big: artPageCard('big-three')");
+    expect(read('src/components/return-visits/ReturnToolPage.astro')).toContain("const cardImage = kind === 'calendar' ? artPageCard('sky-calendar')");
+    // The pages that borrowed the learn and transits cards keep them for now.
+    for (const kept of ['src/pages/learn/glossary/index.astro', 'src/pages/learn/placements/index.astro', 'src/pages/your-day/index.astro']) {
+      expect(read(kept), kept).toMatch(/image="\/assets\/og\/v2\/tool\/(?:learn|transits)\.png"/u);
+    }
+    // The v2 cards stay published for links already shared.
+    for (const key of ['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits']) {
+      expect(readFileSync(new URL(`../../public/assets/og/v2/tool/${key}.png`, import.meta.url)).subarray(1, 4).toString('ascii'), key).toBe('PNG');
+    }
+  });
+
+  it('draws the 78 sign pairs in a folder of their own, under its own ceiling', () => {
+    expect(PAIR_SLUGS).toHaveLength(78);
+    const published = readdirSync(new URL('../../public/assets/og/v2/pair/', import.meta.url)).filter((file) => file.endsWith('.png')).map((file) => file.replace(/\.png$/u, '')).sort();
+    expect([...PAIR_SLUGS].sort()).toEqual(published);
+    expect(PAIR_ART_CARDS).toEqual(PAIR_SLUGS.map((slug) => `${PAIR_ART_CARD_DIR}/${slug}.jpg`));
+    expect(PAIR_ART_CARD_DIR).toBe('/assets/og/v8/pair');
+    expect(PAIR_ART_CARDS_MAX_TOTAL_BYTES).toBe(10 * 1024 * 1024);
+    expect(() => pairArtCard('leo-aries')).toThrow(/unknown pair/u);
+    expect(pairArtCardCopy('aries-leo')).toMatchObject({ kicker: 'Compatibility, fire with fire', title: ['Aries', 'and Leo'], line: 'What works, what strains, what makes it last.' });
+    expect(pairArtCardCopy('cancer-capricorn').kicker).toBe('Compatibility, water with earth');
+    for (const slug of PAIR_SLUGS) {
+      const copy = pairArtCardCopy(slug);
+      words(copy.kicker, ...copy.title, copy.line, copy.alt);
+      expect(copy.alt.startsWith(`${copy.title[0]} ${copy.title[1]} compatibility, `), slug).toBe(true);
+    }
+    const english = read('src/pages/compatibility/[pair]/index.astro');
+    expect(english).toContain('image={pairArtCard(facts.slug)}');
+    expect(english).toContain('imageAlt={pairArtCardCopy(facts.slug).alt}');
+    expect(english).toContain('image: `https://zodiacs.org${pairArtCard(facts.slug)}`,');
+    const localized = read('src/components/compat/LocalizedPairPage.astro');
+    expect(localized).toContain('image={pairArtCard(facts.slug)}');
+    expect(localized).not.toContain('/assets/og/v2/pair/');
+  });
+
+  it('draws one card for each cusp birthday, the dates the birthday data marks as cusps', () => {
+    const data = birthdays as { days: Record<string, { cusp?: { a: string; b: string } }> };
+    const cusps = Object.entries(data.days).filter(([, day]) => day.cusp).map(([slug, day]) => ({ slug, a: day.cusp!.a, b: day.cusp!.b }));
+    expect(BIRTHDAY_CUSP_DATES.map((date) => ({ ...date }))).toEqual(cusps);
+    expect(BIRTHDAY_ART_CARDS).toHaveLength(29);
+    expect(BIRTHDAY_ART_CARDS).toEqual(BIRTHDAY_CUSP_DATES.map((date) => `${BIRTHDAY_ART_CARD_DIR}/${date.slug}.jpg`));
+    expect(BIRTHDAY_ART_CARD_DIR).toBe('/assets/og/v8/birthday');
+    expect(BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES).toBe(4 * 1024 * 1024);
+    expect(() => birthdayArtCard('march-22')).toThrow(/not a cusp date/u);
+    expect(birthdayArtCardCopy('march-21')).toMatchObject({ kicker: 'Pisces or Aries, by year', title: ['Born on', 'March 21'] });
+    const page = read('src/pages/birthday/[slug].astro');
+    // The kicker is the page's own fact line, the headline its h1.
+    expect(page).toContain('`${cusp.a.name} or ${cusp.b.name}, by year`');
+    expect(page).toContain('<h1 class="display bday-title">Born on <em>{label}</em></h1>');
+    expect(page).toContain('? birthdayArtCard(slug)');
+    expect(page).toContain('imageAlt={cusp ? birthdayArtCardCopy(slug).alt');
+    expect(page).not.toContain('/assets/og/v2/tool/birthday.png');
+    for (const date of BIRTHDAY_CUSP_DATES) {
+      const copy = birthdayArtCardCopy(date.slug);
+      words(copy.kicker, ...copy.title, copy.line, copy.alt);
+    }
+  });
+
+  it('draws the twelve Chinese zodiac animals in the guide\'s own words, each on its own painting', () => {
+    expect(CHINESE_ZODIAC_ART_CARD_ANIMALS.map((animal) => animal.slug)).toEqual(CHINESE_ZODIAC_ANIMALS.map((animal) => animal.slug));
+    expect(CHINESE_ZODIAC_ART_CARD_KICKER).toBe(CHINESE_ZODIAC_COPY.animalKicker);
+    for (const animal of CHINESE_ZODIAC_ANIMALS) {
+      const copy = chineseZodiacArtCardCopy(animal.slug);
+      expect(copy.title.join(' ')).toBe(chineseZodiacText('yearOf', { animal: animal.name }));
+      expect(copy.line).toBe(animal.association);
+      words(copy.kicker, ...copy.title, copy.line, copy.alt);
+      const art = CHINESE_ZODIAC_ART_CARD_ANIMALS.find((entry) => entry.slug === animal.slug)!.art;
+      expect(readFileSync(new URL(`../../${art.src}`, import.meta.url)).length, animal.slug).toBeGreaterThan(0);
+      // The painting fades in at or past its own left edge, so the edge never shows.
+      expect(art.fade[0], animal.slug).toBeGreaterThanOrEqual(Math.max(500, art.cx - art.fx * art.scale));
+    }
+    expect(CHINESE_ZODIAC_ART_CARDS).toEqual(CHINESE_ZODIAC_ANIMALS.map((animal) => `${CHINESE_ZODIAC_ART_CARD_DIR}/${animal.slug}.jpg`));
+    expect(CHINESE_ZODIAC_ART_CARD_DIR).toBe('/assets/og/v8/learn/chinese-zodiac');
+    expect(CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES).toBe(2 * 1024 * 1024);
+    expect(chineseZodiacArtCard('dragon')).toBe('/assets/og/v8/learn/chinese-zodiac/dragon.jpg');
+    const page = read('src/pages/learn/chinese-zodiac/[animal]/index.astro');
+    expect(page).toContain('image={chineseZodiacArtCard(animal.slug)} imageAlt={chineseZodiacArtCardCopy(animal.slug).alt}');
+  });
+
+  it('has a narrow flag per family, each drawn with the rest by --only-art-cards', () => {
+    const generator = read('scripts/build-og-void.mjs');
+    for (const flag of ['--only-art-page-cards', '--only-pair-art-cards', '--only-birthday-art-cards', '--only-chinese-zodiac-art-cards']) {
+      expect(generator).toContain(`flag: '${flag}'`);
+    }
+    expect(generator).toContain('for (const name of Object.keys(ART_PAGE_FAMILIES)) pageCards += (await renderArtPageFamily(name)).count;');
+    expect(Object.values(ART_PAGE_CARD_QUALITY).every((quality) => quality >= 78 && quality <= 90)).toBe(true);
   });
 });

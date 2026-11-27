@@ -1,13 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 ---
 <Base
   title="An invitation | Zodiacs.org"
   description="A private compatibility reading. Their side is entered, yours stays in your browser."
   path="/c/"
   canonicalPath="/c/"
-  image="/assets/og/v2/tool/compatibility-invite.png"
-  imageAlt="Two charts, read together: a private Zodiacs.org compatibility invitation."
+  image={artPageCard('compatibility-invite')}
+  imageAlt={artPageCardAlt('compatibility-invite')}
   noindex
 >
   <section class="section container container--narrow invite-shell">

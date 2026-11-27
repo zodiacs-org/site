@@ -1781,9 +1781,9 @@ function defaultBirthdayPage(origin: string): SharePage {
     title: 'Birthdays on Zodiacs',
     description: 'The Sun’s sign on every birthday, with its decan and the cusp dates where the sign depends on the year.',
     heading: 'The sky on every birthday',
-    imageUrl: `${origin}/assets/og/v2/tool/birthday.png`,
-    imageType: 'image/png',
-    imageAlt: 'Birthdays on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['birthday'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['birthday'].alt,
     explanation: 'Zodiacs gives the Sun’s sign for every date of the year, its traditional meaning and decan, and says when a date sits on a cusp.',
     action: { label: 'Find your own birthday', href: '/birthday/' },
     note: BIRTHDAY_NOTE,
@@ -1795,9 +1795,9 @@ function defaultSkyCalendarPage(origin: string): SharePage {
     title: 'The sky calendar on Zodiacs',
     description: 'New and full Moons, eclipses and retrograde periods in your calendar app, kept up to date.',
     heading: 'The sky in your calendar',
-    imageUrl: `${origin}/assets/og/v2/tool/sky-calendar.png`,
-    imageType: 'image/png',
-    imageAlt: 'The sky calendar on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['sky-calendar'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['sky-calendar'].alt,
     explanation: SKY_CALENDAR_ABOUT,
     action: { label: 'Add it to your calendar', href: '/sky-calendar/' },
     note: SKY_CALENDAR_NOTE,
@@ -1946,6 +1946,21 @@ const MILESTONE_NOTE = 'Dates of computed crossings and their traditional astrol
 const noonNote = (birthplace: string) => `Positions at 12:00 civil time in ${birthplace}, a reference instant, not a birth time. No houses, rising sign, angles, or sect were computed.`;
 
 /**
+ * The art cards of the pages these share links fall back to (2026-11-27,
+ * artPageCard and artPageCardAlt in src/lib/og-art-cards.mjs), written here so
+ * the function's graph stays clear of the string catalogues; the test holds
+ * them equal. The v2 cards they replace stay published for links already shared.
+ */
+export const SHARE_FALLBACK_ART_CARDS = Object.freeze({
+  'birthday': Object.freeze({ path: '/assets/og/v8/tool/birthday.jpg', alt: "Your birthday, read closely: choose a date for a reading of character, love, work, and growth, beside a painting of a brass sundial casting its shadow across the hours." }),
+  'sky-calendar': Object.freeze({ path: '/assets/og/v8/tool/sky-calendar.jpg', alt: "Subscribe to the sky: new and full moons, eclipse peaks, and retrograde windows in your calendar, beside a painting of a crescent and a full Moon on a starry dial." }),
+  'saturn-return': Object.freeze({ path: '/assets/og/v8/tool/saturn-return.jpg', alt: "Your Saturn return: every pass and retrograde loop, from your birth date alone, beside a painting of an hourglass inside a ringed orbit." }),
+  'big-three': Object.freeze({ path: '/assets/og/v8/tool/big-three.jpg', alt: "Your big three: Sun, Moon and Rising, three signs in seconds, with a card to share, beside a painting of the Sun and the Moon above the band of zodiac figures." }),
+  'compatibility-invite': Object.freeze({ path: '/assets/og/v8/tool/compatibility-invite.jpg', alt: "An invitation to a private compatibility reading: their side is entered, yours stays in your browser. Beside it, a painting of a sealed envelope among brass instruments." }),
+  'transits': Object.freeze({ path: '/assets/og/v8/tool/transits.jpg', alt: "What is active in your chart? Move the date to watch each transit build, peak, and release, beside a painting of the ring of sign discs." }),
+});
+
+/**
  * The chart twins page's art card and its alt text (CHART_TWINS_ART_CARD and
  * CHART_TWINS_ART_CARD_ALT in src/lib/og-art-cards.mjs, 2026-11-26), written
  * here so the function's graph stays clear of the string catalogues; the
@@ -1987,9 +2002,9 @@ function defaultMilestonePage(origin: string): SharePage {
     title: 'Life milestones on Zodiacs',
     description: 'When your Saturn return, Jupiter returns and Uranus opposition come.',
     heading: 'Your sky milestones',
-    imageUrl: `${origin}/assets/og/v2/tool/saturn-return.png`,
-    imageType: 'image/png',
-    imageAlt: 'Life milestones on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['saturn-return'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['saturn-return'].alt,
     explanation: 'Zodiacs works out when Saturn and Jupiter come back to where they were at your birth, and when Uranus stands opposite.',
     action: { label: 'Find your own milestones', href: '/occasions/milestones/' },
     note: MILESTONE_NOTE,
@@ -2187,9 +2202,9 @@ function defaultBigThreePage(origin: string): SharePage {
     title: 'The big three on Zodiacs',
     description: 'Your Sun, Moon and rising signs.',
     heading: 'Your Sun, Moon and rising',
-    imageUrl: `${origin}/assets/og/v2/tool/big-three.png`,
-    imageType: 'image/png',
-    imageAlt: 'The big three on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['big-three'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['big-three'].alt,
     explanation: 'Zodiacs finds your Sun, Moon and rising signs from your birth date. A birth time is needed for your rising sign.',
     action: { label: 'Find your big three', href: '/big-three/' },
     note: BIG_THREE_NOTE,
@@ -2215,9 +2230,9 @@ function defaultInvitePage(origin: string): SharePage {
     title: 'Compare charts on Zodiacs',
     description: 'Invite someone to compare birth charts with you.',
     heading: 'Invite someone to compare charts',
-    imageUrl: `${origin}/assets/og/v2/tool/compatibility-private-invite.png`,
-    imageType: 'image/png',
-    imageAlt: 'Compare charts on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['compatibility-invite'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['compatibility-invite'].alt,
     explanation: INVITE_ABOUT,
     action: { label: 'Make an invite link', href: '/compatibility/invite/' },
     note: SHARE_NOTE,
@@ -2523,9 +2538,9 @@ function defaultYourDayPage(origin: string): SharePage {
     title: 'Your day on Zodiacs',
     description: 'Today’s transits to your birth chart, ranked by strength.',
     heading: 'Read your day',
-    imageUrl: `${origin}/assets/og/v2/tool/transits.png`,
-    imageType: 'image/png',
-    imageAlt: 'Transits on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['transits'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['transits'].alt,
     explanation: YOUR_DAY_ABOUT,
     action: { label: 'Read your day', href: YOUR_DAY_PAGE_PATH },
     note: YOUR_DAY_NOTE,

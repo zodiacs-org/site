@@ -10,6 +10,7 @@ import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // The years the committed table covers (sky.json runs to the start of its
 // last year plus one), so the copy names the span the table lists.
@@ -139,8 +140,8 @@ const jsonLd = [
   title="Mercury Retrograde Dates 2026 to 2030: Exact, Computed | Zodiacs.org"
   description="Every Mercury retrograde through 2030, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you."
   path="/mercury-retrograde/"
-  image="/assets/og/v2/tool/mercury-retrograde.png"
-  imageAlt="Mercury retrograde dates, Zodiacs.org"
+  image={artPageCard('mercury-retrograde')}
+  imageAlt={artPageCardAlt('mercury-retrograde')}
   jsonLd={jsonLd}
   sources={sources}
 >

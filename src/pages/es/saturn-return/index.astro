@@ -5,6 +5,7 @@ import ReturnToolLinks from '../../../components/return-visits/ReturnToolLinks.a
 import Faq from '../../../components/Faq.astro';
 import SaturnReturnCalculator from '../../../islands/SaturnReturnCalculator';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -58,7 +59,7 @@ const jsonLd = [
   description="Encuentra gratis las fechas exactas de tu retorno de Saturno, con pasadas retrógradas incluidas, calculadas en tu dispositivo."
   path="/es/saturn-return/"
   locale="es"
-  image="/assets/og/v2/tool/saturn-return.png"
+  image={artPageCard('saturn-return')}
   imageAlt="Calculadora de retorno de Saturno, Zodiacs.org"
   jsonLd={jsonLd}
 >
