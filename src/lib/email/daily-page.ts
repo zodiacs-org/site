@@ -27,10 +27,10 @@ export function dailyEmailPage(
       decision?: string;
       secondary?: { label: string; decision: string };
     }
-    | { kind: 'link'; href: string; label: string },
+    | { kind: 'link'; href: string; label: string; secondary?: { href: string; label: string } },
 ): string {
   const actionMarkup = action && action.kind === 'link'
-    ? `<p class="return"><a href="${html(action.href)}">${html(action.label)}</a></p>`
+    ? `<p class="return"><a href="${html(action.href)}">${html(action.label)}</a></p>${action.secondary ? `<p class="return"><a href="${html(action.secondary.href)}">${html(action.secondary.label)}</a></p>` : ''}`
     : action
       ? [
         `<form method="post" action="${html(action.action)}"><input type="hidden" name="token" value="${html(action.token)}">${action.decision ? `<input type="hidden" name="decision" value="${html(action.decision)}">` : ''}<button type="submit">${html(action.label)}</button></form>`,

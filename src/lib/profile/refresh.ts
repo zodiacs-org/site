@@ -11,6 +11,7 @@
 import { profileAccessAllowed } from '../account-v2/profile-access-reader';
 import { loadEngine as loadSiteEngine } from '../hooks/useEngine';
 import { birthplaceTimeCanApply } from '../time/localToUtc';
+import { calendarUnknownCanApply, hasVerifiedSavedCalendarFlags } from '../time/saved-calendar';
 import type { SavedChart } from './schema';
 import { resolveSavedChart, type SavedChartEngineLoader } from './resolve';
 import { loadProfile, updateChartSummaries } from './store';
@@ -25,9 +26,14 @@ const CHECKED_KEY = 'zodiacs.profile.birthplace-checks-2026f.v1';
 
 let running: Promise<number> | null = null;
 
-/** FNV-1a over id, birth input and summary. */
+/** FNV-1a over id, birth input and summary (plus calendar-check epoch for unverified changeover-era summaries). */
 function fingerprint(chart: SavedChart): string {
-  const text = JSON.stringify([chart.id, chart.birth, chart.summary]);
+  const calendarEpoch = calendarUnknownCanApply(chart.birth.date) && !hasVerifiedSavedCalendarFlags(chart.summary)
+    ? 'cal-v2'
+    : '';
+  const text = JSON.stringify(
+    calendarEpoch ? [chart.id, chart.birth, chart.summary, calendarEpoch] : [chart.id, chart.birth, chart.summary],
+  );
   let hash = 0x811c9dc5;
   for (let index = 0; index < text.length; index += 1) {
     hash ^= text.charCodeAt(index);
@@ -96,6 +102,7 @@ async function refresh(loadEngine: SavedChartEngineLoader): Promise<number> {
   const replaced = changed.length === 0 ? [] : updateChartSummaries(changed.map(({ chart, summary }) => ({
     id: chart.id,
     utcISO: chart.summary.utcISO,
+    previousSummary: chart.summary,
     summary,
   })));
   for (const { chart, summary } of changed) {

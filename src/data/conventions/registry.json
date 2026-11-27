@@ -1,15 +1,15 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-11-23",
+  "version": "2026-11-26",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
   "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value. Natal receipts from @zodiacs/engine 1.1.0-rc.1 list, as conventionIds, every id that they and their result name, in code-unit order, each once, and the compute API's receipts list the ids their own fields name in the same way.",
   "engine": {
     "package": "@zodiacs/engine",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "92825deeeb5c74c5f56b37d5d612c3439347087e"
+    "commit": "2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322"
   },
   "conformance": {
     "suite": "zodiacs-conformance",
@@ -139,7 +139,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "zodiac:sidereal",
@@ -919,7 +919,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "nutation:iau2000b-p03",
@@ -1125,6 +1125,19 @@
             }
           ],
           "status": "current"
+        },
+        {
+          "id": "lilith:true-osculating",
+          "value": "true-osculating",
+          "title": "True Lilith",
+          "definition": "From @zodiacs/engine 3.0.0, Black Moon Lilith as the apogee of the two-body orbit of the geometric geocentric Moon's state vector, carried from the equator of J2000 to the true ecliptic of date as a body is; on the DE440 pack, from the pack's Moon state.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 3.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
         }
       ]
     },
@@ -1200,7 +1213,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "speed:degrees-per-day;central-difference-plus-minus-0.25-day",
@@ -1315,7 +1328,7 @@
           "id": "time:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
           "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
           "title": "The engine's time basis",
-          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; before 1972, the instant read as UT1 and TT from the ΔT model. After the table, engines before 2.0.0 read the instant as UT1 too; from 2.0.0 the id stays the same, and each instant's timeScale.basis continuous-utc records that TT is UTC plus 69.184 s and UT1 comes from the ΔT model. The natal receipt names the same basis in its timeScale convention.",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; before 1972, the instant read as UT1 and TT from the ΔT model. After the table, engines before 2.0.0 read the instant as UT1 too; 2.0.0 to 2.1.0 keep this id, and each instant's timeScale.basis continuous-utc records that TT is UTC plus 69.184 s and UT1 comes from the ΔT model. From 3.0.0 a receipt with any instant on that basis names the continuous-UTC id below. The natal receipt names the same basis in its timeScale convention.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
@@ -1328,6 +1341,23 @@
             {
               "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
               "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "time:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972",
+          "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972",
+          "title": "The continuous-UTC time basis",
+          "definition": "From @zodiacs/engine 3.0.0, the time basis a calc receipt names when any of its instants lies after the end of the IERS UT1 table (2027-10-02) on the continuous-utc basis: from 1972-01-01 to the end of the table, TT from the leap seconds and UT1 from IERS UT1 − UTC; after it, TT is UTC plus 69.184 s and UT1 comes from the ΔT model; before 1972, the instant read as UT1 and TT from the ΔT model. The natal receipt's continuous-UTC sets name the same basis in their timeScale convention.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 3.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 3.0.0, docs/time.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322/docs/time.md"
             }
           ],
           "status": "current"
@@ -1619,7 +1649,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "angles:gast-and-mean-obliquity",
@@ -1702,7 +1732,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes",
@@ -1794,7 +1824,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -1834,7 +1864,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -1862,7 +1892,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "deltaT:tt-minus-ut1;ut1-read-as-utc;value-in-result",
@@ -1912,7 +1942,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -1936,7 +1966,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -1960,7 +1990,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -1992,7 +2022,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "moonPosition:astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
@@ -2042,7 +2072,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -2066,7 +2096,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 2.0.0-rc.3 to 3.0.0"
         },
         {
           "id": "planetPositions:apparent-geocentric-ecliptic-of-date",
@@ -2094,7 +2124,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -2131,7 +2161,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 3.0.0"
         },
         {
           "id": "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
@@ -2157,7 +2187,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "2.0.0-rc.3 to 3.0.0"
         }
       ]
     },
@@ -3659,7 +3689,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+          "writtenBy": "1.1.0-rc.10 to 3.0.0; 2.0.0-rc.3 to 3.0.0"
         }
       ]
     },

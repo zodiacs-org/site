@@ -1,8 +1,9 @@
 /**
  * The ephemeris a tool reads when it must give the answer its website page
- * gives. The site's browser bundle computes on astronomy-engine
- * (scripts/lib/browser-engine.mjs takes the DE440 pack out of it), while the
- * hosted runtime's default is the DE440 pack; the two differ by around an
+ * gives. The site's browser bundle computes on astronomy-engine, the engine's
+ * default (scripts/lib/browser-engine.mjs keeps the DE440 pack out of it),
+ * while the hosted runtime installs the DE440 pack
+ * (src/lib/engine/server-de440.mjs); the two differ by around an
  * arcsecond, which is enough to put a birth near a cusp in different signs
  * (20 April 1970 at 12:15 UTC: 29.99998° on astronomy-engine, 30.00007° on
  * DE440).

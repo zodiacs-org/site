@@ -17,6 +17,7 @@
  * difference that is the runtime's alone, with the citation digest that follows
  * from it. scripts/developer-demo.test.ts runs the same check.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { executeAiTool } from '../src/ai-tools/tools';

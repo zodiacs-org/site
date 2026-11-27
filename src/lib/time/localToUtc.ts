@@ -36,6 +36,20 @@ export interface LocalTimeOptions {
    * default, or "later". It changes nothing for any other wall time.
    */
   fold?: 'earlier' | 'later';
+  /**
+   * When the birth date was entered in the Old Style (Julian) calendar and
+   * already converted to the Gregorian `date` argument, pass the entered
+   * Julian YYYY-MM-DD here so `@zodiacs/engine/geo` evaluates `calendar-unknown`
+   * against the date as written rather than the converted Gregorian date.
+   */
+  writtenJulianDate?: string;
+  /**
+   * True when reconstructing a saved chart whose original calendar choice
+   * (Gregorian vs Old Style) is unavailable (cloud restore or pre-2.0.0
+   * summary): also flag `calendar-unknown` if reading the same day as Old
+   * Style would trigger it.
+   */
+  reconstructedCalendar?: boolean;
 }
 
 export interface LocalTimeResolution {
@@ -288,7 +302,7 @@ export function resolveLocalToUtc(
   // repeats the name given. Imported or stored inputs must select an explicit
   // zone, and the error must not carry a potentially private value.
   if (!intlAccepts(tz)) throw new RangeError('An explicit supported timezone is required.');
-  const { longitude, fold } = options;
+  const { longitude, fold, writtenJulianDate, reconstructedCalendar } = options;
   // A longitude the site cannot place is not a birthplace: as before, it is ignored.
   const place = {
     ...(typeof longitude === 'number' && Number.isFinite(longitude) && Math.abs(longitude) <= 180 ? { longitude } : {}),
@@ -297,16 +311,26 @@ export function resolveLocalToUtc(
   if (!geo) {
     throw new Error('The local-time resolver is not loaded: await prepareLocalTime(date, timeZone) before resolving.');
   }
+  const hasJulian = writtenJulianDate !== undefined;
   let resolved: ReturnType<EngineGeo['resolveLocalToUtc']>;
   try {
-    resolved = geo.resolveLocalToUtc(date, time, tz, place);
+    if (hasJulian) {
+      resolved = geo.resolveLocalToUtc(writtenJulianDate, time, tz, { ...place, calendar: 'julian' });
+    } else {
+      resolved = geo.resolveLocalToUtc(date, time, tz, place);
+    }
   } catch (error) {
     // Not loaded yet: the caller must await prepareLocalTime first.
     if (error instanceof geo.ZoneHistoryNotLoadedError) throw error;
-    if (error instanceof RangeError) throw new RangeError('An explicit supported timezone is required.');
+    if (error instanceof RangeError) {
+      throw new RangeError(hasJulian ? 'Invalid Julian date.' : 'An explicit supported timezone is required.');
+    }
     throw error;
   }
-  return {
+  if (hasJulian && resolved.date !== date) {
+    throw new RangeError('Invalid Julian date.');
+  }
+  const result: LocalTimeResolution = {
     utc: resolved.utc,
     offsetMinutes: resolved.offsetMinutes,
     flags: [...resolved.flags],
@@ -317,4 +341,12 @@ export function resolveLocalToUtc(
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
     ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };
+  const cal = 'calendar-unknown' as const;
+  if (reconstructedCalendar && !hasJulian && !result.flags.includes(cal) && date >= '1582-10-05' && date <= '1918-02-26') {
+    const julian = geo.gregorianToJulian(date);
+    if (julian && geo.resolveLocalToUtc(julian, time, tz, { ...place, calendar: 'julian' }).flags.includes(cal)) {
+      result.flags.push(cal);
+    }
+  }
+  return result;
 }

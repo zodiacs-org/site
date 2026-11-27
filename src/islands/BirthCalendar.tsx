@@ -76,17 +76,18 @@ export function birthDateProblemText(locale: CatalogLocale, problem: BirthDatePr
         : copy.gregorianError;
 }
 
-export type ChartBirthDate = { date: string; oldStyle?: string } | { error: string };
+export type ChartBirthDate = { date: string; oldStyle?: string; writtenJulianDate?: string } | { error: string };
 
 /**
  * What a form computes from: the Gregorian date, with the one-line Old Style
- * note when the date was converted, or the message for the date field.
+ * note and the entered Julian YYYY-MM-DD when the date was converted, or the
+ * message for the date field.
  */
 export function readChartBirthDate(locale: CatalogLocale, value: string, calendar: CalendarChoice): ChartBirthDate {
   const reading = readBirthDate(value, calendar);
   if ('problem' in reading) return { error: birthDateProblemText(locale, reading.problem) };
   return reading.oldStyle
-    ? { date: reading.date, oldStyle: oldStyleLine(locale, reading.oldStyle, reading.date) }
+    ? { date: reading.date, oldStyle: oldStyleLine(locale, reading.oldStyle, reading.date), writtenJulianDate: reading.oldStyle }
     : { date: reading.date };
 }
 

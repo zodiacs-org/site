@@ -33,6 +33,8 @@ const SEARCH_COPY = {
   running: (body: TransitBody) => `Scanning ${body}…`,
   calendar: 'Calendar file for these dates',
   calendarNote: 'The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.',
+  calendarNoteCalendarUnknown: 'These dates depend on which calendar your birth record used. Anyone you share the file with, or any online calendar you import it into, can still work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.',
+  calendarNoteHostZoneDiffers: 'The times in the file come from your supplied birth time using the offset from a device whose time-zone data differed from our historical table near your birth date. Contacts to your natal Moon, Ascendant, and Midheaven are omitted, but anyone you share the file with, or any online calendar you import it into, can still work out your birth time from the remaining planetary contacts.',
   calendarNoteNoTime: 'Without a birth time, the times in the file come from your chart for noon at your birthplace, so anyone you share it with, or any online calendar you import it into, can work out your birth date from them, and the time zone of your birthplace or, before standard time, its longitude.',
 } as const;
 
@@ -74,6 +76,10 @@ export interface TransitSearchProps {
   onShowOnRing: (contact: TransitContact) => void;
   /** Whether the chart has a birth time; without one it is noon at the birthplace. */
   timeKnown?: boolean;
+  /** Whether the chart used a device time-zone offset that differs from the historical table. */
+  hostZoneDiffers?: boolean;
+  /** Additional caveats forwarded into the downloaded transit search calendar. */
+  calendarNotes?: readonly string[];
 }
 
 function shiftUtcYears(instant: number, years: number): Date {
@@ -113,6 +119,8 @@ export function TransitSearch({
   nowMs,
   onShowOnRing,
   timeKnown = true,
+  hostZoneDiffers = false,
+  calendarNotes,
 }: TransitSearchProps) {
   const [bodies, setBodies] = useState<TransitBody[]>([...SLOW_TRANSIT_BODIES]);
   const [natalPoint, setNatalPoint] = useState<NatalPoint | ''>(
@@ -189,6 +197,8 @@ export function TransitSearch({
     const calendar = serializeTransitContacts(contacts, {
       generatedAt: new Date(),
       calendarName: 'Zodiacs.org transit search',
+      ...(hostZoneDiffers ? { hostZoneDiffers: true } : {}),
+      ...(calendarNotes?.length ? { notes: calendarNotes } : {}),
     });
     downloadCalendarFile(calendar, 'zodiacs-transit-search.ics');
   }
@@ -287,13 +297,19 @@ export function TransitSearch({
       {grouped && grouped.total > 0 && (
         <div class="tsearch__results" data-search-results>
           <div class="tsearch__result-head">
-            <p>{grouped.total} exact {grouped.total === 1 ? 'contact' : 'contacts'}</p>
+            <p>{grouped.total}{!hostZoneDiffers && !calendarNotes?.length ? ' exact' : ''} {grouped.total === 1 ? 'contact' : 'contacts'}</p>
             <button class="btn btn--glass" type="button" onClick={downloadCalendar} data-search-calendar>
               <span>{SEARCH_COPY.calendar}</span>
             </button>
           </div>
           <p class="field__help" data-search-calendar-note>
-            {timeKnown ? SEARCH_COPY.calendarNote : SEARCH_COPY.calendarNoteNoTime}
+            {!timeKnown
+              ? (calendarNotes?.length ? `${SEARCH_COPY.calendarNoteNoTime} ${calendarNotes.join(' ')}` : SEARCH_COPY.calendarNoteNoTime)
+              : hostZoneDiffers
+                ? (calendarNotes?.length ? `${SEARCH_COPY.calendarNoteHostZoneDiffers} ${calendarNotes.join(' ')}` : SEARCH_COPY.calendarNoteHostZoneDiffers)
+                : calendarNotes?.length
+                  ? SEARCH_COPY.calendarNoteCalendarUnknown
+                  : SEARCH_COPY.calendarNote}
           </p>
           {grouped.capped && (
             <p class="tsearch__cap" role="status" data-search-cap>{SEARCH_COPY.cap(grouped.total)}</p>

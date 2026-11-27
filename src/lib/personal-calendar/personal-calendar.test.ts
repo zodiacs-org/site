@@ -128,6 +128,37 @@ describe('personal sky dates', () => {
     expect(unknownSky.contacts.every((contact) => contact.natalPoint === 'Sun')).toBe(true);
     const ics = personalCalendar(unknownSky, { locale: 'en', links: LINKS, timeZone: 'UTC', generatedAt: FROM })!;
     expect(ics).not.toMatch(/your Moon/);
+
+    // When the device's time-zone table disagrees with our historical table near birth,
+    // omit natal Moon contacts without claiming the birth time was left blank.
+    const hostZoneChart = computeChart({
+      utc: new Date('1998-03-20T06:00:00Z'),
+      latitude: 51.5,
+      longitude: -0.12,
+      houseSystem: 'whole',
+      timeKnown: true,
+      flags: ['host-zone-data-differs'],
+    });
+    const hostZoneSky = personalSky(hostZoneChart, FROM, TO);
+    expect(hostZoneSky.timeKnown).toBe(true);
+    expect(hostZoneSky.hostZoneDiffers).toBe(true);
+    expect(hostZoneSky.solarReturns).toHaveLength(2);
+    expect(hostZoneSky.milestones.length).toBeGreaterThan(0);
+    expect(hostZoneSky.contacts.every((contact) => contact.natalPoint === 'Sun')).toBe(true);
+    const hostZoneEvents = personalEvents(hostZoneSky, { locale: 'en', links: LINKS, timeZone: 'UTC' });
+    for (const event of hostZoneEvents) {
+      expect(event.description).toContain(PERSONAL_WORDS.en.hostZoneDiffersTime);
+      expect(event.description).not.toContain('Birth time unknown');
+    }
+    const hostZoneIcs = personalCalendar(hostZoneSky, { locale: 'en', links: LINKS, timeZone: 'UTC', generatedAt: FROM })!;
+    expect(hostZoneIcs).not.toMatch(/your Moon/);
+
+    // Extra calendar-changeover notes stay inside every exported event description.
+    const calendarNote = 'Some countries switched from the Julian to the Gregorian calendar around this date.';
+    const notedEvents = personalEvents(knownSky, { locale: 'en', links: LINKS, timeZone: 'UTC', notes: [calendarNote] });
+    for (const event of notedEvents) expect(event.description).toContain(calendarNote);
+    const notedIcs = personalCalendar(knownSky, { locale: 'en', links: LINKS, timeZone: 'UTC', generatedAt: FROM, notes: [calendarNote] })!;
+    expect(unfold(notedIcs).filter((line) => line.includes(calendarNote.slice(0, 30)))).toHaveLength(notedEvents.length);
   });
 
   it('numbers a retrograde loop by all its passes, even those outside the window', () => {
@@ -167,6 +198,23 @@ describe('personal calendar events', () => {
   it('marks dates from an unknown birth time as approximate', () => {
     for (const event of personalEvents(unknownSky, options)) expect(event.description).toContain('so this date is approximate');
     for (const event of personalEvents(knownSky, options)) expect(event.description).not.toContain('approximate');
+  });
+
+  it('uses Calculated at instead of Exact at when device timezone or calendar caveats apply', () => {
+    const hostEvents = personalEvents({ ...knownSky, hostZoneDiffers: true }, options);
+    expect(hostEvents.length).toBeGreaterThan(0);
+    for (const event of hostEvents) {
+      expect(event.description).toContain('Calculated at ');
+      expect(event.description).not.toContain('Exact at ');
+      expect(event.description).toContain('differs from our historical table');
+    }
+    const calendarNote = 'Some countries switched from the Julian to the Gregorian calendar around this date.';
+    const calEvents = personalEvents(knownSky, { ...options, notes: [calendarNote] });
+    for (const event of calEvents) {
+      expect(event.description).toContain('Calculated at ');
+      expect(event.description).not.toContain('Exact at ');
+      expect(event.description).toContain(calendarNote);
+    }
   });
 
   it('gives each event the same UID in every language and on every rebuild', () => {

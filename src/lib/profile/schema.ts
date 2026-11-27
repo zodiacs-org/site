@@ -46,6 +46,8 @@ export interface SavedChart {
     bodies: SavedBodySummary[];
     angles: { asc: number; mc: number } | null;
     flags: ChartFlag[];
+    /** True when `flags` were computed against the date as written (Gregorian or Old Style). */
+    calendarChecked?: true;
   };
 }
 
