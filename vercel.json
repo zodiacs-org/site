@@ -236,6 +236,16 @@
       "permanent": true
     },
     {
+      "source": "/developers/engine/reference/functions/core.defaultEphemeris.html",
+      "destination": "/developers/engine/reference/functions/engine.defaultEphemeris.html",
+      "permanent": true
+    },
+    {
+      "source": "/developers/engine/reference/functions/core.setDefaultEphemeris.html",
+      "destination": "/developers/engine/reference/functions/engine.setDefaultEphemeris.html",
+      "permanent": true
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true
