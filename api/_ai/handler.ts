@@ -50,6 +50,22 @@ export async function de440(req: any, res: any) {
   await (await (de440Handler ??= de440Connector()))(req, res);
 }
 
+/**
+ * The route values vercel.json gives the DE440 connector: de440 for /mcp/de440 and de440-health for its status
+ * check, /mcp/de440/health. Every other value, /mcp's and /mcp/health's among them, reaches the published connector.
+ */
+export const DE440_ROUTES: readonly string[] = ['de440', 'de440-health'];
+
+type NodeHandler = (req: any, res: any) => Promise<void>;
+
+/** Sends a request to the connector for the __zodiacs_ai value its vercel.json rewrite gave it. */
+export function aiRouter(connectors: { published: NodeHandler; de440: NodeHandler }): NodeHandler {
+  return (req, res) => (DE440_ROUTES.includes(req.query?.__zodiacs_ai) ? connectors.de440 : connectors.published)(req, res);
+}
+
+/** What api/compatibility.ts runs for every request vercel.json rewrites with __zodiacs_ai. */
+export const route = aiRouter({ published, de440 });
+
 const WARM_UP_CALLS = [
   { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'zodiacs-warm-up', version: '1' } } },
   { jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} },

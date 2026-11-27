@@ -2,14 +2,15 @@
  * get_retrograde_for_me reads the natal side on the page's ephemeris (./page-ephemeris.ts), so a birth near a cusp
  * gets the same Sun sign, houses and share card from the hosted tool as from /retrogrades/for-you/ in the browser.
  *
- * The browser bundle computes on astronomy-engine: scripts/lib/browser-engine.mjs rewrites the engine's default at
- * bundle time. Node keeps the DE440 default, as the hosted runtime does (api/_ai/runtime.mjs is bundled without
- * that rewrite), so this file runs the tool on that default and switches the root entry to astronomy-engine, as the
- * bundle does, only around the page's own calculation. tests/personal-pages-drive.mjs checks the same three
- * births on the built page in Chromium.
+ * The browser bundle computes on astronomy-engine, the engine's default since 3.0.0, and scripts/lib/browser-engine.mjs
+ * keeps the DE440 pack out of it. The hosted runtime installs the pack (src/lib/engine/server-de440.mjs), as
+ * vitest.config.mts does for these tests, so this file runs the tool on DE440 and switches the root entry to
+ * astronomy-engine, as the bundle has it, only around the page's own calculation. tests/personal-pages-drive.mjs
+ * checks the same three births on the built page in Chromium.
  */
-import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { build } from 'esbuild';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { defaultEphemeris, setDefaultEphemeris } from '@zodiacs/engine';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
@@ -33,16 +34,20 @@ const clock = createLocalTimeModule();
 const sunOf = (lon: number) => SIGNS[signIndexForLongitude(lon)].slug;
 
 describe('the browser bundle’s ephemeris', () => {
-  it('is astronomy-engine: the bundle rewrites the engine’s default, and takes out the DE440 pack', async () => {
-    const plugin = browserEngineEsbuild();
-    const loaders: { filter: RegExp; load: (args: { path: string }) => Promise<{ contents: string } | undefined> }[] = [];
-    plugin.setup({ onLoad: (options: { filter: RegExp }, load: (args: { path: string }) => Promise<{ contents: string } | undefined>) => loaders.push({ filter: options.filter, load }) });
-    const dist = fileURLToPath(new URL('../../../node_modules/@zodiacs/engine/dist/', import.meta.url));
-    const ephemeris = await loaders[0].load({ path: `${dist}chunk-BPZVUBFC.js` });
-    expect(ephemeris?.contents).toContain('var INITIAL_DEFAULT_EPHEMERIS = "astronomy-engine";');
-    const pack = await loaders[0].load({ path: `${dist}chunk-UXY4RU57.js` });
-    expect(pack?.contents).not.toContain('DE440_PACK_BASE64');
-    expect(readFileSync(`${dist}chunk-BPZVUBFC.js`, 'utf8')).toContain('var INITIAL_DEFAULT_EPHEMERIS = "de440";');
+  it('is astronomy-engine, the engine’s own default: a process that never calls useDe440() computes on it', () => {
+    const script = "import('@zodiacs/engine').then((engine) => console.log(engine.defaultEphemeris().name))";
+    expect(execFileSync(process.execPath, ['--input-type=module', '-e', script], { encoding: 'utf8' }).trim()).toBe('astronomy-engine');
+  });
+
+  it('never carries the DE440 pack: a browser build refuses the pack and the module that installs it', async () => {
+    const bundle = (contents: string) => build({
+      stdin: { contents, resolveDir: fileURLToPath(new URL('.', import.meta.url)), loader: 'ts' },
+      bundle: true, write: false, platform: 'browser', format: 'esm', logLevel: 'silent', plugins: [browserEngineEsbuild()],
+    });
+    const page = await bundle("import { computeChart } from '../../lib/engine/full'; console.log(computeChart);");
+    expect(page.outputFiles[0].text).not.toContain('Wk9ERVBIMDK6TgAA');
+    await expect(bundle("import { useDe440 } from '@zodiacs/engine/de440/pack'; useDe440();")).rejects.toThrow(/DE440 pack in a browser bundle/u);
+    await expect(bundle("import '../../lib/engine/server-de440.mjs';")).rejects.toThrow(/DE440 pack in a browser bundle/u);
   });
 });
 

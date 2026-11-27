@@ -58,6 +58,34 @@ const KEPT_POLICIES = new Map([
   ['src/lib/engine/fixtures/swiss-eight-cases-policy.json', '9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4'],
   ['src/lib/engine/fixtures/swiss-node-polar-policy.json', '7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96'],
 ]);
+/**
+ * The engine's LICENSING.md, served byte for byte beside its API reference
+ * (scripts/check-ai-integrations.mjs holds it to the installed archive's).
+ * From 3.0.0 it names the Swiss Ephemeris's publisher once, in prose, as a
+ * precedent for redistributing data refitted from JPL's ephemerides, and says
+ * the engine holds no Swiss code, file, table or output. That sentence is not
+ * source code; the file is pinned by digest, so any other change is reviewed.
+ * The claims ledger lists the file's sentences verbatim, one record per line,
+ * so its records for that file may quote the sentence too.
+ */
+const KEPT_LICENSING = new Map([
+  ['public/developers/engine/reference/release/LICENSING.txt', '683edeab04a404d2a82597939ff9ce5bb9c18714d09026d2a0d292e009829ca9'],
+]);
+const KEPT_LICENSING_PUBLISHER = ['Astrodienst', 'AG'].join(' ');
+const KEPT_LICENSING_QUOTE = JSON.stringify(
+  `One public precedent is the Swiss Ephemeris of ${KEPT_LICENSING_PUBLISHER}, first released in 1997, whose ephemeris files (the .se1 files its users install) its own page describes as "largely based upon the DExxx ephemerides from NASA's JPL", data "further compressed with sophisticated compression techniques developed by Astrodienst", and which it licenses under the GNU Affero General Public License or its paid Swiss Ephemeris Professional License (https://www.astro.com/swisseph/swephinfo_e.htm, read 2026-11-26).`,
+);
+const quotesKeptLicensing = (where, line, match, matchColumn) => {
+  if (where !== 'docs/claims/ledger.json' || match[0] !== KEPT_LICENSING_PUBLISHER) return false;
+  return [...KEPT_LICENSING.keys()].some((path) => {
+    const prefix = `${JSON.stringify({ path }).slice(0, -1)},"text":`;
+    const start = line.indexOf(prefix);
+    if (start < 0 || !line.slice(start + prefix.length).startsWith(`${KEPT_LICENSING_QUOTE},`)) return false;
+    const textStart = start + prefix.length;
+    const textEnd = textStart + KEPT_LICENSING_QUOTE.length;
+    return matchColumn >= textStart && matchColumn + match[0].length <= textEnd;
+  });
+};
 /** The conformance suite's summary names the pyswisseph run it measured; that run may carry statistics only. */
 const CONFORMANCE = 'src/data/conformance/summary.json';
 /**
@@ -132,7 +160,12 @@ function scan() {
     for (const { token, text: written, index } of textTokens(text)) {
       if (gone.has(tokenDigest(token))) found.values.push(`${where}:${lineAt(text, index)}   [${written}]`);
     }
-    for (const match of text.matchAll(SOURCE)) found.source.push(`${where}:${lineAt(text, match.index)}`);
+    const keptLicensing = !entry.member && KEPT_LICENSING.get(entry.path) === sha256(entry.bytes);
+    for (const match of keptLicensing ? [] : text.matchAll(SOURCE)) {
+      const lineStart = text.lastIndexOf('\n', match.index) + 1;
+      const line = text.slice(lineStart, (text.indexOf('\n', match.index) + 1 || text.length + 1) - 1);
+      if (!quotesKeptLicensing(where, line, match, match.index - lineStart)) found.source.push(`${where}:${lineAt(text, match.index)}`);
+    }
     if (entry.name.endsWith('.json') && text.includes('aloistr/swisseph')) {
       try {
         if (hasPatch(JSON.parse(text))) found.patches.push(where);

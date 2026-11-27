@@ -14,6 +14,8 @@
  * value from the request: every refusal is a fixed sentence from errors.ts.
  * Responses are never cacheable.
  */
+// First: every calculation here reads JPL DE440 (src/lib/engine/server-de440.mjs).
+import '../engine/server-de440.mjs';
 import { checkRateLimit } from '@vercel/firewall';
 import {
   COMPUTE_ENDPOINTS,

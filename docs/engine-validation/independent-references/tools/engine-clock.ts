@@ -24,10 +24,15 @@
  *
  * `returns` asks for the instants the product returns for a solar or lunar
  * return: the "returned chart" references are evaluated at those instants,
- * and nothing else about them comes from the product.
+ * and nothing else about them comes from the product. Since engine 3.0.0 the
+ * engine computes on astronomy-engine until useDe440() installs its DE440
+ * pack, so this installs it first, as the server and the tests do
+ * (src/lib/engine/server-de440.mjs): the returns are found on DE440, as the
+ * returned-chart tests compute them.
  *
  *   npx vite-node --script docs/engine-validation/independent-references/tools/engine-clock.ts request.json > clock.json
  */
+import '../../../../src/lib/engine/server-de440.mjs';
 import { readFileSync } from 'node:fs';
 import '../../../../scripts/lib/deltat-install.mjs';
 import { MakeTime, SetDeltaTFunction } from 'astronomy-engine';

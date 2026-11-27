@@ -69,8 +69,9 @@ describe('independent A–I transit-window references', () => {
   it('retains the reference bytes, and D’s second period keeps an unresolved exact topology', () => {
     const bytes = readFileSync(new URL('./fixtures/transit-window-horizons.json', import.meta.url));
     // Engine 2.1.0 rebuilt the fixture with its continuous-UTC clock and
-    // refreshed Horizons inputs. The same nine cases and tolerances apply.
-    expect(createHash('sha256').update(bytes).digest('hex')).toBe('e0ac3292b53d7912e3013e9b2d5e651412f8c542c070747a048cc6bdebaf237a');
+    // refreshed Horizons inputs. Engine 3.0.0 changed only its engine version and the digest of
+    // tools/engine-clock.ts, which installs the DE440 pack. The same nine cases and tolerances apply.
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe('5adf174134676735f031e7719d1e0ef22d5f91bbc58c674f4fe7533b2f38fae4');
     expect(fixtures.cases).toHaveLength(9);
     expect(fixtures.cases.reduce((sum, item) => sum + item.geometries.length, 0)).toBe(30);
     // Uranus turns 0.0442° from the D target, inside the 0.05° budget: no

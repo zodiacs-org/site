@@ -1,0 +1,25 @@
+{
+  "engines": [
+    "2.1.0",
+    "3.0.0"
+  ],
+  "node": "v22.23.5",
+  "instants": "177, 1795 to 2205",
+  "compared": "natalChart at four places and house systems, positions, moonPhase, internal computeBodies and chartPoints without its new row; every field but engineVersion",
+  "runs": [
+    {
+      "ephemeris": "de440",
+      "checked": 1416,
+      "differing": 0
+    },
+    {
+      "ephemeris": "astronomy-engine",
+      "checked": 1416,
+      "differing": 0
+    }
+  ],
+  "chartPointsRows": [
+    3,
+    4
+  ]
+}

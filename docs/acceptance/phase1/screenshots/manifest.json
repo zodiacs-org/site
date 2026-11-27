@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-27T10:58:35.859Z",
+  "capturedAt": "2026-11-27T10:26:02.882Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-27",
   "publicationCanonicalSha256": "6c74660836a4bba786222bc888e1c737dc4d9f50696ff7ba5d058126f6aec458",
-  "templateSourceSha256": "e1651fe9b56c262fbe5767bddcb19eb906673be59310fc202cfc0ee476d36ae5",
+  "templateSourceSha256": "743481b5846baacf243c8106da8b1992d6de7b1c87777631d04488d710c0ff6d",
   "renderPayloadSha256": {
     "daily": "d4191c5aeb1962b64dd99c0292d04e16edac881e1e0d6cc3205ce729c3a53ec5",
     "dailyPublication": "168ce1cd1db70ea8f016735de636b4835063ee78bf72cd0f70e9d518f229f4f5",
-    "dailyPublicationManifest": "39c47ab5d54b405da63533952c469f8016a364e4afb07a5a9a37d3b6ea209d89",
+    "dailyPublicationManifest": "ee628f61d4a0af3f30b687f97c8d64baa290ca432691651f4b57d97c2e449ba4",
     "horoscopeProgram": "1399cb39eac14a12f42ac8495b39b3360accec3c8b8c070d3b067b87dc971813"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-27T10:57:55.254Z",
-    "templateSourceSha256": "e1651fe9b56c262fbe5767bddcb19eb906673be59310fc202cfc0ee476d36ae5",
+    "builtAt": "2026-11-27T10:25:24.827Z",
+    "templateSourceSha256": "743481b5846baacf243c8106da8b1992d6de7b1c87777631d04488d710c0ff6d",
     "dailyDate": "2026-11-27",
     "publicationCanonicalSha256": "6c74660836a4bba786222bc888e1c737dc4d9f50696ff7ba5d058126f6aec458",
     "renderPayloadSha256": {
       "daily": "d4191c5aeb1962b64dd99c0292d04e16edac881e1e0d6cc3205ce729c3a53ec5",
       "dailyPublication": "168ce1cd1db70ea8f016735de636b4835063ee78bf72cd0f70e9d518f229f4f5",
-      "dailyPublicationManifest": "39c47ab5d54b405da63533952c469f8016a364e4afb07a5a9a37d3b6ea209d89",
+      "dailyPublicationManifest": "ee628f61d4a0af3f30b687f97c8d64baa290ca432691651f4b57d97c2e449ba4",
       "horoscopeProgram": "1399cb39eac14a12f42ac8495b39b3360accec3c8b8c070d3b067b87dc971813"
     }
   },

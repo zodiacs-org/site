@@ -11,6 +11,7 @@ import {
 } from '../lib/chart-notices';
 import { stashChartHandoff, takeChartHandoff } from '../lib/chart-handoff';
 import { computeCalculatorReceipt } from '../lib/engine/calculator-receipt';
+import { ENGINE_VERSION } from '../lib/engine/types';
 import * as engine from '../lib/engine/full';
 import { profileChartRunInput } from '../lib/profile/profile-chart-handoff';
 import { resolveSavedChart } from '../lib/profile/resolve';
@@ -207,7 +208,7 @@ describe('engine 2.0.0 calculator warning notices', () => {
       updatedAt: '2026-01-01T00:00:00.000Z',
       birth: { date: '1918-02-16', time: '12:00', timeKnown: true, place: moscow },
       summary: {
-        engineVersion: '2.1.0',
+        engineVersion: ENGINE_VERSION,
         utcISO: oldStyleAmbiguous.utc.toISOString(),
         houseSystem: 'whole' as const,
         bodies: [],
@@ -340,10 +341,10 @@ describe('engine 2.0.0 calculator warning notices', () => {
     // Cloud-restored charts whose original calendar choice was not synced conservatively flag ambiguous changeover dates.
     const moscowSavedPlace = { name: moscow.name, admin1: moscow.admin1, country: moscow.country, lat: moscow.lat, lon: moscow.lon, tz: moscow.tz };
     const remoteDerived = {
-      positions: { b: Array.from({ length: 12 }, (_, i) => i * 20), a: [42, 140], h: 'w', v: '2.1.0' },
+      positions: { b: Array.from({ length: 12 }, (_, i) => i * 20), a: [42, 140], h: 'w', v: ENGINE_VERSION },
       time_known: true,
       sun_sign: 'aries',
-      engine_version: '2.1.0',
+      engine_version: ENGINE_VERSION,
       house_system: 'whole',
     };
     const remoteAmbiguous = await savedChartFromRemote({
@@ -374,12 +375,12 @@ describe('engine 2.0.0 calculator warning notices', () => {
     });
     expect(remoteClear?.chart.summary.flags).not.toContain('calendar-unknown');
 
-    // Pre-patch 2.1.0 saves and remote fallback summaries (without calendarChecked) leave calendar provenance unknown so later opens reconstruct it.
+    // Pre-patch saves from the current engine and remote fallback summaries (without calendarChecked) leave calendar provenance unknown so later opens reconstruct it.
     const prePatchOldStyle = {
       ...savedFromJulianAmbiguous,
       id: 'saved-prepatch-210',
       summary: {
-        engineVersion: '2.1.0',
+        engineVersion: ENGINE_VERSION,
         utcISO: oldStyleAmbiguous.utc.toISOString(),
         houseSystem: 'whole' as const,
         bodies: [],
