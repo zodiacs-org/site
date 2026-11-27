@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import Wheel from './wheel/Wheel';
+import { collisionNudge } from './scene/layout';
 import type { Daily } from './daily';
 import type { HoroscopeSkyPlanet } from './horoscope-page-data';
 import { SIGNS, signBySlug } from './signs';
@@ -27,6 +28,39 @@ export function horoscopeWheelFocus(sky: readonly HoroscopeSkyPlanet[] | undefin
   return [...new Set((sky ?? [])
     .filter((planet) => planet.at.slice(0, 10) === daily.date && daily.bodies.some((body) => body.body === planet.body))
     .map((planet) => planet.body))];
+}
+
+function wheelBodies(daily: Daily) {
+  return daily.bodies.map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde }));
+}
+
+/** The size Wheel draws at by default, which the static wheel uses. */
+const WHEEL_DRAW_SIZE = 420;
+
+/**
+ * Wheel's frame for the static wheel, mirrored here rather than imported:
+ * Wheel.tsx is also built into the pinned Chart Studio panel
+ * (scripts/build-chart-studio.mjs), so it stays as published. The same
+ * centre, ring radii, marker radius, viewBox pad and longitude to point
+ * as Wheel draws with, for a wheel turned so `anchor` sits at 9 o'clock.
+ * src/lib/horoscope-wheel-story.test.ts holds every number to the rendered
+ * image, so a change to Wheel's geometry fails there.
+ */
+function wheelFrame(size: number, anchor: number) {
+  const cx = size / 2;
+  const cy = size / 2;
+  const pt = (lon: number, r: number) => {
+    const phi = ((180 + (lon - anchor)) * Math.PI) / 180;
+    return { x: cx + r * Math.cos(phi), y: cy - r * Math.sin(phi) };
+  };
+  return {
+    rSigns: size * 0.475,
+    rSignsIn: size * 0.395,
+    rBodies: size * 0.31,
+    rMarker: size * 0.033,
+    pad: size * 0.05,
+    pt,
+  };
 }
 
 let iconCache: Map<string, string> | null = null;
@@ -82,4 +116,102 @@ export function horoscopeWheelSvg({
     .replace(/(<svg[^>]*>)/u, `$1<style>${style}</style>`)
     .replace(/href="\/assets\/zodiac-icons\/128\/([a-z]+)\.webp"/gu, (_, slug: string) => `href="${signDisc(slug)}"`)
     .replaceAll('font-family="var(--font-mono)"', 'font-family="ui-monospace,Menlo,Consolas,monospace"');
+}
+
+/** The story's timings, in ms from the moment the wheel comes into view. */
+export const HOROSCOPE_WHEEL_STORY = {
+  /** The ring's trip round the wheel, from the page's sign. */
+  ring: 1300,
+  /** The closing beat: the planets the reading draws on. */
+  focus: 1700,
+  /** Between one picked-out planet and the next. */
+  focusStep: 70,
+  /** The last transition ends by then (the runtime settles at 2600). */
+  end: 2500,
+} as const;
+
+export interface HoroscopeWheelStoryPlanet {
+  body: string;
+  x: number;
+  y: number;
+  /** The veil's radius; a retrograde planet's covers its Rx too. */
+  r: number;
+  /** When the planet arrives. */
+  t: number;
+  focus: boolean;
+}
+
+export interface HoroscopeWheelStory {
+  viewBox: string;
+  /** The ring, one stroke counter-clockwise from the start of the page's sign. */
+  ring: string;
+  /** The sign band's radius and width, which the twelve veils cover. */
+  band: { r: number; width: number };
+  /** One veil per sign, the page's sign first, in zodiac order. */
+  signs: { d: string; t: number }[];
+  planets: HoroscopeWheelStoryPlanet[];
+}
+
+/**
+ * The geometry of the entrance laid over the wheel image on a horoscope page:
+ * the same frame, anchor and nudged planet places the image is drawn with
+ * (Wheel's frame, mirrored above, and collisionNudge), so the veil sits
+ * exactly on the picture.
+ * Times follow the ring as it goes round from the page's sign; the planets
+ * the reading draws on are held for the closing beat.
+ */
+export function horoscopeWheelStory({
+  daily,
+  signSlug,
+  focus,
+}: {
+  daily: Daily;
+  signSlug: string;
+  focus: readonly string[];
+}): HoroscopeWheelStory {
+  const signIndex = SIGNS.findIndex((sign) => sign.slug === signSlug);
+  if (signIndex < 0) throw new Error(`Unknown sign ${signSlug}`);
+  const anchor = signIndex * 30;
+  const size = WHEEL_DRAW_SIZE;
+  const { rSigns, rSignsIn, rBodies, rMarker, pad, pt } = wheelFrame(size, anchor);
+  const n = (value: number) => String(Math.round(value * 10) / 10);
+  const at = (lon: number, r: number) => {
+    const p = pt(lon, r);
+    return `${n(p.x)} ${n(p.y)}`;
+  };
+  const { ring: RING, focus: FOCUS, focusStep } = HOROSCOPE_WHEEL_STORY;
+  // The band runs from just inside the planets' ticks to just outside the ring.
+  const inner = rSignsIn - size * 0.016;
+  const outer = rSigns + 1.5;
+  const band = { r: Math.round(((inner + outer) / 2) * 10) / 10, width: Math.round((outer - inner) * 10) / 10 };
+  const signs = Array.from({ length: 12 }, (_, i) => ({
+    d: `M${at(anchor + i * 30, band.r)}A${band.r} ${band.r} 0 0 0 ${at(anchor + i * 30 + 30, band.r)}`,
+    t: Math.round((i / 12) * RING),
+  }));
+  const ring = `M${at(anchor, rSigns)}A${rSigns} ${rSigns} 0 1 0 ${at(anchor + 180, rSigns)}A${rSigns} ${rSigns} 0 1 0 ${at(anchor + 360, rSigns)}`;
+  const bodies = wheelBodies(daily);
+  const drawLon = collisionNudge(bodies);
+  const lit = new Set(focus);
+  let step = 0;
+  const planets = bodies.map((body) => {
+    const lon = drawLon.get(body.body) ?? body.lon;
+    const p = pt(lon, rBodies);
+    const along = ((((lon - anchor) % 360) + 360) % 360) / 360;
+    const isFocus = lit.has(body.body);
+    return {
+      body: body.body,
+      x: Math.round(p.x * 10) / 10,
+      y: Math.round(p.y * 10) / 10,
+      r: Math.round((rMarker + (body.retrograde ? size * 0.02 : size * 0.005)) * 10) / 10,
+      t: isFocus ? FOCUS + Math.min(step++, 4) * focusStep : Math.round(along * RING),
+      focus: isFocus,
+    };
+  });
+  return {
+    viewBox: `${n(-pad)} ${n(-pad)} ${n(size + pad * 2)} ${n(size + pad * 2)}`,
+    ring,
+    band,
+    signs,
+    planets,
+  };
 }
