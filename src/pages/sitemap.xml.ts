@@ -32,6 +32,7 @@ import {
 } from '../lib/seo-lastmod';
 import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
+import { pairAngle } from '../lib/pair-angle';
 import birthdayFactsData from '../data/birthdays.json';
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
 import {
@@ -1249,6 +1250,23 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   )));
   for (const url of [...urls, ...localizedUrls]) {
     if (PAIR_ANGLE_PLATE_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-26');
+  }
+  // The two plates' wording fixes (2026-11-27): the Sun's year plate in French, Italian and Portuguese (the Russian
+  // guides are not listed), and on the pair plate the Italian same-sign heading and signs-one-apart lede and the
+  // Portuguese one-twelfth of the wheel (signs one apart).
+  const PLATE_WORDING_PAGES = new Set([
+    ...['/fr', '/it', '/pt'].flatMap((prefix) => SIGNS.map((sign) => `${prefix}/${sign.slug}/`)),
+    ...pairs.flatMap((pair) => {
+      const [a, b] = pair.data.signs;
+      const { steps } = pairAngle(a, b);
+      return [
+        ...(steps <= 1 ? [`/it/compatibility/${pair.id}/`] : []),
+        ...(steps === 1 ? [`/pt/compatibility/${pair.id}/`] : []),
+      ];
+    }),
+  ]);
+  for (const url of [...urls, ...localizedUrls]) {
+    if (PLATE_WORDING_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-27');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
