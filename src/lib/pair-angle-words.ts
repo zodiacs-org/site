@@ -266,7 +266,7 @@ const PT: PairAngleWords = {
     square: aspectLabel('pt', 'square'), trine: aspectLabel('pt', 'trine'), quincunx: 'quincúncio',
     opposition: aspectLabel('pt', 'opposition'),
   },
-  share: ['o mesmo ponto', 'a duodécima parte da roda', 'um sexto da roda', 'um quarto da roda', 'um terço da roda', 'cinco doze avos da roda', 'metade da roda'],
+  share: ['o mesmo ponto', 'um doze avos da roda', 'um sexto da roda', 'um quarto da roda', 'um terço da roda', 'cinco doze avos da roda', 'metade da roda'],
   signsApart: 'Signos de distância',
   sameSign: 'o mesmo signo',
   shorterWay: 'pelo lado mais curto',
@@ -384,7 +384,7 @@ const IT: PairAngleWords = {
   heading: ({ a, b, steps }) => {
     const pair = `${itName(a)} e ${itName(b)}`;
     return pick(steps, [
-      `${itName(a)} e ${itName(a)}, uno stesso segno`,
+      `${itName(a)} e ${itName(a)}, lo stesso segno`,
       `${pair}, due segni vicini`,
       `${pair}, a due segni di distanza`,
       `${pair}, a tre segni di distanza`,
@@ -398,7 +398,7 @@ const IT: PairAngleWords = {
     const element = lower(elementLabel(a.element, 'it'));
     return pick(steps, [
       `Entrambi i Soli sono ${itIn(a.slug)}, nello stesso punto della ruota, l’angolo che l’astrologia chiama congiunzione. Condividete tutto ciò di cui è fatto un segno: l’elemento (${element}), la modalità (${IT_MODALITY.f[a.modality]}) e la polarità (${IT_POLARITY.f[a.polarity]}).`,
-      `I segni vicini distano 30 gradi, un semisestile. ${pair} non hanno in comune né l’elemento, né la modalità, né la polarità: cambiano tutte e tre da un segno al successivo.`,
+      `I segni vicini distano 30 gradi, un semisestile. ${pair} non hanno in comune né l’elemento, né la modalità, né la polarità: cambiano tutti e tre da un segno al successivo.`,
       `Due segni di distanza sono 60 gradi, un sestile, un sesto della ruota. ${pair} condividono la polarità, entrambi ${IT_POLARITY.pl[a.polarity]}, ma non l’elemento né la modalità.`,
       `Tre segni di distanza sono 90 gradi, una quadratura, un quarto della ruota. ${pair} condividono la modalità, entrambi ${IT_MODALITY.pl[a.modality]}, e differiscono per elemento e polarità.`,
       `Quattro segni di distanza sono 120 gradi, un trigono, un terzo della ruota. ${pair} condividono l’elemento, entrambi segni ${itElement(a.element)}, e la polarità, e differiscono per la modalità.`,
