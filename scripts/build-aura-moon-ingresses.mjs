@@ -1,12 +1,10 @@
 /*
  * Builds exact Moon sign ingresses for Registry Collection with the engine's
- * DE440 pack (installed via src/lib/engine/server-de440.mjs). The client still
- * uses the lightweight Moon only for the visit-time sign; this committed file
- * supplies exact future activation timestamps.
+ * default DE440 source. The client still uses the lightweight Moon only for the visit-time
+ * sign; this committed file supplies exact future activation timestamps.
  *
  *   npm run data:aura-moon-ingresses
  */
-import '../src/lib/engine/server-de440.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
