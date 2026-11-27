@@ -128,6 +128,18 @@ describe('the status check on each route', () => {
       expect(response.headers.get('allow'), path).toBe('POST, OPTIONS');
     }
   });
+
+  it('rejects POST on /mcp/de440/health so it cannot act as an MCP endpoint', async () => {
+    for (const path of ['/mcp/de440/health', '/mcp/de440/health/']) {
+      const response = await fetch(`${base}${path}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'test', version: '1.0.0' } } }),
+      });
+      expect(response.status, path).toBe(405);
+      expect(response.headers.get('allow'), path).toBe('GET, OPTIONS');
+    }
+  });
 });
 
 describe('the thirteen published tools on both routes', () => {

@@ -50430,7 +50430,12 @@ function createAiNodeHandler(options = {}) {
         res.setHeader("Allow", "GET");
         return send(res, 405, "method-not-allowed");
       }
-      const healthRoute = query[AI_ROUTE_PARAM] === "health" || options.de440 === true && query[AI_ROUTE_PARAM] === DE440_HEALTH_ROUTE;
+      const de440HealthRoute = options.de440 === true && query[AI_ROUTE_PARAM] === DE440_HEALTH_ROUTE;
+      if (de440HealthRoute && method !== "GET") {
+        res.setHeader("Allow", "GET, OPTIONS");
+        return send(res, 405, "method-not-allowed");
+      }
+      const healthRoute = query[AI_ROUTE_PARAM] === "health" || de440HealthRoute;
       if (method !== "POST" && !(method === "GET" && (healthRoute || accountRoute))) {
         res.setHeader("Allow", "POST, OPTIONS");
         return send(res, 405, "method-not-allowed");
