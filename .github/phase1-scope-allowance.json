@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "sun-year-plate-sign-guides-dea5257151a3",
-  "baseCommit": "dea5257151a37317b7644682545dd8c9ae86cfff",
+  "id": "sun-year-plate-sign-guides-e0506a5f7979",
+  "baseCommit": "e0506a5f7979ff2f28aab65784337993f3ab9850",
   "protectedPaths": [
     "src/pages/[sign]/index.astro",
     "src/pages/es/[sign]/index.astro",
