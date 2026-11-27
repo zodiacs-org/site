@@ -553,6 +553,14 @@
       "destination": "/api/compatibility?__zodiacs_ai=de440"
     },
     {
+      "source": "/mcp/de440/health",
+      "destination": "/api/compatibility?__zodiacs_ai=de440-health"
+    },
+    {
+      "source": "/mcp/de440/health/",
+      "destination": "/api/compatibility?__zodiacs_ai=de440-health"
+    },
+    {
       "source": "/mcp/health",
       "destination": "/api/compatibility?__zodiacs_ai=health"
     },

@@ -49159,6 +49159,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
 function de440ServerInfo() {
   return { name: "zodiacs", title: `Zodiacs (JPL DE440, engine ${ENGINE_VERSION})`, version: `${AI_VERSION}+de440.${ENGINE_VERSION}` };
 }
+var DE440_HEALTH_ROUTE = "de440-health";
 function de440Health() {
   return { service: "zodiacs-mcp-de440", version: AI_VERSION, engine: ENGINE_VERSION, transport: "stateless-streamable-http", ready: true };
 }
@@ -50421,7 +50422,7 @@ function createAiNodeHandler(options = {}) {
       const allowedKey = (key2) => key2 === AI_ROUTE_PARAM || extraKeys.includes(key2);
       if ([...rawQuery.keys()].some((key2) => !allowedKey(key2)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || extraKeys.some((key2) => rawQuery.getAll(key2).length > 1)) return send(res, 400, "invalid-query");
       const query = req.query ?? Object.fromEntries(rawQuery);
-      const protocolRoutes = options.de440 ? ["1", "de440", "health"] : ["1", "health"];
+      const protocolRoutes = options.de440 ? ["1", "de440", "health", DE440_HEALTH_ROUTE] : ["1", "health"];
       if (Object.keys(query).some((key2) => !allowedKey(key2)) || query[AI_ROUTE_PARAM] !== void 0 && ![...protocolRoutes, ...accountsOn ? ACCOUNT_ROUTES : []].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
       if (query.authorization_id !== void 0 && (typeof query.authorization_id !== "string" || !/^[A-Za-z0-9_-]{8,256}$/.test(query.authorization_id))) return send(res, 400, "invalid-query");
       const accountRoute = accountsOn && ACCOUNT_ROUTES.includes(query[AI_ROUTE_PARAM]);
@@ -50429,7 +50430,8 @@ function createAiNodeHandler(options = {}) {
         res.setHeader("Allow", "GET");
         return send(res, 405, "method-not-allowed");
       }
-      if (method !== "POST" && !(method === "GET" && (query[AI_ROUTE_PARAM] === "health" || accountRoute))) {
+      const healthRoute = query[AI_ROUTE_PARAM] === "health" || options.de440 === true && query[AI_ROUTE_PARAM] === DE440_HEALTH_ROUTE;
+      if (method !== "POST" && !(method === "GET" && (healthRoute || accountRoute))) {
         res.setHeader("Allow", "POST, OPTIONS");
         return send(res, 405, "method-not-allowed");
       }

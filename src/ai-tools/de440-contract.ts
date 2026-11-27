@@ -12,6 +12,9 @@ export function de440ServerInfo() {
   return { name: 'zodiacs', title: `Zodiacs (JPL DE440, engine ${ENGINE_VERSION})`, version: `${AI_VERSION}+de440.${ENGINE_VERSION}` };
 }
 
+/** The route value vercel.json gives /mcp/de440/health, this route's status check. /mcp/health stays the published one's. */
+export const DE440_HEALTH_ROUTE = 'de440-health';
+
 /** The route's status reply, which names its service and engine; /mcp keeps its published reply. */
 export function de440Health() {
   return { service: 'zodiacs-mcp-de440', version: AI_VERSION, engine: ENGINE_VERSION, transport: 'stateless-streamable-http', ready: true };

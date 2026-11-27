@@ -36,10 +36,13 @@ const jsonLd = [
 
       <h2>The ephemeris</h2>
       <p>
-        The engine's default ephemeris is JPL DE440. The site uses it for the
-        compute API and sky catalogs. The smaller browser build uses{' '}
+        By default the engine package calculates with{' '}
         <a href="https://github.com/cosinekitty/astronomy" rel="noopener noreferrer">Astronomy Engine</a>.
-        It is designed to stay within one arcminute of NOVAS, its own target.
+        It also ships a JPL DE440 pack, which a program switches on with{' '}
+        <code>useDe440()</code>. The site's server code switches it on, so the
+        compute API and sky catalogs use DE440. The smaller browser build keeps
+        the package default, Astronomy Engine. It is designed to stay within
+        one arcminute of NOVAS, its own target.
       </p>
       <p>
         Positions are <strong>geocentric tropical longitudes of date</strong>,
@@ -67,7 +70,7 @@ const jsonLd = [
       <p>
         On 18 November 2026 we recorded answers from live{' '}
         <strong>NASA JPL Horizons</strong> DE441. On 23 November 2026 we
-        compared the default DE440 calculation in engine 2.1.0 with the
+        compared the DE440 calculation in engine 2.1.0 with the
         NASA JPL Horizons DE441 answers. We used the original 18 chart dates and ten bodies. Horizons returned
         apparent longitudes at Earth's centre in the ecliptic of date.
         Across the 160 measurements from 1801 to 2026, the median disagreement

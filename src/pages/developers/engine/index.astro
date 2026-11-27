@@ -60,7 +60,7 @@ const jsonLd = [
     description,
     url: 'https://zodiacs.org/developers/engine/',
     applicationCategory: 'DeveloperApplication',
-    operatingSystem: 'Node.js 20.19 or a later 20.x, Node.js 22.7 and newer, or a browser through a bundler',
+    operatingSystem: 'Node.js 20.19 or a later 20.x, Node.js 22.12 and newer, or a browser through a bundler',
     softwareVersion: candidate.version,
     // The archive this page's install block fetches and checks.
     downloadUrl: candidate.artifactUrl,
@@ -343,7 +343,7 @@ const jsonLd = [
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
         <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
-        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this release is Node 22.22.2 and Node 24.21.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.23.3 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
+        <li>The manifest declares Node 20.19 or a later 20.x, and 22.12 and newer. What has actually been executed for this release is narrower than the declaration: Node 22.23.5 and Node 24.13.0 here for the parity check, and Node 22.23.5 for the packed-archive consumer check.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>
       <p>

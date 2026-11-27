@@ -7,24 +7,50 @@
  * and in the version's build metadata, which semver leaves out when it orders versions. Both reach the same
  * thirteen tools with the same names, titles, input schemas and annotations; only the DE440 route's calculation
  * schema and its sign change sentence differ, as they did before (src/ai-tools/de440-contract.ts).
+ *
+ * Every request arrives as production delivers it: with the __zodiacs_ai value its rewrite in vercel.json gives,
+ * at api/_ai/handler.ts's router, the one api/compatibility.ts runs, which picks the connector.
  */
-import { createServer, type Server } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { createServer, type IncomingMessage, type Server } from 'node:http';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { ALL_AI_TOOL_NAMES, AI_VERSION } from './contracts';
-import { de440OutputSchema } from './de440-contract';
-import { PUBLISHED_TOOLS } from './published-tools';
+import { ALL_AI_TOOL_NAMES, AI_VERSION } from '../../src/ai-tools/contracts';
+import { de440OutputSchema } from '../../src/ai-tools/de440-contract';
+import { PUBLISHED_TOOLS } from '../../src/ai-tools/published-tools';
 
+const AI_DESTINATION = /^\/api\/compatibility\?__zodiacs_ai=([a-z0-9-]+)$/;
+/** Each MCP address in vercel.json, with the __zodiacs_ai value its rewrite gives. */
+const rewrites = new Map<string, string>();
 let server: Server;
 let base: string;
+let de440Routes: readonly string[];
 
 beforeAll(async () => {
-  const routes = await import('../../api/_ai/handler');
+  const vercel = JSON.parse(await readFile(new URL('../../vercel.json', import.meta.url), 'utf8')) as { rewrites: { source: string; destination: string }[] };
+  for (const rewrite of vercel.rewrites) {
+    const value = AI_DESTINATION.exec(rewrite.destination)?.[1];
+    if (value && rewrite.source.startsWith('/mcp')) rewrites.set(rewrite.source, value);
+  }
+  const handler = await import('../../api/_ai/handler');
+  de440Routes = handler.DE440_ROUTES;
   const allowedHosts: string[] = [];
   const allowed = async () => 'allowed' as const;
   // As production runs both routes: all three switches on.
   const options = { env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' }, allowedHosts, rateLimit: allowed, atomicQuota: allowed, countUsage: async () => {} };
-  const [published, de440] = await Promise.all([routes.publishedConnector(options), routes.de440Connector(options)]);
-  server = createServer((req, res) => { void (req.url?.startsWith('/mcp/de440') ? de440 : published)(req, res); });
+  const [published, de440] = await Promise.all([handler.publishedConnector(options), handler.de440Connector(options)]);
+  const route = handler.aiRouter({ published, de440 });
+  server = createServer((req, res) => {
+    const url = new URL(req.url ?? '/', 'http://localhost');
+    const value = rewrites.get(url.pathname);
+    if (value === undefined) { res.statusCode = 404; res.end(); return; }
+    // As after Vercel's rewrite: the destination's query first, then the request's own.
+    const query = new URLSearchParams(`__zodiacs_ai=${value}`);
+    for (const [key, entry] of url.searchParams) query.append(key, entry);
+    const rewritten = req as IncomingMessage & { query?: Record<string, string> };
+    rewritten.url = `/api/compatibility?${query}`;
+    rewritten.query = Object.fromEntries(query);
+    route(rewritten, res).catch(() => { if (!res.headersSent) res.statusCode = 500; res.end(); });
+  });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   allowedHosts.push(host);
@@ -48,6 +74,21 @@ async function rpc(path: string, method: string, params: unknown) {
 
 const initialize = (path: string) => rpc(path, 'initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'de440-server-info', version: '1' } });
 
+const PUBLISHED_HEALTH = { service: 'zodiacs-mcp', version: '0.6.9', transport: 'stateless-streamable-http', ready: true };
+const DE440_HEALTH = { service: 'zodiacs-mcp-de440', version: '0.6.9', engine: '3.0.0', transport: 'stateless-streamable-http', ready: true };
+
+describe('the MCP addresses in vercel.json', () => {
+  it('give each its route value, and only the DE440 ones reach the DE440 connector', () => {
+    expect(Object.fromEntries(rewrites)).toStrictEqual({
+      '/mcp': '1', '/mcp/': '1',
+      '/mcp/de440': 'de440', '/mcp/de440/': 'de440',
+      '/mcp/de440/health': 'de440-health', '/mcp/de440/health/': 'de440-health',
+      '/mcp/health': 'health', '/mcp/health/': 'health',
+    });
+    expect(de440Routes).toStrictEqual(['de440', 'de440-health']);
+  });
+});
+
 describe('serverInfo on the two routes', () => {
   it('keeps /mcp as published', async () => {
     expect(AI_VERSION).toBe('0.6.9');
@@ -61,11 +102,31 @@ describe('serverInfo on the two routes', () => {
       version: '0.6.9+de440.3.0.0',
     });
   });
+});
 
-  it('answers the status request on each route with its own service name', async () => {
-    const health = async (path: string) => (await fetch(`${base}${path}?__zodiacs_ai=health`)).json();
-    expect(await health('/mcp')).toStrictEqual({ service: 'zodiacs-mcp', version: '0.6.9', transport: 'stateless-streamable-http', ready: true });
-    expect(await health('/mcp/de440')).toStrictEqual({ service: 'zodiacs-mcp-de440', version: '0.6.9', engine: '3.0.0', transport: 'stateless-streamable-http', ready: true });
+describe('the status check on each route', () => {
+  it('answers GET /mcp/health from the published connector, as before', async () => {
+    for (const path of ['/mcp/health', '/mcp/health/']) {
+      const response = await fetch(`${base}${path}`);
+      expect(response.status, path).toBe(200);
+      expect(await response.json(), path).toStrictEqual(PUBLISHED_HEALTH);
+    }
+  });
+
+  it('answers GET /mcp/de440/health from the DE440 connector, with its own service name and engine', async () => {
+    for (const path of ['/mcp/de440/health', '/mcp/de440/health/']) {
+      const response = await fetch(`${base}${path}`);
+      expect(response.status, path).toBe(200);
+      expect(await response.json(), path).toStrictEqual(DE440_HEALTH);
+    }
+  });
+
+  it('keeps GET off both protocol addresses', async () => {
+    for (const path of ['/mcp', '/mcp/de440']) {
+      const response = await fetch(`${base}${path}`);
+      expect(response.status, path).toBe(405);
+      expect(response.headers.get('allow'), path).toBe('POST, OPTIONS');
+    }
   });
 });
 
