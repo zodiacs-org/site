@@ -48608,7 +48608,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           const listed = data.tools.length;
           const skyTools = offeredTools(dependencies).filter(isSkyEventsTool).map((name) => `${name} (${SKY_EVENTS_TOOL_SUMMARY[name]})`);
           const skyLine2 = skyTools.length ? ` ${skyTools.join(", ")} ${skyTools.length > 1 ? "are" : "is"} also listed there: calculated dates with no reading and no confidence label.` : "";
-          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice.${skyLine2} With them Zodiacs offers ${listed + added.length + skyTools.length} tools: the ${listed} in the tools field and these ${added.length + skyTools.length}.`);
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice.${skyLine2} With them Zodiacs offers ${offered.length} tools: the ${listed} in the tools field and these ${offered.length - listed}.`);
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes("find_birthplace") ? " a town or city named instead of coordinates, find_birthplace;" : ""} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
           if (skyEvents2) capabilities.limitations.push("Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet's next retrograde, when a planet changes sign, every full Moon next year or this week's void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.");
           if (dependencies.momentChart) capabilities.limitations.push(MOMENT_ROUTING);
@@ -49095,7 +49095,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone10 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -50080,7 +50080,7 @@ var PANELS = {
   get_personal_transits: { uri: READINGS_URI, icon: "readings" },
   explain_astrology: { uri: READINGS_URI, icon: "readings" }
 };
-var CLOCK_DEPENDENT = /* @__PURE__ */ new Set([MOMENT_CHART_TOOL, "get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events", "get_year_score", "get_solar_return", "find_good_days", ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
+var CLOCK_DEPENDENT = /* @__PURE__ */ new Set([MOMENT_CHART_TOOL, "get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events", "get_year_score", "get_solar_return", "get_numerology", "find_good_days", ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 var artResourceDomains = ["https://zodiacs.org"];
 var panelMeta = (preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, "openai/widgetCSP": { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, "openai/widgetPrefersBorder": true, "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode } });
 var HOST_ZONE_KEYS = ["openai/userLocation"];
