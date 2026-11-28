@@ -205,6 +205,44 @@ the fingerprint and needs no new date.
    geometry instead, and test it against the rendered figure.
 10. New inline SVG or new text in `<main>`? Date the page in the sitemap.
 
+### Stories as short vertical clips
+
+Every story above can also be exported as a silent 1080 x 1920 clip at
+30 fps that ends on the brand end card, for posting:
+
+```bash
+npm run dev    # or: npm run build && npm run preview
+node scripts/build-story-clips.mjs --base http://localhost:4321 --out ~/story-clips
+node scripts/build-story-clips.mjs --base http://localhost:4321 --out ~/story-clips sign-guide:leo,virgo compatibility:cancer-pisces birthday:march-21
+```
+
+It has no npm script on purpose: `package.json` is hashed by the Phase 1
+evidence contract (`tests/visual/phase1-evidence-contract.mjs`), and a new
+script line would void the reviewed screenshots. With no story named, it
+renders all twelve sign guides and one sample of
+each other story (`STORIES` in `scripts/build-story-clips.mjs`). Each clip
+runs 7.5 s: half a second of the waiting figure, the story, a hold on the
+finished figure, then the published end card
+(`public/assets/brand/end-card/`). Beside each MP4 it writes a JPEG of the
+last story frame and `clips.json`.
+
+- The figure is the page's own. Chromium opens the page as a phone, keeps
+  the entrance runtime from starting that one story (its mark is never
+  handed to IntersectionObserver), adds `.is-in` to the mark itself, pauses
+  every transition that starts and draws each frame by setting their
+  `currentTime`. Nothing on the site changes for visitors.
+- The caption is the heading (or the first sentence of the caption) the
+  page prints for that figure, read from the rendered page, in EB Garamond;
+  under the figure is the page's address. Words stay out of the top 220 px
+  and the bottom 320 px.
+- It refuses a clip when the caption is missing or has a dash or words a
+  clip never shows, when a word in the figure falls back from its
+  self-hosted face, when an image has not loaded, when the story runs past
+  2.6 s, or when the last frame is not the finished figure.
+- Clips are deliverables, not site files: never commit them. The encodes
+  are not byte-stable across platforms; `scripts/story-clips.test.mjs`
+  checks the timeline, the plan and the caption rules.
+
 ## Files
 
 - `src/styles/motion.css`: the timings (`--motion-*` custom properties) and the
