@@ -2,8 +2,13 @@ name: PR Review
 
 # An independent reviewer reads each pull request and tries to break it:
 # bugs, speed or bundle regressions, broken phone layouts, and the house rules
-# in AGENTS.md and CLAUDE.md. It runs on the owner's Anthropic API credits, so
-# reviews keep going when chat-plan limits run out.
+# in AGENTS.md and CLAUDE.md. It signs in with one of two credentials in the
+# pr-review-production environment: CLAUDE_CODE_OAUTH_TOKEN, a token made
+# with `claude setup-token` that draws on the owner's Claude subscription and
+# shares its usage limits, or ANTHROPIC_API_KEY, which bills API credits.
+# When both are saved the subscription token is used and the API key is not
+# handed to the reviewer at all (the reviewer CLI would otherwise prefer the
+# key).
 #
 # Cost control: drafts are skipped (agents open every PR as a draft, so the
 # first review comes when a PR is marked ready). Label a draft `ai-review` to
@@ -14,8 +19,11 @@ name: PR Review
 # however short, and a re-run is a new attempt). The
 # reviewer runs on Sonnet unless PR_REVIEW_MODEL says otherwise (for example
 # opus). Both are repository variables, so either can change
-# without a code change. The hard ceiling in dollars is the monthly spend
-# limit on the key's workspace in the Anthropic Console.
+# without a code change. With an API key the hard ceiling in dollars is the
+# monthly spend limit on the key's workspace in the Anthropic Console. With
+# the subscription token nothing is billed per review: the ceilings are the
+# turns, the minutes, the monthly count and the plan's own usage limits, and
+# the dollar cap below counts list prices only as a stop on a long review.
 #
 # Spend guard for each review, before and during the run:
 # - Size: a pull request that changes more than PR_REVIEW_MAX_LINES lines
@@ -52,11 +60,12 @@ name: PR Review
 # explicit blocker. A missing key, a spent balance or an unfinished review is
 # a warning, never a red check, so merges are not held up by billing.
 #
-# The key lives in the pr-review-production environment as ANTHROPIC_API_KEY.
+# The credential lives in the pr-review-production environment as
+# CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY.
 # Pull requests from forks and from Dependabot get no secrets and are skipped.
 #
 # This repository is public, so the review comment is public. Before it is
-# posted, the job refuses any text that contains either key, also once
+# posted, the job refuses any text that contains any of its credentials, also once
 # everything but letters, digits and underscores is taken out (so a key split
 # across quoted pieces is still caught), or anything shaped like an Anthropic
 # or GitHub credential. The reviewer holds the change to the
@@ -77,8 +86,8 @@ name: PR Review
 # - No title, body, branch name or label text is ever put into a script with
 #   ${{ }}. Event values reach shell only through env, and only the pull
 #   request number and the repository name are written into the prompt.
-# - Without ANTHROPIC_API_KEY the job prints a warning and ends green after one
-#   step: no checkout, no API call, no comment.
+# - Without either credential the job prints a warning and ends green after
+#   one step: no checkout, no API call, no comment.
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review, labeled]
@@ -116,7 +125,7 @@ jobs:
       - name: Check the key, the size and this month's review limit
         id: gate
         env:
-          HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+          HAS_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' || secrets.ANTHROPIC_API_KEY != '' }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
@@ -132,7 +141,7 @@ jobs:
         run: |
           if [ "$HAS_KEY" != "true" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::ANTHROPIC_API_KEY is not set in the pr-review-production environment, so no review ran."
+            echo "::warning::Neither CLAUDE_CODE_OAUTH_TOKEN nor ANTHROPIC_API_KEY is set in the pr-review-production environment, so no review ran."
             exit 0
           fi
           lines=$(( ${ADDITIONS:-0} + ${DELETIONS:-0} ))
@@ -253,7 +262,11 @@ jobs:
           CLAUDE_CODE_MAX_OUTPUT_TOKENS: '16000'
         uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # One credential only. The subscription token wins, and the API
+          # key is then left out, because the reviewer CLI uses a key
+          # whenever it is given one.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN == '' && secrets.ANTHROPIC_API_KEY || '' }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             REPO: ${{ github.repository }}
@@ -332,6 +345,7 @@ jobs:
           # Only compared against below, never printed. Logs mask it anyway.
           # GH_TOKEN above is checked the same way.
           API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           marker='<!-- zodiacs-pr-review -->'
           body_file="$RUNNER_TEMP/review.md"
@@ -340,7 +354,7 @@ jobs:
           elif [ "$OUTCOME" = "success" ] && [ -n "$RESULT" ] && printf '%s' "$RESULT" | jq -e '.review_markdown' > /dev/null 2>&1; then
             review=$(printf '%s' "$RESULT" | jq -r '.review_markdown')
           else
-            review="The automatic review did not finish on this push, so it has no verdict. Check the run log (for example the API balance, the turn limit or the per-review budget)."
+            review="The automatic review did not finish on this push, so it has no verdict. Check the run log (for example the API balance or the plan's usage limit, the turn limit or the per-review budget)."
             echo "::warning::The review did not produce a result."
           fi
           # The comment is public. Never post a credential, whatever the
@@ -359,13 +373,14 @@ jobs:
           keep='A-Za-z0-9_'
           squeezed=$(tr -cd "$keep" <<< "$review"$'\n'"$RESULT")
           split=false
-          for secret in "$API_KEY" "$GH_TOKEN"; do
+          for secret in "$API_KEY" "$OAUTH_TOKEN" "$GH_TOKEN"; do
             bare=$(tr -cd "$keep" <<< "$secret")
             if [ "${#bare}" -ge 20 ] && [[ "$squeezed" == *"$bare"* ]]; then
               split=true
             fi
           done
           if { [ -n "$API_KEY" ] && [[ "$review$RESULT" == *"$API_KEY"* ]]; } ||
+             { [ -n "$OAUTH_TOKEN" ] && [[ "$review$RESULT" == *"$OAUTH_TOKEN"* ]]; } ||
              [[ "$review"$'\n'"$RESULT" =~ $cred_re ]] || [ "$split" = true ]; then
             review="The automatic review wrote something shaped like a credential, so its text was not posted. Check the run, and rotate the key if it was the real one."
             echo "::error::The review text contained something shaped like a credential and was not posted."
