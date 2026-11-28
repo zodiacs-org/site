@@ -94,14 +94,14 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Tarot draw stays out of the build with PUBLIC_TAROT_ENABLED unset
-        run: node scripts/check-tarot-dist.mjs
-
       - name: Developer documentation authorship
         run: |
           npx vitest run scripts/check-developer-authorship.test.mjs
           node scripts/check-developer-authorship.mjs
         timeout-minutes: 5
+
+      - name: Tarot draw stays out of the build with PUBLIC_TAROT_ENABLED unset
+        run: node scripts/check-tarot-dist.mjs
 
       - name: Released engine reference
         timeout-minutes: 5

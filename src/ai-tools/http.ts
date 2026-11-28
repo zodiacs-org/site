@@ -278,9 +278,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     } };
     // A personal tool links to its website page, and that page's share card, only while the page's own switch is on.
     if (personal) dependencies.sitePageOn = (flag: string) => env[flag] === '1';
-    // Those switches are this deployment's, so on the staging host the links go to the staging site, never to zodiacs.org,
-    // whose own switch may be off.
-    if (personal && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
+    // Those switches, and the tarot page's, are this deployment's, so on the staging host the links go to the staging
+    // site, never to zodiacs.org, whose own switch may be off.
+    if ((personal || tarot) && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
     const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account, { de440: Boolean(options.de440) }), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();

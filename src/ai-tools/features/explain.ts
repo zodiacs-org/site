@@ -99,8 +99,9 @@ interface Topic {
  * tarot: draw_tarot is offered (ZODIACS_TAROT_ENABLED=1), so a tarot topic points to it.
  * tarotPage: the website's /tarot/ page is switched on (PUBLIC_TAROT_ENABLED=1), so that pointer links it; off, the
  * page is the 404 page, and the pointer links nothing.
+ * tarotOrigin: the site that page link goes to (the staging host on staging); unset, the origin passed in.
  */
-export interface ExplainOptions { skyEvents?: boolean; numerology?: boolean; tarot?: boolean; tarotPage?: boolean }
+export interface ExplainOptions { skyEvents?: boolean; numerology?: boolean; tarot?: boolean; tarotPage?: boolean; tarotOrigin?: string }
 
 /** With get_numerology offered: numerology is still not astrology, so this tool does not explain it, but the other tool answers. */
 export const NUMEROLOGY_POINTER = 'Numerology is a separate tradition from astrology, and this tool explains astrology only. For numerology numbers and their meanings from a birth date and a name, use get_numerology, and say that it is numerology, not astrology.';
@@ -653,7 +654,7 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN, op
       note: EXPLAIN_NOTE,
     };
     if (outside === 'numerology' && options.numerology) return { data, links: [{ title: 'Numerology calculator on Zodiacs', url: `${origin}/numerology/` }] };
-    if (outside === 'tarot' && options.tarot) return { data, links: options.tarotPage ? [{ title: 'Tarot on Zodiacs', url: `${origin}/tarot/` }] : [] };
+    if (outside === 'tarot' && options.tarot) return { data, links: options.tarotPage ? [{ title: 'Tarot on Zodiacs', url: `${options.tarotOrigin ?? origin}/tarot/` }] : [] };
     return { data, links: [{ title: 'Learn astrology on Zodiacs', url: `${origin}/learn/` }, { title: 'Glossary', url: `${origin}/learn/glossary/` }] };
   }
   const terms = topic.glossary.map(term);

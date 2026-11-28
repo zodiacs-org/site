@@ -36729,7 +36729,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
       note: EXPLAIN_NOTE
     };
     if (outside === "numerology" && options.numerology) return { data: data2, links: [{ title: "Numerology calculator on Zodiacs", url: `${origin}/numerology/` }] };
-    if (outside === "tarot" && options.tarot) return { data: data2, links: options.tarotPage ? [{ title: "Tarot on Zodiacs", url: `${origin}/tarot/` }] : [] };
+    if (outside === "tarot" && options.tarot) return { data: data2, links: options.tarotPage ? [{ title: "Tarot on Zodiacs", url: `${options.tarotOrigin ?? origin}/tarot/` }] : [] };
     return { data: data2, links: [{ title: "Learn astrology on Zodiacs", url: `${origin}/learn/` }, { title: "Glossary", url: `${origin}/learn/glossary/` }] };
   }
   const terms2 = topic.glossary.map(term);
@@ -49685,7 +49685,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "explain_astrology": {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2, ...numerologyOn(dependencies) ? { numerology: true } : {}, ...tarotOn(dependencies) ? { tarot: true, ...dependencies.tarotPage ? { tarotPage: true } : {} } : {} }));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2, ...numerologyOn(dependencies) ? { numerology: true } : {}, ...tarotOn(dependencies) ? { tarot: true, ...dependencies.tarotPage ? { tarotPage: true, tarotOrigin: dependencies.siteOrigin ?? ORIGIN } : {} } : {} }));
         break;
       }
       case "search_sky_events": {
@@ -49808,7 +49808,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "draw_tarot": {
-        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), ORIGIN, dependencies.tarotPage === true));
+        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), dependencies.siteOrigin ?? ORIGIN, dependencies.tarotPage === true));
         break;
       }
       case "find_birthplace": {
@@ -51257,7 +51257,7 @@ function createAiNodeHandler(options = {}) {
         }
       } };
       if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
-      if (personal2 && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
+      if ((personal2 || tarot) && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account, { de440: Boolean(options.de440) }), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {

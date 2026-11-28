@@ -4,7 +4,9 @@
  * off. ZODIACS_COVERAGE_ENABLED=1 in the shell also offers the 0.6.0 tools, as production will once the owner
  * switches them on, and ZODIACS_SKY_EVENTS_ENABLED=1 with it adds search_sky_events, the natal chart's nodes and house
  * systems, and Chiron; ZODIACS_NUMEROLOGY_ENABLED=1 with it adds get_numerology, and ZODIACS_TAROT_ENABLED=1 with it
- * adds draw_tarot. Rate limits, quotas and usage counting are stand-ins that allow every call.
+ * adds draw_tarot. PUBLIC_TAROT_ENABLED=1 in the shell is the website's /tarot/ page switch: draw_tarot and
+ * explain_astrology's tarot pointer link that page only with it. Rate limits, quotas and usage counting are stand-ins
+ * that allow every call.
  *
  * By default it serves the published runtime (api/_ai/published/runtime.mjs) at /mcp, as production's /mcp does. That
  * runtime is frozen, so a tool added since it was published, such as draw_tarot, is not in it whatever the switches
@@ -20,7 +22,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const SWITCHES = ['ZODIACS_COVERAGE_ENABLED', 'ZODIACS_SKY_EVENTS_ENABLED', 'ZODIACS_NUMEROLOGY_ENABLED', 'ZODIACS_TAROT_ENABLED'];
+const SWITCHES = ['ZODIACS_COVERAGE_ENABLED', 'ZODIACS_SKY_EVENTS_ENABLED', 'ZODIACS_NUMEROLOGY_ENABLED', 'ZODIACS_TAROT_ENABLED', 'PUBLIC_TAROT_ENABLED'];
 
 /** The port, the runtime and the path to serve, from the command line. */
 export function reviewTarget(argv) {

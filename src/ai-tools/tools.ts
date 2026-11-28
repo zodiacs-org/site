@@ -105,8 +105,8 @@ export interface AiDependencies {
    */
   sitePageOn?: (flag: string) => boolean;
   /**
-   * The site a personal tool's links go to, when it is not zodiacs.org: the staging host the call came in on, whose
-   * page switches sitePageOn reads. Unset, ORIGIN.
+   * The site a personal tool's links, and the tarot page links, go to when it is not zodiacs.org: the staging host the
+   * call came in on, whose page switches sitePageOn and tarotPage read. Unset, ORIGIN.
    */
   siteOrigin?: string;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
@@ -907,7 +907,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'explain_astrology': {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents, ...(numerologyOn(dependencies) ? { numerology: true } : {}), ...(tarotOn(dependencies) ? { tarot: true, ...(dependencies.tarotPage ? { tarotPage: true } : {}) } : {}) }));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents, ...(numerologyOn(dependencies) ? { numerology: true } : {}), ...(tarotOn(dependencies) ? { tarot: true, ...(dependencies.tarotPage ? { tarotPage: true, tarotOrigin: dependencies.siteOrigin ?? ORIGIN } : {}) } : {}) }));
         break;
       }
       case 'search_sky_events': {
@@ -995,7 +995,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'draw_tarot': {
-        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), ORIGIN, dependencies.tarotPage === true));
+        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), dependencies.siteOrigin ?? ORIGIN, dependencies.tarotPage === true));
         break;
       }
       case 'find_birthplace': {

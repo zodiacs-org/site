@@ -249,4 +249,60 @@ describe('draw_tarot and privacy', () => {
   });
 });
 
+describe('the tarot page links on the staging host', () => {
+  const STAGING = 'zodiacs-mcp-staging.vercel.app';
+  // The default host list (zodiacs.org, www.zodiacs.org and the configured staging host), with the personal switch off.
+  async function serveStaging(page: string | undefined) {
+    const env = { ZODIACS_MCP_ENABLED: '1', ...ON, ZODIACS_MCP_STAGING_HOST: STAGING, ...(page === undefined ? {} : { PUBLIC_TAROT_ENABLED: page }) };
+    const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+    const server = createServer((req, res) => { void handle(req, res); });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+    servers.push(server);
+    return (server.address() as { port: number }).port;
+  }
+  function callAt(port: number, host: string, name: string, args: unknown) {
+    return new Promise<any>((resolve, reject) => {
+      const req = request({ host: '127.0.0.1', port, path: '/mcp', method: 'POST', headers: { Host: host, 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18' } }, (res) => {
+        let text = ''; res.setEncoding('utf8');
+        res.on('data', (chunk) => { text += chunk; });
+        res.on('end', () => resolve(message(text).result));
+      });
+      req.on('error', reject);
+      req.end(JSON.stringify(rpc('tools/call', { name, arguments: args })));
+    });
+  }
+  const tarotUrls = (result: { structuredContent: unknown }) => (JSON.stringify(result.structuredContent).match(/https:\/\/[^"]+/gu) ?? []).filter((url) => url.includes('/tarot/'));
+
+  it('links the staging site\'s tarot page, never zodiacs.org, when the call comes in on the staging host with the page on', async () => {
+    const port = await serveStaging('1');
+    const drawn = await callAt(port, STAGING, 'draw_tarot', { spread: 'three-card' });
+    expect(drawn.structuredContent.ok).toBe(true);
+    expect(drawn.structuredContent.links.map((link: { url: string }) => link.url)).toEqual([`https://${STAGING}/tarot/`]);
+    expect(JSON.stringify(drawn)).not.toContain('https://zodiacs.org/tarot/');
+    const pointer = await callAt(port, STAGING, 'explain_astrology', { topic: 'tarot' });
+    expect(pointer.structuredContent.data.message).toBe(TAROT_POINTER);
+    expect(pointer.structuredContent.links.map((link: { url: string }) => link.url)).toEqual([`https://${STAGING}/tarot/`]);
+    expect(JSON.stringify(pointer)).not.toContain('https://zodiacs.org/tarot/');
+    // The same deployment, called on zodiacs.org, links zodiacs.org.
+    const live = await callAt(port, 'zodiacs.org', 'draw_tarot', { spread: 'one-card' });
+    expect(live.structuredContent.links.map((link: { url: string }) => link.url)).toEqual(['https://zodiacs.org/tarot/?ref=assistant']);
+    const livePointer = await callAt(port, 'zodiacs.org', 'explain_astrology', { topic: 'tarot' });
+    expect(livePointer.structuredContent.links.map((link: { url: string }) => link.url)).toEqual(['https://zodiacs.org/tarot/?ref=assistant']);
+  });
+
+  it('links no tarot page on the staging host while the page is off', async () => {
+    for (const page of [undefined, '0', '']) {
+      const port = await serveStaging(page);
+      const drawn = await callAt(port, STAGING, 'draw_tarot', { spread: 'three-card' });
+      expect(drawn.structuredContent.ok, String(page)).toBe(true);
+      expect(drawn.structuredContent.links, String(page)).toEqual([]);
+      expect(tarotUrls(drawn), String(page)).toEqual([]);
+      const pointer = await callAt(port, STAGING, 'explain_astrology', { topic: 'tarot' });
+      expect(pointer.structuredContent.data.message, String(page)).toBe(TAROT_POINTER);
+      expect(pointer.structuredContent.links, String(page)).toEqual([]);
+      expect(tarotUrls(pointer), String(page)).toEqual([]);
+    }
+  });
+});
+
 const data3 = (result: { structuredContent: { data: { cards: { card: { id: string }; orientation: string; position: { name: string } }[] } } }) => result.structuredContent.data.cards;
