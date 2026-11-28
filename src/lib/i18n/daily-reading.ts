@@ -511,35 +511,37 @@ function eventLineIt(event: DailyEvent, sunSign: string, date: string): DailyLin
   return null;
 }
 
+interface DailyRenderer {
+  eventLine: (event: DailyEvent, sunSign: string, date: string) => DailyLine | null;
+  houseLine: (body: DailyBody, house: number, context: LineContext) => DailyLine;
+  fallback: string;
+}
+
+/** Locales with a daily-reading renderer. Any other locale is refused. */
+export const DAILY_READING_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
+export type DailyReadingLocale = typeof DAILY_READING_LOCALES[number];
+
+const RENDERERS: Record<Exclude<DailyReadingLocale, 'en'>, DailyRenderer> = {
+  es: { eventLine: eventLineEs, houseLine: houseLineEs, fallback: 'Un cielo tranquilo hoy.' },
+  pt: { eventLine: eventLinePt, houseLine: houseLinePt, fallback: 'Um céu tranquilo hoje.' },
+  fr: { eventLine: eventLineFr, houseLine: houseLineFr, fallback: 'Un ciel calme aujourd’hui.' },
+  it: { eventLine: eventLineIt, houseLine: houseLineIt, fallback: 'Un cielo tranquillo oggi.' },
+};
+
 /**
  * Locale-aware rendering over the same structured daily facts. English keeps
  * the canonical source output byte-for-byte; translated locales mirror its
  * selection order while rendering native labels, house themes, and receipts.
+ * A locale without its own renderer throws rather than borrowing another
+ * locale's words.
  */
 export function dailyReadingForLocale(sunSign: string, daily: Daily, locale: Locale): DailyReading {
   if (locale === 'en') return dailyReading(sunSign, daily);
 
-  const eventLine = locale === 'pt'
-    ? eventLinePt
-    : locale === 'fr'
-      ? eventLineFr
-      : locale === 'it'
-        ? eventLineIt
-        : eventLineEs;
-  const houseLine = locale === 'pt'
-    ? houseLinePt
-    : locale === 'fr'
-      ? houseLineFr
-      : locale === 'it'
-        ? houseLineIt
-        : houseLineEs;
-  const fallback = locale === 'pt'
-    ? 'Um céu tranquilo hoje.'
-    : locale === 'fr'
-      ? 'Un ciel calme aujourd’hui.'
-      : locale === 'it'
-        ? 'Un cielo tranquillo oggi.'
-        : 'Un cielo tranquilo hoy.';
+  if (!(DAILY_READING_LOCALES as readonly string[]).includes(locale)) {
+    throw new Error(`dailyReadingForLocale: no daily-reading renderer for locale "${locale}"`);
+  }
+  const { eventLine, houseLine, fallback } = RENDERERS[locale as keyof typeof RENDERERS];
 
   const lines: DailyLine[] = [];
   const usedHouses = new Set<number>();
