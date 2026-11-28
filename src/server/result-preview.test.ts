@@ -569,8 +569,8 @@ describe('share link pages', () => {
     expect(horoscope).toContain(`href="/api/og/horoscope-story?s=leo&amp;d=${TODAY}" download="zodiacs-leo-horoscope-story.jpg"`);
     expect(horoscope).not.toMatch(/[—–]/u);
     // A link that does not match the site's data opens the plain page.
-    expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/birthday.jpg"');
-    expect(await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-10-27'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/sky-calendar.jpg"');
+    expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/birthday-20261128.jpg"');
+    expect(await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-10-27'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/sky-calendar-20261128.jpg"');
     expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&text=Win'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
     expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2199-01-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
     // A reading that has left the window keeps its sign and day.
@@ -614,7 +614,7 @@ describe('share link pages', () => {
     }
     expect(Object.keys(SHARE_FALLBACK_ART_CARDS)).toEqual(['birthday', 'sky-calendar', 'saturn-return', 'big-three', 'compatibility-invite', 'transits', 'compatibility', 'horoscopes', 'retrogrades']);
     const yourDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/'))).text();
-    expect(yourDay).toContain('content="https://zodiacs.org/assets/og/v8/tool/transits.jpg"');
+    expect(yourDay).toContain('content="https://zodiacs.org/assets/og/v8/tool/transits-20261128.jpg"');
     expect(yourDay).toContain('<meta property="og:image:type" content="image/jpeg">');
     // A link that is not a share opens on the chart twins page's art card (2026-11-26).
     expect(CHART_TWINS_PAGE_CARD).toBe(CHART_TWINS_ART_CARD);
@@ -624,7 +624,7 @@ describe('share link pages', () => {
     expect(twinsDefault).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(twinsDefault).toContain(`<meta property="og:image:alt" content="${CHART_TWINS_ART_CARD_ALT}">`);
     expect(twinsDefault).not.toContain('/assets/og/v2/tool/chart-twins.png');
-    expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/saturn-return.jpg"');
+    expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/saturn-return-20261128.jpg"');
     expect((await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'))).headers.get('location'))
       .toBe('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12');
   });
@@ -681,10 +681,10 @@ describe('share link pages', () => {
     expect(plainDay).not.toContain('08:30');
     for (const page of [big, untimed, chinese, animal, invite, day, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[\u2014\u2013]/u);
     // A bare address or a query that is not a share opens the plain page, with the site's own card.
-    expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/big-three.jpg"');
+    expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/big-three-20261128.jpg"');
     expect(await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=dragonfly'))).text()).toContain('<h1>The Chinese zodiac</h1>');
     const bare = await (await handleInviteLinkRequest(new Request('https://zodiacs.org/share/invite/'))).text();
-    expect(bare).toContain('content="https://zodiacs.org/assets/og/v8/tool/compatibility-invite.jpg"');
+    expect(bare).toContain('content="https://zodiacs.org/assets/og/v8/tool/compatibility-invite-20261128.jpg"');
     expect(bare).toContain('<a class="cta" href="/compatibility/invite/">Make an invite link</a>');
   });
 

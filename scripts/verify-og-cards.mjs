@@ -30,6 +30,8 @@ import {
   LOCALIZED_ART_CARDS,
   LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES,
   ART_PAGE_CARDS,
+  REPLACED_ART_PAGE_CARDS,
+  REPLACED_BIRTHDAY_ART_CARDS,
   BIRTHDAY_ART_CARD_DIR,
   BIRTHDAY_ART_CARDS,
   BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES,
@@ -254,13 +256,18 @@ await validatePng(wingCard, { unique: false, base: wingOut, label: `historical v
 // under its own ceiling.
 const ART_FAMILIES = [
   { label: 'sign pair', dir: PAIR_ART_CARD_DIR, cards: PAIR_ART_CARDS, ceiling: PAIR_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
-  { label: 'cusp birthday', dir: BIRTHDAY_ART_CARD_DIR, cards: BIRTHDAY_ART_CARDS, ceiling: BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
+  { label: 'cusp birthday', dir: BIRTHDAY_ART_CARD_DIR, cards: [...BIRTHDAY_ART_CARDS, ...REPLACED_BIRTHDAY_ART_CARDS], ceiling: BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
   { label: 'Chinese zodiac animal', dir: CHINESE_ZODIAC_ART_CARD_DIR, cards: CHINESE_ZODIAC_ART_CARDS, ceiling: CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
 ];
+// The cards the 2026-11-28 redraw replaced (the thirteen first-round single
+// page cards and the 29 cusp birthday cards on the sundial) stay published,
+// byte for byte, beside their redrawn successors, and count toward the same
+// folders' ceilings.
 const familyCards = ART_FAMILIES.flatMap((family) => family.cards);
+const replacedPageCards = [...REPLACED_ART_PAGE_CARDS];
 let artBytes = 0;
 let localizedArtBytes = 0;
-for (const path of [...ART_CARDS, ...LOCALIZED_ART_CARDS, ...familyCards]) {
+for (const path of [...ART_CARDS, ...replacedPageCards, ...LOCALIZED_ART_CARDS, ...familyCards]) {
   try {
     const bytes = await readFile(resolve(root, `public${path}`));
     const metadata = await sharp(bytes).metadata();
@@ -289,7 +296,7 @@ try {
     }
   };
   await walk(resolve(root, `public${ART_CARD_DIR}`), ART_CARD_DIR);
-  const expectedArt = [...ART_CARDS, ...LOCALIZED_ART_CARDS, ...familyCards];
+  const expectedArt = [...ART_CARDS, ...replacedPageCards, ...LOCALIZED_ART_CARDS, ...familyCards];
   if (JSON.stringify(artFiles.sort()) !== JSON.stringify(expectedArt.sort())) {
     failures.push(`${ART_CARD_DIR}: expected exactly the ${expectedArt.length} art cards; found ${artFiles.length} files`);
   }
@@ -409,7 +416,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide, 84 horoscope, chart twins and thesis art cards and the ${ART_PAGE_CARDS.length} single page art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links), ${ART_FAMILIES.map((family) => `${family.cards.length} ${family.label} art cards (${(family.bytes / 1024 / 1024).toFixed(2)}MiB of ${family.ceiling / 1024 / 1024}MiB)`).join(', ')} and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian, Portuguese and Russian cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
+console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide, 84 horoscope, chart twins and thesis art cards and the ${ART_PAGE_CARDS.length} single page art cards, with the ${REPLACED_ART_PAGE_CARDS.length} they replaced kept for shared links (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links), ${ART_FAMILIES.map((family) => `${family.cards.length} ${family.label} art cards (${(family.bytes / 1024 / 1024).toFixed(2)}MiB of ${family.ceiling / 1024 / 1024}MiB)`).join(', ')} and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian, Portuguese and Russian cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
 
 // Registry catalogue cards live outside the frozen v2 bundle. Keep their
 // source, geometry, manifest, route metadata, and size contracts in the same

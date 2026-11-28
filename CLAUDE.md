@@ -367,7 +367,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   og:image, twitter:image and the Article's image with one alt text. The v2
   `og/v2/thesis.png` stays published, in the v2 family, for links already
   shared)
-- `public/assets/og/v8/tool/{key}.jpg` (29 single page cards) ← `npm run
+- `public/assets/og/v8/tool/{key}.jpg` and, for the thirteen first-round
+  cards redrawn on 2026-11-28, `tool/{key}-20261128.jpg` (29 single page
+  cards in use) ← `npm run
   data:og -- --only-art-page-cards` (owner-delegated decisions, 2026-11-27:
   /birth-chart/ with its someone-else and three-dimensions pages, /today/,
   /rising-sign/, /big-three/, the /birthday/ hub, /tools/, the /learn/ hub
@@ -383,6 +385,19 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   /lunar-return/, /your-sky-wrapped/, /learn/how-to-read-a-birth-chart/,
   /occasions/, /chart-of-the-day/ (its dated editions too), /group-charts/
   and the /people/ hub (each person's page keeps its own card).
+  The thirteen first-round cards were redrawn (owner-approved, 2026-11-28)
+  with the same words and type sizes, the row of discs on each, and new art:
+  twelve generated photographs (Higgsfield: the Sun over the Earth's limb, a
+  star rising over the sea, the Sun, Moon and Earth in a row, an analemma, a
+  silver armillary sphere, an old celestial globe, a month of Moons, Saturn,
+  two crescent Moons, a pastel star nursery, Mercury, Jupiter with a moon's
+  shadow) and, for /birth-chart/, the full wheel with houses, angles and a
+  transit ring. Replacing a published card: the redrawn card takes a new dated
+  name beside the old one (`-20261128`, as the homepage card's
+  `home-20261019.jpg`), pages and share fallbacks point at the new name, and
+  the old file stays published byte for byte (`REPLACED_ART_PAGE_CARDS`,
+  `REPLACED_BIRTHDAY_ART_CARDS`), checked by `verify-og-cards` and counted in
+  its folder's ceiling.
   Their art: thirteen generated photographs (Higgsfield; a crescent Moon, the
   Venice clocktower's zodiac dial, a silver dial with a dark numbered ring,
   and for the third round the Moon's phases along an arc, a full Moon, a
@@ -391,11 +406,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   under a loupe, a crescent Moon with the evening star, and four instant
   photographs of anonymous people with their faces hidden) cut to 1200px WebP
   in `public/assets/art/`, and three pictures of the site's own chart wheels
-  (the compatibility hub's two, the chart of the day's one and the group
-  charts' five: `compatibility-wheels-1200.webp`,
-  `chart-of-the-day-wheel-1200.webp`, `group-charts-wheels-1200.webp`) ←
+  (the compatibility hub's two, the chart of the day's one, the group
+  charts' five and the birth chart card's full wheel:
+  `compatibility-wheels-1200.webp`, `chart-of-the-day-wheel-1200.webp`,
+  `group-charts-wheels-1200.webp`, `birth-chart-wheel-1200.webp`) ←
   `npx vite-node --script scripts/build-wheel-art.ts` (the real `Wheel.tsx`
   with published People charts, named in the script, never on the cards;
+  the birth chart wheel draws the developer demo's published preset chart
+  with Placidus houses and the sky of one fixed instant through the transit
+  ring's `renderTransitOverlay`;
   Chromium output, so not in the drift job; rerun it when the wheel or those
   charts change, then redraw the cards). One
   template, `artPageLayout` in `build-og-void.mjs`: the page's own painting on
@@ -412,10 +431,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   ← `npm run data:og -- --only-pair-art-cards` (2026-11-27: the two sign
   paintings facing each other, the first mirrored, the two discs, "Compatibility,
   {element} with {element}", "{A} and {B}"; its own 10 MiB ceiling)
-- `public/assets/og/v8/birthday/{month-day}.jpg` (the 29 cusp dates of
-  `birthdays.json`) ← `npm run data:og -- --only-birthday-art-cards`
-  (2026-11-27: the birthday hub's sundial, both signs' discs, "{A} or {B}, by
-  year", "Born on {date}"; its own 4 MiB ceiling)
+- `public/assets/og/v8/birthday/{month-day}-20261128.jpg` (the 29 cusp dates
+  of `birthdays.json`) ← `npm run data:og -- --only-birthday-art-cards`
+  (2026-11-27, redrawn 2026-11-28 on the birthday hub card's analemma: both
+  signs' discs, "{A} or {B}, by year", "Born on {date}"; its own 4 MiB
+  ceiling, which also counts the sundial cards `birthday/{month-day}.jpg`,
+  kept published for links already shared)
 - `public/assets/og/v8/learn/chinese-zodiac/{animal}.jpg` (12) ← `npm run
   data:og -- --only-chinese-zodiac-art-cards` (2026-11-27: each animal's own
   painting with the guide's kicker, headline and line from
