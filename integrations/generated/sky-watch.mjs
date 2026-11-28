@@ -1156,9 +1156,9 @@ var Reducer = class {
     const et = etOf(ttDays);
     if (!this.backend.covers(et)) fail("out-of-coverage", "the instant is outside the pack's coverage");
     this.backend.lunar(et, this.emb, this.moon, this.earth);
-    const [x, y, z25] = sub(position(this.moon), position(this.earth));
+    const [x, y, z26] = sub(position(this.moon), position(this.earth));
     const [vx, vy, vz] = sub(velocity(this.moon), velocity(this.earth));
-    return { position: [x, y, z25], velocity: [vx, vy, vz] };
+    return { position: [x, y, z26], velocity: [vx, vy, vz] };
   }
   /**
    * The Earth's and the Sun's geometric states at `ttDays` (TT days past
@@ -1666,17 +1666,17 @@ function eclipticFrame(tt) {
   };
   return last;
 }
-function meanEcliptic(frame, x, y, z25) {
+function meanEcliptic(frame, x, y, z26) {
   const m = frame.rows;
   return [
-    m[0] * x + m[1] * y + m[2] * z25,
-    m[3] * x + m[4] * y + m[5] * z25,
-    m[6] * x + m[7] * y + m[8] * z25
+    m[0] * x + m[1] * y + m[2] * z26,
+    m[3] * x + m[4] * y + m[5] * z26,
+    m[6] * x + m[7] * y + m[8] * z26
   ];
 }
-function eclipticOfDate(x, y, z25, tt) {
+function eclipticOfDate(x, y, z26, tt) {
   const frame = eclipticFrame(tt);
-  const [ex, ey, ez] = meanEcliptic(frame, x, y, z25);
+  const [ex, ey, ez] = meanEcliptic(frame, x, y, z26);
   return {
     lon: normalizeLongitude(Math.atan2(ey, ex) * RAD2 + frame.tilt.dpsi / 3600),
     lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD2
@@ -3592,10 +3592,10 @@ function precession_rot(time2, dir) {
   throw "Invalid precess direction";
 }
 var Vector = class {
-  constructor(x, y, z25, t) {
+  constructor(x, y, z26, t) {
     this.x = x;
     this.y = y;
-    this.z = z25;
+    this.z = z26;
     this.t = t;
   }
   /**
@@ -3607,10 +3607,10 @@ var Vector = class {
   }
 };
 var StateVector = class {
-  constructor(x, y, z25, vx, vy, vz, t) {
+  constructor(x, y, z26, vx, vy, vz, t) {
     this.x = x;
     this.y = y;
-    this.z = z25;
+    this.z = z26;
     this.vx = vx;
     this.vy = vy;
     this.vz = vz;
@@ -3816,10 +3816,10 @@ var PlutoStateTable = [
   [73e4, [4.24325283709, -30.118201690825, -10.707441231349], [0.0031725847067411, 1609846120227e-16, -90672150593868e-17]]
 ];
 var TerseVector = class _TerseVector {
-  constructor(x, y, z25) {
+  constructor(x, y, z26) {
     this.x = x;
     this.y = y;
-    this.z = z25;
+    this.z = z26;
   }
   clone() {
     return new _TerseVector(this.x, this.y, this.z);
@@ -7424,7 +7424,7 @@ async function computeApiRateLimit(req, id = COMPUTE_RATE_LIMIT_ID) {
 }
 
 // src/ai-tools/contracts.ts
-import { z as z21 } from "zod";
+import { z as z22 } from "zod";
 
 // src/lib/compute-api/openapi.ts
 var ref = (name) => ({ $ref: `#/components/schemas/${name}` });
@@ -8248,8 +8248,8 @@ function equatorRows(tt, kind) {
   const { mobl, tobl, dpsi } = frame.tilt;
   return kind === "mean" ? toEquator(frame.rows, mobl * DEG5) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC3), tobl * DEG5);
 }
-function turn2(m, x, y, z25) {
-  return [m[0] * x + m[1] * y + m[2] * z25, m[3] * x + m[4] * y + m[5] * z25, m[6] * x + m[7] * y + m[8] * z25];
+function turn2(m, x, y, z26) {
+  return [m[0] * x + m[1] * y + m[2] * z26, m[3] * x + m[4] * y + m[5] * z26, m[6] * x + m[7] * y + m[8] * z26];
 }
 
 // node_modules/@zodiacs/engine/dist/sky.js
@@ -8364,16 +8364,16 @@ function stateAt2(body3, site, conventions, ms) {
     const sinT = Math.sin(theta);
     const x = vx - (n + h) * cosPhi * cosT / KM_PER_AU2;
     const y = vy - (n + h) * cosPhi * sinT / KM_PER_AU2;
-    const z25 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
+    const z26 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
     const east = -x * sinT + y * cosT;
     const radial = x * cosT + y * sinT;
-    const north = -radial * sinPhi + z25 * cosPhi;
-    const up = radial * cosPhi + z25 * sinPhi;
+    const north = -radial * sinPhi + z26 * cosPhi;
+    const up = radial * cosPhi + z26 * sinPhi;
     const altitude = Math.atan2(up, Math.hypot(east, north)) / RAD4;
     const azimuth = (Math.atan2(east, north) / RAD4 % 360 + 360) % 360;
     const hourAngle = ((theta - Math.atan2(y, x)) / RAD4 % 360 + 360) % 360;
     const radius = body3 === "Sun" || body3 === "Moon" ? SKY_RADII_KM[body3] : 0;
-    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z25) * KM_PER_AU2)) / RAD4;
+    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z26) * KM_PER_AU2)) / RAD4;
     const limb = conventions.limb === "upper" ? 1 : conventions.limb === "lower" ? -1 : 0;
     const horizon = -conventions.refractionArcmin / 60 - limb * semiDiameter;
     return { above: altitude - horizon, altitude, azimuth, hourAngle };
@@ -8633,8 +8633,8 @@ var OCCASION_WORDS = {
   "coming-of-age": { title: "The sky on the day you came of age", closing: "The sky the year you became an adult." },
   gathering: { title: "Tonight\u2019s sky", closing: "The sky to look up at together." }
 };
-function signName(slug) {
-  return slug.charAt(0).toUpperCase() + slug.slice(1);
+function signName(slug2) {
+  return slug2.charAt(0).toUpperCase() + slug2.slice(1);
 }
 function article(name) {
   return /^[AEIOU]/u.test(name) ? "an" : "a";
@@ -8762,7 +8762,7 @@ var VENUS_WEAK = /* @__PURE__ */ new Set(["aries", "scorpio", "virgo"]);
 var MOON_STRONG = /* @__PURE__ */ new Set(["taurus", "cancer"]);
 var MOON_WEAK = /* @__PURE__ */ new Set(["scorpio", "capricorn"]);
 var GENTLE_MOON = /* @__PURE__ */ new Set(["taurus", "cancer", "libra", "pisces", "leo"]);
-var signName2 = (slug) => slug.charAt(0).toUpperCase() + slug.slice(1);
+var signName2 = (slug2) => slug2.charAt(0).toUpperCase() + slug2.slice(1);
 var DATE_VERDICTS = {
   excellent: "An excellent day for it",
   good: "A good day for it",
@@ -9148,9 +9148,9 @@ var SIGN_NAME_OVERRIDES = {
   fr: SIGN_NAME_FR,
   it: SIGN_NAME_IT
 };
-function signBySlug(slug) {
-  const sign4 = SIGNS2.find((s) => s.slug === slug);
-  if (!sign4) throw new Error(`Unknown sign: ${slug}`);
+function signBySlug(slug2) {
+  const sign4 = SIGNS2.find((s) => s.slug === slug2);
+  if (!sign4) throw new Error(`Unknown sign: ${slug2}`);
   return sign4;
 }
 function signIndexForLongitude2(lon) {
@@ -9846,8 +9846,8 @@ function chartTwinsShareUrl(origin, you) {
   if (!isSign2(you.sun)) return null;
   return `${origin}${CHART_TWINS_SHARE_PATH}?${chartTwinsQuery({ sun: you.sun, moon: isSign2(you.moon) ? you.moon : null, ref: null })}`;
 }
-function famousChartShareUrl(origin, slug) {
-  return SLUG_RE.test(slug) && slug.length <= SLUG_MAX ? `${origin}${FAMOUS_CHART_SHARE_PATH}?${famousChartQuery({ slug, ref: null })}` : null;
+function famousChartShareUrl(origin, slug2) {
+  return SLUG_RE.test(slug2) && slug2.length <= SLUG_MAX ? `${origin}${FAMOUS_CHART_SHARE_PATH}?${famousChartQuery({ slug: slug2, ref: null })}` : null;
 }
 function milestoneShareUrl(origin, milestone2) {
   const share = { kind: milestone2.kind, index: milestone2.index, age: milestone2.age };
@@ -18527,7 +18527,7 @@ var PEOPLE_INDEX = peopleIndex.parse(people_index_default).people;
 var BY_SLUG = new Map(PEOPLE_INDEX.map((person2) => [person2.slug, person2]));
 var TWIN_DIRECTORY = PEOPLE_INDEX.map((person2) => ({ slug: person2.slug, name: person2.name, sun: person2.sun.sign, moon: person2.moon.sign }));
 var link = z.object({ title: z.string(), url: z.url() });
-var personUrl = (origin, slug) => `${origin}/people/${slug}/`;
+var personUrl = (origin, slug2) => `${origin}/people/${slug2}/`;
 function peopleBornOn(month, day2) {
   const route = `/birthday/${birthdaySlug(month, day2)}/`;
   return PEOPLE_INDEX.filter((person2) => person2.birthdayRoute === route).sort((a, b) => a.gregorian.localeCompare(b.gregorian));
@@ -26511,9 +26511,9 @@ var RISING = {
   aquarius: "You register as interesting before friendly: original angle, unbothered air, allergic to the expected. People remember what you said.",
   pisces: "You arrive gentle and a little unplaceable; people project freely onto the soft focus. Your attention feels like empathy because it is."
 };
-function bigThree(kind, slug) {
+function bigThree(kind, slug2) {
   const table = kind === "sun" ? SUN : kind === "moon" ? MOON : RISING;
-  return table[slug] ?? "";
+  return table[slug2] ?? "";
 }
 
 // src/data/sky.json
@@ -28376,13 +28376,13 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
     [month, day2] = args.date.split("-").map(Number);
     parseMonthDay(month, day2);
   }
-  const slug = birthdaySlug(month, day2);
-  const entry = DAYS[slug];
+  const slug2 = birthdaySlug(month, day2);
+  const entry = DAYS[slug2];
   if (!entry) throw new RangeError("That is not a calendar date.");
   const label2 = `${day2} ${MONTH_NAMES[month - 1]}`;
   const pageLabel = `${MONTH_NAMES[month - 1]} ${day2}`;
   const years2 = `${YEAR_FROM}\u2013${YEAR_TO}`;
-  const pageUrl = `${origin}/birthday/${slug}/`;
+  const pageUrl = `${origin}/birthday/${slug2}/`;
   let birthUtc = null;
   let timeZone = null;
   let sunAtBirth = null;
@@ -29214,8 +29214,8 @@ function chironEvents(from, to) {
   return { events, clipped };
 }
 var ORDINAL3 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
-function chironSignLine(slug, subject = "it") {
-  const sign4 = signBySlug(slug);
+function chironSignLine(slug2, subject = "it") {
+  const sign4 = signBySlug(slug2);
   return `In ${sign4.name}, ${subject} takes on a ${sign4.modality} ${sign4.element} style. ${signTagline(sign4)}`;
 }
 function chironHouseLine(house, subject = "it") {
@@ -29414,8 +29414,8 @@ function birthTimeNote(date3, time2, zone10, resolved) {
   return void 0;
 }
 var slugAt2 = (index) => index === null ? null : SIGNS2[index].slug;
-var signName4 = (slug) => SIGNS2.find((sign4) => sign4.slug === slug).name;
-var placementUrl = (origin, body3, slug) => `${origin}/learn/placements/${body3.toLowerCase()}-in-${slug}/`;
+var signName4 = (slug2) => SIGNS2.find((sign4) => sign4.slug === slug2).name;
+var placementUrl = (origin, body3, slug2) => `${origin}/learn/placements/${body3.toLowerCase()}-in-${slug2}/`;
 async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), options = {}) {
   const date3 = parseCivilDate(args.birthDate);
   if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
@@ -29486,17 +29486,17 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/
     unknown.push("No birthplace coordinates were given, so the rising sign and the houses are unknown.");
   }
   if (!args.zone) unknown.push("No time zone was given, so the chart is cast for noon UTC on the birth date.");
-  const big = (kind, slug, options2, url) => ({
-    sign: slug,
+  const big = (kind, slug2, options2, url) => ({
+    sign: slug2,
     possibleSigns: options2,
-    meaning: slug ? bigThree(kind, slug) || null : null,
+    meaning: slug2 ? bigThree(kind, slug2) || null : null,
     pageUrl: url
   });
   const chartUrl = `${origin}/birth-chart/`;
   const under18 = isUnder18(args.birthDate, today2);
   const guard = (text2) => under18 ? softenMinor(softenHealth(text2)) : softenHealth(text2);
-  const guardedBig = (kind, slug, options2, url) => {
-    const entry = big(kind, slug, options2, url);
+  const guardedBig = (kind, slug2, options2, url) => {
+    const entry = big(kind, slug2, options2, url);
     return { ...entry, meaning: entry.meaning ? guard(entry.meaning) : null };
   };
   const node = (body3) => {
@@ -32932,7 +32932,7 @@ function chineseYearOf(date3) {
   return date3 < lunarNewYearOf(year) ? year - 1 : year;
 }
 var animalAt = (position3) => CHINESE_ZODIAC_ANIMALS[((position3 - 1) % 12 + 12) % 12];
-var animalPage = (origin, slug) => `${origin}/learn/chinese-zodiac/${slug}/`;
+var animalPage = (origin, slug2) => `${origin}/learn/chinese-zodiac/${slug2}/`;
 var ref2 = (origin, animal) => ({ slug: animal.slug, name: animal.name, pageUrl: animalPage(origin, animal.slug) });
 var cap4 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 var dayBefore = (date3) => new Date(Date.parse(`${date3}T00:00:00Z`) - 864e5).toISOString().slice(0, 10);
@@ -36205,10 +36205,11 @@ var explainData = z8.object({
   note: z8.literal(EXPLAIN_NOTE)
 });
 var NUMEROLOGY_POINTER = "Numerology is a separate tradition from astrology, and this tool explains astrology only. For numerology numbers and their meanings from a birth date and a name, use get_numerology, and say that it is numerology, not astrology.";
+var TAROT_POINTER = "Tarot is a separate practice from astrology, and this tool explains astrology only. For a tarot draw with Zodiacs' own card meanings, use draw_tarot, and say that it is tarot, not astrology.";
 var GLOSSARY_BY_SLUG = new Map(GLOSSARY.map((term2) => [term2.slug, term2]));
-var term = (slug) => {
-  const found = GLOSSARY_BY_SLUG.get(slug);
-  if (!found) throw new Error(`No glossary term ${slug}`);
+var term = (slug2) => {
+  const found = GLOSSARY_BY_SLUG.get(slug2);
+  if (!found) throw new Error(`No glossary term ${slug2}`);
   return found;
 };
 var signRange = (sign4) => `${sign4.start[1]} ${MONTHS3[sign4.start[0] - 1]} to ${sign4.end[1]} ${MONTHS3[sign4.end[0] - 1]}`;
@@ -36242,17 +36243,17 @@ var TOPICS = [
     title: "The houses",
     aliases: ["house", "astrological houses", "twelve houses", "house system", "whole sign houses", "placidus"],
     glossary: ["house", "natural-house", "house-system", "whole-sign-houses", "placidus"],
-    extra: () => [`Each house is a life area: ${HOUSE_SLUGS.map((slug, index) => `the ${slug}, ${NATAL_HOUSE_THEME[index + 1]}`).join("; ")}.`],
+    extra: () => [`Each house is a life area: ${HOUSE_SLUGS.map((slug2, index) => `the ${slug2}, ${NATAL_HOUSE_THEME[index + 1]}`).join("; ")}.`],
     pages: [{ title: "The houses", path: "/learn/houses/" }],
-    related: ["rising-sign", "birth-chart", ...HOUSE_SLUGS.map((slug) => `${slug}-house`)]
+    related: ["rising-sign", "birth-chart", ...HOUSE_SLUGS.map((slug2) => `${slug2}-house`)]
   },
-  ...HOUSE_SLUGS.map((slug, index) => ({
-    key: `${slug}-house`,
-    title: `The ${cap8(slug)} house`,
+  ...HOUSE_SLUGS.map((slug2, index) => ({
+    key: `${slug2}-house`,
+    title: `The ${cap8(slug2)} house`,
     aliases: [`${index + 1} house`, `${index + 1}th house`, `house ${index + 1}`, `${["1st", "2nd", "3rd"][index] ?? `${index + 1}th`} house`],
-    glossary: [`${slug}-house`],
-    extra: () => [`In a birth chart, the ${slug} house covers ${NATAL_HOUSE_THEME[index + 1]}.`],
-    pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
+    glossary: [`${slug2}-house`],
+    extra: () => [`In a birth chart, the ${slug2} house covers ${NATAL_HOUSE_THEME[index + 1]}.`],
+    pages: [{ title: `The ${slug2} house`, path: `/learn/houses/${slug2}-house/` }],
     related: ["houses"]
   })),
   { key: "aspects", title: "Aspects", aliases: ["aspect", "major aspects", "orb", "orbs"], glossary: ["aspect", "major-aspect", "orb", "exact-aspect", "applying", "separating"], pages: [{ title: "Aspects", path: "/learn/aspects/" }], related: ASPECTS3 },
@@ -36529,16 +36530,16 @@ function matchPlacement(query) {
 }
 function matchRising(query) {
   const text2 = clean(query);
-  const slug = text2.match(SIGN_RISING)?.[1] ?? text2.match(RISING_SIGN)?.[1];
-  return slug ? SIGNS2.find((sign4) => sign4.slug === slug) : null;
+  const slug2 = text2.match(SIGN_RISING)?.[1] ?? text2.match(RISING_SIGN)?.[1];
+  return slug2 ? SIGNS2.find((sign4) => sign4.slug === slug2) : null;
 }
 function matchAngleSign(query) {
   const text2 = clean(query);
   const inSign = text2.match(ANGLE_IN_SIGN);
   const signFirst = inSign ? null : text2.match(SIGN_ANGLE);
-  const [word, slug] = inSign ? [inSign[1], inSign[2]] : signFirst ? [signFirst[2], signFirst[1]] : [null, null];
-  if (!word || !slug) return null;
-  return { angle: new RegExp(`^(?:${IC_WORDS})$`, "u").test(word) ? "ic" : "midheaven", sign: SIGNS2.find((sign4) => sign4.slug === slug) };
+  const [word, slug2] = inSign ? [inSign[1], inSign[2]] : signFirst ? [signFirst[2], signFirst[1]] : [null, null];
+  if (!word || !slug2) return null;
+  return { angle: new RegExp(`^(?:${IC_WORDS})$`, "u").test(word) ? "ic" : "midheaven", sign: SIGNS2.find((sign4) => sign4.slug === slug2) };
 }
 function matchNoSuchHouse(query) {
   const match = clean(query).match(NO_SUCH_HOUSE);
@@ -36597,12 +36598,12 @@ function placementParts({ planet: planet2, sign: sign4, house }) {
       related: [sign4.slug, "birth-chart"]
     };
   }
-  const slug = HOUSE_SLUGS[house - 1];
+  const slug2 = HOUSE_SLUGS[house - 1];
   return {
-    title: `${planet2} in the ${cap8(slug)} house`,
+    title: `${planet2} in the ${cap8(slug2)} house`,
     paragraphs: [planetInHouseLine(planet2, house)],
-    pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
-    related: [`${slug}-house`, "houses", "birth-chart"]
+    pages: [{ title: `The ${slug2} house`, path: `/learn/houses/${slug2}-house/` }],
+    related: [`${slug2}-house`, "houses", "birth-chart"]
   };
 }
 var CHIRON = /\bchiron\b/u;
@@ -36611,9 +36612,9 @@ var CHIRON_IN_HOUSE = new RegExp(`\\bchiron (?:is )?in (?:the |my |your )?(?:(${
 function chironParts(query) {
   const text2 = clean(query);
   const inSign = text2.match(CHIRON_IN_SIGN);
-  const slug = inSign?.[1] ?? inSign?.[2];
-  if (slug) {
-    const sign4 = SIGNS2.find((entry) => entry.slug === slug);
+  const slug2 = inSign?.[1] ?? inSign?.[2];
+  if (slug2) {
+    const sign4 = SIGNS2.find((entry) => entry.slug === slug2);
     return { title: `Chiron in ${sign4.name}`, paragraphs: [chironSignLine(sign4.slug, "Chiron")], pages: [{ title: `${sign4.name} on Zodiacs`, path: `/${sign4.slug}/` }], related: [sign4.slug, "birth-chart"] };
   }
   const word = text2.match(CHIRON_IN_HOUSE)?.slice(1).find(Boolean);
@@ -36661,7 +36662,7 @@ function asFriends(pattern) {
 var PAIR_GUIDANCE = "If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.";
 var FRIENDSHIP_GUIDANCE = "A friendship reading: the element and modality pattern of the two Sun signs only, with each sign's page. The sign-pair essays and their links are left out.";
 function signPairAnswer(query, a, b, friendship, origin) {
-  const slug = pairSlug(a, b);
+  const slug2 = pairSlug(a, b);
   const pattern = pairPattern(a, b);
   const names = pattern.facts.same ? `Two ${pattern.facts.a.name} people` : `${pattern.facts.a.name} and ${pattern.facts.b.name}`;
   if (friendship) {
@@ -36669,7 +36670,7 @@ function signPairAnswer(query, a, b, friendship, origin) {
     const data2 = {
       found: true,
       query,
-      topic: slug,
+      topic: slug2,
       title: `${names} as friends`,
       paragraphs: [
         `${names} as friends. ${asFriends(pattern)}`,
@@ -36684,17 +36685,17 @@ function signPairAnswer(query, a, b, friendship, origin) {
     };
     return { data: data2, links: signPages };
   }
-  const essay = pair_pages_default[slug] ?? [];
+  const essay = pair_pages_default[slug2] ?? [];
   const paragraphs = [
     `${names}. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
     "This is the Sun-sign pattern; the rest of both charts changes how it is lived.",
     ...essay
   ].map(softenHealth);
-  const page = { title: `${names} on Zodiacs`, url: `${origin}/compatibility/${slug}/` };
+  const page = { title: `${names} on Zodiacs`, url: `${origin}/compatibility/${slug2}/` };
   const data = {
     found: true,
     query,
-    topic: slug,
+    topic: slug2,
     title: names,
     paragraphs,
     terms: [],
@@ -36724,10 +36725,11 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
       pages: [],
       related: [],
       topics: [...keys],
-      message: outside === "numerology" && options.numerology ? NUMEROLOGY_POINTER : outside ? `Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover ${outside}. Say so plainly rather than explaining it from Zodiacs.` : "Zodiacs has no explainer for that topic. Choose one of the listed topics, or answer without Zodiacs.",
+      message: outside === "numerology" && options.numerology ? NUMEROLOGY_POINTER : outside === "tarot" && options.tarot ? TAROT_POINTER : outside ? `Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover ${outside}. Say so plainly rather than explaining it from Zodiacs.` : "Zodiacs has no explainer for that topic. Choose one of the listed topics, or answer without Zodiacs.",
       note: EXPLAIN_NOTE
     };
     if (outside === "numerology" && options.numerology) return { data: data2, links: [{ title: "Numerology calculator on Zodiacs", url: `${origin}/numerology/` }] };
+    if (outside === "tarot" && options.tarot) return { data: data2, links: options.tarotPage ? [{ title: "Tarot on Zodiacs", url: `${options.tarotOrigin ?? origin}/tarot/` }] : [] };
     return { data: data2, links: [{ title: "Learn astrology on Zodiacs", url: `${origin}/learn/` }, { title: "Glossary", url: `${origin}/learn/glossary/` }] };
   }
   const terms2 = topic.glossary.map(term);
@@ -40744,7 +40746,7 @@ var skyEventsData = z10.object({
   note: z10.literal(SKY_EVENTS_NOTE)
 });
 var cap9 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
-var signName5 = (slug) => SIGNS2.find((sign4) => sign4.slug === slug).name;
+var signName5 = (slug2) => SIGNS2.find((sign4) => sign4.slug === slug2).name;
 var isRealDate = (date3) => !Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) && (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) === date3;
 var addDays2 = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY14).toISOString().slice(0, 10);
 var daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY14);
@@ -41815,7 +41817,7 @@ for (const entry of YEAR_PEOPLE) {
 function findYearPerson(query) {
   return BY_KEY.get(personKey(query));
 }
-var yearPersonPath = (slug) => `/year/${slug}/`;
+var yearPersonPath = (slug2) => `/year/${slug2}/`;
 var FIGURE_NOTE = "This reads a public birth date against the slow planets. It says nothing about a company, a team, a result or a share price.";
 var figureDriverTitle = (title, name) => title.replace(/\byour\b/u, `${name}'s`);
 function yearPageStart(now) {
@@ -41972,9 +41974,9 @@ function yearScoreShareUrl(origin, you) {
   if (!isSign3(you.sun) || !Number.isFinite(you.score) || you.score < 0 || you.score > 10) return null;
   return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "self", sun: you.sun, score: Math.round(you.score * 10) / 10, ref: null })}`;
 }
-function figureYearScoreShareUrl(origin, slug, month) {
-  if (!SLUG_RE2.test(slug) || slug.length > 64 || month !== void 0 && !MONTH_RE.test(month)) return null;
-  return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, month: month ?? null, ref: null })}`;
+function figureYearScoreShareUrl(origin, slug2, month) {
+  if (!SLUG_RE2.test(slug2) || slug2.length > 64 || month !== void 0 && !MONTH_RE.test(month)) return null;
+  return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug: slug2, month: month ?? null, ref: null })}`;
 }
 
 // src/ai-tools/features/year-score.ts
@@ -43422,9 +43424,9 @@ function retrogradeForYouShareQuery(source2, windows2) {
 }
 var retrogradeForYouShareUrl = (origin, query) => `${origin}${RETROGRADE_FOR_YOU_SHARE_PATH}?${query}`;
 function retrogradeTablePath(planet2, skyDate) {
-  const slug = planet2.toLowerCase();
-  if (slug === "mercury") return "/mercury-retrograde/";
-  return skyDate ? `/retrogrades/#retrograde-${slug}-${skyDate}` : "/retrogrades/";
+  const slug2 = planet2.toLowerCase();
+  if (slug2 === "mercury") return "/mercury-retrograde/";
+  return skyDate ? `/retrogrades/#retrograde-${slug2}-${skyDate}` : "/retrogrades/";
 }
 
 // src/lib/vedic-signs/clock.ts
@@ -44005,7 +44007,7 @@ var WIDEST_OFFSET_HOURS2 = 16;
 var UNTIMED_LIMIT = "No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.";
 var ORDINAL8 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var round22 = (value) => Math.round(value * 100) / 100;
-var signName6 = (slug) => SIGNS2.find((entry) => entry.slug === slug).name;
+var signName6 = (slug2) => SIGNS2.find((entry) => entry.slug === slug2).name;
 function minorLeftOut(mover, point2) {
   return mover === "Venus" || mover === "Mars" || mover === "Neptune" || point2 === "Venus" || point2 === "Jupiter";
 }
@@ -45168,12 +45170,12 @@ function definitionOf(definition) {
   }
   return definition;
 }
-function longitudeIn(frame, x, y, z25) {
-  const [ex, ey] = meanEcliptic(frame, x, y, z25);
+function longitudeIn(frame, x, y, z26) {
+  const [ex, ey] = meanEcliptic(frame, x, y, z26);
   return Math.atan2(ey, ex);
 }
 function olderModelLongitude(model, jd) {
-  let zeta, z25, theta, eps;
+  let zeta, z26, theta, eps;
   if (model === "newcomb") {
     const B1850 = 239675820358095e-8;
     const CENTURY = 36524.2198781;
@@ -45182,20 +45184,20 @@ function olderModelLongitude(model, jd) {
     const sum = (4607.1096 + t * (2.7944 + 118e-6 * t) + (1.3972 + 118e-6 * t + 0.03632 * h) * h) * h;
     const diff = (0.79236 + 656e-6 * t + 328e-6 * h) * h * h;
     zeta = (sum - diff) / 2;
-    z25 = (sum + diff) / 2;
+    z26 = (sum + diff) / 2;
     theta = (2005.1125 - t * (0.85294 + 365e-6 * t) + (-0.42647 - 365e-6 * t - 0.041802 * h) * h) * h;
     const e = (jd - B1850) / CENTURY;
     eps = 84451.68 + e * (-46.837 + e * (-8752e-6 + 183e-5 * e));
   } else {
     const t = (jd - J20004) / 36525;
     zeta = t * (2306.2181 + t * (0.30188 + 0.017998 * t));
-    z25 = t * (2306.2181 + t * (1.09468 + 0.018203 * t));
+    z26 = t * (2306.2181 + t * (1.09468 + 0.018203 * t));
     theta = t * (2004.3109 + t * (-0.42665 - 0.041833 * t));
     eps = 84381.448 + t * (-46.815 + t * (-59e-5 + 1813e-6 * t));
   }
-  [zeta, z25, theta, eps] = [zeta * ARCSEC4, z25 * ARCSEC4, theta * ARCSEC4, eps * ARCSEC4];
-  const x = Math.cos(z25) * Math.cos(zeta) * Math.cos(theta) - Math.sin(z25) * Math.sin(zeta);
-  const y = Math.sin(z25) * Math.cos(zeta) * Math.cos(theta) + Math.cos(z25) * Math.sin(zeta);
+  [zeta, z26, theta, eps] = [zeta * ARCSEC4, z26 * ARCSEC4, theta * ARCSEC4, eps * ARCSEC4];
+  const x = Math.cos(z26) * Math.cos(zeta) * Math.cos(theta) - Math.sin(z26) * Math.sin(zeta);
+  const y = Math.sin(z26) * Math.cos(zeta) * Math.cos(theta) + Math.cos(z26) * Math.sin(zeta);
   const w = Math.cos(zeta) * Math.sin(theta);
   return Math.atan2(Math.cos(eps) * y + Math.sin(eps) * w, x);
 }
@@ -45218,8 +45220,8 @@ function bias(v) {
   const x1 = v[0] + alpha * v[1];
   const y1 = v[1] - alpha * v[0];
   const x2 = x1 - xi * v[2];
-  const z25 = v[2] + xi * x1;
-  return [x2, y1 - eta * z25, z25 + eta * y1];
+  const z26 = v[2] + xi * x1;
+  return [x2, y1 - eta * z26, z26 + eta * y1];
 }
 function apparentStar(s, time2) {
   refuseUnderSource("A star-anchored ayanamsa");
@@ -45257,8 +45259,8 @@ function meanAyanamsa(definition, time2, frame) {
   switch (definition.kind) {
     case "epoch": {
       const { frame: at, correction } = frame;
-      const [x, y, z25] = eclipticFrame(time2.tt).rows;
-      return { value: definition.value + (correction - longitudeIn(at, x, y, z25)) / DEG9, elongation: null };
+      const [x, y, z26] = eclipticFrame(time2.tt).rows;
+      return { value: definition.value + (correction - longitudeIn(at, x, y, z26)) / DEG9, elongation: null };
     }
     case "linear": {
       const perDay = definition.rate / JULIAN_YEAR / 3600;
@@ -45266,8 +45268,8 @@ function meanAyanamsa(definition, time2, frame) {
       return { value: atJ2000 - 360 * Math.round(atJ2000 / 360) + perDay * time2.tt, elongation: null };
     }
     case "star": {
-      const { direction: [x, y, z25], elongation } = apparentStar(definition.star, time2);
-      return { value: longitudeIn(eclipticFrame(time2.tt), x, y, z25) / DEG9 - definition.longitude, elongation };
+      const { direction: [x, y, z26], elongation } = apparentStar(definition.star, time2);
+      return { value: longitudeIn(eclipticFrame(time2.tt), x, y, z26) / DEG9 - definition.longitude, elongation };
     }
   }
 }
@@ -46060,7 +46062,7 @@ var BENEFICS = ["Venus", "Jupiter"];
 var MALEFICS = ["Mars", "Saturn"];
 var VERB = { conjunction: "meets", sextile: "sextiles", square: "squares", trine: "trines", opposition: "opposes" };
 var signIndex = (lon) => Math.floor((lon % 360 + 360) % 360 / 30);
-var signName7 = (slug) => SIGNS2.find((sign4) => sign4.slug === slug).name;
+var signName7 = (slug2) => SIGNS2.find((sign4) => sign4.slug === slug2).name;
 async function instant2(date3, time2, zone10, clock2) {
   if (!zone10) return /* @__PURE__ */ new Date(`${date3}T${time2}:00Z`);
   await clock2.prepareLocalTime(date3, zone10);
@@ -46201,7 +46203,7 @@ function longDay2(date3) {
 }
 var cap11 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 var lowerFirst = (text2) => /^(?:The|An?) /u.test(text2) ? text2.charAt(0).toLowerCase() + text2.slice(1) : text2;
-var signName8 = (slug) => SIGNS2.find((sign4) => sign4.slug === slug)?.name ?? cap11(slug);
+var signName8 = (slug2) => SIGNS2.find((sign4) => sign4.slug === slug2)?.name ?? cap11(slug2);
 var signOf2 = (lon) => SIGNS2[Math.floor((lon % 360 + 360) % 360 / 30)].slug;
 function localParts(at, zone10) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: zone10, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(at).map((part) => [part.type, part.value]));
@@ -46665,6 +46667,673 @@ async function getGoodDays(args, clock2, options) {
 var GOOD_DAYS_SPAN = `${longDay2(GOOD_DAYS_FIRST)} to ${longDay2(GOOD_DAYS_LAST)}`;
 var GOOD_DAY_LABELS = Object.fromEntries(GOOD_DAY_GOALS.map((goal) => [goal, GOAL_RULES[goal].label]));
 
+// src/ai-tools/features/tarot.ts
+import { z as z21 } from "zod";
+
+// src/lib/tarot/deck.ts
+var SUITS = ["wands", "cups", "swords", "pentacles"];
+var MAJOR = [
+  "The Fool",
+  "The Magician",
+  "The High Priestess",
+  "The Empress",
+  "The Emperor",
+  "The Hierophant",
+  "The Lovers",
+  "The Chariot",
+  "Strength",
+  "The Hermit",
+  "Wheel of Fortune",
+  "Justice",
+  "The Hanged Man",
+  "Death",
+  "Temperance",
+  "The Devil",
+  "The Tower",
+  "The Star",
+  "The Moon",
+  "The Sun",
+  "Judgement",
+  "The World"
+];
+var RANKS = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
+var SUIT_NAMES = { wands: "Wands", cups: "Cups", swords: "Swords", pentacles: "Pentacles" };
+var slug = (name) => name.toLowerCase().replace(/[^a-z]+/gu, "-").replace(/^-|-$/gu, "");
+var TAROT_DECK = Object.freeze([
+  ...MAJOR.map((name, number2) => ({ id: slug(name), name, arcana: "major", suit: null, number: number2 })),
+  ...SUITS.flatMap((suit) => RANKS.map((rank, index) => ({ id: `${slug(rank)}-of-${suit}`, name: `${rank} of ${SUIT_NAMES[suit]}`, arcana: "minor", suit, number: index + 1 })))
+].map((card) => Object.freeze(card)));
+var SUIT_THEMES = Object.freeze({
+  major: { name: "Major Arcana", theme: "The 22 named cards, from The Fool to The World. They stand for the larger turns in a life: beginnings, choices, endings and the lessons between them." },
+  wands: { name: "Wands", theme: "Drive, projects and initiative: what you start, what you are excited about, and what you push for." },
+  cups: { name: "Cups", theme: "Feelings and relationships: affection, friendship, disappointment, and what you hold close." },
+  swords: { name: "Swords", theme: "Thought, decisions and honesty: clear thinking, hard conversations, worry, and conflict." },
+  pentacles: { name: "Pentacles", theme: "Work, resources and daily life: craft, skill, home, routine, and the patience of building something." }
+});
+
+// src/lib/tarot/spreads.ts
+var SPREAD_IDS = ["one-card", "three-card", "celtic-cross"];
+var SPREADS = Object.freeze({
+  "one-card": {
+    id: "one-card",
+    name: "One card",
+    description: "A single card to think with: a quick check-in, or a theme to carry through the day.",
+    positions: [
+      { key: "focus", name: "The card", prompt: "What this card brings to mind about where you are right now." }
+    ]
+  },
+  "three-card": {
+    id: "three-card",
+    name: "Three cards: past, present, future",
+    description: "Three cards in a row. The first looks at what led here, the second at where things stand, and the third at where things are heading.",
+    positions: [
+      { key: "past", name: "Past", prompt: "What has led to this point, and what you might still be carrying from it." },
+      { key: "present", name: "Present", prompt: "Where things stand now, and what most needs your attention." },
+      { key: "future", name: "Future", prompt: "Where things are heading if they carry on as they are." }
+    ]
+  },
+  "celtic-cross": {
+    id: "celtic-cross",
+    name: "Celtic Cross",
+    description: "Ten cards: a cross of six about the situation itself, and a staff of four beside it about you, the people around you, and where things are heading.",
+    positions: [
+      { key: "heart", name: "The heart of it", prompt: "The centre of the situation as it stands." },
+      { key: "crossing", name: "What crosses it", prompt: "The tension or obstacle laid across it, which may also be what the situation is asking you to work with." },
+      { key: "foundation", name: "Beneath", prompt: "What lies underneath: roots, older causes, or what you have not quite said." },
+      { key: "behind", name: "Behind", prompt: "What is passing, or recently passed, and still colouring things." },
+      { key: "above", name: "Above", prompt: "What you are aiming for, or what seems possible at best." },
+      { key: "ahead", name: "Ahead", prompt: "What comes into view next, and is worth preparing for." },
+      { key: "self", name: "You", prompt: "How you are approaching this, and the part you play in it." },
+      { key: "surroundings", name: "Around you", prompt: "The people, places and circumstances around you, and how they bear on it." },
+      { key: "hopes-fears", name: "Hopes and fears", prompt: "What you hope for, what you are wary of, and where the two are the same thing." },
+      { key: "direction", name: "Where it leads", prompt: "Where the whole spread points if things carry on as they are." }
+    ]
+  }
+});
+
+// src/lib/tarot/draw.ts
+function secureWords() {
+  const cryptoApi = globalThis.crypto;
+  if (!cryptoApi?.getRandomValues) throw new Error("A secure random number generator is not available here.");
+  const buffer = new Uint32Array(64);
+  let index = buffer.length;
+  return {
+    bits: 32,
+    next() {
+      if (index === buffer.length) {
+        cryptoApi.getRandomValues(buffer);
+        index = 0;
+      }
+      return buffer[index++];
+    }
+  };
+}
+function uniformBelow(n, source2) {
+  if (!Number.isInteger(n) || n < 1 || n > 2 ** source2.bits) throw new RangeError(`uniformBelow needs a whole number from 1 to 2^${source2.bits}`);
+  const range = 2 ** source2.bits;
+  const limit = range - range % n;
+  for (; ; ) {
+    const word = source2.next();
+    if (word < limit) return word % n;
+  }
+}
+function sampleWithoutReplacement(items, count, source2) {
+  if (!Number.isInteger(count) || count < 0 || count > items.length) throw new RangeError("count must be a whole number no larger than the deck");
+  const pool = [...items];
+  for (let i = 0; i < count; i++) {
+    const j = i + uniformBelow(pool.length - i, source2);
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count);
+}
+function layOut(spread, reversals, source2) {
+  const { positions: positions2 } = SPREADS[spread];
+  const cards = sampleWithoutReplacement(TAROT_DECK, positions2.length, source2);
+  return positions2.map((position3, index) => ({
+    position: position3,
+    card: cards[index],
+    orientation: reversals && uniformBelow(2, source2) === 1 ? "reversed" : "upright"
+  }));
+}
+function drawTarot(spread, reversals = true) {
+  return layOut(spread, reversals, secureWords());
+}
+
+// src/lib/tarot/meanings.ts
+var TAROT_MEANINGS = {
+  "the-fool": {
+    keywords: ["first step", "openness", "trust", "risk"],
+    upright: "Picture someone setting out with a light bag and no fixed plan, curious about what the road holds. The Fool asks you to notice where you are ready to start before you feel fully prepared. Some things are learned only by beginning, and a little not-knowing can keep you alert and open.",
+    reversed: "Reversed, the leap can tip into carelessness, or freeze into a hesitation that never leaves the doorway. Consider whether you are skipping the basic checks a sensible traveller makes, or waiting for a certainty that no first step ever offers. Either way, the useful move is a smaller, more deliberate step.",
+    question: "What would you begin today if you did not need to know how it ends?"
+  },
+  "the-magician": {
+    keywords: ["skill", "focus", "resourcefulness", "intent"],
+    upright: "Everything you need is already on the table: tools, know-how, a clear enough aim. The Magician points to the moment when scattered abilities line up behind one purpose. Look at what you can do with what is in reach right now, rather than waiting for a better kit to arrive.",
+    reversed: "Turned around, this card can describe talent spent on appearances, or plans that stay clever on paper and never get put to use. It may also point to someone, possibly you, talking a bigger game than the work supports. Ask where your skill is being used for show instead of substance.",
+    question: "Which of your skills are you underusing right now?"
+  },
+  "the-high-priestess": {
+    keywords: ["intuition", "quiet", "patience", "inner knowing"],
+    upright: "Some answers do not come from asking louder. The High Priestess sits with what is unspoken: the hunch you keep brushing aside, the detail you noticed but did not mention. She suggests listening before acting, and trusting that quiet observation is a form of knowledge too.",
+    reversed: "Reversed, the quiet can turn into secrecy, or into ignoring your own judgement because someone else sounds more certain. You might be gathering information endlessly to avoid deciding. Consider whether you are keeping something hidden from others, or from yourself, and what it would take to say it plainly.",
+    question: "What do you already know that you have not yet admitted?"
+  },
+  "the-empress": {
+    keywords: ["nurture", "growth", "comfort", "creativity"],
+    upright: "Think of a well-tended garden in late summer, crowded with things that grew because someone kept showing up. The Empress is about care that produces something: meals, friendships, creative work, a home people want to be in. Notice what is flourishing because of your attention, and the pleasure you take in it.",
+    reversed: "In reverse, care can become smothering, or it can drain away from you entirely while you look after everyone else. Creative work may feel stalled because you have stopped feeding it. Ask whether you are giving yourself the same patience and comfort you offer the people around you.",
+    question: "What in your life is growing, and what does it need from you next?"
+  },
+  "the-emperor": {
+    keywords: ["structure", "authority", "responsibility", "order"],
+    upright: "The Emperor is the person who draws up the rota, sets the rules and keeps them. He stands for structure that lets other things happen: clear roles, firm boundaries, decisions made and owned. Consider where a little more order, or a willingness to take charge, would steady things.",
+    reversed: "Reversed, structure can harden into control, with rules kept for their own sake and no room for anyone to question them. Or the opposite: nobody is steering, and the gap causes friction. Look at whether authority in your situation, including your own, is serving people or just keeping them in line.",
+    question: "Where would a clear rule or boundary make things easier for everyone?"
+  },
+  "the-hierophant": {
+    keywords: ["tradition", "learning", "shared values", "guidance"],
+    upright: "Here is the card of teachers, institutions and the habits a community passes down. It suggests that tried methods and shared customs have something to offer, especially while you are learning. Think about who has walked this path before you, and what you might gain by asking them how they did it.",
+    reversed: "Reversed, the Hierophant questions inherited rules. Perhaps a tradition no longer fits, or you are following a script because it is expected rather than because you believe in it. The point is not rebellion for its own sake, but checking which customs you would still choose if nobody were watching.",
+    question: "Which of the rules you follow would you still choose for yourself?"
+  },
+  "the-lovers": {
+    keywords: ["choice", "values", "partnership", "alignment"],
+    upright: "The Lovers is less about romance than about choosing with your whole self. It shows two paths, or two people, and asks what you value enough to commit to. Close partnership of any kind, a friendship, a collaboration, a family bond, works best when both sides know what they stand for.",
+    reversed: "Reversed, the choice may be stalled, or made for reasons that do not match what you actually care about. There can be a gap between what you say matters and how you fill your days. Consider where you are avoiding a decision, or keeping two options open to avoid disappointing anyone.",
+    question: "What choice would you make if it only had to answer to your values?"
+  },
+  "the-chariot": {
+    keywords: ["determination", "direction", "self-control", "momentum"],
+    upright: "A driver holds two horses pulling in different directions and keeps the cart moving anyway. The Chariot is about willpower that gives a goal its direction. It asks you to notice competing urges in yourself, and to steer them toward one destination instead of letting either one run off.",
+    reversed: "Reversed, momentum can turn into forcing: pushing ahead without checking whether the road still leads where you want. Or the reins slip and you feel pulled about by other people's demands. Ask whether you need firmer direction, or simply a pause to look at the map again.",
+    question: "Where are you trying to go, and who is holding the reins?"
+  },
+  "strength": {
+    keywords: ["patience", "courage", "gentleness", "composure"],
+    upright: "The traditional image shows a calm figure closing a lion's jaws with bare hands, with no struggle and no shouting. Strength is the steadiness to meet a difficult feeling or person with patience rather than force. Notice where gentleness might get further than pressure, both with others and with your own temper.",
+    reversed: "In reverse, this card can point to courage that has gone quiet: self-doubt, or a temper that slips out in short bursts. It may also describe someone forcing calm on the surface while resentment builds underneath. Consider what you are trying to hold down, and whether it simply needs acknowledging.",
+    question: "What would it look like to meet this situation with patient courage?"
+  },
+  "the-hermit": {
+    keywords: ["solitude", "reflection", "searching", "counsel"],
+    upright: "An older figure walks alone at night with a lantern, lighting only the next few steps. The Hermit suggests stepping back from the noise to think something through on your own terms. Time alone, a long walk, a notebook, a conversation with one wise friend: these are the lantern.",
+    reversed: "Reversed, solitude can tip into isolation, where pulling away stops being useful and starts feeling like hiding. Or it may show the opposite, a reluctance to take any quiet time at all. Ask whether you are withdrawing to understand something, or withdrawing because people feel hard right now.",
+    question: "What would you hear if you gave yourself an hour of real quiet?"
+  },
+  "wheel-of-fortune": {
+    keywords: ["cycles", "luck", "timing", "change"],
+    upright: "A turning wheel carries some figures up and others down, and none of them stays put. This card is about cycles and luck: lean seasons and plentiful ones, being in the right place at the right time. The tradition reads it as a turn for the better in work or circumstances. Notice which way the wheel is moving.",
+    reversed: "Reversed, the turn can feel like a setback, or like being stuck at the bottom of the same loop. Consider whether you keep repeating a pattern that a different choice could break. Some circumstances are outside your hands, but your response to them, and what you learn, are not.",
+    question: "What pattern in your life keeps coming around, and what is it showing you?"
+  },
+  "justice": {
+    keywords: ["fairness", "accountability", "agreements", "balance"],
+    upright: "Justice holds a pair of scales and a sword: weigh carefully, then act clearly. The tradition reads it for fair dealings, contracts and official paperwork, and as a good time to sign agreements that are clear and even-handed. Look at your own part honestly, and let the evidence lead.",
+    reversed: "Reversed, the scales tip: an agreement that is not quite fair, paperwork rushed or avoided, or responsibility quietly dodged. It can also describe frustration when nobody owns up. Read the small print, ask plainly for what is fair, and consider what fairness would require from you here.",
+    question: "If you weighed this situation honestly, what would you have to own?"
+  },
+  "the-hanged-man": {
+    keywords: ["pause", "surrender", "new perspective", "waiting"],
+    upright: "A figure hangs upside down by one foot, calm, as if the strange position were chosen. The Hanged Man is about pausing deliberately and seeing things from an unfamiliar angle. Sometimes stopping, letting go of the usual fix, or giving something up is what makes the next move clear.",
+    reversed: "Reversed, the pause may have gone on too long, turning into stalling or a sense of waiting for a permission that is not coming. Or you might be refusing to pause at all, filling every gap with busyness. Consider whether you are suspended by choice, or because deciding feels too uncomfortable.",
+    question: "What looks different when you turn it upside down?"
+  },
+  "death": {
+    keywords: ["endings", "transition", "clearing", "renewal"],
+    upright: "Despite its reputation, this card speaks of endings in the everyday sense: a job, a habit, a chapter that has run its course. It asks you to notice what is finishing and to let it close cleanly. Clearing the shelf is often what makes room for whatever belongs there next.",
+    reversed: "Reversed, the ending is being resisted. You might be holding onto a role, a routine or an old version of yourself long after it stopped fitting. Consider what you are keeping going out of habit or fear of the gap, and what a gentle, deliberate closing could look like.",
+    question: "What chapter in your life is ready to close?"
+  },
+  "temperance": {
+    keywords: ["balance", "moderation", "blending", "patience"],
+    upright: "A winged figure pours water between two cups, slowly, without spilling a drop. Temperance is the middle way: balance between work and rest, food and sleep, giving and keeping. The tradition reads it as wellbeing restored through moderation. Notice where small, steady adjustments would do more than a dramatic change.",
+    reversed: "Reversed, the mix is off: late nights, overdoing it, all work and then none, or swinging between extremes with resources or habits. Ask where you have lost your sense of proportion, and what a steadier daily measure might look like, in rest as much as in effort.",
+    question: "Where in your life would a little less and a little slower help?"
+  },
+  "the-devil": {
+    keywords: ["attachment", "habit", "temptation", "restriction"],
+    upright: "Two figures stand chained to a pedestal, yet the chains are loose enough to lift off. The Devil is about patterns that hold us more by habit than by force: a compulsion, a relationship you have outgrown, a story about what you cannot do. Notice what keeps pulling you back, and why.",
+    reversed: "Reversed, the chains start to slip, and you may be recognising a pattern for what it is and finding the first ways out. It can also mean looking honestly at a side of yourself you prefer to ignore. Consider which small change would loosen the hold, and who could support you in making it.",
+    question: "What are you holding onto that might be holding onto you?"
+  },
+  "the-tower": {
+    keywords: ["upheaval", "revelation", "disruption", "truth"],
+    upright: "A tall tower is struck by lightning and its top breaks away. The Tower describes a sudden shake-up: a plan that collapses, an illusion that cannot survive a new fact. Uncomfortable as it is, the card asks what was built on shaky ground, and what honest foundation could replace it.",
+    reversed: "Reversed, the shake-up may be happening slowly, or being held off by sheer effort. You might sense a structure is unsound and keep patching it rather than looking closely. Consider whether avoiding a hard conversation or decision is making the eventual change bigger than it needs to be.",
+    question: "What would you rebuild differently if you could start from the ground up?"
+  },
+  "the-star": {
+    keywords: ["hope", "renewal", "recovery", "calm"],
+    upright: "After the upheaval of the card before it, a figure kneels by water under a clear night sky, pouring freely. The Star is about quiet hope and recovery after a hard stretch, and the tradition reads it as wellbeing returning. Notice what restores you, rest, fresh air, good company, and give it room.",
+    reversed: "Reversed, hope can feel thin, or you may be giving so much to others that nothing is left for yourself. Discouragement can make the small good things hard to see. Ask what single, modest thing would remind you that improvement is possible, and whether you can allow yourself it.",
+    question: "What gives you hope when you stop to look for it?"
+  },
+  "the-moon": {
+    keywords: ["uncertainty", "imagination", "unease", "dreams"],
+    upright: "A path winds between two towers under moonlight, past a dog, a wolf and something crawling from a pool. The Moon describes times when things are not what they seem and the way ahead is unclear. Notice what your imagination is filling in, and which fears rest on facts rather than shadows.",
+    reversed: "Reversed, the fog may be starting to lift, with a confusing situation becoming clearer. Or anxiety might be turned inward, quietly running your choices without ever being named. Consider what you would find if you looked directly at the thing you have been half avoiding, in plain daylight.",
+    question: "Which of your worries would survive a close, calm look?"
+  },
+  "the-sun": {
+    keywords: ["joy", "clarity", "warmth", "confidence"],
+    upright: "A child rides out under a bright sun, sunflowers nodding over a garden wall. The Sun is plain, uncomplicated good: success, clarity, warmth, good spirits, the pleasure of being seen as you are. The tradition counts it among the best cards for work and for wellbeing. Enjoy what is going well, without waiting for the catch.",
+    reversed: "Reversed, the light is still there but partly clouded. You might be downplaying a success, or finding it hard to feel the joy that is on offer, or confidence may be tipping into showing off. Ask what would let you enjoy the good things without shrinking or inflating them.",
+    question: "What is going well that you have not let yourself enjoy?"
+  },
+  "judgement": {
+    keywords: ["reckoning", "awakening", "calling", "self-assessment"],
+    upright: "A trumpet sounds and figures rise to answer it. Judgement is the moment of looking back honestly at your choices and hearing what you are being called toward next. It suggests a clear-eyed review, followed by a decision to act on what you have learned rather than repeat it.",
+    reversed: "Reversed, the review turns harsh, with self-criticism that keeps you stuck instead of moving you forward. Or you may be avoiding the call entirely, keeping too busy to reflect. Consider what an honest but kind assessment of the last year would say, and what it asks of you.",
+    question: "What is asking for your answer right now?"
+  },
+  "the-world": {
+    keywords: ["completion", "wholeness", "arrival", "integration"],
+    upright: "A figure dances inside a wreath, every corner of the card filled in. The World marks something complete: a long project finished, a cycle closed, a sense of being fully yourself in your own setting. Notice what you have achieved and let it count before rushing toward the next thing.",
+    reversed: "Reversed, completion is close but not quite reached. There may be loose ends you keep leaving, or a reluctance to declare something finished in case it is not perfect. Ask what the last small step is, and whether you are ready to take it and call this chapter closed.",
+    question: "What would it take to call this finished?"
+  },
+  "ace-of-wands": {
+    keywords: ["spark", "initiative", "enthusiasm", "potential"],
+    upright: "A hand offers a budding branch out of a cloud. The Ace of Wands is the first spark of a project: the idea you cannot stop thinking about, the urge to make or start something. Notice what is giving you that pull right now, and consider acting on it while the interest is fresh.",
+    reversed: "Reversed, the spark sputters. You may have plenty of ideas but no will to begin, or you started with a burst and lost interest within days. Consider whether the idea needs a clearer first step, or whether it simply is not the right one and something else deserves your drive.",
+    question: "What idea keeps coming back to you, asking to be started?"
+  },
+  "two-of-wands": {
+    keywords: ["planning", "vision", "decision", "ambition"],
+    upright: "A figure stands on a castle wall holding a globe, looking out to sea. This is the planning stage: you have something going, and you are weighing how far to take it. Think bigger than your current walls for a moment, and sketch out the route you would take.",
+    reversed: "Reversed, planning can become a comfortable place to stay. You might keep studying the map rather than leaving the harbour, or worry that a larger ambition means losing what you already have. Ask what is keeping you on the wall, and what a modest first trip would look like.",
+    question: "How far would you take this plan if nothing held you back?"
+  },
+  "three-of-wands": {
+    keywords: ["expansion", "foresight", "progress", "patience"],
+    upright: "Now the figure watches ships already sailing out. The Three of Wands shows early efforts beginning to move on their own, and the view widening. Notice the progress you have made, and think about the next horizon, including the people or places your work could reach beyond where it started.",
+    reversed: "Reversed, the ships are slow to come back. Delays or small obstacles may make you doubt the whole plan, or you may be thinking only a week ahead. Consider whether this is a reason to adjust course, or just a reminder that worthwhile things often take longer than hoped.",
+    question: "What would you plan for if you trusted this to keep growing?"
+  },
+  "four-of-wands": {
+    keywords: ["celebration", "homecoming", "milestone", "community"],
+    upright: "Four poles are hung with garlands, and people gather beneath them to celebrate. This is the card of a milestone marked together: a housewarming, a finished stage, a reunion. Stop and recognise how far you have come, and share that moment with the people who helped you get there.",
+    reversed: "Reversed, the celebration may feel muted, or there is tension under the bunting. You might be skipping the moment of recognition because there is always more to do. Ask whether you are letting yourself mark achievements at all, and whether everyone who contributed feels included in them.",
+    question: "Who would you want beside you to mark what you have built?"
+  },
+  "five-of-wands": {
+    keywords: ["competition", "friction", "debate", "scrappiness"],
+    upright: "Five people wave sticks at one another, more scramble than battle. The Five of Wands describes a crowded, competitive moment: everyone with an opinion, nobody quite listening. Notice whether the friction is sharpening ideas, as good debate can, or simply making noise that tires everyone out.",
+    reversed: "Reversed, conflict may be avoided until it festers, or it may finally settle as people agree on a direction. Consider whether you are dodging a disagreement that needs having, or holding onto one long after the point is made. Sometimes letting someone else win the argument is the useful move.",
+    question: "Is this disagreement improving the idea, or only wearing everyone out?"
+  },
+  "six-of-wands": {
+    keywords: ["recognition", "success", "confidence", "praise"],
+    upright: "A rider wearing a laurel wreath moves through a cheering crowd. The Six of Wands is the card of public recognition: a milestone, a project that lands, credit where it is due. The tradition reads it as a strong card for career and reputation. Accept the praise graciously, and note what kind of effort brought you here.",
+    reversed: "Reversed, recognition may be slow or go to someone else, or you might be relying on outside approval to feel your work matters. It can also describe pride that makes working with others harder. Ask what success would mean to you if nobody else were clapping.",
+    question: "How would you measure this success if nobody else saw it?"
+  },
+  "seven-of-wands": {
+    keywords: ["conviction", "standing firm", "challenge", "resolve"],
+    upright: "A figure on higher ground holds off six staves pushing up from below. The Seven of Wands is about standing by your position when others challenge it. Notice what you believe is worth defending, and see whether you can hold your ground calmly rather than defensively.",
+    reversed: "Reversed, the effort of defending may be wearing you down, or you might be guarding a position that no longer deserves it. Consider whether you are fighting out of conviction or out of habit, and whether yielding on a minor point would let you protect what truly matters.",
+    question: "Which of your positions is worth defending, and which could you let go?"
+  },
+  "eight-of-wands": {
+    keywords: ["speed", "movement", "messages", "momentum"],
+    upright: "Eight staves fly through open sky, all heading the same way. The Eight of Wands describes things moving quickly: messages crossing, plans gathering pace, obstacles clearing. It favours keeping up, answering promptly, and making good use of a stretch when effort meets little resistance.",
+    reversed: "Reversed, pace can turn frantic, with too many things in motion and little chance to aim any of them. Or momentum stalls and replies seem to take forever. Ask whether you need to slow down and aim, or be patient while the things you sent out take their time.",
+    question: "Which of the things in motion deserves your fullest attention?"
+  },
+  "nine-of-wands": {
+    keywords: ["resilience", "persistence", "caution", "last push"],
+    upright: "A tired figure leans on a staff and keeps watch, with eight more staves planted behind. The Nine of Wands is the stamina of someone near the end of a long effort. Notice how much you have already got through, and gather yourself for the final stretch.",
+    reversed: "Reversed, persistence may have turned into wariness of everyone, or a weariness that makes the last push feel impossible. Consider whether you need to ask for help rather than guard everything alone, and whether some of the battles you are bracing for are ones you can step away from.",
+    question: "What do you need to carry this through to the end?"
+  },
+  "ten-of-wands": {
+    keywords: ["burden", "responsibility", "overcommitment", "effort"],
+    upright: "Someone carries ten heavy staves in a bundle, bent over, unable to see the road ahead. The Ten of Wands is about taking on so much at work and at home that the load blocks the view, and the tradition reads it as a warning of overwork. Ask whether every piece of it truly belongs to you.",
+    reversed: "Reversed, the load may finally be coming down, or you might be refusing to put any of it down at all. Consider which tasks could be handed on, dropped or done less thoroughly without real loss, and what keeps you insisting on carrying everything yourself.",
+    question: "Which part of your load could you set down this week?"
+  },
+  "page-of-wands": {
+    keywords: ["curiosity", "eagerness", "exploration", "fresh ideas"],
+    upright: "A young figure studies a staff with open interest, as if wondering what it could become. The Page of Wands is the enthusiastic beginner: full of questions, quick to try things. Approach a project with that same curiosity, without worrying yet about being good at it.",
+    reversed: "Reversed, enthusiasm flares and fades, with many things started and few followed through. It can also be a lack of direction that leaves you restless. Ask which of your interests deserves a little more patience, and what it would take to see one through past the exciting start.",
+    question: "What are you curious enough about to try badly at first?"
+  },
+  "knight-of-wands": {
+    keywords: ["boldness", "adventure", "impulse", "charisma"],
+    upright: "A rider charges ahead on a rearing horse, eager to get going. The Knight of Wands is passion in motion: bold, restless, ready for adventure. It encourages you to act on your enthusiasm and take a risk you have been circling, while staying aware of where the horse is heading.",
+    reversed: "Reversed, boldness turns reckless: starting fights, quitting halfway, moving on before anything lands. Or the drive is there but scattered in too many directions. Consider whether your impatience is working against you, and what would happen if you finished one thing before charging after the next.",
+    question: "Where is your impatience helping you, and where is it working against you?"
+  },
+  "queen-of-wands": {
+    keywords: ["confidence", "warmth", "independence", "determination"],
+    upright: "The Queen of Wands sits with a sunflower in hand and a black cat at her feet, at ease and self-assured. She is the person who runs things with warmth and conviction, and draws others in without trying. Notice where you can lead with your own confidence and generosity.",
+    reversed: "Reversed, confidence can wobble into self-doubt, or harden into jealousy and a need to be the centre of attention. You may be overextended, keeping up appearances while running on empty. Ask what would let you feel secure without having to prove it, and who could share the load.",
+    question: "What would you do differently if you trusted yourself completely?"
+  },
+  "king-of-wands": {
+    keywords: ["leadership", "vision", "boldness", "initiative"],
+    upright: "The King of Wands has turned enthusiasm into direction. He is the founder, the organiser, the person whose long view gets others moving. Take charge of a vision, set a course, and trust your experience to make bold choices with care for the people following you.",
+    reversed: "Reversed, leadership can become impatience or domineering, expecting others to match your pace without explaining the plan. Or a big vision may lack the follow-through that makes it real. Consider whether you are inspiring people or simply pushing them, and what your plan needs beyond conviction.",
+    question: "Which vision are you ready to take responsibility for?"
+  },
+  "ace-of-cups": {
+    keywords: ["openness", "feeling", "affection", "compassion"],
+    upright: "A cup overflows in an outstretched hand, water spilling in five streams. The Ace of Cups is the beginning of a feeling: a new friendship, a rush of tenderness, a renewed capacity for compassion. Notice where your heart is open, and let that feeling be received.",
+    reversed: "Reversed, feelings may be bottled up, or poured out so freely that you have little left for yourself. You might be holding back affection for fear of how it lands. Ask what you are keeping in the cup, and whether it is time to let someone see it.",
+    question: "Where is your heart open right now, and who is it open to?"
+  },
+  "two-of-cups": {
+    keywords: ["connection", "mutual respect", "partnership", "harmony"],
+    upright: "Two people raise their cups to each other as equals. The Two of Cups is about connection built on mutual respect: a friendship, a working partnership, a reconciliation. Notice where giving and receiving are balanced, and value the people who meet you halfway.",
+    reversed: "Reversed, the balance slips: one person giving more, a misunderstanding left too long, or a bond strained by unspoken expectations. Consider what conversation would restore the sense of equal footing, and whether you have been clear about what you need from this relationship.",
+    question: "Which relationship in your life feels like a meeting of equals?"
+  },
+  "three-of-cups": {
+    keywords: ["friendship", "celebration", "community", "joy"],
+    upright: "Three friends raise their cups together in a circle, surrounded by the harvest. The Three of Cups is about shared joy: a dinner with old friends, a group that cheers one another on. Notice who celebrates with you, and make time for them while the moment is here.",
+    reversed: "Reversed, the circle may feel strained: gossip, a friend left out, or plenty of socialising with little real connection. It can also mean pulling away from people who care about you. Ask which friendships nourish you and which wear you down, and what you would like to change.",
+    question: "Who would you call first to share good news?"
+  },
+  "four-of-cups": {
+    keywords: ["apathy", "contemplation", "withdrawal", "overlooked offers"],
+    upright: "A figure sits under a tree, arms folded, ignoring a cup offered from a cloud. The Four of Cups describes a flat, inward mood where nothing on offer seems to matter. Notice whether you are resting and reflecting, or overlooking something worth accepting.",
+    reversed: "Reversed, the figure begins to look up. Restlessness may be giving way to renewed interest, or you are finally ready to say yes to something you dismissed. Consider which offers you turned down out of boredom, and whether some of them deserve a second look.",
+    question: "What is being offered to you that you have not really looked at?"
+  },
+  "five-of-cups": {
+    keywords: ["grief", "regret", "loss", "what remains"],
+    upright: "A cloaked figure stares at three spilled cups, not yet noticing the two still standing behind. The Five of Cups is about disappointment and regret, and how they narrow your view. Let yourself feel the loss fully, and then turn around to see what remains.",
+    reversed: "Reversed, you may be starting to move through a loss, ready to pick up the cups still standing. Or grief has been pushed down so firmly that it shows up as irritability. Consider whether you need to make peace with what happened, or give it more room first.",
+    question: "What is still standing that you have not turned to see?"
+  },
+  "six-of-cups": {
+    keywords: ["nostalgia", "memories", "kindness", "innocence"],
+    upright: "A child offers another a cup filled with flowers in a sunny courtyard. The Six of Cups is about memory and simple kindness: old friends, childhood places, the generosity of small gestures. Notice what the past can still teach you, and offer someone an easy kindness today.",
+    reversed: "Reversed, nostalgia can become a way of avoiding the present by idealising how things used to be. It might also stir up a memory that needs a fresh look. Ask whether looking back is giving you comfort and wisdom, or keeping you from living fully where you are now.",
+    question: "Which memory still shapes how you treat people today?"
+  },
+  "seven-of-cups": {
+    keywords: ["options", "daydreams", "illusion", "choice"],
+    upright: "Seven cups float in a cloud, each holding something different: a jewel, a wreath, a dragon, a castle. The Seven of Cups describes too many options and the daydreams that come with them. Notice which possibilities are real, and which are only pleasant to imagine.",
+    reversed: "Reversed, the fog clears and the choices sharpen. You may be ready to commit to one path, or to admit that a favourite fantasy was never going to fit. Consider what you would choose if you had to decide today, and what the other cups were really offering.",
+    question: "Which of your options would still appeal if you had to start on it tomorrow?"
+  },
+  "eight-of-cups": {
+    keywords: ["walking away", "searching", "disappointment", "deeper meaning"],
+    upright: "A figure walks away from eight stacked cups toward distant mountains under a waning moon. The Eight of Cups is about leaving something that no longer satisfies, even when it looks fine from the outside. Notice what you have outgrown, and what you are really looking for.",
+    reversed: "Reversed, you may be torn between leaving and staying, or walking away too quickly whenever things get hard. Consider whether this situation can still give you what you need with some changes, or whether it is time to set out. Either decision deserves honesty about your reasons.",
+    question: "What are you looking for that this situation no longer gives you?"
+  },
+  "nine-of-cups": {
+    keywords: ["contentment", "satisfaction", "gratitude", "wishes"],
+    upright: "A man sits with folded arms in front of nine cups lined up behind him, looking pleased. The Nine of Cups is satisfaction: something you hoped for has come about, or you feel content with what you have. Enjoy it, and notice what truly made you happy.",
+    reversed: "Reversed, satisfaction may feel hollow, or you have what you wanted and still feel restless. It can also point to indulgence, using comfort to cover something else. Ask whether your wishes still reflect what you value, and what a deeper contentment might look like.",
+    question: "What do you already have that you once wished for?"
+  },
+  "ten-of-cups": {
+    keywords: ["harmony", "family", "belonging", "shared happiness"],
+    upright: "A family stands under a rainbow of cups, children playing, a home in the distance. The Ten of Cups is about emotional fulfilment that is shared: belonging, steady affection, a household or chosen family where people feel at ease. Notice that sense of home, and tend it.",
+    reversed: "Reversed, the picture may look better from outside than it feels inside: tension at home, or an ideal of family life that real people cannot meet. Consider where expectations are getting in the way of connection, and what a more honest version of harmony might be.",
+    question: "Where do you feel most at home, and with whom?"
+  },
+  "page-of-cups": {
+    keywords: ["sensitivity", "creativity", "surprise", "tenderness"],
+    upright: "A young figure looks at a fish peering out of a cup, amused rather than alarmed. The Page of Cups is gentle curiosity about feelings: an unexpected message, a creative impulse, a soft surprise. Stay open to what moves you, even when it seems odd.",
+    reversed: "Reversed, sensitivity may tip into moodiness, or creative ideas are kept private out of embarrassment. You might be ignoring a feeling because it seems childish. Ask what you would explore if you were less worried about seeming foolish, and who could hear it kindly.",
+    question: "What feeling or idea surprised you recently?"
+  },
+  "knight-of-cups": {
+    keywords: ["idealism", "invitation", "charm", "sincerity"],
+    upright: "A rider moves slowly forward holding out a cup, like someone bringing an invitation. The Knight of Cups follows feeling and imagination, offering kindness, creative proposals or a heartfelt gesture. Act on what moves you, and approach others with sincerity and grace.",
+    reversed: "Reversed, the knight may be all charm and no follow-through, or so caught up in an ideal that real people disappoint. Moodiness can make it hard to act. Consider whether you are offering something you can actually deliver, and whether your expectations leave room for ordinary life.",
+    question: "What gesture would show someone how you really feel?"
+  },
+  "queen-of-cups": {
+    keywords: ["empathy", "compassion", "intuition", "emotional calm"],
+    upright: "The Queen of Cups holds an ornate closed cup, seated at the water's edge. She is the friend who listens well, notices what is unsaid, and stays calm in the face of strong feelings. Notice where your empathy can help someone, and where it would help to listen to yourself.",
+    reversed: "Reversed, empathy can turn into absorbing other people's moods until your own feelings get lost. Or feelings are kept locked away. Consider whether you have clear boundaries between caring for others and carrying them, and what you need to refill your own cup.",
+    question: "Whose feelings are you carrying that are not yours to hold?"
+  },
+  "king-of-cups": {
+    keywords: ["emotional balance", "diplomacy", "composure", "kindness"],
+    upright: "The King of Cups sits on a throne floating on a rough sea, calm while the waves move. He is the steady presence who feels deeply but stays balanced: the mentor, the diplomat, the parent who does not take the bait. Meet strong feelings, yours and others, with composure.",
+    reversed: "Reversed, calm can become suppression, or a mood that leaks out as coldness or sudden outbursts. It may also point to someone using emotional insight to steer others. Ask whether your composure is honest steadiness, or a way of avoiding feelings that need expressing.",
+    question: "How do you keep your balance when feelings run high?"
+  },
+  "ace-of-swords": {
+    keywords: ["clarity", "truth", "breakthrough", "decision"],
+    upright: "A hand grips an upright sword crowned with a wreath. The Ace of Swords is the moment an idea becomes clear: a breakthrough in thinking, an honest word, a decision you can state plainly. Cut through the confusion around you and say what you mean.",
+    reversed: "Reversed, clarity is clouded: muddled thinking, or a sharp truth used carelessly. You might be overanalysing, or speaking before you understand. Consider whether you need more information before deciding, or more care in how you say what you already know.",
+    question: "What would you say if you had to put it in one clear sentence?"
+  },
+  "two-of-swords": {
+    keywords: ["stalemate", "indecision", "avoidance", "difficult choice"],
+    upright: "A blindfolded figure sits with two crossed swords, the sea behind her. The Two of Swords is the stalemate of a decision you would rather not make, or a conflict you are keeping at arm's length. Notice what you are refusing to look at, and why.",
+    reversed: "Reversed, the blindfold may be slipping: new information arrives, or pressure builds until a choice becomes unavoidable. You might feel overwhelmed by too many considerations at once. Ask what you know now that you did not know before, and whether waiting longer serves anyone.",
+    question: "What would you decide if you took off the blindfold?"
+  },
+  "three-of-swords": {
+    keywords: ["heartbreak", "sorrow", "hurtful truth", "grief"],
+    upright: "A heart shape is crossed by three swords under grey rain. The Three of Swords names sorrow plainly: hurtful words, a disappointment, a painful truth. Acknowledge the hurt rather than rushing past it, because naming pain clearly is often the first step through it.",
+    reversed: "Reversed, the hurt may be easing, or held in so tightly it cannot move. You might be replaying an old wound in your head. Consider what would help you release it: a conversation, forgiveness, or simply letting yourself feel it with less judgement.",
+    question: "What hurt are you ready to name honestly?"
+  },
+  "four-of-swords": {
+    keywords: ["rest", "recovery", "retreat", "stillness"],
+    upright: "A figure lies quietly in a chapel, hands folded, as if napping after a long week. The Four of Swords is the card of rest and recovery: time off, proper sleep, letting your mind settle after strain. The tradition reads it as a call to take rest seriously before the next push.",
+    reversed: "Reversed, rest may be resisted: you keep going because stopping feels unsafe. Or you have rested so long that inaction has set in and starting again feels hard. Consider whether you need permission to pause, or a gentle push to start moving again.",
+    question: "What would real rest look like for you this week?"
+  },
+  "five-of-swords": {
+    keywords: ["conflict", "hollow victory", "self-interest", "tension"],
+    upright: "One figure gathers swords while two others walk away, looking defeated. The Five of Swords describes winning an argument at too high a price, or watching others do it. Notice whether a victory is worth the damage to trust, and what you have really gained.",
+    reversed: "Reversed, there may be a chance to make amends after a bruising conflict, or resentment continues to simmer. Consider whether you need to apologise, let something go, or step away from a situation where winning matters more than fairness.",
+    question: "Is being right here worth what it does to the relationship?"
+  },
+  "six-of-swords": {
+    keywords: ["transition", "moving on", "calmer waters", "passage"],
+    upright: "A ferryman poles a boat carrying a cloaked passenger and a child toward a calmer shore. The Six of Swords is a quiet transition: leaving a hard situation, moving on gradually. Notice the progress you are making, even if it feels slow from where you sit.",
+    reversed: "Reversed, the move may be stalled, or you carry the old trouble with you into the new place. Consider what unfinished business needs settling before you can truly move on, and whether you are resisting a change you already know is necessary.",
+    question: "What are you carrying with you that could stay on the old shore?"
+  },
+  "seven-of-swords": {
+    keywords: ["strategy", "evasion", "secrecy", "cunning"],
+    upright: "A figure tiptoes away from a camp, carrying five swords and glancing back. The Seven of Swords is about strategy and stealth: getting around a problem, sometimes by cutting corners. Notice where cleverness serves you, and where it slides into avoiding honesty.",
+    reversed: "Reversed, a hidden plan may come to light, or you feel the weight of something you have not owned up to. It can also describe self-deception. Consider what would happen if you were completely open about your intentions, and who would benefit from that honesty.",
+    question: "Where are you taking a shortcut that you would not want to explain?"
+  },
+  "eight-of-swords": {
+    keywords: ["restriction", "self-limiting beliefs", "feeling trapped", "perspective"],
+    upright: "A blindfolded figure stands loosely bound, surrounded by swords, yet the path out is open. The Eight of Swords describes feeling trapped by circumstances that are partly held in place by your own thinking. Notice which limits are real, and which you have simply assumed.",
+    reversed: "Reversed, you may be starting to see a way out, loosening a belief that kept you stuck. Or fear tightens its grip just as an exit appears. Ask what small step would prove to yourself that you have more room to move than you thought.",
+    question: "Which of the walls around you would move if you pushed on it?"
+  },
+  "nine-of-swords": {
+    keywords: ["anxiety", "worry", "rumination", "night thoughts"],
+    upright: "Someone sits up in bed, head in hands, nine swords on the wall behind them. The Nine of Swords is the small-hours spiral, when worries keep you from sleep and feel bigger in the dark. Notice how much of the fear lives in your head, and share it with someone who can help you think it through.",
+    reversed: "Reversed, worry may be easing as you talk it through, or hardening into a habit of expecting the worst. Consider what you could write down, ask about, or test, so that a looping thought becomes something you can actually respond to.",
+    question: "Which of your worries would look smaller in daylight?"
+  },
+  "ten-of-swords": {
+    keywords: ["rock bottom", "painful ending", "closure", "release"],
+    upright: "The Ten of Swords is the card of hitting bottom: a situation that has gone as badly as it can, a betrayal, a plan that has fully collapsed. Its odd comfort is that there is nowhere lower to go. Let the worst be over, and look for the first light on the horizon.",
+    reversed: "Reversed, you may be climbing out slowly, or reliving the low point long after it has passed. Consider whether you are ready to stop telling the story of what went wrong, and start shaping the story of what comes next.",
+    question: "If the worst is behind you, what is the first thing you would rebuild?"
+  },
+  "page-of-swords": {
+    keywords: ["curiosity", "questions", "alertness", "new ideas"],
+    upright: "A young figure holds a sword upright, hair blown by the wind, watching everything. The Page of Swords is the eager student and the sharp observer: full of questions, quick to notice. Learn, ask, and test ideas, while staying open to answers you did not expect.",
+    reversed: "Reversed, curiosity can turn into nosiness, gossip, or talking about things before understanding them. Or scattered thinking makes it hard to land anywhere. Consider whether you are asking questions to learn, or only to win an argument.",
+    question: "What question would you ask if you were sure nobody would laugh?"
+  },
+  "knight-of-swords": {
+    keywords: ["ambition", "haste", "assertiveness", "drive"],
+    upright: "A rider charges into the wind, sword raised, horse at full gallop. The Knight of Swords acts fast on ideas and convictions, cutting straight to the point. Move decisively on something you have thought through, and speak up for what you believe.",
+    reversed: "Reversed, speed becomes recklessness: rushing in, saying something harsh, or abandoning a plan halfway. Consider whether you are acting from clarity or from impatience, and who might be caught in the slipstream of your hurry.",
+    question: "Is your urgency coming from clarity, or from not wanting to wait?"
+  },
+  "queen-of-swords": {
+    keywords: ["clear judgement", "independence", "directness", "honesty"],
+    upright: "The Queen of Swords sits upright, one hand extended, sword held steady. She is the person who tells you the truth kindly but without softening it, and who has learned from her own experience. Think clearly, set your boundaries, and speak honestly.",
+    reversed: "Reversed, directness can turn cold or cutting, or clear thinking gives way to bitterness about the past. Consider whether your honesty still has kindness in it, and whether an old hurt is shaping how you judge people now.",
+    question: "What honest thing needs saying, and how can you say it kindly?"
+  },
+  "king-of-swords": {
+    keywords: ["intellect", "authority", "fairness", "clear thinking"],
+    upright: "The King of Swords sits facing forward, sword upright, the picture of considered authority. He is the person whose decisions rest on reason and principle: the fair-minded editor, the steady chair of a meeting. Weigh the facts carefully, and decide with integrity.",
+    reversed: "Reversed, reason can turn rigid or manipulative, with logic used to win rather than to understand. Consider whether you are hiding behind facts to avoid feelings, or using your judgement to control others, and what would change if you let both count.",
+    question: "What would you decide if you looked only at the facts and your principles?"
+  },
+  "ace-of-pentacles": {
+    keywords: ["opportunity", "practical foundation", "practical start", "potential"],
+    upright: "A hand offers a single disc above a garden gate. The Ace of Pentacles is a practical opening: a new role, a grounded plan, a craft worth building, a skill that can carry its weight. The tradition reads it as a steady foundation for work and resources, built one step at a time.",
+    reversed: "Reversed, a promising offer may slip away through poor planning, or time and effort scatter faster than they take root. Consider what groundwork is missing, whether a simpler plan would help, and whether you are passing over something solid because it looks ordinary.",
+    question: "What practical first step could you take today?"
+  },
+  "two-of-pentacles": {
+    keywords: ["juggling", "adaptability", "pacing", "balance"],
+    upright: "A figure juggles two discs linked by a figure-eight loop, ships riding the waves behind. The Two of Pentacles is about keeping several commitments moving at once: two roles, errands and plans, work and home. The tradition reads it as a time to stay flexible with your hours and your energy.",
+    reversed: "Reversed, the juggling gets messy: too many commitments, tasks or deadlines at once, and something dropped. Consider what to put down or postpone, where your hours and attention are really going, and whether you keep saying yes to things that leave no room for what matters.",
+    question: "Which of the things you are juggling could you put down for a while?"
+  },
+  "three-of-pentacles": {
+    keywords: ["teamwork", "craft", "career", "skill"],
+    upright: "A stonemason works on a cathedral arch while two people holding plans look on. The Three of Pentacles is skilled work that gets noticed: a good team, a client who values the craft, a step up in your career. The tradition reads it as favourable for collaboration, apprenticeships and work done well.",
+    reversed: "Reversed, teamwork may be strained: unclear roles, nobody listening, or doing everything yourself because you do not trust others. Consider whether you need to ask for input, share the credit, or clarify who is responsible for what.",
+    question: "Whose skills would make your work better if you invited them in?"
+  },
+  "four-of-pentacles": {
+    keywords: ["stewardship", "security", "control", "holding on"],
+    upright: "A seated figure holds one disc tightly to his chest, with others under his feet and on his head. The Four of Pentacles is about guarding and holding on: reserves kept close, a steady position, control of what you have built. The tradition reads it as security, and warns when caution turns into a tight fist.",
+    reversed: "Reversed, the grip loosens: you may be ready to share or let go more freely, or worried that your footing is slipping away. It can also point to holding on so hard that nothing new comes in. Consider what you are guarding, and what a sensible balance of keeping and sharing would be.",
+    question: "What are you holding so tightly that nothing new can reach you?"
+  },
+  "five-of-pentacles": {
+    keywords: ["hardship", "lean times", "exclusion", "seeking support"],
+    upright: "Two figures walk through snow past a lit church window. The Five of Pentacles is the card of a lean stretch: resources stretched thin, work uncertain, feeling left out in the cold. The tradition reads it as hardship that help can ease, so look for the lit window: support, advice, people who would gladly help.",
+    reversed: "Reversed, a difficult season may be easing, with energy or work starting to steady, or you are finally accepting help that was always on offer. Consider who you could reach out to, and whether pride or shame has been keeping you outside the door.",
+    question: "Where is help available that you have not yet asked for?"
+  },
+  "six-of-pentacles": {
+    keywords: ["generosity", "giving and receiving", "sharing", "fairness"],
+    upright: "A figure holding a pair of scales shares discs with two people kneeling nearby. The Six of Pentacles is about giving and receiving: a fair exchange, a favour returned, help offered or accepted. The tradition reads it as resources flowing where they are needed. Notice where you can give, and where you can receive gracefully.",
+    reversed: "Reversed, generosity may come with strings attached, or help and favours run only one way. You might be giving what you cannot spare, or accepting help that leaves you uneasy. Consider whether the exchange feels fair to both sides, and whether something owed needs settling.",
+    question: "Where is the balance of giving and receiving uneven in your life?"
+  },
+  "seven-of-pentacles": {
+    keywords: ["patience", "assessment", "long-term effort", "perseverance"],
+    upright: "A gardener leans on a hoe, looking at a bush where seven discs are ripening. The Seven of Pentacles is long-term effort: foundations that grow slowly, a craft that takes years, work that bears fruit over time. The tradition reads it as a moment to take stock of what your effort is building, and adjust.",
+    reversed: "Reversed, impatience may tempt you to abandon something just before it bears fruit, or you keep putting in time and energy without checking what comes back. Consider whether you need more patience, or a clearer look at what your work is actually producing.",
+    question: "Is the work you are putting in growing what you actually want?"
+  },
+  "eight-of-pentacles": {
+    keywords: ["diligence", "practice", "mastery", "attention to detail"],
+    upright: "An artisan sits at a workbench, carving one disc after another, the finished ones hung on display. The Eight of Pentacles is skilled, steady work: training, a craft, a job you get better at by doing. The tradition reads it as steady ground for study, apprenticeships and mastering a craft. Focus on the work itself.",
+    reversed: "Reversed, practice can turn into perfectionism, or the work becomes rote and you lose interest. Consider whether you are improving or just repeating, and whether a new challenge or a short break would bring back the care.",
+    question: "Which skill would you practise until it becomes second nature?"
+  },
+  "nine-of-pentacles": {
+    keywords: ["self-reliance", "refinement", "independence", "enjoyment"],
+    upright: "A woman stands in a flourishing vineyard, a falcon on her gloved hand, at ease in a place she has tended. The Nine of Pentacles is comfort built by your own effort: self-reliance, a pleasant home, independence. The tradition reads it as a moment to appreciate what steady work has built.",
+    reversed: "Reversed, independence may become isolation, or you find it hard to enjoy what you have built because there is always more to do. Consider whether you are allowing yourself to rest in your achievements, and whether you need others more than you admit.",
+    question: "What have you built that you can stop and enjoy today?"
+  },
+  "ten-of-pentacles": {
+    keywords: ["legacy", "family", "security", "lasting foundations"],
+    upright: "Several generations gather in an archway, with dogs at their feet and a house behind. The Ten of Pentacles is about what lasts: family, home, resources and traditions built over years. The tradition reads it as long-term security, an inheritance of skill or property, and thought for what you would like to leave others.",
+    reversed: "Reversed, family expectations may feel heavy, or shared property and household duties cause friction at home. Old traditions might clash with how you want to live. Consider which inherited habits support you and which hold you back, and how to talk about shared resources openly.",
+    question: "What would you like to pass on to the people who come after you?"
+  },
+  "page-of-pentacles": {
+    keywords: ["study", "diligence", "new skill", "application"],
+    upright: "A young figure holds a disc up to the light, studying it closely. The Page of Pentacles is the careful learner: a new course, an apprenticeship, a first job, a practical goal built piece by piece. Commit to learning slowly and well, with patience for the clumsy early stages.",
+    reversed: "Reversed, the learner may lose focus, or plan endlessly without ever picking up the tools. Consider whether you need a concrete next step, a teacher, or simply to begin, accepting that first attempts are usually rough.",
+    question: "What are you ready to learn slowly and well?"
+  },
+  "knight-of-pentacles": {
+    keywords: ["reliability", "routine", "patience", "persistence"],
+    upright: "A knight sits on a still horse, looking at a disc, in no hurry at all. The Knight of Pentacles is steady, reliable effort: showing up for work every day, keeping a steady plan, finishing what you start. The tradition reads it as slow, dependable progress in work and daily routines. Value consistency.",
+    reversed: "Reversed, steadiness can turn into stubbornness or boredom, where routine becomes a rut. Or you might be neglecting the everyday tasks you usually do well. Consider whether your routine still serves you, or whether a small change would bring fresh focus.",
+    question: "Which routine, kept up faithfully, would make the biggest difference?"
+  },
+  "queen-of-pentacles": {
+    keywords: ["nurturing", "practicality", "homemaking", "care"],
+    upright: "The Queen of Pentacles sits in a garden with a rabbit at her feet, holding a disc in her lap. She runs a household well, tends her resources sensibly, and still finds time for others. Notice how practical care, a cooked meal, an orderly home, a good night's sleep, supports everyone around you, you included.",
+    reversed: "Reversed, caring for everyone else may leave your own needs unmet, or the home becomes a source of stress rather than comfort. Consider whether you are trying to do everything yourself, and what would help you feel looked after too.",
+    question: "What small act of practical care would make your home feel better?"
+  },
+  "king-of-pentacles": {
+    keywords: ["stability", "business", "dependability", "stewardship"],
+    upright: "The King of Pentacles sits among vines and flowers, relaxed and secure on his throne. He is the person who has built practical stability through years of work: the builder, the steady steward. The tradition reads him as grounded stewardship of work and resources, used well and shared.",
+    reversed: "Reversed, stability may turn into stubbornness, or success into a focus on status and possessions. It can also point to careless excess, or a decision made for show. Consider whether you are measuring yourself by what you own rather than who you are.",
+    question: "How can your experience help someone else build their own steadiness?"
+  }
+};
+
+// src/lib/tarot/reading.ts
+function readCard({ position: position3, card, orientation }) {
+  const meaning = TAROT_MEANINGS[card.id];
+  if (!meaning) throw new Error(`No meaning for ${card.id}`);
+  return {
+    position: { key: position3.key, name: position3.name, prompt: position3.prompt },
+    card: { id: card.id, name: card.name, arcana: card.arcana, suit: card.suit, number: card.number },
+    orientation,
+    keywords: [...meaning.keywords],
+    meaning: orientation === "upright" ? meaning.upright : meaning.reversed,
+    question: meaning.question
+  };
+}
+
+// src/ai-tools/features/tarot.ts
+var tarotInput = z21.strictObject({
+  spread: z21.enum(SPREAD_IDS).optional().describe("one-card (the default), three-card (past, present, future) or celtic-cross (ten cards)."),
+  reversals: z21.boolean().optional().describe("Whether cards can come up reversed, each with even odds. Defaults to true; false draws every card upright.")
+});
+var drawnCard = z21.object({
+  position: z21.object({ key: z21.string(), name: z21.string(), prompt: z21.string() }),
+  card: z21.object({ id: z21.string(), name: z21.string(), arcana: z21.enum(["major", "minor"]), suit: z21.enum(SUITS).nullable(), number: z21.number().int() }),
+  orientation: z21.enum(["upright", "reversed"]),
+  keywords: z21.array(z21.string()),
+  /** The meaning for the card as it came up, upright or reversed. */
+  meaning: z21.string(),
+  /** One open question to think about. */
+  question: z21.string()
+});
+var tarotData = z21.object({
+  spread: z21.enum(SPREAD_IDS),
+  spreadName: z21.string(),
+  spreadDescription: z21.string(),
+  reversals: z21.boolean(),
+  /** Tarot is not astrology; say so when sharing the draw. */
+  separateFromAstrology: z21.string(),
+  cards: z21.array(drawnCard),
+  method: z21.string(),
+  note: z21.string()
+});
+var TAROT_SEPARATE = "Tarot is a separate practice from astrology. It works from a shuffled deck of 78 cards, with no planets, signs or birth details in it.";
+var TAROT_METHOD = "Each card is drawn from the full 78-card deck without replacement, using a secure random number generator and rejection sampling so that no card is favoured. With reversals on, each card is upright or reversed with even odds. Nothing about the person, and no question, goes into the draw.";
+var TAROT_NOTE = "The meanings are Zodiacs' own, written to the themes the tarot tradition gives each card.";
+function tarotAnswer(spread, reversals, drawn, origin, pageOn = false) {
+  const layout = SPREADS[spread];
+  const data = {
+    spread,
+    spreadName: layout.name,
+    spreadDescription: layout.description,
+    reversals,
+    separateFromAstrology: TAROT_SEPARATE,
+    cards: drawn.map(readCard),
+    method: TAROT_METHOD,
+    note: TAROT_NOTE
+  };
+  return { data, links: pageOn ? [{ title: "Tarot on Zodiacs", url: `${origin}/tarot/` }] : [] };
+}
+function drawTarotReading(args, origin, pageOn = false) {
+  const spread = args.spread ?? "one-card";
+  const reversals = args.reversals ?? true;
+  return tarotAnswer(spread, reversals, drawTarot(spread, reversals), origin, pageOn);
+}
+
 // src/ai-tools/features/moment-chart-contract.ts
 import { z as zod } from "zod";
 var MOMENT_CHART_TOOL = "get_moment_chart";
@@ -46723,8 +47392,9 @@ var SOLAR_RETURN_TOOL_NAMES = ["get_solar_return"];
 var NUMEROLOGY_TOOL_NAMES = ["get_numerology"];
 var EVERY_SWITCHED_TOOL = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES];
 var GOOD_DAYS_TOOL_NAMES = ["find_good_days"];
+var TAROT_TOOL_NAMES = ["draw_tarot"];
 var EVERY_TOOL_WITH_GOOD_DAYS = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES];
-var EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_GOOD_DAYS, MOMENT_CHART_TOOL];
+var EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_GOOD_DAYS, MOMENT_CHART_TOOL, ...TAROT_TOOL_NAMES];
 var OCCASIONS_SWITCH_ENV = "ZODIACS_OCCASIONS_ENABLED";
 var COVERAGE_SWITCH_ENV = "ZODIACS_COVERAGE_ENABLED";
 var SKY_EVENTS_SWITCH_ENV = "ZODIACS_SKY_EVENTS_ENABLED";
@@ -46733,6 +47403,7 @@ var YEAR_SCORE_PEOPLE_SWITCH_ENV = "ZODIACS_YEAR_SCORE_PEOPLE_ENABLED";
 var SOLAR_RETURN_SWITCH_ENV = "ZODIACS_SOLAR_RETURN_ENABLED";
 var NUMEROLOGY_SWITCH_ENV = "ZODIACS_NUMEROLOGY_ENABLED";
 var GOOD_DAYS_SWITCH_ENV = "ZODIACS_GOOD_DAYS_ENABLED";
+var TAROT_SWITCH_ENV = "ZODIACS_TAROT_ENABLED";
 var PERSONAL_SWITCH_ENV = "ZODIACS_PERSONAL_TOOLS_ENABLED";
 var MAX_EVENT_DAYS = BUDGETS["events.windowDays"];
 var MAX_HTTP_BYTES = 16384;
@@ -46776,44 +47447,45 @@ var TOOL_TITLES = {
   get_solar_return: "Your solar return",
   get_numerology: "Numerology numbers",
   find_good_days: "Find good days",
+  draw_tarot: "Tarot draw",
   ...personalRecord((tool) => tool.title)
 };
-var instant3 = z21.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).");
+var instant3 = z22.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).");
 var ZONE_PATTERN13 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone7 = z21.string().min(1).max(64).regex(ZONE_PATTERN13).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
-var date = z21.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var wallClock = z21.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
+var zone7 = z22.string().min(1).max(64).regex(ZONE_PATTERN13).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
+var date = z22.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var wallClock = z22.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
-  get_capabilities: z21.strictObject({}),
-  open_chart_studio: z21.strictObject({}),
+  get_capabilities: z22.strictObject({}),
+  open_chart_studio: z22.strictObject({}),
   get_moment_chart: momentChartInput,
-  get_sky: z21.strictObject({ instant: instant3.optional(), zone: zone7.optional(), bodies: z21.array(z21.enum(POSITION_BODIES)).min(1).max(12).optional() }),
-  get_upcoming_events: z21.strictObject({ from: instant3.optional(), to: instant3.optional(), zone: zone7.optional(), bodies: z21.array(z21.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z21.array(z21.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
+  get_sky: z22.strictObject({ instant: instant3.optional(), zone: zone7.optional(), bodies: z22.array(z22.enum(POSITION_BODIES)).min(1).max(12).optional() }),
+  get_upcoming_events: z22.strictObject({ from: instant3.optional(), to: instant3.optional(), zone: zone7.optional(), bodies: z22.array(z22.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z22.array(z22.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
     if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
   }),
-  check_sky_fact: z21.strictObject({ kind: z21.enum(["sign", "retrograde", "ingress", "phase"]), body: z21.enum(EVENT_BODIES).optional(), sign: z21.enum(SIGN_SLUGS2).optional(), phase: z21.enum(PHASE_NAMES).optional(), instant: instant3.optional(), date: date.optional(), zone: zone7.optional() }),
-  get_occasion_sky: z21.strictObject({
-    occasion: z21.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
+  check_sky_fact: z22.strictObject({ kind: z22.enum(["sign", "retrograde", "ingress", "phase"]), body: z22.enum(EVENT_BODIES).optional(), sign: z22.enum(SIGN_SLUGS2).optional(), phase: z22.enum(PHASE_NAMES).optional(), instant: instant3.optional(), date: date.optional(), zone: zone7.optional() }),
+  get_occasion_sky: z22.strictObject({
+    occasion: z22.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
     date: date.optional().describe("The day, such as 2027-09-18 (years 1800 to 2199). Needed unless searchFrom and searchTo are given."),
     searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo."),
     searchTo: date.optional().describe("The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
     time: wallClock.optional().describe("The local clock time, such as 16:30, if the person gives one. Needs zone."),
     zone: zone7.optional().describe("The place's time zone, such as Europe/Lisbon. Needed with a time or a place."),
-    latitude: z21.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
-    longitude: z21.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z21.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored."),
-    names: z21.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
+    latitude: z22.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z22.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z22.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored."),
+    names: z22.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
   }).superRefine((args, context) => {
     if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
     if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A time or a place needs its time zone." });
     if (args.searchFrom === void 0 !== (args.searchTo === void 0)) context.addIssue({ code: "custom", message: "Give searchFrom and searchTo together." });
     if (args.date === void 0 && args.searchFrom === void 0) context.addIssue({ code: "custom", message: "Give a date, or a window to search." });
   }),
-  get_life_milestones: z21.strictObject({
+  get_life_milestones: z22.strictObject({
     birthDate: date.describe("The birth date, such as 1997-03-15."),
     time: wallClock.optional().describe("The birth time on the local clock, if known. Needs zone."),
     zone: zone7.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
-    longitude: z21.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
+    longitude: z22.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
   }).superRefine((args, context) => {
     if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
   }),
@@ -46834,19 +47506,20 @@ var INPUT_SCHEMAS = {
   get_solar_return: solarReturnInput,
   get_numerology: numerologyInput,
   find_good_days: goodDaysInput,
+  draw_tarot: tarotInput,
   ...personalRecord((tool) => tool.input),
-  get_horoscope: z21.strictObject({
-    sign: z21.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
-    period: z21.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
-    focus: z21.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
+  get_horoscope: z22.strictObject({
+    sign: z22.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
+    period: z22.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
+    focus: z22.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
     date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
     zone: zone7.optional(),
     birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
-    birthTime: z21.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
+    birthTime: z22.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
     birthZone: zone7.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
   }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
 };
-var link3 = z21.object({ title: z21.string(), url: z21.url() });
+var link3 = z22.object({ title: z22.string(), url: z22.url() });
 var publishedBackendSchema = {
   ...COMPUTE_SCHEMAS.Backend,
   properties: {
@@ -46886,118 +47559,118 @@ function inlined(schema) {
 function computeValue(component) {
   const schema = connectorComputeSchema(component);
   if (!schema) throw new Error(`No compute API component ${component}`);
-  return z21.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(schema));
+  return z22.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(schema));
 }
-var calculationOf = (result) => z21.object({
-  schema: z21.string(),
+var calculationOf = (result) => z22.object({
+  schema: z22.string(),
   result,
   receipt: computeValue("ComputeReceipt"),
   backend: computeValue("Backend"),
-  cite: z21.object({ url: z21.url(), receipt: z21.string(), engine: z21.string(), version: z21.string() })
+  cite: z22.object({ url: z22.url(), receipt: z22.string(), engine: z22.string(), version: z22.string() })
 });
-var statements2 = z21.record(z21.string(), z21.string());
-var limits = z21.object({
-  from: z21.string(),
-  to: z21.string(),
-  eventWindowDays: z21.number().int(),
-  eventKinds: z21.array(z21.enum(EVENT_KINDS)),
-  samples: z21.number().int(),
-  factSamples: z21.number().int()
+var statements2 = z22.record(z22.string(), z22.string());
+var limits = z22.object({
+  from: z22.string(),
+  to: z22.string(),
+  eventWindowDays: z22.number().int(),
+  eventKinds: z22.array(z22.enum(EVENT_KINDS)),
+  samples: z22.number().int(),
+  factSamples: z22.number().int()
 });
-var localTime = z21.object({ utc: z21.string(), zone: z21.string(), display: z21.string() });
-var body2 = z21.object({ body: z21.string(), lon: z21.number(), lat: z21.number(), speed: z21.number(), retrograde: z21.boolean(), sign: z21.string(), degree: z21.number() });
-var positionResult = z21.object({ instants: z21.array(z21.object({ instant: z21.string(), bodies: z21.array(body2), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z21.array(z21.string()) })) });
-var event = z21.object({ kind: z21.enum(EVENT_KINDS), at: z21.string(), localAt: z21.string(), body: z21.string().optional(), sign: z21.string(), type: z21.string().optional(), retrograde: z21.boolean().optional(), lon: z21.number().optional(), degree: z21.number().optional() });
-var personal = z21.object({ timeKnown: z21.boolean(), items: z21.array(z21.object({ title: z21.string(), line: z21.string(), when: z21.string() })), note: z21.string() });
-var horoscope = z21.object({
-  status: z21.enum(["available", "unavailable", "choose-sign"]),
-  sign: z21.enum(HOROSCOPE_SIGNS).optional(),
-  signName: z21.string().optional(),
-  period: z21.enum(HOROSCOPE_PERIODS),
-  focus: z21.enum(HOROSCOPE_FOCUSES),
-  date: z21.string(),
-  dateLabel: z21.string(),
-  zone: z21.string(),
-  zoneLabel: z21.string(),
-  zoneSource: z21.enum(["request", "assistant", "default"]),
-  reading: z21.object({ title: z21.string(), paragraphs: z21.array(z21.object({ heading: z21.string().optional(), text: z21.string() })) }).optional(),
-  why: z21.object({ note: z21.string(), facts: z21.array(z21.object({ text: z21.string(), when: z21.string() })), houses: z21.array(z21.string()) }).optional(),
-  available: z21.array(z21.object({ date: z21.string(), label: z21.string() })).optional(),
-  message: z21.string().optional(),
+var localTime = z22.object({ utc: z22.string(), zone: z22.string(), display: z22.string() });
+var body2 = z22.object({ body: z22.string(), lon: z22.number(), lat: z22.number(), speed: z22.number(), retrograde: z22.boolean(), sign: z22.string(), degree: z22.number() });
+var positionResult = z22.object({ instants: z22.array(z22.object({ instant: z22.string(), bodies: z22.array(body2), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z22.array(z22.string()) })) });
+var event = z22.object({ kind: z22.enum(EVENT_KINDS), at: z22.string(), localAt: z22.string(), body: z22.string().optional(), sign: z22.string(), type: z22.string().optional(), retrograde: z22.boolean().optional(), lon: z22.number().optional(), degree: z22.number().optional() });
+var personal = z22.object({ timeKnown: z22.boolean(), items: z22.array(z22.object({ title: z22.string(), line: z22.string(), when: z22.string() })), note: z22.string() });
+var horoscope = z22.object({
+  status: z22.enum(["available", "unavailable", "choose-sign"]),
+  sign: z22.enum(HOROSCOPE_SIGNS).optional(),
+  signName: z22.string().optional(),
+  period: z22.enum(HOROSCOPE_PERIODS),
+  focus: z22.enum(HOROSCOPE_FOCUSES),
+  date: z22.string(),
+  dateLabel: z22.string(),
+  zone: z22.string(),
+  zoneLabel: z22.string(),
+  zoneSource: z22.enum(["request", "assistant", "default"]),
+  reading: z22.object({ title: z22.string(), paragraphs: z22.array(z22.object({ heading: z22.string().optional(), text: z22.string() })) }).optional(),
+  why: z22.object({ note: z22.string(), facts: z22.array(z22.object({ text: z22.string(), when: z22.string() })), houses: z22.array(z22.string()) }).optional(),
+  available: z22.array(z22.object({ date: z22.string(), label: z22.string() })).optional(),
+  message: z22.string().optional(),
   personal: personal.optional(),
   /** The share link for the reading shown, when there is one. */
-  shareUrl: z21.url().nullable().optional(),
-  disclosure: z21.string()
+  shareUrl: z22.url().nullable().optional(),
+  disclosure: z22.string()
 });
-var clockTime3 = z21.object({ utc: z21.string(), local: z21.string() });
+var clockTime3 = z22.object({ utc: z22.string(), local: z22.string() });
 var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
-var occasionSky = z21.object({
-  occasion: z21.enum(ASSISTANT_OCCASION_KINDS),
-  date: z21.string(),
-  time: z21.string().nullable(),
-  zone: z21.string().nullable(),
-  place: z21.string().nullable(),
-  names: z21.string().nullable(),
-  card: z21.object({ title: z21.string(), interpretation: z21.string(), closing: z21.string() }),
+var occasionSky = z22.object({
+  occasion: z22.enum(ASSISTANT_OCCASION_KINDS),
+  date: z22.string(),
+  time: z22.string().nullable(),
+  zone: z22.string().nullable(),
+  place: z22.string().nullable(),
+  names: z22.string().nullable(),
+  card: z22.object({ title: z22.string(), interpretation: z22.string(), closing: z22.string() }),
   instant: clockTime3,
-  instantIs: z21.enum(["given-time", "local-noon", "utc-noon"]),
-  sky: z21.object({
-    bodies: z21.array(z21.object({ body: z21.string(), sign: z21.string(), degree: z21.number(), retrograde: z21.boolean() })),
-    moon: z21.object({ phase: z21.string(), illuminationPercent: z21.number(), waxing: z21.boolean() }),
-    retrograde: z21.array(z21.string())
+  instantIs: z22.enum(["given-time", "local-noon", "utc-noon"]),
+  sky: z22.object({
+    bodies: z22.array(z22.object({ body: z22.string(), sign: z22.string(), degree: z22.number(), retrograde: z22.boolean() })),
+    moon: z22.object({ phase: z22.string(), illuminationPercent: z22.number(), waxing: z22.boolean() }),
+    retrograde: z22.array(z22.string())
   }),
-  moonSignChange: z21.object({ from: z21.string(), to: z21.string() }).nullable(),
-  evening: z21.object({
+  moonSignChange: z22.object({ from: z22.string(), to: z22.string() }).nullable(),
+  evening: z22.object({
     sunrise: clockTime3.nullable(),
     sunset: clockTime3.nullable(),
-    goldenHour: z21.object({ start: clockTime3, end: clockTime3 }).nullable(),
+    goldenHour: z22.object({ start: clockTime3, end: clockTime3 }).nullable(),
     civilDusk: clockTime3.nullable(),
     moonrise: clockTime3.nullable(),
     moonset: clockTime3.nullable(),
-    moonHighest: z21.object({ at: clockTime3, altitude: z21.number() }).nullable(),
-    planetsAfterDusk: z21.array(z21.string()),
-    flags: z21.array(z21.string())
+    moonHighest: z22.object({ at: clockTime3, altitude: z22.number() }).nullable(),
+    planetsAfterDusk: z22.array(z22.string()),
+    flags: z22.array(z22.string())
   }).nullable(),
-  rating: z21.object({ score: z21.number().int().min(0).max(100), verdict: z21.string(), reasons: z21.array(z21.string()) }),
+  rating: z22.object({ score: z22.number().int().min(0).max(100), verdict: z22.string(), reasons: z22.array(z22.string()) }),
   /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
-  bestDays: z21.object({
-    from: z21.string(),
-    to: z21.string(),
-    days: z21.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
-    best: z21.array(z21.object({ date: z21.string(), score: z21.number().int().min(0).max(100), verdict: z21.string(), reasons: z21.array(z21.string()) })).max(3)
+  bestDays: z22.object({
+    from: z22.string(),
+    to: z22.string(),
+    days: z22.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z22.array(z22.object({ date: z22.string(), score: z22.number().int().min(0).max(100), verdict: z22.string(), reasons: z22.array(z22.string()) })).max(3)
   }).nullable(),
-  cardUrl: z21.url().nullable(),
-  shareUrl: z21.url().nullable(),
-  note: z21.literal(occasionNote)
+  cardUrl: z22.url().nullable(),
+  shareUrl: z22.url().nullable(),
+  note: z22.literal(occasionNote)
 });
-var milestone = z21.object({
-  kind: z21.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
-  name: z21.string(),
-  index: z21.number(),
-  age: z21.number(),
-  first: z21.string(),
-  last: z21.string(),
-  passes: z21.array(z21.object({ at: z21.string(), retrograde: z21.boolean() }))
+var milestone = z22.object({
+  kind: z22.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
+  name: z22.string(),
+  index: z22.number(),
+  age: z22.number(),
+  first: z22.string(),
+  last: z22.string(),
+  passes: z22.array(z22.object({ at: z22.string(), retrograde: z22.boolean() }))
 });
-var lifeMilestones = z21.object({
-  birthDate: z21.string(),
-  timeKnown: z21.boolean(),
-  asOf: z21.string(),
-  milestones: z21.array(milestone),
+var lifeMilestones = z22.object({
+  birthDate: z22.string(),
+  timeKnown: z22.boolean(),
+  asOf: z22.string(),
+  milestones: z22.array(milestone),
   next: milestone.nullable(),
-  numbers: z21.object({ fullMoons: z21.number(), mercuryRetrogrades: z21.number(), jupiterReturns: z21.number() }),
-  cardUrl: z21.url().nullable(),
-  shareUrl: z21.url().nullable(),
-  note: z21.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
+  numbers: z22.object({ fullMoons: z22.number(), mercuryRetrogrades: z22.number(), jupiterReturns: z22.number() }),
+  cardUrl: z22.url().nullable(),
+  shareUrl: z22.url().nullable(),
+  note: z22.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
 });
 var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
-  open_chart_studio: z21.object({ title: z21.literal("Chart Studio"), calculation: z21.literal("browser-local"), initialChart: z21.literal("birth-details"), sharing: z21.literal("user-reviewed-selection-only") }),
-  get_capabilities: z21.object({ name: z21.literal("Zodiacs"), version: z21.string(), engine: computeValue("Backend"), tools: z21.array(z21.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z21.string(), limitations: z21.array(z21.string()) }),
+  open_chart_studio: z22.object({ title: z22.literal("Chart Studio"), calculation: z22.literal("browser-local"), initialChart: z22.literal("birth-details"), sharing: z22.literal("user-reviewed-selection-only") }),
+  get_capabilities: z22.object({ name: z22.literal("Zodiacs"), version: z22.string(), engine: computeValue("Backend"), tools: z22.array(z22.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z22.string(), limitations: z22.array(z22.string()) }),
   get_moment_chart: momentChartData,
-  get_sky: z21.object({ mode: z21.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z21.object({ name: z21.string(), angle: z21.number(), illumination: z21.number() }), interpretation: z21.literal("Astronomical calculations; no personal prediction is supplied.") }),
-  get_upcoming_events: z21.object({ from: z21.string(), to: z21.string(), zone: z21.string(), events: z21.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z21.literal("tested-not-proven") }),
-  check_sky_fact: z21.object({ answer: z21.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z21.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
+  get_sky: z22.object({ mode: z22.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z22.object({ name: z22.string(), angle: z22.number(), illumination: z22.number() }), interpretation: z22.literal("Astronomical calculations; no personal prediction is supplied.") }),
+  get_upcoming_events: z22.object({ from: z22.string(), to: z22.string(), zone: z22.string(), events: z22.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z22.literal("tested-not-proven") }),
+  check_sky_fact: z22.object({ answer: z22.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z22.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
@@ -47016,22 +47689,24 @@ var dataSchemas = {
   get_year_score: yearScoreData,
   get_solar_return: solarReturnData,
   get_numerology: numerologyData,
-  find_good_days: goodDaysData
+  find_good_days: goodDaysData,
+  draw_tarot: tarotData
 };
-var ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(ALL_AI_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var COVERAGE_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(COVERAGE_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var PLACE_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(PLACE_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var SKY_EVENTS_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(SKY_EVENTS_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var SOLAR_RETURN_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(SOLAR_RETURN_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var YEAR_SCORE_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(YEAR_SCORE_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var NUMEROLOGY_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(NUMEROLOGY_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var GOOD_DAYS_ERROR_SCHEMA = z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.enum(GOOD_DAYS_TOOL_NAMES), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
-var personalErrorSchema = (tool) => z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(false), tool: z21.literal(tool), error: z21.object({ code: z21.string(), message: z21.string(), retryAfterSeconds: z21.number().optional() }) });
+var ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(ALL_AI_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var COVERAGE_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(COVERAGE_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var PLACE_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(PLACE_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var SKY_EVENTS_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(SKY_EVENTS_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var SOLAR_RETURN_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(SOLAR_RETURN_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var YEAR_SCORE_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(YEAR_SCORE_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var NUMEROLOGY_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(NUMEROLOGY_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var GOOD_DAYS_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(GOOD_DAYS_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var TAROT_ERROR_SCHEMA = z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.enum(TAROT_TOOL_NAMES), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
+var personalErrorSchema = (tool) => z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(false), tool: z22.literal(tool), error: z22.object({ code: z22.string(), message: z22.string(), retryAfterSeconds: z22.number().optional() }) });
 function outputSchema(tool, data) {
-  const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : SKY_EVENTS_TOOL_NAMES.includes(tool) ? SKY_EVENTS_ERROR_SCHEMA : YEAR_SCORE_TOOL_NAMES.includes(tool) ? YEAR_SCORE_ERROR_SCHEMA : SOLAR_RETURN_TOOL_NAMES.includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA : NUMEROLOGY_TOOL_NAMES.includes(tool) ? NUMEROLOGY_ERROR_SCHEMA : GOOD_DAYS_TOOL_NAMES.includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : PERSONAL_TOOL_NAMES.includes(tool) ? personalErrorSchema(tool) : ERROR_SCHEMA;
-  return z21.union([
-    z21.object({ schema: z21.literal(AI_RESULT_SCHEMA), ok: z21.literal(true), tool: z21.literal(tool), data, links: z21.array(link3) }),
-    tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z21.literal(MOMENT_CHART_TOOL) }) : error
+  const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : SKY_EVENTS_TOOL_NAMES.includes(tool) ? SKY_EVENTS_ERROR_SCHEMA : YEAR_SCORE_TOOL_NAMES.includes(tool) ? YEAR_SCORE_ERROR_SCHEMA : SOLAR_RETURN_TOOL_NAMES.includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA : NUMEROLOGY_TOOL_NAMES.includes(tool) ? NUMEROLOGY_ERROR_SCHEMA : GOOD_DAYS_TOOL_NAMES.includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : TAROT_TOOL_NAMES.includes(tool) ? TAROT_ERROR_SCHEMA : PERSONAL_TOOL_NAMES.includes(tool) ? personalErrorSchema(tool) : ERROR_SCHEMA;
+  return z22.union([
+    z22.object({ schema: z22.literal(AI_RESULT_SCHEMA), ok: z22.literal(true), tool: z22.literal(tool), data, links: z22.array(link3) }),
+    tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z22.literal(MOMENT_CHART_TOOL) }) : error
   ]);
 }
 var OUTPUT_SCHEMAS = {
@@ -47060,6 +47735,7 @@ var OUTPUT_SCHEMAS = {
   get_solar_return: outputSchema("get_solar_return", dataSchemas.get_solar_return),
   get_numerology: outputSchema("get_numerology", dataSchemas.get_numerology),
   find_good_days: outputSchema("find_good_days", dataSchemas.find_good_days),
+  draw_tarot: outputSchema("draw_tarot", dataSchemas.draw_tarot),
   ...personalRecord((tool) => outputSchema(tool.name, tool.data))
 };
 var TOOL_DESCRIPTIONS = {
@@ -47088,6 +47764,7 @@ var TOOL_DESCRIPTIONS = {
   get_solar_return: `Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. The themes come with their limits, the return's time on the person's clock and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. Money, career, wellbeing and legal themes are read as astrology traditionally reads them; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
   get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. It gives no timing for surgery, medical procedures or treatment, and a goal that asks for one gets that answer; do not call it for those. Make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything.",
+  draw_tarot: "Draws tarot cards: one card, three cards (past, present, future) or the ten-card Celtic Cross, each upright or reversed, with Zodiacs' own written meaning and a question to think about. Tarot is a separate practice from astrology, with no planets, signs or birth details in it: say so when you share the cards, and do not mix them with a chart reading. Use it when someone asks for a tarot card or a tarot reading. Each draw is random and fair, from the full 78-card deck with a secure random number generator, and a new call is a new draw. It takes only the spread and whether to allow reversed cards: never send the person's question, name or birth details, and keep the question in the conversation. Zodiacs is not directed at children under 13: give no tarot reading for a named child under 13, and do not ask for or send that child's name, age or other details. Share each card plainly as tarot's traditional reading, including work, practical foundations, wellbeing and agreements where the card speaks to them, such as the Ace of Pentacles as a steady practical foundation or the Four of Swords as a call to rest, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   ...personalRecord((tool) => tool.description)
 };
 var SKY_EVENTS_INPUT_SCHEMAS = {
@@ -48374,6 +49051,9 @@ function solarReturnOn(dependencies) {
 function goodDaysOn(dependencies) {
   return !!(dependencies.occasions && dependencies.coverage && dependencies.goodDays);
 }
+function tarotOn(dependencies) {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.tarot);
+}
 function personalOn(dependencies) {
   return !!(dependencies.occasions && dependencies.coverage && dependencies.personal);
 }
@@ -48382,7 +49062,7 @@ function offeredTools(dependencies) {
   if (!dependencies.occasions) return released;
   if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
   const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== "get_horoscope_period" || !!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram);
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : [], ...yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : [], ...numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [], ...goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : [], ...dependencies.momentChart ? [MOMENT_CHART_TOOL] : [], ...personalOn(dependencies) ? PERSONAL_TOOL_NAMES : []];
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : [], ...yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : [], ...numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [], ...goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : [], ...dependencies.momentChart ? [MOMENT_CHART_TOOL] : [], ...tarotOn(dependencies) ? TAROT_TOOL_NAMES : [], ...personalOn(dependencies) ? PERSONAL_TOOL_NAMES : []];
 }
 var isCoverageTool = (tool) => COVERAGE_TOOL_NAMES.includes(tool);
 var isPlaceTool = (tool) => PLACE_TOOL_NAMES.includes(tool);
@@ -48391,6 +49071,7 @@ var isYearScoreTool = (tool) => YEAR_SCORE_TOOL_NAMES.includes(tool);
 var isSolarReturnTool = (tool) => SOLAR_RETURN_TOOL_NAMES.includes(tool);
 var isNumerologyTool = (tool) => NUMEROLOGY_TOOL_NAMES.includes(tool);
 var isGoodDaysTool = (tool) => GOOD_DAYS_TOOL_NAMES.includes(tool);
+var isTarotTool = (tool) => TAROT_TOOL_NAMES.includes(tool);
 var SKY_EVENTS_TOOL_SUMMARY = {
   search_sky_events: "eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or years ahead"
 };
@@ -48549,13 +49230,13 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
   const resolveZone = (name) => localTime2().canonicalZoneName(name);
   try {
     if (OCCASION_TOOL_NAMES.includes(tool) && !dependencies.occasions) return failure(tool, "unavailable", "This tool is not offered here.");
-    if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
+    if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || tool === MOMENT_CHART_TOOL || isTarotTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
     if (AGE_FIRST_TOOLS.has(tool)) {
       const child3 = ageFirstRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date());
       if (child3) return child3;
     }
-    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) {
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isTarotTool(tool) || isPersonalTool(tool)) {
       const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents2, switches));
       if (refusal) return refusal;
     }
@@ -48607,6 +49288,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           capabilities.privacy += " The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.";
           if (skyEvents2) capabilities.privacy += " The sky events search takes no personal details.";
           if (numerologyOn(dependencies)) capabilities.privacy += " The numerology tool takes a birth date and, if given, a name, for that call only: it returns neither, puts neither in a link and saves neither.";
+          if (tarotOn(dependencies)) capabilities.privacy += " The tarot draw takes no personal details and no question.";
           const added = [
             ...offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`),
             ...offeredTools(dependencies).filter(isPlaceTool).map((name) => `${name} (a town or city name, with coordinates and a time zone for the chart tools)`)
@@ -48622,6 +49304,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             "get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition's reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.",
             "For a numerology reading, use get_numerology, not explain_astrology."
           );
+          if (tarotOn(dependencies)) capabilities.limitations.push("draw_tarot is listed in tools/list too: a fair, random tarot draw (one card, three cards or the Celtic Cross, upright or reversed) with Zodiacs' own meanings. Tarot is a separate practice from astrology, with no planets or signs in it; each card is read as the tradition reads it, work, practical foundations, wellbeing and agreements included, with no reading-confidence label, no money, earnings or promotion forecasts, and no price or investment calls, diagnoses, death predictions or legal verdicts.");
         }
         if (goodDaysOn(dependencies)) {
           const capabilities = data;
@@ -49008,7 +49691,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "explain_astrology": {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2, ...numerologyOn(dependencies) ? { numerology: true } : {} }));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2, ...numerologyOn(dependencies) ? { numerology: true } : {}, ...tarotOn(dependencies) ? { tarot: true, ...dependencies.tarotPage ? { tarotPage: true, tarotOrigin: dependencies.siteOrigin ?? ORIGIN } : {} } : {} }));
         break;
       }
       case "search_sky_events": {
@@ -49128,6 +49811,10 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
         if ("refused" in result2) return failure(tool, result2.refused, "Zodiacs is busy. Try again in a minute.", result2.refused === "rate-limited" ? 60 : 300);
         ({ data, links } = result2);
+        break;
+      }
+      case "draw_tarot": {
+        ({ data, links } = drawTarotReading(INPUT_SCHEMAS.draw_tarot.parse(input), dependencies.siteOrigin ?? ORIGIN, dependencies.tarotPage === true));
         break;
       }
       case "find_birthplace": {
@@ -49333,7 +50020,7 @@ var WIDGET_HTML = `<!doctype html>
 
 // src/ai-tools/watch/service.ts
 import { ProtocolError } from "@modelcontextprotocol/server";
-import { z as z23 } from "zod";
+import { z as z24 } from "zod";
 
 // src/ai-tools/watch/callback.ts
 import { lookup } from "node:dns/promises";
@@ -49455,13 +50142,13 @@ async function verifyCallback(url, secret, id, post, now) {
 }
 
 // src/ai-tools/watch/contracts.ts
-import { z as z22 } from "zod";
+import { z as z23 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
 var DAY26 = 864e5;
 var WATCH_MATCH_DAYS = 2;
 var BODIES5 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
-var zone8 = z22.string().max(80).default("UTC").refine((value) => {
+var zone8 = z23.string().max(80).default("UTC").refine((value) => {
   try {
     new Intl.DateTimeFormat("en", { timeZone: value });
     return true;
@@ -49469,18 +50156,18 @@ var zone8 = z22.string().max(80).default("UTC").refine((value) => {
     return false;
   }
 });
-var choices = (values) => z22.array(z22.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
+var choices = (values) => z23.array(z23.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
 var FILTERS = {
-  "zodiacs.sky.ingress": z22.object({ bodies: choices(BODIES5), zone: zone8 }).strict(),
-  "zodiacs.sky.station": z22.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone8 }).strict(),
-  "zodiacs.sky.lunation": z22.object({ phases: choices(["new", "full"]), zone: zone8 }).strict()
+  "zodiacs.sky.ingress": z23.object({ bodies: choices(BODIES5), zone: zone8 }).strict(),
+  "zodiacs.sky.station": z23.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone8 }).strict(),
+  "zodiacs.sky.lunation": z23.object({ phases: choices(["new", "full"]), zone: zone8 }).strict()
 };
-var subscriptionParams = z22.object({
-  name: z22.enum(NAMES),
-  arguments: z22.unknown(),
-  delivery: z22.object({ mode: z22.literal("webhook"), url: z22.string().max(2048), secret: z22.string().max(100) }).strict(),
-  cursor: z22.null().optional(),
-  ttlMs: z22.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
+var subscriptionParams = z23.object({
+  name: z23.enum(NAMES),
+  arguments: z23.unknown(),
+  delivery: z23.object({ mode: z23.literal("webhook"), url: z23.string().max(2048), secret: z23.string().max(100) }).strict(),
+  cursor: z23.null().optional(),
+  ttlMs: z23.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
 }).strict();
 var unsubscribeParams = subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({
   delivery: subscriptionParams.shape.delivery.omit({ secret: true })
@@ -49656,14 +50343,14 @@ function configuredSkyWatch(env) {
   return new SkyWatch(rpc, env.ZODIACS_SKY_WATCH_KEY, callbackPost, Date.now, configuredWatchOAuth(env, rpc));
 }
 function registerSkyWatch(server, watch, owner) {
-  const meta = { _meta: z23.record(z23.string(), z23.unknown()).optional() };
+  const meta = { _meta: z24.record(z24.string(), z24.unknown()).optional() };
   const guarded2 = (run2) => run2().catch((error) => {
     if (error instanceof ProtocolError) throw error;
     throw new ProtocolError(-32602, "The event request could not be completed under its schema or availability requirements.");
   });
   server.server.setRequestHandler(
     "events/list",
-    { params: z23.object({ ...meta, cursor: z23.null().optional() }).strict() },
+    { params: z24.object({ ...meta, cursor: z24.null().optional() }).strict() },
     async () => ({ events: EVENT_DEFINITIONS })
   );
   server.server.setRequestHandler(
@@ -49679,7 +50366,7 @@ function registerSkyWatch(server, watch, owner) {
 }
 
 // src/ai-tools/accounts/contracts.ts
-import { z as z24 } from "zod";
+import { z as z25 } from "zod";
 var ACCOUNTS_SWITCH_ENV = "ZODIACS_ACCOUNTS_ENABLED";
 var SAVE_TOOL_NAME = "save_to_zodiacs";
 var ACCOUNT_SCOPES = ["openid"];
@@ -49691,19 +50378,19 @@ var MAX_SAVED_STRING = 600;
 var MAX_LABEL = 80;
 var PROFILE_URL = `${ORIGIN}/profile/`;
 var PLAIN_TEXT3 = /^[^\u0000-\u001f\u007f-\u009f<>{}[\]\\`]+$/u;
-var plainText2 = (max) => z24.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
-var date2 = z24.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var zone9 = z24.string().min(1).max(64).regex(ZONE_PATTERN13);
-var weekInput = z24.strictObject({
+var plainText2 = (max) => z25.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
+var date2 = z25.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var zone9 = z25.string().min(1).max(64).regex(ZONE_PATTERN13);
+var weekInput = z25.strictObject({
   birthDate: date2.describe("The birth date given to get_horoscope, such as 1994-05-14."),
-  birthTime: z24.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
+  birthTime: z25.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
   birthZone: zone9.optional().describe("The birthplace's time zone, needed with birthTime."),
   zone: zone9.optional().describe("The person's own time zone, for the dates of the week.")
 }).superRefine((args, context) => {
   if (args.birthTime !== void 0 && !args.birthZone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
 });
-var saveInput = z24.strictObject({
-  kind: z24.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
+var saveInput = z25.strictObject({
+  kind: z25.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
   label: plainText2(MAX_LABEL).optional().describe('Optional short name for the saved item, such as "Our wedding day". Plain text.'),
   chart: compatibilityPerson.optional().describe('For kind chart: the same details as one side of get_compatibility, or { famous: "<name>" }.'),
   comparison: compatibilityInput.optional().describe("For kind comparison: exactly the arguments given to get_compatibility."),
@@ -49713,27 +50400,27 @@ var saveInput = z24.strictObject({
   const given = ["chart", "comparison", "occasion", "week"].filter((key2) => args[key2] !== void 0);
   if (given.length !== 1 || given[0] !== args.kind) context.addIssue({ code: "custom", message: "Give exactly the details for the kind being saved." });
 });
-var link4 = z24.object({ title: z24.string(), url: z24.url() });
-var saveData = z24.object({
-  saved: z24.literal(true),
-  id: z24.uuid(),
-  kind: z24.enum(SAVE_KINDS),
-  title: z24.string(),
-  summary: z24.string(),
-  savedAt: z24.string(),
+var link4 = z25.object({ title: z25.string(), url: z25.url() });
+var saveData = z25.object({
+  saved: z25.literal(true),
+  id: z25.uuid(),
+  kind: z25.enum(SAVE_KINDS),
+  title: z25.string(),
+  summary: z25.string(),
+  savedAt: z25.string(),
   /** True when the same item was already in the account; it is not saved twice. */
-  alreadySaved: z24.boolean(),
-  profileUrl: z24.url(),
-  note: z24.string()
+  alreadySaved: z25.boolean(),
+  profileUrl: z25.url(),
+  note: z25.string()
 });
-var SAVE_ERROR_SCHEMA = z24.object({
-  schema: z24.literal(AI_RESULT_SCHEMA),
-  ok: z24.literal(false),
-  tool: z24.literal(SAVE_TOOL_NAME),
-  error: z24.object({ code: z24.string(), message: z24.string(), retryAfterSeconds: z24.number().optional() })
+var SAVE_ERROR_SCHEMA = z25.object({
+  schema: z25.literal(AI_RESULT_SCHEMA),
+  ok: z25.literal(false),
+  tool: z25.literal(SAVE_TOOL_NAME),
+  error: z25.object({ code: z25.string(), message: z25.string(), retryAfterSeconds: z25.number().optional() })
 });
-var SAVE_OUTPUT_SCHEMA = z24.union([
-  z24.object({ schema: z24.literal(AI_RESULT_SCHEMA), ok: z24.literal(true), tool: z24.literal(SAVE_TOOL_NAME), data: saveData, links: z24.array(link4) }),
+var SAVE_OUTPUT_SCHEMA = z25.union([
+  z25.object({ schema: z25.literal(AI_RESULT_SCHEMA), ok: z25.literal(true), tool: z25.literal(SAVE_TOOL_NAME), data: saveData, links: z25.array(link4) }),
   SAVE_ERROR_SCHEMA
 ]);
 var SAVE_TITLE = "Save to my Zodiacs account";
@@ -49750,7 +50437,7 @@ var PAGE_PATHS = {
   week: /^\/horoscopes\//u
 };
 var sitePath = (url) => url.startsWith(`${ORIGIN}/`) ? url.slice(ORIGIN.length) : url;
-var signName9 = (slug) => slug ? SIGNS2.find((sign4) => sign4.slug === slug)?.name ?? null : null;
+var signName9 = (slug2) => slug2 ? SIGNS2.find((sign4) => sign4.slug === slug2)?.name ?? null : null;
 var OCCASION_NAMES = {
   wedding: "Wedding",
   anniversary: "Anniversary",
@@ -50087,7 +50774,7 @@ var PANELS = {
   get_personal_transits: { uri: READINGS_URI, icon: "readings" },
   explain_astrology: { uri: READINGS_URI, icon: "readings" }
 };
-var CLOCK_DEPENDENT = /* @__PURE__ */ new Set([MOMENT_CHART_TOOL, "get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events", "get_year_score", "get_solar_return", "find_good_days", ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
+var CLOCK_DEPENDENT = /* @__PURE__ */ new Set([MOMENT_CHART_TOOL, "get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events", "get_year_score", "get_solar_return", "find_good_days", "draw_tarot", ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 var artResourceDomains = ["https://zodiacs.org"];
 var panelMeta = (preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, "openai/widgetCSP": { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, "openai/widgetPrefersBorder": true, "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode } });
 var HOST_ZONE_KEYS = ["openai/userLocation"];
@@ -50301,7 +50988,7 @@ async function reserveAiQuota(kind, env, fetcher = fetch) {
 
 // src/ai-tools/usage.ts
 var USAGE_HOSTS = ["chatgpt", "claude", "other"];
-var COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES, ...GOOD_DAYS_TOOL_NAMES, SAVE_TOOL_NAME];
+var COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES, ...GOOD_DAYS_TOOL_NAMES, ...TAROT_TOOL_NAMES, SAVE_TOOL_NAME];
 var USAGE_TIMEOUT_MS = 1500;
 function usageHostFamily(userAgent) {
   if (typeof userAgent !== "string") return "other";
@@ -50537,11 +51224,12 @@ function createAiNodeHandler(options = {}) {
       const solarReturn = env[OCCASIONS_SWITCH_ENV] === "1" && env[COVERAGE_SWITCH_ENV] === "1" && env[SOLAR_RETURN_SWITCH_ENV] === "1";
       const numerology = env[OCCASIONS_SWITCH_ENV] === "1" && env[COVERAGE_SWITCH_ENV] === "1" && env[NUMEROLOGY_SWITCH_ENV] === "1";
       const goodDays = env[OCCASIONS_SWITCH_ENV] === "1" && env[COVERAGE_SWITCH_ENV] === "1" && env[GOOD_DAYS_SWITCH_ENV] === "1";
+      const tarot = env[OCCASIONS_SWITCH_ENV] === "1" && env[COVERAGE_SWITCH_ENV] === "1" && env[TAROT_SWITCH_ENV] === "1";
       const personal2 = env[OCCASIONS_SWITCH_ENV] === "1" && env[COVERAGE_SWITCH_ENV] === "1" && env[PERSONAL_SWITCH_ENV] === "1";
       let calledTool;
       if (message.method === "tools/call" && message.params && typeof message.params === "object") {
         const name = message.params.name;
-        const offered = env[OCCASIONS_SWITCH_ENV] === "1" ? [...env[COVERAGE_SWITCH_ENV] === "1" ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES, ...skyEvents2 ? SKY_EVENTS_TOOL_NAMES : [], ...yearScore ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturn ? SOLAR_RETURN_TOOL_NAMES : [], ...numerology ? NUMEROLOGY_TOOL_NAMES : [], ...goodDays ? GOOD_DAYS_TOOL_NAMES : [], ...personal2 ? PERSONAL_TOOL_NAMES : [], ...account ? [SAVE_TOOL_NAME] : []] : AI_TOOL_NAMES;
+        const offered = env[OCCASIONS_SWITCH_ENV] === "1" ? [...env[COVERAGE_SWITCH_ENV] === "1" ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES, ...skyEvents2 ? SKY_EVENTS_TOOL_NAMES : [], ...yearScore ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturn ? SOLAR_RETURN_TOOL_NAMES : [], ...numerology ? NUMEROLOGY_TOOL_NAMES : [], ...goodDays ? GOOD_DAYS_TOOL_NAMES : [], ...tarot ? TAROT_TOOL_NAMES : [], ...personal2 ? PERSONAL_TOOL_NAMES : [], ...account ? [SAVE_TOOL_NAME] : []] : AI_TOOL_NAMES;
         if (offered.includes(String(name))) operation = String(name);
         if (typeof name === "string" && name === operation) calledTool = name;
       }
@@ -50567,7 +51255,7 @@ function createAiNodeHandler(options = {}) {
         res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));
         return;
       }
-      const dependencies = { ...options.dependencies ?? {}, momentChart: env[MOMENT_CHART_SWITCH] === "1", ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...skyEvents2 ? { skyEvents: true } : {}, ...yearScore ? { yearScore: true } : {}, ...yearScorePeople ? { yearScorePeople: true } : {}, ...solarReturn ? { solarReturn: true } : {}, ...env.PUBLIC_BIRTHDAY_REPORT_ENABLED === "1" ? { birthdayReportPage: true } : {}, ...numerology ? { numerology: true } : {}, ...goodDays ? { goodDays: true } : {}, ...personal2 ? { personal: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
+      const dependencies = { ...options.dependencies ?? {}, momentChart: env[MOMENT_CHART_SWITCH] === "1", ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...skyEvents2 ? { skyEvents: true } : {}, ...yearScore ? { yearScore: true } : {}, ...yearScorePeople ? { yearScorePeople: true } : {}, ...solarReturn ? { solarReturn: true } : {}, ...env.PUBLIC_BIRTHDAY_REPORT_ENABLED === "1" ? { birthdayReportPage: true } : {}, ...numerology ? { numerology: true } : {}, ...goodDays ? { goodDays: true } : {}, ...tarot ? { tarot: true, ...env.PUBLIC_TAROT_ENABLED === "1" ? { tarotPage: true } : {} } : {}, ...personal2 ? { personal: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
         try {
           const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
           return addressVerdict === "allowed" ? await atomicQuota("event") : addressVerdict;
@@ -50576,7 +51264,7 @@ function createAiNodeHandler(options = {}) {
         }
       } };
       if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
-      if (personal2 && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
+      if ((personal2 || tarot) && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account, { de440: Boolean(options.de440) }), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {
@@ -50600,7 +51288,7 @@ function createAiNodeHandler(options = {}) {
               const { error: _refused, ...rest } = parsed2;
               return JSON.stringify({ ...rest, result: { isError: true, content: [{ type: "text", text: JSON.stringify(ageFirst) }], structuredContent: ageFirst } });
             }
-            const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || PERSONAL_TOOL_NAMES.includes(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
+            const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || isTarotTool(calledTool) || PERSONAL_TOOL_NAMES.includes(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });
             return JSON.stringify(sanitizeProtocolMessage(parsed2, refusal));
           };
