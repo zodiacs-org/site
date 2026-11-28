@@ -44924,7 +44924,9 @@ function refFrom(meta) {
 }
 function createAiServer(dependencies, watch, account) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
-    capabilities: { tools: {}, resources: {}, ...watch ? { events: {} } : {} },
+    // listChanged stays false: a stateless server sends no list-changed notification and refuses subscriptions/listen,
+    // which 2026-07-28 clients open whenever it is advertised (the SDK's default is true).
+    capabilities: { tools: { listChanged: false }, resources: { listChanged: false }, ...watch ? { events: {} } : {} },
     instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : "")
   });
   const versions = (name, uris) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ""}` }));
@@ -45014,11 +45016,17 @@ function registerSaveTool(server, dependencies, account) {
 }
 
 // src/ai-tools/sanitize.ts
+var REVISION = /^\d{4}-\d{2}-\d{2}$/u;
+function revisions(data) {
+  const supported = Array.isArray(data?.supported) ? data.supported.filter((value) => typeof value === "string" && REVISION.test(value)) : [];
+  return { supported };
+}
 function sanitizeProtocolMessage(message, refusal) {
   if (message.error) message.error = {
     code: message.error.code,
     message: "The MCP request does not match a supported operation or schema.",
-    ...message.error.code === -32015 ? { data: { reason: message.error.data?.reason === "timeout" ? "timeout" : "challenge_failed" } } : {}
+    ...message.error.code === -32015 ? { data: { reason: message.error.data?.reason === "timeout" ? "timeout" : "challenge_failed" } } : {},
+    ...message.error.code === -32022 ? { data: revisions(message.error.data) } : {}
   };
   else if (message.result?.isError && !message.result?.structuredContent?.schema && message.result.content?.some((item) => item.type === "text" && item.text.startsWith("Input validation error:"))) {
     if (refusal) {
@@ -45331,6 +45339,10 @@ function createAiNodeHandler(options = {}) {
       }
       if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
       const message = body2;
+      if (message.params === null) {
+        delete message.params;
+        text2 = JSON.stringify(body2);
+      }
       if (String(message.method) === "tools/call") {
         verdict = await countRequest();
         if (verdict !== "allowed") return refuse(verdict);
@@ -45363,6 +45375,12 @@ function createAiNodeHandler(options = {}) {
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
+        const validNotifParams = message.params === void 0 || typeof message.params === "object" && message.params !== null && !Array.isArray(message.params);
+        if (message.jsonrpc === "2.0" && typeof message.method === "string" && !("id" in message) && validNotifParams) {
+          res.statusCode = 202;
+          res.end();
+          return;
+        }
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.statusCode = 200;
         res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));

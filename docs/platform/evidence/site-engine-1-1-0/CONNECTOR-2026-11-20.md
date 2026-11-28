@@ -98,3 +98,18 @@ directory fixtures, and the Astronomy Engine 1.1.0-rc.2 ephemeris unchanged.
 Rebuild `src/ai-tools/http.ts` with the original `scripts/build-ai-integrations.mjs`
 hosted settings and `addAiLifetimeBoundary`. Both the rebuilt bundle digest and
 the source patch digest are recorded in `publishedSha256`.
+
+## Stateless listChanged, -32022 revisions and null params (29 November 2026)
+
+Approved by Dias on 29 November 2026 (Asia/Bangkok). Apply
+`runtimeSource.mcpFrictionPatch`
+(`docs/platform/evidence/site-engine-1-1-0/mcp-listchanged-and-negotiation.patch`)
+across `src/ai-tools/{server,sanitize,http}.ts`: declare `listChanged: false`
+for tools and resources on the stateless HTTP server, preserve only the
+server-constant `data.supported` list on JSON-RPC `-32022` responses without
+echoing request input, drop `"params": null` before SDK parsing, and return
+HTTP 202 with an empty body for valid JSON-RPC 2.0 notifications outside the
+method allowlist. All published tool definitions, directory fixtures, and the
+Astronomy Engine 1.1.0-rc.2 ephemeris remain unchanged. Both the updated
+published bundle digest (`7b2088d9aa9044fa2ec36d530f83c494617491fae50e891ca3acd55de58ad3c7`) and the patch digest (`b871cbe849a4f86df972df52a2708fc4437439def3efc0ef340f1f972a68777a`) are
+recorded in `publishedSha256`.
