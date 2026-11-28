@@ -49,7 +49,7 @@ function residual(kind: KindSummary): string {
     const format = (value: number) => (stats.unit === 'arcsec' ? value.toFixed(3) : value.toPrecision(3));
     return `${field} ${format(stats.median)}${unit} / ${format(stats.max)}${unit}`;
   });
-  return parts.join('; ') || '—';
+  return parts.join('; ') || '-';
 }
 
 // The two @zodiacs/engine runs differ in the ephemeris alone. Up to 2.1.0 a plain call computed on the DE440 pack and
