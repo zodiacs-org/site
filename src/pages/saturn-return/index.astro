@@ -7,15 +7,21 @@ import ReturnToolLinks from '../../components/return-visits/ReturnToolLinks.astr
 import SaturnReturnCalculator from '../../islands/SaturnReturnCalculator';
 import '../../styles/calculator.css';
 import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
+import SaturnLapsPlate from './_SaturnLapsPlate.astro';
+import { SATURN_LAP_YEARS, SATURN_RETURN_AGES, englishLapsWords } from './_saturn-laps';
+
+// Saturn's lap and the ages of its returns, as this page states them; the
+// story figure under "What the return actually is" draws the same figures.
+const [firstAge, secondAge, thirdAge] = SATURN_RETURN_AGES;
 
 const faq = [
   {
     q: 'What is a Saturn return?',
-    a: 'The moment transiting Saturn comes back to the exact degree it held when you were born. Saturn takes about 29.4 years to lap the zodiac, so the first return lands near age 29, the second near 58, the third near 88. Astrologers read it as an audit: whatever in your life runs on momentum rather than choice comes up for review.',
+    a: `The moment transiting Saturn comes back to the exact degree it held when you were born. Saturn takes about ${SATURN_LAP_YEARS} years to lap the zodiac, so the first return lands near age ${firstAge}, the second near ${secondAge}, the third near ${thirdAge}. Astrologers read it as an audit: whatever in your life runs on momentum rather than choice comes up for review.`,
   },
   {
     q: 'When is my Saturn return?',
-    a: 'Enter your birth date above. The calculator scans Saturn’s actual motion and returns the exact dates, including retrograde passes. Most first returns begin between ages 28 and 30; the common "it ruined my 29th year" folklore usually describes the season’s middle stretch.',
+    a: `Enter your birth date above. The calculator scans Saturn’s actual motion and returns the exact dates, including retrograde passes. Most first returns begin between ages 28 and 30; the common "it ruined my ${firstAge}th year" folklore usually describes the season’s middle stretch.`,
   },
   {
     q: 'Why does my Saturn return have three dates?',
@@ -27,7 +33,7 @@ const faq = [
   },
   {
     q: 'Is the Saturn return bad?',
-    a: 'It has the reputation of a demolition and the mechanics of an inspection. Careers, relationships, and living situations that fit get certified and strengthened; the ones held together by habit get billed. People tend to rate it terrible at 29 and formative at 35.',
+    a: `It has the reputation of a demolition and the mechanics of an inspection. Careers, relationships, and living situations that fit get certified and strengthened; the ones held together by habit get billed. People tend to rate it terrible at ${firstAge} and formative at 35.`,
   },
 ];
 
@@ -71,7 +77,7 @@ const jsonLd = [
     <div class="tool-hero">
       <h1 class="display">Find your Saturn return.</h1>
       <p>
-        Around age 29, <a href="/learn/glossary/#saturn">Saturn</a> finishes its first lap of your chart and comes
+        Around age {firstAge}, <a href="/learn/glossary/#saturn">Saturn</a> finishes its first lap of your chart and comes
         home. This calculator finds the exact dates, every pass and{' '}
         <a href="/learn/glossary/#retrograde-loop">retrograde loop</a> included, from your birth date alone.
       </p>
@@ -88,14 +94,15 @@ const jsonLd = [
       <HeroCrop crop="clock-dial" />
       <h2>What the return actually is</h2>
       <p>
-        Saturn moves slowly: about two and a half years to a <a href="/learn/glossary/#zodiac-sign">sign</a>, 29.4 years
+        Saturn moves slowly: about two and a half years to a <a href="/learn/glossary/#zodiac-sign">sign</a>, {SATURN_LAP_YEARS} years
         to the full circle. Your <a href="/learn/glossary/#saturn-return">Saturn return</a> is the stretch when the moving{' '}
         <a href="/learn/glossary/#planet">planet</a> stands where it stood at your birth: the end of one complete
         Saturn cycle and the opening of the next.
       </p>
+      <SaturnLapsPlate words={englishLapsWords()} />
       <p>
-        The folklore says everything falls apart at 29. The more accurate
-        version: whatever you built between 0 and 29 gets load-tested, and
+        The folklore says everything falls apart at {firstAge}. The more accurate
+        version: whatever you built between 0 and {firstAge} gets load-tested, and
         only the parts that were holding real weight pass. Jobs kept out of
         fear, relationships running on inertia, cities you never chose. The
         return has a way of invoicing all of them in the same year. What
