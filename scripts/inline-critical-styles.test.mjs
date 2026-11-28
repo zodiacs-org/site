@@ -360,6 +360,9 @@ describe('deferred font loader', () => {
     const loads = [];
     const added = [];
     const changes = [];
+    // The up-front copy of the phone face; pair pages have none.
+    const wideStyleMedia = html.match(/<style media="([^"]*)" data-zdx-wide-faces>/)?.[1];
+    const wideStyle = wideStyleMedia ? { media: wideStyleMedia } : null;
     const template = {
       content: {
         querySelector: () => fontTemplate ? { textContent: definitions } : null,
@@ -391,11 +394,12 @@ describe('deferred font loader', () => {
         addEventListener: (type, fn) => events.set(type, fn),
         removeEventListener: (type) => events.delete(type),
         querySelectorAll: () => [template],
+        querySelector: (selector) => (selector === 'style[data-zdx-wide-faces]' ? wideStyle : null),
       },
       setTimeout: (fn, delay) => { timers.push({ fn, delay }); return timers.length; },
       clearTimeout: () => {},
     });
-    return { events, timers, loads, added, changes };
+    return { events, timers, loads, added, changes, wideStyle };
   }
 
   // Flush both the load rejection handler and the batch-registration promise.
@@ -475,10 +479,22 @@ describe('deferred font loader', () => {
     h.events.get('load')();
     h.timers[0].fn();
     expect(h.loads.map(({ face }) => face.family)).toEqual(['JetBrains Mono']);
+    expect(h.wideStyle.media).toBe('not all and (max-width: 960px)');
     h.loads[0].resolve();
     await flush();
     expect(h.added).toEqual([h.loads[0].face]);
     expect(h.changes).toEqual(['removed']);
+    // Its own face now serves a wider window too; the up-front copy is off,
+    // so widening cannot fetch the file a second time.
+    expect(h.wideStyle.media).toBe('not all');
+  });
+
+  it('keeps the up-front copy for a wider window when the phone download fails', async () => {
+    const h = await harness({ phoneFaces: true, hash: '#p=shared-chart' });
+    h.loads[0].reject(new Error('network failure'));
+    await flush();
+    expect(h.added).toHaveLength(0);
+    expect(h.wideStyle.media).toBe('not all and (max-width: 960px)');
   });
 
   it('loads it at once for a shared chart', async () => {
@@ -486,12 +502,15 @@ describe('deferred font loader', () => {
     expect(h.loads.map(({ face }) => face.family)).toEqual(['JetBrains Mono']);
   });
 
-  it('leaves wide screens to the face they declare up front', async () => {
+  it('keeps the wide screen face for any later width, without loading it again', async () => {
     const h = await harness({ phoneFaces: true, wide: true, hash: '#p=shared-chart' });
     expect(h.loads).toHaveLength(0);
+    // Narrowing the window below 961px later must not drop the face.
+    expect(h.wideStyle.media).toBe('all');
     await flush();
     expect(h.added).toHaveLength(0);
     expect(h.changes).toEqual(['removed']);
+    expect(h.wideStyle.media).toBe('all');
   });
 
   it('still inserts ordinary deferred stylesheets on entry pages', async () => {

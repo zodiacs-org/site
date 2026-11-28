@@ -36,15 +36,24 @@ const deferredStyleLoader = `<script data-zdx-deferred-style-loader>
           var fonts = template.content.querySelector('script[data-zdx-font-faces]');
           if (fonts && window.FontFace && document.fonts) {
             try {
+              // A face with media is declared up front on those screens. There it
+              // stays, for every width the window later takes (media all: the
+              // loaded face, no new request). Elsewhere it loads here, and the
+              // up-front copy is switched off so a wider window cannot fetch it again.
+              var wide = document.querySelector('style[data-zdx-wide-faces]');
               var pending = JSON.parse(fonts.textContent).filter(function (entry) {
-                return !entry.media || !window.matchMedia(entry.media).matches;
+                if (!entry.media || !window.matchMedia(entry.media).matches) return true;
+                if (wide) wide.media = 'all';
+                return false;
               }).map(function (entry) {
                 return new FontFace(entry.family, entry.source, entry.descriptors).load().catch(function () { return null; });
               });
               Promise.all(pending).then(function (faces) {
+                var added = false;
                 for (var faceIndex = 0; faceIndex < faces.length; faceIndex += 1) {
-                  if (faces[faceIndex]) document.fonts.add(faces[faceIndex]);
+                  if (faces[faceIndex]) { document.fonts.add(faces[faceIndex]); added = true; }
                 }
+                if (added && wide && wide.media !== 'all') wide.media = 'not all';
               });
               template.remove();
             } catch (error) {
@@ -324,7 +333,10 @@ const belowFoldFaces = [
  * deferred-style loader fetches the same file when that loader runs (island
  * intent, a shared chart's link, or after load) and registers it, which is
  * what the face's font-display: swap already did when it arrived late.
- * No-JS readers keep the face in noscript.
+ * Either way one face then serves every width: on wide screens the loader
+ * widens the up-front copy to media all, and on phones it switches that copy
+ * off once its own face is in, so a rotated tablet or a resized window keeps
+ * the face without a second request. No-JS readers keep the face in noscript.
  */
 export const phoneFacePages = new Map([
   ['birth-chart/index.html', {
