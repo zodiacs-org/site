@@ -4054,7 +4054,7 @@
               On View, Zodiacs.org sends this public address to the configured
               blockchain-data provider to check only the twelve Registry mints.
               Public addresses and request metadata may be linkable. No chart or
-              birth data is sent. <a href="/privacy/">Privacy</a>
+              birth data is sent. <a href="/disclosure/#address-lookup">Lookup details</a>
             </p>
             {hint && <p className="shelf__hint">{hint}</p>}
             {view.state === 'mint-hint' && (
