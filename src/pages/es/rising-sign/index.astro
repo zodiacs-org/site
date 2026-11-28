@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import LocalizedRisingSign from '../../../components/localized/LocalizedRisingSign.astro';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -67,7 +68,7 @@ const jsonLd = [
   description="Calcula tu ascendente gratis con tu hora y lugar de nacimiento: cómo te leen al principio y qué planeta rige tu carta."
   path="/es/rising-sign/"
   locale="es"
-  image="/assets/og/v2/tool/rising-sign.png"
+  image={artPageCard('rising-sign')}
   imageAlt="Calculadora de ascendente, Zodiacs.org"
   jsonLd={jsonLd}
 >

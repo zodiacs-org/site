@@ -10,6 +10,7 @@ import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 import { mercuryRetrogradeWindows, mercuryYearShown, type RawRetrograde } from '../../lib/mercury-year';
 
 // The years the committed table covers (sky.json runs to the start of its
@@ -135,11 +136,16 @@ const jsonLd = [
   title="Mercury Retrograde Dates 2026 to 2030: Exact, Computed | Zodiacs.org"
   description="Every Mercury retrograde through 2030, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you."
   path="/mercury-retrograde/"
-  image="/assets/og/v2/tool/mercury-retrograde.png"
-  imageAlt="Mercury retrograde dates, Zodiacs.org"
+  image={artPageCard('mercury-retrograde')}
+  imageAlt={artPageCardAlt('mercury-retrograde')}
   jsonLd={jsonLd}
   sources={sources}
+  stableTypography
 >
+  {/* Optional faces (stableTypography): a late font rewrapped the hero
+      paragraph and moved .rx-now and everything below it. A face that misses
+      the first paint now stays in the fallback for the visit. Base already
+      preloads the hero's faces. */}
   <section class="section--tight container container--narrow">
     <Motion />
     <ToolHeroMark name="retrogrades" />

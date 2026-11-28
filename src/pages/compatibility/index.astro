@@ -14,6 +14,7 @@ import { pairSlug } from '../../lib/compat';
 import { COMPAT_MY_SIGN_SCRIPT } from '../../lib/compat-my-sign';
 import '../../styles/calculator.css';
 import { dailyEmailFeatureEnabled, hasDailySunEmailProvider } from '../../lib/email/daily-config';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // The invitation's daily email card is offered only when the daily email can be joined, decided as EmailCapture
 // decides it; otherwise the public subscribe route would sign the person up for the weekly email instead.
@@ -61,8 +62,8 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
   title="Compatibility Calculator: Compare Two Birth Charts | Zodiacs.org"
   description="Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings."
   path="/compatibility/"
-  image="/assets/og/v2/tool/compatibility.png"
-  imageAlt="Compatibility calculator, Zodiacs.org"
+  image={artPageCard('compatibility')}
+  imageAlt={artPageCardAlt('compatibility')}
   jsonLd={jsonLd}
   glass
 >

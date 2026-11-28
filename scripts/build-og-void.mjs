@@ -29,8 +29,15 @@
  *   npm run data:og -- --only-fomo        # refresh the /fomo/ card
  *   npm run data:og -- --only-registry    # the Registry's v4 lot and hub cards (build-registry-og.mjs)
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
- *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
- *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
+ *   npm run data:og -- --only-art-cards   # every English art card (v8, JPEG): homepage, signs, horoscopes, twins, thesis and the art page families
+ *   npm run data:og -- --only-chart-twins-card # the chart twins art card alone (v8, JPEG)
+ *   npm run data:og -- --only-thesis-art-card # the thesis art card alone (v8, JPEG)
+ *   npm run data:og -- --only-art-page-cards # the single page art cards alone (v8/tool, JPEG)
+ *   npm run data:og -- --only-pair-art-cards # the 78 sign pair art cards alone (v8/pair, JPEG)
+ *   npm run data:og -- --only-birthday-art-cards # the 29 cusp birthday art cards alone (v8/birthday, JPEG)
+ *   npm run data:og -- --only-chinese-zodiac-art-cards # the 12 Chinese zodiac animal art cards alone (v8/learn/chinese-zodiac, JPEG)
+ *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese, with the Russian chart twins card
+ *   npm run data:og -- --only-localized-chart-twins-cards # the chart twins card alone in es, fr, it, pt and ru (v8, JPEG)
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
  *   npm run data:og -- --only-good-days-card # the good day finder's card (good-days/v1, JPEG)
  *   npm run data:og -- --only-events      # the events hub card, and a card for each published event page that has none
@@ -83,12 +90,25 @@ const { HOROSCOPE_OG_SURFACES, OG_EN } = await import(
 const {
   ART_CARD_DISC,
   ART_CARD_MAX_BYTES,
+  CHART_TWINS_ART_CARD,
+  CHART_TWINS_ART_CARD_ART,
+  CHART_TWINS_ART_CARD_COPY,
+  CHART_TWINS_ART_CARD_DISCS,
+  CHART_TWINS_ART_CARD_SHADE,
+  CHART_TWINS_ART_CARD_LOCALES,
+  chartTwinsArtCard,
+  chartTwinsArtCardCopy,
   HOME_ART_CARD,
   HOME_ART_CARD_COPY,
   HOME_ART_CARD_CROP,
   HOME_ART_CARD_SCRIM,
   SIGN_ART_CARD_ART,
   SIGN_ART_CARD_SHADE,
+  THESIS_ART_CARD,
+  THESIS_ART_CARD_ART,
+  THESIS_ART_CARD_COPY,
+  THESIS_ART_CARD_DISCS,
+  THESIS_ART_CARD_SHADE,
   horoscopeArtCard,
   horoscopeArtCardCopy,
   signArtCard,
@@ -101,6 +121,27 @@ const {
   localizedHoroscopeArtCard,
   localizedHoroscopeArtCardCopy,
   localizedSignArtCardCopy,
+  ART_CARDS,
+  ART_CARDS_MAX_TOTAL_BYTES,
+  ART_PAGE_CARD_ACCENT,
+  ART_PAGE_CARD_KEYS,
+  ART_PAGE_CARD_QUALITY,
+  ART_PAGE_CARD_SHADE,
+  artPageCardSpec,
+  BIRTHDAY_ART_CARD_ART,
+  BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES,
+  BIRTHDAY_CUSP_DATES,
+  birthdayArtCard,
+  birthdayArtCardCopy,
+  CHINESE_ZODIAC_ART_CARD_ANIMALS,
+  CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES,
+  chineseZodiacArtCard,
+  chineseZodiacArtCardCopy,
+  PAIR_ART_CARD_ART,
+  PAIR_ART_CARDS_MAX_TOTAL_BYTES,
+  PAIR_SLUGS,
+  pairArtCard,
+  pairArtCardCopy,
 } = await import(pathToFileURL(resolve(root, 'src/lib/og-art-cards.mjs')).href);
 const WING_OUT = resolve(root, 'public/assets/og/v5');
 // The immutable v5 card is retained as historical output. Astrofolio and
@@ -498,7 +539,7 @@ function signCard(s) {
 // panel behind the words, in the heroes' own shade, with the names and the
 // homepage headline in the display serif and the lockup in the footer row.
 // The art arrives as data: URIs read by the --only-art-cards run alone.
-const ART = { poster: null, signs: {}, icons: {} };
+const ART = { poster: null, signs: {}, icons: {}, twins: null, clock: null };
 
 /**
  * The homepage: the poster cut at full size, the hero's scrim, its headline
@@ -569,6 +610,118 @@ function localizedHoroscopeCard(s, locale) {
 }
 
 /**
+ * The chart twins page's card (owner-chosen 2026-11-26): the page's painting
+ * of the twin cameos on the right, fading in from the left and up from the
+ * bottom under the sign cards' kind of shade; on the left a small Sun disc in
+ * Leo's hue and a Moon disc in Cancer's, the kicker, the headline on two
+ * lines and the line, with the lockup in the footer row.
+ */
+function artChartTwinsCard(copy = CHART_TWINS_ART_CARD_COPY) {
+  const art = CHART_TWINS_ART_CARD_ART;
+  const { size, sun, moon } = CHART_TWINS_ART_CARD_DISCS;
+  const sunDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${sun}"/><circle cx="50" cy="50" r="30" fill="none" stroke="${VOID}" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="${VOID}"/></svg>`;
+  const moonDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${moon}"/><path d="M57 24 A27 27 0 1 0 57 76 A20 27 0 1 1 57 24 Z" fill="${VOID}"/></svg>`;
+  const [first, ...rest] = copy.title.split(' ');
+  const last = rest.pop();
+  const title = `${escapeHtml([first, ...rest].join(' '))}<br>${escapeHtml(last ?? '')}`;
+  const body = `
+  <img src="${ART.twins}" width="1200" height="800" alt=""
+    style="position: absolute; top: ${art.top}px; left: ${art.left}px; width: ${art.width}px; height: ${art.height}px; filter: ${art.filter};
+      -webkit-mask-image: ${art.mask}; -webkit-mask-composite: source-in; mask-image: ${art.mask}; mask-composite: intersect;" />
+  <div style="position: absolute; inset: 0; background: ${CHART_TWINS_ART_CARD_SHADE.join(', ')};"></div>
+  <div style="position: absolute; left: 88px; top: 16px; bottom: 96px; width: 520px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: 14px;">${sunDisc}${moonDisc}</div>
+    <span class="kicker" style="margin: 22px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="display" style="font-size: 104px; margin-top: 6px; line-height: 0.96;">${title}</div>
+    <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.4; max-width: 21ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>`;
+  return shell(body, 'zodiacs.org/chart-twins/');
+}
+
+/**
+ * The thesis's card (owner-chosen 2026-11-27): the page's painting of the old
+ * astronomical clock on the right, fading in from the left under its shade;
+ * on the left the twelve sign discs in a row, Aries to Pisces, the film's
+ * first sentence as the kicker, the headline on two lines and the film's
+ * second sentence as the line, with the lockup in the footer row.
+ */
+function artThesisCard(copy = THESIS_ART_CARD_COPY) {
+  const art = THESIS_ART_CARD_ART;
+  const { size, gap } = THESIS_ART_CARD_DISCS;
+  const discs = SIGNS.map((s) => `<img src="${DISCS[s.slug]}" width="${size}" height="${size}" alt="" class="disc" style="width: ${size}px; height: ${size}px;" />`).join('');
+  const words = copy.title.split(' ');
+  const last = words.pop();
+  const title = `${escapeHtml(words.join(' '))}<br>${escapeHtml(last ?? '')}`;
+  const body = `
+  <img src="${ART.clock}" width="1280" height="720" alt=""
+    style="position: absolute; top: ${art.top}px; left: ${art.left}px; width: ${art.width}px; height: ${art.height}px; filter: ${art.filter};
+      -webkit-mask-image: ${art.mask}; mask-image: ${art.mask};" />
+  <div style="position: absolute; inset: 0; background: ${THESIS_ART_CARD_SHADE.join(', ')};"></div>
+  <div style="position: absolute; left: 88px; top: 10px; bottom: 96px; width: 560px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: ${gap}px;">${discs}</div>
+    <span class="kicker" style="margin: 24px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="display" style="font-size: 108px; margin-top: 10px; line-height: 0.95;">${title}</div>
+    <div class="sub" style="margin-top: 24px; font-size: 26px; line-height: 1.4; max-width: 22ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>`;
+  return shell(body, 'zodiacs.org/thesis/');
+}
+
+/**
+ * The chart twins card in another language (2026-11-26), in the English
+ * card's layout and words from og-art-cards.locales.mjs, with the localized
+ * route in the footer. A headline line longer than the column steps the
+ * headline down (`data-fit`), and the line steps down until the column fits
+ * (`data-fit-column`). The Russian card sets its words in the Russian cards'
+ * faces (EB Garamond Cyrillic and Golos Text, with the Latin faces for the
+ * punctuation the Cyrillic subsets leave out) in the Russian frame. The
+ * English card above draws as published.
+ */
+function localizedChartTwinsCard(locale) {
+  const copy = chartTwinsArtCardCopy(locale);
+  const art = CHART_TWINS_ART_CARD_ART;
+  const { size, sun, moon } = CHART_TWINS_ART_CARD_DISCS;
+  const sunDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${sun}"/><circle cx="50" cy="50" r="30" fill="none" stroke="${VOID}" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="${VOID}"/></svg>`;
+  const moonDisc = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${moon}"/><path d="M57 24 A27 27 0 1 0 57 76 A20 27 0 1 1 57 24 Z" fill="${VOID}"/></svg>`;
+  const words = copy.title.split(' ');
+  const last = words.pop();
+  const title = `${escapeHtml(words.join(' '))}<br>${escapeHtml(last ?? '')}`;
+  const russian = locale === 'ru';
+  const faces = russian ? `<style>
+    @font-face { font-family: 'Instrument Sans'; font-weight: 100 900; src: url(${FONTS.sans}) format('woff2'); }
+    @font-face { font-family: 'JetBrains Mono'; font-weight: 100 800; src: url(${FONTS.mono}) format('woff2'); }
+    .footer { font-family: 'JetBrains Mono Cyrillic', 'JetBrains Mono', monospace; }
+    .twins-kicker { font-family: 'EB Garamond Cyrillic', 'EB Garamond Lockup', serif; font-weight: 500; font-size: 30px; color: ${INK2}; }
+    .twins-title { font-family: 'EB Garamond Cyrillic', 'EB Garamond Lockup', serif; font-weight: 500; letter-spacing: -0.005em; }
+    .twins-line { font-family: 'Golos Text', 'Instrument Sans', sans-serif; color: ${INK2}; }
+  </style>` : '';
+  const kicker = russian ? 'twins-kicker' : 'kicker';
+  const display = russian ? 'twins-title' : 'display';
+  const line = russian ? 'twins-line' : 'sub';
+  const body = `${faces}
+  <img src="${ART.twins}" width="1200" height="800" alt=""
+    style="position: absolute; top: ${art.top}px; left: ${art.left}px; width: ${art.width}px; height: ${art.height}px; filter: ${art.filter};
+      -webkit-mask-image: ${art.mask}; -webkit-mask-composite: source-in; mask-image: ${art.mask}; mask-composite: intersect;" />
+  <div style="position: absolute; inset: 0; background: ${CHART_TWINS_ART_CARD_SHADE.join(', ')};"></div>
+  <div data-fit-column style="position: absolute; left: 88px; top: 16px; bottom: 96px; width: 520px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: 14px; flex: none;">${sunDisc}${moonDisc}</div>
+    <span class="${kicker}" style="display: block; margin: 22px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="${display}" data-fit="${CHART_TWINS_TITLE_MEASURE}" style="font-size: 104px; margin-top: 6px; line-height: 0.96; white-space: nowrap; width: max-content;">${title}</div>
+    <div class="${line}" data-shrink style="margin-top: 22px; font-size: 25px; line-height: 1.4; max-width: 400px; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>`;
+  const footer = `zodiacs.org${chartTwinsRoute(locale)}`;
+  return russian ? russianShell(body, footer) : shell(body, footer);
+}
+
+/**
+ * The widest a localized headline line may run, in px: as far as the English
+ * card's "Your chart" reaches, short of the first cameo's frame.
+ */
+const CHART_TWINS_TITLE_MEASURE = 430;
+
+/** A chart twins page's address: /chart-twins/, or /es/chart-twins/. */
+const chartTwinsRoute = (locale) => (locale === 'en' ? '/chart-twins/' : `/${locale}/chart-twins/`);
+
+/**
  * Steps a long name down until it fits its measure (`data-fit`, px), a
  * localized headline until it fits its height (`data-fit-height`, px), and a
  * localized card's line (`data-shrink`) until its column fits, once the fonts
@@ -597,6 +750,248 @@ function fitArtNames() {
       line.style.fontSize = `${size}px`;
     }
   }
+}
+
+// ── The art page cards (owner-delegated decisions, 2026-11-27) ─────────
+// One layout (artPageLayout) for the tool, hub and guide pages that open on a
+// painting of their own, the 78 sign pairs, the 29 cusp birthdays and the 12
+// Chinese zodiac animals; the data (art, accent, words, alt text) lives in
+// src/lib/og-art-cards.mjs. The paintings arrive as data: URIs, read by the
+// runs that draw these families alone (loadPaintings).
+const PAINTINGS = {};
+const HUE = Object.fromEntries(SIGNS.map((s) => [s.slug, s.hue]));
+
+/** Reads each painting once, as a data: URI. */
+async function loadPaintings(sources) {
+  for (const src of sources) {
+    if (PAINTINGS[src]) continue;
+    const mime = src.endsWith('.webp') ? 'image/webp' : 'image/jpeg';
+    PAINTINGS[src] = await b64(src, mime);
+  }
+}
+
+/**
+ * A painting placed so its point (fx, fy) lands on the card's (cx, cy) at
+ * `scale`, inside a layer that fades in from the left (fade[0] to fade[1]
+ * px) and out above the footer row, so the page's path stays legible.
+ */
+function paintingLayer(art) {
+  const width = art.width * art.scale;
+  const height = art.height * art.scale;
+  const left = art.cx - art.fx * art.scale;
+  const top = art.cy - art.fy * art.scale;
+  const mask = `linear-gradient(90deg, transparent 0, transparent ${art.fade[0]}px, #000 ${art.fade[1]}px), linear-gradient(0deg, transparent 0, transparent 40px, #000 150px)`;
+  return `<div style="position: absolute; inset: 0; -webkit-mask-image: ${mask}; -webkit-mask-composite: source-in; mask-image: ${mask}; mask-composite: intersect;">
+    <img src="${PAINTINGS[art.src]}" alt="" style="position: absolute; left: ${left.toFixed(1)}px; top: ${top.toFixed(1)}px; width: ${width.toFixed(1)}px; height: ${height.toFixed(1)}px; filter: ${art.filter};" />
+  </div>`;
+}
+
+const shadeLayer = (extra = []) => `<div style="position: absolute; inset: 0; background: ${[...extra, ...ART_PAGE_CARD_SHADE].join(', ')};"></div>`;
+
+/** The pair template: the two sign panels facing each other, the first mirrored, each feathered into the next. */
+function pairPaintings(a, b) {
+  const art = PAIR_ART_CARD_ART;
+  const width = art.width * art.scale;
+  const height = art.height * art.scale;
+  const pane = (slug, { x0, x1, flip, featherLeft, featherRight }) => {
+    const across = `linear-gradient(90deg, ${featherLeft ? `transparent ${x0}px, #000 ${x0 + featherLeft}px` : `#000 ${x0}px`}, #000 ${x1 - featherRight}px, ${featherRight ? `transparent ${x1}px` : `#000 ${x1}px`})`;
+    const mask = `${across}, linear-gradient(0deg, transparent 0, transparent 40px, #000 150px)`;
+    const cx = (x0 + x1) / 2 + (flip ? -8 : 8);
+    const fx = flip ? art.width - art.fx : art.fx;
+    return `<div style="position: absolute; inset: 0; -webkit-mask-image: ${mask}; -webkit-mask-composite: source-in; mask-image: ${mask}; mask-composite: intersect;">
+      <img src="${PAINTINGS[art.srcFor(slug)]}" alt="" style="position: absolute; left: ${(cx - fx * art.scale).toFixed(1)}px; top: ${(art.cy - art.fy * art.scale).toFixed(1)}px; width: ${width}px; height: ${height}px; filter: ${art.filter};${flip ? ' transform: scaleX(-1);' : ''}" /></div>`;
+  };
+  const [first, second] = art.panes;
+  return `${pane(a, first)}${pane(b, second)}${shadeLayer([art.seam])}`;
+}
+
+/** The marks above the kicker, drawn in the sign hues or from the canonical sign discs. */
+function ringOf12(size) {
+  const c = size / 2;
+  return SIGNS.map((s, i) => {
+    const a = -Math.PI / 2 + (i * Math.PI) / 6;
+    return `<circle cx="${(c + c * 0.8 * Math.cos(a)).toFixed(2)}" cy="${(c + c * 0.8 * Math.sin(a)).toFixed(2)}" r="${(size * 0.085).toFixed(2)}" fill="${s.hue}"/>`;
+  }).join('');
+}
+const svgDisc = (size, hue, inner) => `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${hue}"/>${inner}</svg>`;
+const ACCENT_MARKS = {
+  wheel: (size = 64) => `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">${ringOf12(size)}</svg>`,
+  twoWheels: (size = 64) => `<svg width="${size * 1.62}" height="${size}" viewBox="0 0 ${size * 1.62} ${size}" aria-hidden="true">${ringOf12(size)}<g transform="translate(${size * 0.62} 0)">${ringOf12(size)}</g></svg>`,
+  sun: (size = 64, hue = HUE.leo) => svgDisc(size, hue, `<circle cx="50" cy="50" r="30" fill="none" stroke="${VOID}" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="${VOID}"/>`),
+  moon: (size = 64, hue = HUE.cancer) => svgDisc(size, hue, `<path d="M57 24 A27 27 0 1 0 57 76 A20 27 0 1 1 57 24 Z" fill="${VOID}"/>`),
+  rising: (size = 64, hue = HUE.libra) => svgDisc(size, hue, `<path d="M33 62 A17 17 0 0 1 67 62" fill="none" stroke="${VOID}" stroke-width="5"/><line x1="20" y1="64" x2="80" y2="64" stroke="${VOID}" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="26" x2="50" y2="36" stroke="${VOID}" stroke-width="5" stroke-linecap="round"/>`),
+  saturn: (size = 64, hue = HUE.capricorn) => svgDisc(size, hue, `<circle cx="50" cy="50" r="15" fill="${VOID}"/><ellipse cx="50" cy="50" rx="31" ry="10" fill="none" stroke="${VOID}" stroke-width="5" transform="rotate(-20 50 50)"/>`),
+};
+
+/** Eight phases, new to new, the lit part in Cancer's hue (the Moon's sign). */
+function phaseRow(size = 34, gap = 10) {
+  const lit = HUE.cancer;
+  const fractions = [0, 0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25];
+  return `<div style="display: flex; gap: ${gap}px;">${fractions.map((f, i) => {
+    const r = 46;
+    const wx = Math.abs(1 - 2 * f) * r;
+    const waxing = i < 5;
+    let lit_ = '';
+    if (f === 1) lit_ = `<circle cx="50" cy="50" r="${r}" fill="${lit}"/>`;
+    else if (f > 0) {
+      const sweepOuter = waxing ? 1 : 0;
+      const sweepInner = f < 0.5 ? (waxing ? 0 : 1) : (waxing ? 1 : 0);
+      lit_ = `<path d="M50 4 A${r} ${r} 0 0 ${sweepOuter} 50 96 A${wx} ${r} 0 0 ${sweepInner} 50 4 Z" fill="${lit}"/>`;
+    }
+    return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(198,204,218,0.42)" stroke-width="4"/>${lit_}</svg>`;
+  }).join('')}</div>`;
+}
+
+/** A planet's path along the ecliptic with its retrograde loop. */
+const retroLoop = (hue) => `<svg width="168" height="60" viewBox="0 0 168 60" fill="none" aria-hidden="true">
+    <path d="M4 44 C 40 40, 66 34, 92 26 C 118 18, 120 46, 100 44 C 82 42, 96 22, 124 20 C 140 19, 152 18, 164 16" stroke="${hue}" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="164" cy="16" r="7" fill="${hue}"/></svg>`;
+
+/** Canonical sign discs in a row (the icons' 128px tier). */
+const signDiscRow = (slugs, size, gap) => `<div style="display: flex; gap: ${gap}px;">${slugs.map((slug) => `<img src="${DISCS[slug]}" width="${size}" height="${size}" alt="" class="disc" style="width: ${size}px; height: ${size}px;" />`).join('')}</div>`;
+
+function accentMark(accent) {
+  if (!accent) return '';
+  switch (accent.kind) {
+    case 'wheel': return ACCENT_MARKS.wheel();
+    case 'twoWheels': return ACCENT_MARKS.twoWheels();
+    case 'sun': return ACCENT_MARKS.sun();
+    case 'rising': return ACCENT_MARKS.rising();
+    case 'saturn': return ACCENT_MARKS.saturn();
+    case 'bigThree': return ACCENT_MARKS.sun() + ACCENT_MARKS.moon() + ACCENT_MARKS.rising();
+    case 'phases': return phaseRow(accent.size, accent.gap);
+    case 'retrograde': return retroLoop(HUE[accent.sign]);
+    case 'signDiscs': return signDiscRow(SIGNS.map((s) => s.slug), THESIS_ART_CARD_DISCS.size, THESIS_ART_CARD_DISCS.gap);
+    case 'pair': return signDiscRow(accent.signs, ART_PAGE_CARD_ACCENT, 14);
+    default: throw new Error(`accentMark: unknown accent ${accent.kind}`);
+  }
+}
+
+/**
+ * The one layout: the art behind, then on the left the accent, the kicker, the
+ * headline (its lines in `title`, stepped down by fitArtPageCard until its
+ * widest line fits `fit` px) and the line, with the lockup in the footer row.
+ */
+function artPageLayout({ art, accent, kicker, title, line, size = 104, fit = 500, lineCh = 23, route }) {
+  const mark = accent ? `<div style="display: flex; align-items: center; gap: 14px; flex: none;">${accentMark(accent)}</div>` : '';
+  const body = `${art}
+  <div data-art-column style="position: absolute; left: 88px; top: 14px; bottom: 96px; width: 540px; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+    ${mark}
+    <span class="kicker" style="margin: ${accent ? 22 : 0}px 0 0;">${escapeHtml(kicker)}</span>
+    <div class="display" data-fit-width="${fit}" style="font-size: ${size}px; margin-top: 6px; line-height: 0.96; white-space: nowrap; width: max-content; font-variant-numeric: lining-nums;">${title.map(escapeHtml).join('<br>')}</div>
+    <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.4; max-width: ${lineCh}ch; text-wrap: balance;">${escapeHtml(line)}</div>
+  </div>`;
+  return shell(body, `zodiacs.org${route}`);
+}
+
+/** A single page's card. */
+function artPageCard(key) {
+  const spec = artPageCardSpec(key);
+  return artPageLayout({ ...spec, art: `${paintingLayer(spec.art)}${shadeLayer()}`, route: spec.routes[0] });
+}
+
+/** A sign pair page's card. */
+function pairArtPageCard(slug) {
+  const copy = pairArtCardCopy(slug);
+  return artPageLayout({ ...copy, art: pairPaintings(copy.a, copy.b), accent: { kind: 'pair', signs: [copy.a, copy.b] }, route: `/compatibility/${slug}/` });
+}
+
+/** A cusp birthday page's card: the birthday hub's sundial and the two signs' discs. */
+function birthdayArtPageCard(slug) {
+  const copy = birthdayArtCardCopy(slug);
+  return artPageLayout({ ...copy, art: `${paintingLayer(BIRTHDAY_ART_CARD_ART)}${shadeLayer()}`, accent: { kind: 'pair', signs: [copy.a, copy.b] }, route: `/birthday/${slug}/` });
+}
+
+/** A Chinese zodiac animal page's card, on the animal's own painting. */
+function chineseZodiacArtPageCard(slug) {
+  const animal = CHINESE_ZODIAC_ART_CARD_ANIMALS.find((entry) => entry.slug === slug);
+  const copy = chineseZodiacArtCardCopy(slug);
+  return artPageLayout({ ...copy, art: `${paintingLayer(animal.art)}${shadeLayer()}`, accent: null, route: `/learn/chinese-zodiac/${slug}/` });
+}
+
+/**
+ * Steps each art page card's headline down by 2 px until its widest line fits
+ * its measure (`data-fit-width`), then fails the card if the column runs out
+ * of the space above the footer row.
+ */
+function fitArtPageCard() {
+  for (const title of document.querySelectorAll('[data-fit-width]')) {
+    const room = Number(title.dataset.fitWidth);
+    let size = Number.parseFloat(getComputedStyle(title).fontSize);
+    while (title.getBoundingClientRect().width > room && size > 40) {
+      size -= 2;
+      title.style.fontSize = `${size}px`;
+    }
+  }
+  for (const column of document.querySelectorAll('[data-art-column]')) {
+    const children = [...column.children];
+    const first = children[0].getBoundingClientRect();
+    const last = children[children.length - 1].getBoundingClientRect();
+    if (first.top < 8 || last.bottom > 630 - 96) throw new Error(`art page card column overflows (${Math.round(first.top)} to ${Math.round(last.bottom)})`);
+  }
+}
+
+/**
+ * The art page card families, each with its cards, its paintings, its JPEG
+ * quality and its ceiling (the single page cards count toward the English art
+ * cards' ceiling with the rest of ART_CARDS).
+ */
+const ART_PAGE_FAMILIES = {
+  page: {
+    flag: '--only-art-page-cards',
+    label: 'single page',
+    cards: () => ART_PAGE_CARD_KEYS.map((key) => [artPageCardSpec(key).card, () => artPageCard(key)]),
+    paintings: () => ART_PAGE_CARD_KEYS.map((key) => artPageCardSpec(key).art.src),
+    quality: ART_PAGE_CARD_QUALITY.page,
+    ceiling: () => [ART_CARDS, ART_CARDS_MAX_TOTAL_BYTES],
+  },
+  pair: {
+    flag: '--only-pair-art-cards',
+    label: 'sign pair',
+    cards: () => PAIR_SLUGS.map((slug) => [pairArtCard(slug), () => pairArtPageCard(slug)]),
+    paintings: () => SIGNS.map((s) => PAIR_ART_CARD_ART.srcFor(s.slug)),
+    quality: ART_PAGE_CARD_QUALITY.pair,
+    ceiling: () => [PAIR_SLUGS.map((slug) => pairArtCard(slug)), PAIR_ART_CARDS_MAX_TOTAL_BYTES],
+  },
+  birthday: {
+    flag: '--only-birthday-art-cards',
+    label: 'cusp birthday',
+    cards: () => BIRTHDAY_CUSP_DATES.map((date) => [birthdayArtCard(date.slug), () => birthdayArtPageCard(date.slug)]),
+    paintings: () => [BIRTHDAY_ART_CARD_ART.src],
+    quality: ART_PAGE_CARD_QUALITY.birthday,
+    ceiling: () => [BIRTHDAY_CUSP_DATES.map((date) => birthdayArtCard(date.slug)), BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES],
+  },
+  chineseZodiac: {
+    flag: '--only-chinese-zodiac-art-cards',
+    label: 'Chinese zodiac animal',
+    cards: () => CHINESE_ZODIAC_ART_CARD_ANIMALS.map((animal) => [chineseZodiacArtCard(animal.slug), () => chineseZodiacArtPageCard(animal.slug)]),
+    paintings: () => CHINESE_ZODIAC_ART_CARD_ANIMALS.map((animal) => animal.art.src),
+    quality: ART_PAGE_CARD_QUALITY.chineseZodiac,
+    ceiling: () => [CHINESE_ZODIAC_ART_CARD_ANIMALS.map((animal) => chineseZodiacArtCard(animal.slug)), CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES],
+  },
+};
+
+/** Draws one art page card family and holds it to the per-card budget and its family's ceiling. */
+async function renderArtPageFamily(name) {
+  const family = ART_PAGE_FAMILIES[name];
+  await loadPaintings(family.paintings());
+  let written = 0;
+  const cards = family.cards();
+  for (const [path, html] of cards) {
+    const raw = await capture(html(), fitArtPageCard);
+    const bytes = await sharp(raw).jpeg({ quality: family.quality, mozjpeg: true }).toBuffer();
+    if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+    const output = resolve(root, `public${path}`);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, bytes);
+    written += bytes.length;
+  }
+  const [members, ceiling] = family.ceiling();
+  let total = 0;
+  for (const path of members) total += (await readFile(resolve(root, `public${path}`))).length;
+  if (total > ceiling) throw new Error(`${family.label} art cards: ${total} bytes, over the ${ceiling}-byte ceiling`);
+  console.log(`  ${cards.length} ${family.label} art cards, ${(written / 1024).toFixed(0)}KB (ceiling ${(total / 1024 / 1024).toFixed(2)} of ${(ceiling / 1024 / 1024).toFixed(0)}MiB)`);
+  return { count: cards.length, written };
 }
 
 /**
@@ -1309,7 +1704,7 @@ if (process.argv.includes('--only-terminal-card')) {
 // 400px tier of the canonical icons, drawn at ART_CARD_DISC.
 if (process.argv.includes('--only-localized-art-cards')) {
   // The localized cards only: the English art cards are published and stay as they are.
-  console.log('Rendering the Spanish, French, Italian and Portuguese art cards…');
+  console.log('Rendering the Spanish, French, Italian and Portuguese art cards, and the Russian chart twins card…');
   ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
   for (const s of SIGNS) {
     ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
@@ -1320,6 +1715,8 @@ if (process.argv.includes('--only-localized-art-cards')) {
     ...SIGNS.map((s) => [signArtCard(s.slug, locale), localizedSignCard(s, locale)]),
     ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? SIGNS.map((s) => [localizedHoroscopeArtCard(s.slug, locale), localizedHoroscopeCard(s, locale)]) : []),
   ]);
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  for (const locale of CHART_TWINS_ART_CARD_LOCALES) cards.push([chartTwinsArtCard(locale), localizedChartTwinsCard(locale)]);
   let written = 0;
   for (const [path, html] of cards) {
     const raw = await capture(html, fitArtNames);
@@ -1368,6 +1765,75 @@ if (process.argv.includes('--only-good-days-card')) {
   process.exit(0);
 }
 
+// The chart twins page's art card (2026-11-26), alone, so the published v8
+// cards keep their bytes. --only-art-cards draws it with the rest.
+if (process.argv.includes('--only-chart-twins-card')) {
+  console.log('Rendering the chart twins art card…');
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  const raw = await capture(artChartTwinsCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${CHART_TWINS_ART_CARD}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${CHART_TWINS_ART_CARD}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${CHART_TWINS_ART_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// The thesis's art card (2026-11-27), alone, so the published v8 cards keep
+// their bytes. --only-art-cards draws it with the rest.
+if (process.argv.includes('--only-thesis-art-card')) {
+  console.log('Rendering the thesis art card…');
+  ART.clock = await b64(THESIS_ART_CARD_ART.src, 'image/jpeg');
+  const raw = await capture(artThesisCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${THESIS_ART_CARD}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${THESIS_ART_CARD}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${THESIS_ART_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// The art page card families (2026-11-27), each alone, so every other card
+// keeps its bytes: the single page cards, the 78 sign pairs, the 29 cusp
+// birthdays and the 12 Chinese zodiac animals. --only-art-cards draws them
+// with the rest.
+const onlyArtPageFamilies = Object.keys(ART_PAGE_FAMILIES).filter((name) => process.argv.includes(ART_PAGE_FAMILIES[name].flag));
+if (onlyArtPageFamilies.length) {
+  console.log('Rendering the art page cards…');
+  let cards = 0;
+  for (const name of onlyArtPageFamilies) cards += (await renderArtPageFamily(name)).count;
+  await browser.close();
+  console.log(`Done: ${cards} art page cards.`);
+  process.exit(0);
+}
+
+// The chart twins card in Spanish, French, Italian, Portuguese and Russian
+// (2026-11-26), alone, so every other art card keeps its bytes.
+// --only-localized-art-cards draws them with the rest.
+if (process.argv.includes('--only-localized-chart-twins-cards')) {
+  console.log('Rendering the localized chart twins art cards…');
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  let written = 0;
+  for (const locale of CHART_TWINS_ART_CARD_LOCALES) {
+    const path = chartTwinsArtCard(locale);
+    const raw = await capture(localizedChartTwinsCard(locale), fitArtNames);
+    const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+    if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+    const output = resolve(root, `public${path}`);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, bytes);
+    written += bytes.length;
+    console.log(`  ${path}, ${(bytes.length / 1024).toFixed(0)}KB`);
+  }
+  await browser.close();
+  console.log(`Done: ${CHART_TWINS_ART_CARD_LOCALES.length} localized chart twins cards, ${(written / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
 if (process.argv.includes('--only-art-cards')) {
   console.log('Rendering the homepage, sign guide and horoscope art cards…');
   ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
@@ -1375,10 +1841,14 @@ if (process.argv.includes('--only-art-cards')) {
     ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
     ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
   }
+  ART.twins = await b64(CHART_TWINS_ART_CARD_ART.src, 'image/webp');
+  ART.clock = await b64(THESIS_ART_CARD_ART.src, 'image/jpeg');
   const cards = [
     [HOME_ART_CARD, artHomeCard()],
     ...SIGNS.map((s) => [signArtCard(s.slug), artSignCard(s)]),
     ...SIGNS.flatMap((s) => HOROSCOPE_OG_SURFACES.map((surface) => [horoscopeArtCard(s.slug, surface.key), artHoroscopeCard(s, surface)])),
+    [CHART_TWINS_ART_CARD, artChartTwinsCard()],
+    [THESIS_ART_CARD, artThesisCard()],
   ];
   let written = 0;
   for (const [path, html] of cards) {
@@ -1390,9 +1860,11 @@ if (process.argv.includes('--only-art-cards')) {
     await writeFile(output, bytes);
     written += bytes.length;
   }
+  let pageCards = 0;
+  for (const name of Object.keys(ART_PAGE_FAMILIES)) pageCards += (await renderArtPageFamily(name)).count;
   await browser.close();
   await writeEnglishManifest();
-  console.log(`Done: ${cards.length} art cards, ${(written / 1024).toFixed(0)}KB.`);
+  console.log(`Done: ${cards.length} art cards, ${(written / 1024).toFixed(0)}KB, and ${pageCards} art page cards.`);
   process.exit(0);
 }
 

@@ -7,6 +7,7 @@ import { launchFlagOn } from '../../lib/launch-flags';
 import Motion from '../../components/Motion.astro';
 import NumerologyEmblem from '../../components/NumerologyEmblem.astro';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // The letter key the prose describes: A to I are 1 to 9, J to R again, S to Z 1 to 8.
 const KEY_DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
@@ -74,6 +75,8 @@ const jsonLd = [
   title="Numerology Calculator — Life Path, Expression, Soul Urge | Zodiacs.org"
   description="Free numerology calculator: Life Path, Birthday, Expression, Soul Urge, Personality, Maturity, and Personal Year from your name and birth date, computed in your browser."
   path="/numerology/"
+  image={artPageCard('numerology')}
+  imageAlt={artPageCardAlt('numerology')}
   jsonLd={jsonLd}
 >
   <section class="section--tight container">

@@ -28,7 +28,9 @@ describe('owner privacy boundaries', () => {
       expect(catalog).toContain('trustGuideNotice:');
       const page = read(`src/pages/${locale === 'en' ? '' : `${locale}/`}privacy/index.astro`);
       expect(page).toContain(`t('${locale}', 'trustGuideNotice')`);
-      expect(page).toContain(`t('${locale}', 'trustWalletNotice')`);
+      // Every privacy page dropped the Registry wallet notice on 20 November 2026 (owner-approved);
+      // the catalogs keep the string for the Registry surfaces.
+      expect(page).not.toContain('trustWalletNotice');
       expect(page).not.toMatch(/Attach my chart|Guide offers to attach/);
     }
   });

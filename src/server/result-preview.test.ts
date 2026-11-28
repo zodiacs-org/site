@@ -24,6 +24,9 @@ import {
   horoscopeCard,
   horoscopeStory,
   handleChartTwinsLinkRequest,
+  CHART_TWINS_PAGE_CARD,
+  CHART_TWINS_PAGE_CARD_ALT,
+  SHARE_FALLBACK_ART_CARDS,
   handleChartTwinsStoryRequest,
   handleFamousChartImageRequest,
   handleFamousChartLinkRequest,
@@ -85,6 +88,7 @@ import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
 import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading';
+import { CHART_TWINS_ART_CARD, CHART_TWINS_ART_CARD_ALT, artPageCard, artPageCardAlt } from '../lib/og-art-cards.mjs';
 
 const COMPAT = 'as=leo&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
 /** The same result as a link made before the assistant tools stopped writing names (0.6.1): it opens, without them. */
@@ -529,8 +533,8 @@ describe('share link pages', () => {
     const response = await handleCompatibilityLinkRequest(new Request('https://zodiacs.org/share/compatibility/?as=%3Cscript%3E&score=78'));
     const html = await response.text();
     expect(response.status).toBe(200);
-    expect(html).toContain('content="https://zodiacs.org/assets/og/v2/tool/compatibility.png"');
-    expect(html).toContain('<meta property="og:image:type" content="image/png">');
+    expect(html).toContain('content="https://zodiacs.org/assets/og/v8/tool/compatibility.jpg"');
+    expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(html).not.toContain('script%3E');
     expect(html).not.toContain('<script');
     const occasion = await (await handleOccasionLinkRequest(new Request('https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&lat=1'))).text();
@@ -565,10 +569,10 @@ describe('share link pages', () => {
     expect(horoscope).toContain(`href="/api/og/horoscope-story?s=leo&amp;d=${TODAY}" download="zodiacs-leo-horoscope-story.jpg"`);
     expect(horoscope).not.toMatch(/[—–]/u);
     // A link that does not match the site's data opens the plain page.
-    expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/birthday.png"');
-    expect(await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-10-27'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/sky-calendar.png"');
-    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&text=Win'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
-    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2199-01-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+    expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/birthday.jpg"');
+    expect(await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-10-27'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/sky-calendar.jpg"');
+    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&text=Win'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
+    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2199-01-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
     // A reading that has left the window keeps its sign and day.
     const gone = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2026-09-01'))).text();
     expect(gone).toContain('<h1>Leo horoscope for Tuesday 1 September</h1>');
@@ -603,8 +607,24 @@ describe('share link pages', () => {
     // A bare address opens the directory; a named person absent from the directory is not a share.
     expect(await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/'))).text()).toContain('<h1>Famous birth charts</h1>');
     expect((await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=someone-else'))).status).toBe(404);
-    expect(await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&d=1990-05-03'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/chart-twins.png"');
-    expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/saturn-return.png"');
+    // A link that is not a share opens on its page's art card (2026-11-27), written in the module and held equal here.
+    for (const [key, card] of Object.entries(SHARE_FALLBACK_ART_CARDS)) {
+      expect(card.path, key).toBe(artPageCard(key));
+      expect(card.alt, key).toBe(artPageCardAlt(key));
+    }
+    expect(Object.keys(SHARE_FALLBACK_ART_CARDS)).toEqual(['birthday', 'sky-calendar', 'saturn-return', 'big-three', 'compatibility-invite', 'transits', 'compatibility', 'horoscopes']);
+    const yourDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/'))).text();
+    expect(yourDay).toContain('content="https://zodiacs.org/assets/og/v8/tool/transits.jpg"');
+    expect(yourDay).toContain('<meta property="og:image:type" content="image/jpeg">');
+    // A link that is not a share opens on the chart twins page's art card (2026-11-26).
+    expect(CHART_TWINS_PAGE_CARD).toBe(CHART_TWINS_ART_CARD);
+    expect(CHART_TWINS_PAGE_CARD_ALT).toBe(CHART_TWINS_ART_CARD_ALT);
+    const twinsDefault = await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&d=1990-05-03'))).text();
+    expect(twinsDefault).toContain(`<meta property="og:image" content="https://zodiacs.org${CHART_TWINS_ART_CARD}">`);
+    expect(twinsDefault).toContain('<meta property="og:image:type" content="image/jpeg">');
+    expect(twinsDefault).toContain(`<meta property="og:image:alt" content="${CHART_TWINS_ART_CARD_ALT}">`);
+    expect(twinsDefault).not.toContain('/assets/og/v2/tool/chart-twins.png');
+    expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/saturn-return.jpg"');
     expect((await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'))).headers.get('location'))
       .toBe('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12');
   });
@@ -661,10 +681,10 @@ describe('share link pages', () => {
     expect(plainDay).not.toContain('08:30');
     for (const page of [big, untimed, chinese, animal, invite, day, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[\u2014\u2013]/u);
     // A bare address or a query that is not a share opens the plain page, with the site's own card.
-    expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/big-three.png"');
+    expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/big-three.jpg"');
     expect(await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=dragonfly'))).text()).toContain('<h1>The Chinese zodiac</h1>');
     const bare = await (await handleInviteLinkRequest(new Request('https://zodiacs.org/share/invite/'))).text();
-    expect(bare).toContain('content="https://zodiacs.org/assets/og/v2/tool/compatibility-private-invite.png"');
+    expect(bare).toContain('content="https://zodiacs.org/assets/og/v8/tool/compatibility-invite.jpg"');
     expect(bare).toContain('<a class="cta" href="/compatibility/invite/">Make an invite link</a>');
   });
 
@@ -680,7 +700,7 @@ describe('share link pages', () => {
       const year = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2027'))).text();
       expect(year).toContain('<h1>Leo horoscope for 2027</h1>');
       expect(year).toContain('<a class="more" href="/horoscopes/leo/2027/">Leo’s 2027 horoscope</a>');
-      expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2031'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+      expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2031'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
     } finally { vi.useRealTimers(); }
   });
 

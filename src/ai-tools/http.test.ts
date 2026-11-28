@@ -216,6 +216,31 @@ describe('stateless MCP HTTP boundary', () => {
     expect(await status('review.example', 'review.example')).toBe(503);
     expect(await status('other.review.example', 'review.example')).toBe(403);
     for (const setting of ['*.example', 'https://review.example', 'review.example/path', 'review.example:443']) expect(await status('review.example', setting)).toBe(403);
+    // integrations/chatgpt/README.md tells a preview operator the value must be the exact lowercase hostname:
+    // anything else is ignored, so the preview answers as if the variable were unset.
+    for (const setting of ['Review.example', ' review.example', 'review.example ', 'review.example.', 'example']) expect(await status('review.example', setting)).toBe(403);
+    // Production's own two hostnames stay allowed whether or not a staging hostname is set.
+    for (const host of ['zodiacs.org', 'www.zodiacs.org', 'ZODIACS.ORG']) expect(await status(host, 'review.example')).toBe(503);
+  });
+  it('applies the documented Origin rule: five origins, preflight included, and no rule without an Origin header', async () => {
+    // The rule /developers/ai/, /developers/mcp/ and integrations/chatgpt/README.md describe. Not to be widened.
+    const allowed = ['https://chatgpt.com', 'https://chat.openai.com', 'https://claude.ai', 'https://claude.com', 'https://zodiacs.org'];
+    const preflight = (origin: string) => fetch(base, { method: 'OPTIONS', headers: { Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type' } });
+    for (const origin of allowed) {
+      const response = await preflight(origin);
+      expect(response.status, origin).toBe(204);
+      expect(response.headers.get('access-control-allow-origin'), origin).toBe(origin);
+      expect((await post(rpc('tools/list'), { Origin: origin })).status, origin).toBe(200);
+    }
+    for (const origin of ['https://example.com', 'https://www.zodiacs.org', 'http://zodiacs.org', 'https://chatgpt.com.example', 'https://claude.ai/', 'null']) {
+      const response = await preflight(origin);
+      expect(response.status, origin).toBe(403);
+      expect(response.headers.get('access-control-allow-origin'), origin).toBeNull();
+      expect(await response.text(), origin).toContain('origin-not-allowed');
+      expect((await post(rpc('tools/list'), { Origin: origin })).status, origin).toBe(403);
+    }
+    // A server-side caller or MCP client that sends no Origin header is not subject to the rule.
+    expect((await post(rpc('tools/list'))).status).toBe(200);
   });
   it('refuses oversized chunked input without losing the response connection', async () => {
     const status = await new Promise<number>(resolve => {

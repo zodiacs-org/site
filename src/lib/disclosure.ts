@@ -50,6 +50,13 @@ export function statusText(locale: Locale, status: DisclosureStatus): string {
   return disclosureText(locale, 'statusPending');
 }
 
+/** In-page id of the public-address lookup notice on /disclosure/. */
+export const ADDRESS_LOOKUP_ID = 'address-lookup';
+
+export function addressLookupHref(locale: Locale): string {
+  return `${localizePath(locale, '/disclosure/')}#${ADDRESS_LOOKUP_ID}`;
+}
+
 export function disclosureRows(locale: Locale): readonly DisclosureRow[] {
   return [
   {
@@ -135,7 +142,7 @@ export function disclosureRows(locale: Locale): readonly DisclosureRow[] {
     status: 'verified',
     evidence: disclosureText(locale, 'adviceEvidence'),
     links: [
-      { label: disclosureText(locale, 'linkTerms'), href: '/terms/' },
+      { label: disclosureText(locale, 'addressLookupHeading'), href: addressLookupHref(locale) },
       { label: disclosureText(locale, 'linkThesis'), href: '/thesis/' },
     ],
   },

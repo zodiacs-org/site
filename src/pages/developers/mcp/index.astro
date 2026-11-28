@@ -210,6 +210,33 @@ const jsonLd = [
       </p>
     </div>
 
+    <h2 id="hosted">The hosted server's browser rule</h2>
+    <div class="prose">
+      <p>
+        This adapter runs over stdio and opens no port, so no website can reach
+        it. The hosted server at <code>https://zodiacs.org/mcp</code>, described
+        on <a href="/developers/ai/#origin">AI integrations</a>, is reached over
+        the web and checks two request headers.
+      </p>
+      <p>
+        When a request carries an <code>Origin</code> header, the hosted server
+        answers only these five: <code>https://chatgpt.com</code>,{' '}
+        <code>https://chat.openai.com</code>, <code>https://claude.ai</code>,{' '}
+        <code>https://claude.com</code> and <code>https://zodiacs.org</code>. A
+        browser on any other website gets a 403 with{' '}
+        <code>origin-not-allowed</code>, and so does its CORS preflight. That is
+        by design. Server-side programs and MCP clients that send no{' '}
+        <code>Origin</code> header skip this check and connect as usual.
+      </p>
+      <p>
+        The <code>Host</code> header is a separate check: the hosted server
+        answers only requests addressed to <code>zodiacs.org</code> or{' '}
+        <code>www.zodiacs.org</code>, plus one exact preview hostname when an
+        operator sets it, and refuses any other address with{' '}
+        <code>host-not-allowed</code>.
+      </p>
+    </div>
+
     <h2 id="tools">The eight tools</h2>
     <dl class="mcp-tools">
       {tools.map(([name, summary]) => (
