@@ -1,12 +1,20 @@
 {
   "version": 1,
-  "id": "sun-year-plate-sign-guides-83a032463090",
-  "baseCommit": "83a032463090434fc758dca28d9d20aec7514a2a",
+  "id": "legal-pages-locale-privacy-00f8f05fe533",
+  "baseCommit": "00f8f05fe533bc30046f0dbd92f0bb6b253e8382",
   "protectedPaths": [
-    "src/pages/[sign]/index.astro",
-    "src/pages/es/[sign]/index.astro",
-    "src/pages/fr/[sign]/index.astro",
-    "src/pages/it/[sign]/index.astro",
-    "src/pages/pt/[sign]/index.astro"
+    "public/assets/app.js",
+    "scripts/registry-risk.test.mjs",
+    "src/app.jsx",
+    "src/components/LocalizedDisclosurePage.astro",
+    "src/islands/RegistryAura.tsx",
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/privacy/index.astro",
+    "src/strings/additions.es.mjs",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ]
 }

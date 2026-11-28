@@ -730,6 +730,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The Year Ahead Score calculator, published 2026-11-09.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', '2026-11-09'] as const] : []),
   ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', '2026-11-09'] as const] : []),
+  // The tarot draw, first published 2026-11-10. Only while PUBLIC_TAROT_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [['/tarot/', '2026-11-10'] as const] : []),
   ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
   ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
   // Your 2027 sky's eclipse lines read the full longitude, so 1°59′ Virgo prints 1°, not 2° (every language).
@@ -821,6 +823,16 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // The hosted MCP server's Origin and Host rules on the AI and MCP developer pages, and the privacy and terms
+  // pages without the Registry wallet and purchase disclosures, with the privacy page's no-birth-time script and
+  // analytics sentences (owner-approved 20 November 2026). The day of the daily edition they were built with,
+  // last so these dates win.
+  ...['/developers/ai/', '/developers/mcp/'].map((loc) => [loc, '2026-11-20'] as const),
+  ['/terms/', '2026-11-20'] as const,
+  // The five translated privacy pages with the same changes (owner-approved 20 November 2026), last so these
+  // dates win over their 11 November entry.
+  ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
+    .map((loc) => [loc, '2026-11-20'] as const),
   // The English compatibility invite emblem gained its axis and disc entrances.
   ['/compatibility/', '2026-11-22'] as const,
   // The meaning of reading confidence and the numerology and tarot exception.
@@ -832,9 +844,18 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
   // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
+  // Later than this PR's 20 November privacy lastmod, so it wins for /privacy/.
   ['/privacy/', '2026-11-22'] as const,
   // Conformance scoreboard refreshed for @zodiacs/engine 2.1.0 (639/640, 140/140 L4) and verified PyEphem counts.
   ['/developers/conformance/', '2026-11-23'] as const,
+  // The public-address lookup section on every locale's disclosure page
+  // (owner-approved 20 and 21 November 2026). Last so these dates win over
+  // the 23 August audit date.
+  ...['/disclosure/', '/es/disclosure/', '/fr/disclosure/', '/it/disclosure/', '/pt/disclosure/', '/ru/disclosure/']
+    .map((loc) => [loc, '2026-11-20'] as const),
+  // English /privacy/ changed versus main, whose rendered lastmod is already
+  // 2026-11-23, so the sitemap date must be later than that day.
+  ['/privacy/', '2026-11-24'] as const,
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
   ['/big-three/', BIG_THREE_CARDS_LASTMOD] as const,
@@ -842,10 +863,16 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/', '/developers/compute/', '/developers/conventions/', '/developers/mcp/'].map(
     (loc) => [loc, '2026-11-25'] as const,
   ),
+  // This PR's Origin and Host rules on the MCP developer page remain after
+  // main's 25 November adapter lastmod, so the sitemap date must be later.
+  ['/developers/mcp/', '2026-11-26'] as const,
   // What an unknown birth time does to the Moon's sign (UNKNOWN_TIME_MOON_ROUTES), last so it wins.
   ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
   // Engine 3.0.0 and MCP adapter 0.1.0-rc.30 (ENGINE_300_ROUTES, /methodology/, and the guides), last so it wins.
   ...[...ENGINE_300_ROUTES, ...DEVELOPER_GUIDES_ROUTES].map((loc) => [loc, ENGINE_300_LASTMOD] as const),
+  // This PR's Origin and Host rules on the MCP developer page remain after
+  // main's 27 November engine 3.0.0 lastmod, so the sitemap date must be later.
+  ['/developers/mcp/', '2026-11-28'] as const,
   // npm serves engine 3.0.0 under latest (registry read 2026-11-28), and MCP adapter 0.1.0-rc.31 labels it
   // published: the pages that state the engine's release status or the adapter's version, and the guides,
   // whose header names the release status, last so they win.
@@ -928,6 +955,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/lunar-return/', priority: 0.85 },
     ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [{ loc: '/vedic-signs/', priority: 0.85 }] : []),
     { loc: '/numerology/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [{ loc: '/tarot/', priority: 0.8 }] : []),
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
     ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [{ loc: '/birthday-report/', priority: 0.8 }] : []),
@@ -1311,6 +1339,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // The English privacy page describes which essay link clicks the site counts.
   for (const url of urls) {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-23');
+  }
+  // Aura's "Lookup details" link on the Cabinet of Twelve page now points at
+  // /disclosure/#address-lookup (owner-approved 21 November 2026).
+  for (const url of urls) {
+    if (url.loc === '/registry/collection/') url.lastmod = laterDate(url.lastmod, '2026-11-20');
   }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);
