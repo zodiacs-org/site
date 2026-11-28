@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { HOROSCOPE_SIGNS } from './horoscope-freshness-lib.mjs';
+import { decideMonthlyReminder, runMonthlyHoroscopeReminder } from './monthly-horoscope-reminder.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFile(resolve(root, path), 'utf8');
@@ -31,6 +33,72 @@ describe('daily publication operations', () => {
     expect(workflow).not.toContain('git rebase');
     expect(workflow).not.toContain('for attempt in 1 2 3; do');
     expect(workflow).toContain('git push origin "HEAD:$DEFAULT_BRANCH"');
+  });
+
+  it('opens the monthly horoscope reminder whether or not new transit data was committed', async () => {
+    // The transit files run years ahead, so the monthly run commits nothing; a reminder gated on that commit
+    // did not open for December 2026, and the freshness gate fails every deploy when a month starts empty.
+    const workflow = await read('.github/workflows/transits-monthly.yml');
+    const step = workflow.slice(workflow.indexOf('- name: Open the horoscope reminder issue'));
+    expect(step).toContain('node scripts/monthly-horoscope-reminder.mjs');
+    expect(step).not.toMatch(/\n\s+if:/);
+    expect(workflow).not.toContain("if: steps.commit.outputs.committed == 'true'");
+
+    const allTwelve = HOROSCOPE_SIGNS.map((sign) => ({ sign, month: '2026-12', draft: false }));
+    const created = [];
+    const base = {
+      month: '2026-12',
+      label: 'December 2026',
+      issueBody: 'Sky for __LABEL__ at src/data/transits-__MONTH__.json',
+      createIssue: (item) => created.push(item),
+    };
+
+    // Twelve live distinct signs skip without even querying GitHub.
+    expect(
+      decideMonthlyReminder({
+        ...base,
+        monthlyEntries: allTwelve,
+        listOpenIssues: () => { throw new Error('must not query when complete'); },
+      }).action,
+    ).toBe('skip-complete');
+    expect(created).toHaveLength(0);
+
+    // One draft entry still opens the reminder, matching the deployment gate.
+    const withDraft = allTwelve.map((entry, idx) => (idx === 0 ? { ...entry, draft: true } : entry));
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: withDraft, listOpenIssues: () => 0 }).action).toBe('created');
+    expect(created).toHaveLength(1);
+    expect(created[0].title).toBe('Write the December 2026 horoscopes');
+    expect(created[0].body).toContain('transits-2026-12.json');
+
+    // Duplicate sign (12 files, only 11 distinct signs) still opens the reminder.
+    const withDuplicate = allTwelve.map((entry, idx) => (idx === 11 ? { ...entry, sign: 'aries' } : entry));
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: withDuplicate, listOpenIssues: () => 0 }).action).toBe('created');
+    expect(created).toHaveLength(2);
+
+    // Existing open issue skips creating a duplicate.
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: [], listOpenIssues: () => 1 }).action).toBe('skip-open');
+    expect(created).toHaveLength(2);
+
+    // Eleven live entries (one sign missing) still open the reminder.
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: allTwelve.slice(0, 11), listOpenIssues: () => 0 }).action).toBe('created');
+    expect(created).toHaveLength(3);
+
+    // Production CLI adapter: a non-zero gh exit with '0' on stdout fails instead of skipping or creating.
+    const calls = [];
+    await expect(
+      runMonthlyHoroscopeReminder({
+        month: '2026-12',
+        issueBody: base.issueBody,
+        monthlyEntries: allTwelve.slice(0, 11),
+        spawn: (cmd, args) => {
+          calls.push([cmd, args]);
+          return { status: 1, stdout: '0\n', stderr: 'auth failed', error: undefined };
+        },
+      }),
+    ).rejects.toThrow(/gh issue list .* failed \(1\)/);
+    expect(calls).toHaveLength(1);
+    expect(calls[0][1][0]).toBe('issue');
+    expect(calls[0][1][1]).toBe('list');
   });
 
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {

@@ -61,6 +61,15 @@ export function parseMonthlyHoroscopeEntry(source, sourceName = 'horoscope entry
   };
 }
 
+export function hasCompleteLiveHoroscopeMonth(monthlyEntries, month) {
+  const actualSigns = monthlyEntries
+    .filter((entry) => !entry.draft && entry.month === month)
+    .map((entry) => entry.sign)
+    .sort();
+  const expectedSigns = [...HOROSCOPE_SIGNS].sort();
+  return JSON.stringify(actualSigns) === JSON.stringify(expectedSigns);
+}
+
 export function assertHoroscopePackageFreshness({
   now = new Date(),
   daily,
@@ -97,9 +106,8 @@ export function assertHoroscopePackageFreshness({
     );
   }
   const current = liveEntries.filter((entry) => entry.month === currentMonth);
-  const actualSigns = current.map((entry) => entry.sign).sort();
-  const expectedSigns = [...HOROSCOPE_SIGNS].sort();
-  if (JSON.stringify(actualSigns) !== JSON.stringify(expectedSigns)) {
+  if (!hasCompleteLiveHoroscopeMonth(liveEntries, currentMonth)) {
+    const actualSigns = current.map((entry) => entry.sign).sort();
     throw new Error(
       `monthly horoscope ${currentMonth} must contain exactly the 12 signs; found: ${actualSigns.join(', ')}`,
     );

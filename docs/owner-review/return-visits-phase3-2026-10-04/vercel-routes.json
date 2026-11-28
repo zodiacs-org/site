@@ -1,6 +1,6 @@
 {
   "recorded": "2026-10-06",
-  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching. On 2026-11-18 the 45 header sources for the 15 owner-authorized protected living profiles were added in the same three shapes the official compiler produced for the 2026-08-16 protected profiles (exact page, asset prefix, share card).",
+  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching. On 2026-11-18 the 45 header sources for the 15 owner-authorized protected living profiles were added in the same three shapes the official compiler produced for the 2026-08-16 protected profiles (exact page, asset prefix, share card). On 2026-11-28 the /robots.txt source (one day of Cache-Control for crawlers) was added after the OpenAI domain challenge, its src written by the repository port scripts/lib/vercel-source-pattern.mjs in the exact-path shape the official compiler produced for /feeds/events.json, and not recompiled with the Vercel CLI.",
   "vercelConfigSha256": "8058f44ed6ccc4d684b4827780f2768abd8df5deca8e9118770c146b84330952",
   "platformHeaders": [
     {
@@ -20,6 +20,10 @@
     {
       "source": "/.well-known/openai-apps-challenge",
       "src": "^/\\.well-known/openai-apps-challenge$"
+    },
+    {
+      "source": "/robots.txt",
+      "src": "^/robots\\.txt$"
     },
     {
       "source": "/feeds/events.json",

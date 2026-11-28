@@ -630,6 +630,12 @@
       ]
     },
     {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
       "source": "/feeds/events.json",
       "headers": [
         { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },

@@ -3,9 +3,10 @@ name: Monthly Transits
 # On the 25th, computes NEXT month's transit events (ingresses,
 # lunations, stations, exact aspects) into src/data/transits-YYYY-MM.json
 # and opens an issue for the AI editorial run that prepares twelve entries.
-# The horoscope pages themselves always render the
-# latest month present and warn (never fail) when stale — this workflow
-# keeps the treadmill visible, it does not write prose.
+# The build's monthly freshness gate (scripts/verify-horoscope-freshness.mjs)
+# fails every deploy once a UTC month starts without its twelve live entries,
+# so the reminder opens every month, whether or not this run committed new
+# transit data: the transit files already run years ahead. It writes no prose.
 
 on:
   schedule:
@@ -81,8 +82,10 @@ jobs:
           fi
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
+      # Not gated on steps.commit: with the transit files committed years
+      # ahead nothing is committed, and the run of 25 November 2026 opened no
+      # reminder for December.
       - name: Open the horoscope reminder issue
-        if: steps.commit.outputs.committed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           MONTH: ${{ steps.month.outputs.month }}
@@ -105,12 +108,4 @@ jobs:
             - [ ] pisces
 
             House rules: every claim cites a dated event from the JSON, solar-houses framing stated once, 250–400 words, no headings. Match the exemplar at `src/content/horoscopes/2026-07-aries.mdx` and the voice rules in `CLAUDE.md`. The pages render the latest complete month automatically.
-        run: |
-          LABEL=$(date -u -d "${MONTH}-01" "+%B %Y")
-          if [ "$(gh issue list --search "in:title \"Write the ${LABEL} horoscopes\"" --json number --jq length)" != "0" ]; then
-            echo "Issue already open"
-            exit 0
-          fi
-          BODY=${ISSUE_BODY//__MONTH__/$MONTH}
-          BODY=${BODY//__LABEL__/$LABEL}
-          gh issue create --title "Write the ${LABEL} horoscopes" --body "$BODY"
+        run: node scripts/monthly-horoscope-reminder.mjs
