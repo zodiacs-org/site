@@ -578,7 +578,7 @@ const LINES: Record<string, { card: string; read: string }> = {};
 if (locale === 'ru') {
   for (const sign of SIGNS) {
     const body = RU_GUIDES[sign.slug]?.sections.find((section) => section.risingProfile)?.body[0] ?? '';
-    const read = sentences(body).find((sentence) => sentence.startsWith('Асцендент в '));
+    const read = sentences(body).find((sentence) => /^Асцендент во? /u.test(sentence));
     if (!read) throw new Error(`LocalizedRisingSign: the Russian ${sign.slug} guide no longer has its rising sentence.`);
     LINES[sign.slug] = { card: RU_LINES[sign.slug], read };
   }
