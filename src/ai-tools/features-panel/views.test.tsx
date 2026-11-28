@@ -102,6 +102,16 @@ describe('features-panel cards for the seven feature funnels (eight tools)', () 
     const vedicHtml = render(h(VedicSignsCard, { data: vedic.data as never, links: vedic.links as ToolLink[] }));
     assertBrandedCard(vedicHtml, 'VedicSignsCard', secrets);
     expect(vedicHtml).toContain('Open Vedic signs');
+    const vedicFoldAt = vedicHtml.indexOf('<details class="fold"');
+    const vedicBeforeFold = vedicHtml.slice(0, vedicFoldAt);
+    const vedicInsideFold = vedicHtml.slice(vedicFoldAt);
+    expect(vedicBeforeFold).not.toContain('Your Moon sign (rashi) is');
+    expect(vedicBeforeFold).not.toContain('Your Vedic Sun is in');
+    expect(vedicBeforeFold).not.toContain('Your lagna (rising sign) is');
+    expect(vedicInsideFold).toContain('Sidereal reading');
+    expect(vedicInsideFold).toContain('Your Moon sign (rashi) is');
+    expect(vedicInsideFold).toContain('Your Vedic Sun is in');
+    expect(vedicInsideFold).toContain('Your lagna (rising sign) is');
 
     const year = await executeAiTool('get_year_score', birth, ALL_ON, { ref: 'chatgpt' });
     expect(year.ok).toBe(true);
@@ -149,6 +159,14 @@ describe('features-panel cards for the seven feature funnels (eight tools)', () 
     expect(numHtml).toContain('Numerology, separate from astrology');
     expect(numHtml).not.toMatch(/reading confidence/iu);
     expect(numHtml).toContain('Open numerology calculator');
+    // DESIGN.md:213-214: core date numbers stay within the three-tile limit and name numbers appear once in their section.
+    const tilesMatch = numHtml.match(/<dl class="tiles"[^>]*>([\s\S]*?)<\/dl>/u);
+    expect(tilesMatch).toBeTruthy();
+    expect(tilesMatch![1].match(/<div><dt>/gu)?.length).toBe(2);
+    expect(tilesMatch![1]).not.toMatch(/Expression|Soul Urge|Personality/u);
+    expect(numHtml.match(/<dt>Expression \d+<\/dt>/gu)?.length).toBe(1);
+    expect(numHtml.match(/<dt>Soul Urge \d+<\/dt>/gu)?.length).toBe(1);
+    expect(numHtml.match(/<dt>Personality \d+<\/dt>/gu)?.length).toBe(1);
   }, 60_000);
 
   it('keeps draw_tarot excluded from the features panel and advertises inline-only display mode', async () => {
@@ -308,6 +326,10 @@ describe('features-panel cards for the seven feature funnels (eight tools)', () 
     expect(vedicCuspHtml).toContain('(on boundary)');
     expect(vedicCuspHtml).toContain('sidereal Sun sits right on the boundary');
     expect(vedicCuspHtml).not.toContain('Share your Vedic Sun');
+    const vedicCuspFoldAt = vedicCuspHtml.indexOf('<details class="fold"');
+    expect(vedicCuspHtml.slice(0, vedicCuspFoldAt)).toContain('Provisional near a boundary (Sun)');
+    expect(vedicCuspHtml.slice(0, vedicCuspFoldAt)).not.toContain('sidereal Sun sits right on the boundary');
+    expect(vedicCuspHtml.slice(vedicCuspFoldAt)).toContain('sidereal Sun sits right on the boundary');
 
     // Your Day still displays a reading-confidence label even when there are zero contacts that day.
     const emptyDay = structuredClone(dayOff.data) as { contacts: unknown[]; timeKnown: boolean; placed: boolean };

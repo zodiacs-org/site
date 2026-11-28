@@ -401,6 +401,7 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
   const isRisingSensitive = (line: string) => line.includes('jumps abruptly near this birth time') || line.includes('moves rapidly across');
   const cuspLimits = data.limits.filter((line) => line.includes('sits right on the boundary') || isRisingSensitive(line));
   const otherLimits = data.limits.filter((line) => !line.includes('sits right on the boundary') && !isRisingSensitive(line));
+  const orderedLimits = [...cuspLimits, ...otherLimits];
   const risingFlip = data.limits.some(isRisingSensitive);
   const moonLine = data.moon ? (data.moon.cusp ? qualifyVedicLine(data.moon.line, 'moon', moonPair, false) : data.moon.line) : null;
   const nakLine = data.moonNakshatra ? (data.moonNakshatra.cusp ? qualifyVedicLine(data.moonNakshatra.line, 'nakshatra', nakPair, false) : data.moonNakshatra.line) : null;
@@ -408,7 +409,26 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
   const risingLine = data.rising ? (data.rising.cusp ? qualifyVedicLine(data.rising.line, 'rising', risingPair, risingFlip) : data.rising.line) : null;
   const anyCusp = !!(data.moon?.cusp || data.moonNakshatra?.cusp || data.sun?.cusp || data.rising?.cusp);
   const summaryParts = [moonLine, nakLine, sunLine, risingLine].filter((line): line is string => !!line);
-  const cardSummary = cardWords(anyCusp && summaryParts.length > 0 ? `${summaryParts.join(' ')} ${data.confidenceLabel}.` : data.summary);
+  const fullSummary = cardWords(anyCusp && summaryParts.length > 0 ? `${summaryParts.join(' ')} ${data.confidenceLabel}.` : data.summary);
+  const readingLines = [moonLine, sunLine, risingLine].filter((line): line is string => !!line);
+  const boundaryLabels = [
+    data.moon?.cusp ? 'Moon' : null,
+    data.moonNakshatra?.cusp ? 'nakshatra' : null,
+    data.sun?.cusp ? 'Sun' : null,
+    data.rising?.cusp ? (risingFlip ? 'rising (time-sensitive)' : 'rising') : null,
+  ].filter((label): label is string => !!label);
+  const heroPlacements = [
+    data.moon ? `${data.moon.rashi} Moon` : data.moonCandidates.length ? `Moon in ${data.moonCandidates.join(' or ')}` : null,
+    data.sun ? `${data.sun.rashi} Sun` : data.sunCandidates.length ? `Sun in ${data.sunCandidates.join(' or ')}` : null,
+    data.rising ? `${data.rising.rashi} rising` : null,
+  ].filter((part): part is string => !!part);
+  const heroSummary = boundaryLabels.length > 0
+    ? `Provisional near a boundary (${boundaryLabels.join(', ')}): a small shift in birth time or ayanamsa can move it.`
+    : cuspLimits.length > 0
+      ? 'Provisional near a sign boundary: a small shift in birth time or ayanamsa can move it.'
+      : heroPlacements.length > 0
+        ? `${heroPlacements.join(', ')}${!data.rising ? '; add birth time and place for rising.' : '.'}`
+        : cardWords(data.summary);
   const chips = [
     {
       icon: icon(data.moon?.sign),
@@ -455,7 +475,7 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
         : `Rising: ${data.rising.rashi} (${signName(data.rising.sign)})`
       : '',
     data.confidenceLabel,
-    cardSummary,
+    fullSummary,
     ...data.limits.map(cardWords),
     bareUrl(pageAction?.href),
   ].filter(Boolean).join('\n');
@@ -468,10 +488,14 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
       signs={[icon(settledMoon), icon(settledSun), icon(data.rising && !data.rising.cusp ? data.rising.sign : null)]}
       meta={<>{data.ayanamsa.label}, <Data>{data.ayanamsa.degrees.toFixed(2)}°</Data><br/><strong>{data.confidenceLabel}</strong></>}
     />
-    <Hero verdict={verdict} summary={cardSummary}/>
-    {cuspLimits.map((line) => <p class="quiet" key={line}>{cardWords(line)}</p>)}
-    <Fold hint={holds(['sidereal signs', data.moonNakshatra && 'nakshatra lore', otherLimits.length > 0 && 'notes', 'a copy of the card'])}>
+    <Hero verdict={verdict} summary={heroSummary}/>
+    <Fold hint={holds(['sidereal signs', (readingLines.length > 0 || !data.moonNakshatra) && 'full reading', data.moonNakshatra && 'nakshatra lore', orderedLimits.length > 0 && 'notes', 'a copy of the card'])}>
       <Chips chips={chips}/>
+      {(readingLines.length > 0 || !data.moonNakshatra) && <Section title="Sidereal reading">
+        {readingLines.length > 0
+          ? readingLines.map((line) => <p class="insight" key={line}>{cardWords(line)}</p>)
+          : <p class="insight">{fullSummary}</p>}
+      </Section>}
       {data.moonNakshatra && <Section title={data.moonNakshatra.cusp ? `${data.moonNakshatra.name} (provisional, on boundary)` : data.moonNakshatra.name}>
         <Facts rows={[
           ['Ruling planet', data.moonNakshatra.lord],
@@ -482,7 +506,7 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
         ]}/>
         <p class="insight">{cardWords(nakLine ?? data.moonNakshatra.line)}</p>
       </Section>}
-      {otherLimits.map((line) => <p class="quiet" key={line}>{cardWords(line)}</p>)}
+      {orderedLimits.map((line) => <p class="quiet" key={line}>{cardWords(line)}</p>)}
       <FeatureCopyCard text={copyText} label="Copy the reading"/>
     </Fold>
     <Actions primary={actions.primary} secondary={actions.secondary}/>
@@ -845,14 +869,11 @@ export function NumerologyCard({ data, links = [] }: { data: NumerologyData; lin
     ['Life Path', data.lifePath.chain],
     [`Personal Year ${data.personalYear.year}`, data.personalYear.number],
   ];
-  if (data.expression) tiles.push(['Expression', data.expression.chain]);
-  if (data.soulUrge) tiles.push(['Soul Urge', data.soulUrge.chain]);
-  if (data.personality) tiles.push(['Personality', data.personality.chain]);
 
   const nameRows: Fact[] = [];
-  if (data.expression) nameRows.push([`Expression ${data.expression.number}`, `${data.expression.title}. ${cardWords(data.expression.reading)}`]);
-  if (data.soulUrge) nameRows.push([`Soul Urge ${data.soulUrge.number}`, `${data.soulUrge.title}. ${cardWords(data.soulUrge.reading)}`]);
-  if (data.personality) nameRows.push([`Personality ${data.personality.number}`, `${data.personality.title}. ${cardWords(data.personality.reading)}`]);
+  if (data.expression) nameRows.push([`Expression ${data.expression.number}`, <><Data>{data.expression.chain}</Data>. {data.expression.title}. {cardWords(data.expression.reading)}</>]);
+  if (data.soulUrge) nameRows.push([`Soul Urge ${data.soulUrge.number}`, <><Data>{data.soulUrge.chain}</Data>. {data.soulUrge.title}. {cardWords(data.soulUrge.reading)}</>]);
+  if (data.personality) nameRows.push([`Personality ${data.personality.number}`, <><Data>{data.personality.chain}</Data>. {data.personality.title}. {cardWords(data.personality.reading)}</>]);
 
   const calcLink = linkMatching(links, '/numerology/') ?? links[0];
   const lifePathLink = linkMatching(links, '/numerology/life-path/');
