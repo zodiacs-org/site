@@ -238,6 +238,11 @@ describe('GitHub Actions trust boundaries', () => {
   it('counts every paid attempt against the monthly limit, re-runs included', async () => {
     const body = (await workflows()).find(({ name }) => name === 'pr-review.yml')?.body ?? '';
     expect(body).toContain('RUN_ATTEMPT: ${{ github.run_attempt }}');
+    // Either credential opens the gate, and the reviewer is handed only one:
+    // the API key is left out whenever the subscription token is saved.
+    expect(body).toContain("HAS_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' || secrets.ANTHROPIC_API_KEY != '' }}");
+    expect(body).toContain('claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}');
+    expect(body).toContain("anthropic_api_key: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN == '' && secrets.ANTHROPIC_API_KEY || '' }}");
     expect(body).not.toContain('fromdateiso8601');
     expect(body).not.toContain('.status == \\"completed\\"');
     // Run the gate step itself, with a stand-in gh that applies the step's
@@ -327,7 +332,7 @@ describe('GitHub Actions trust boundaries', () => {
     const filter = body.match(/\n( {10}cred_re='[\s\S]*?\n {10}fi\n)/u)?.[1].replace(/^ {10}/gmu, '') ?? '';
     expect(filter).toContain('echo "leaked=true" >> "$GITHUB_OUTPUT"');
     expect(filter).toMatch(/tr -cd "\$keep" <<< /u);
-    expect(filter).not.toMatch(/(?:printf|echo)[^\n]*\$(?:API_KEY|GH_TOKEN|secret|bare)\b/u);
+    expect(filter).not.toMatch(/(?:printf|echo)[^\n]*\$(?:API_KEY|OAUTH_TOKEN|GH_TOKEN|secret|bare)\b/u);
     const dir = await mkdtemp(resolve(tmpdir(), 'pr-review-filter-'));
     try {
       const apiKey = `sk-ant-api03-${'Kx9_'.repeat(20)}-AA`;
@@ -354,6 +359,15 @@ describe('GitHub Actions trust boundaries', () => {
       expect(await leaked("The pattern is cred_re='sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}'.")).toBe(false);
       expect(await leaked('A clean review.', '{"verdict":"pass"}', { API_KEY: '', GH_TOKEN: '' })).toBe(false);
       expect(await leaked('A clean review.', '{"verdict":"pass"}', { API_KEY: 'short', GH_TOKEN: '_' })).toBe(false);
+      // The subscription token is guarded the same way, whole or split, with
+      // or without an API key beside it.
+      const oauthToken = `sk-ant-oat01-${'Qz4_'.repeat(20)}-BB`;
+      const [o1, o2] = halves(oauthToken);
+      const oauthOnly = { API_KEY: '', OAUTH_TOKEN: oauthToken, GH_TOKEN: ghToken };
+      expect(await leaked(`Token: ${oauthToken}`, '', oauthOnly)).toBe(true);
+      expect(await leaked(`"${o1}" + "${o2}"`, '', oauthOnly)).toBe(true);
+      expect(await leaked('ok', JSON.stringify({ blockers: [[...oauthToken].join(' ')] }), oauthOnly)).toBe(true);
+      expect(await leaked('A clean review.', '{"verdict":"pass"}', oauthOnly)).toBe(false);
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
