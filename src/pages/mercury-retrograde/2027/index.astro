@@ -209,7 +209,7 @@ const jsonLd = [
       <WorldTimesTable rows={stationRows} eventLabel="Station" caption={`Mercury's ${YEAR} stations in UTC, New York, London, Kolkata and Sydney`} />
     </div>
     <p class="year-page__check reveal">
-      Station times use NASA JPL Horizons where the reference table has a match. The other times, degrees and shadow dates come from our engine.
+      Station times use NASA JPL Horizons where the reference table has a match. The other times, degrees and shadow dates come from our engine.{' '}
       <a href="/methodology/#event-times">How we check event times</a>
     </p>
   </section>
@@ -239,7 +239,7 @@ const jsonLd = [
     </div>
     <p class="year-page__links reveal">
       {nextPath && <><a href={nextPath}>The next one, {nextFrom.getUTCFullYear()}</a> · </>}
-      <a href="/mercury-retrograde/">All years</a> · <a href="/retrogrades/">Every planet</a> ·
+      <a href="/mercury-retrograde/">All years</a> · <a href="/retrogrades/">Every planet</a> ·{' '}
       <a href={`/full-moon-calendar/${YEAR}/`}>Full moons {YEAR}</a> · <a href={`/eclipses/${YEAR}/`}>Eclipses {YEAR}</a>
     </p>
   </section>

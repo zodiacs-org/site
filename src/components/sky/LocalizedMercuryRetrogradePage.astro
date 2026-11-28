@@ -494,8 +494,8 @@ const jsonLd = [
         <span class="mono--label">{asOf}</span>
         <strong class="rx-now__line">{status}</strong>
         <span class="rx-now__all">
-          {c.retroToday} {retroToday.length ? retroToday.join(', ') : c.none} ·
-          {c.allBefore} <a href={`${prefix}/retrogrades/`}>{c.allLink}</a>
+          {c.retroToday} {retroToday.length ? retroToday.join(', ') : c.none} ·{' '}
+          {c.allBefore} <a href={`${prefix}/retrogrades/`}>{c.allLink}</a>{' '}
           · <a href="/mercury-retrograde/2027/" hreflang="en" title={englishOnly.aria}>{c.only2027}{englishOnly.suffix}</a>
         </span>
       </div>

@@ -292,7 +292,7 @@ const sources = [
         </p>
         <p class="event-confidence" data-reading-confidence>
           <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
-          alone.
+          alone.{' '}
           <small>{READING_CONFIDENCE_NOTE}</small>
         </p>
       </section>
@@ -325,7 +325,7 @@ const sources = [
         {interpretation.body.map((paragraph) => <p>{paragraph}</p>)}
         <p class="event-confidence" data-reading-confidence>
           <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
-          alone{interpretation.signNotes ? ', and a Sun sign for the notes below' : ''}.
+          alone{interpretation.signNotes ? ', and a Sun sign for the notes below' : ''}.{' '}
           <small>{READING_CONFIDENCE_NOTE}</small>
         </p>
       </section>

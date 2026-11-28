@@ -84,7 +84,7 @@ const jsonLd = [
         files read or written.
       </p>
       <p>
-        <strong>{manifest.releaseStatus === 'unpublished-candidate' ? 'Unpublished candidate' : manifest.releaseStatus}
+        <strong>{manifest.releaseStatus === 'unpublished-candidate' ? 'Unpublished candidate' : manifest.releaseStatus}{' '}
         · {manifest.name} {manifest.version}.</strong> It is not on npm. Install it from the
         archive below, whose SHA-256 is published beside it. The adapter's code is MIT.
         The archive is MIT and CC BY 4.0 together, because it bundles the engine's ΔT
@@ -159,7 +159,7 @@ const jsonLd = [
       </p>
       <p>
         The install brings fourteen packages. Three are the server's own,
-        pinned exactly —
+        pinned exactly —{' '}
         <code>@modelcontextprotocol/server {manifest.dependencies['@modelcontextprotocol/server']}</code>,{' '}
         <code>@modelcontextprotocol/core {manifest.dependencies['@modelcontextprotocol/core']}</code> and{' '}
         <code>zod {manifest.dependencies.zod}</code> — and the other eleven are

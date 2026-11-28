@@ -1339,6 +1339,16 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const url of urls) {
     if (url.loc === '/registry/collection/') url.lastmod = laterDate(url.lastmod, '2026-11-20');
   }
+  // Spaces restored where a line break in the template met a link or an expression (2026-11-28,
+  // scripts/astro-inline-spacing.mjs): the translated eclipse, full moon and Mercury retrograde pages' status lines.
+  // The placements page's count of combinations takes the same day from its editorial receipt
+  // (src/lib/editorial-metadata.mjs).
+  const INLINE_SPACING_PAGES = new Set(['/es', '/fr', '/it', '/pt'].flatMap((prefix) => (
+    ['eclipses', 'full-moon-calendar', 'mercury-retrograde'].map((page) => `${prefix}/${page}/`)
+  )));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (INLINE_SPACING_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-28');
+  }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);
     if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);

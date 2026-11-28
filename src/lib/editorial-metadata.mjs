@@ -2,7 +2,8 @@
  * Dates preserve the reviewed sitemap baseline, except /learn/: Search's
  * September 5 content revision (034ee2f) supersedes its August 23 receipt;
  * the October 16 design sweep (labels and dash punctuation) dates them all,
- * and /learn/aspects/ gained its natal planet-pair section on October 26.
+ * and /learn/aspects/ gained its natal planet-pair section on October 26. /learn/placements/
+ * got back the space before its count of combinations on November 28.
  * No reliable first-publication receipt is available for these pages.
  */
 const animals = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
@@ -13,7 +14,7 @@ export const EDITORIAL_METADATA = Object.freeze(Object.fromEntries([
     ['/learn/houses/', '2026-10-16'],
     ['/learn/planets/', '2026-10-16'],
     ['/learn/aspects/', '2026-10-25'],
-    ['/learn/placements/', '2026-10-16'],
+    ['/learn/placements/', '2026-11-28'],
   ].map(([path, modified]) => [path, Object.freeze({ type: 'CollectionPage', modified })]),
   ...locales.flatMap((locale) => ['', ...animals.map((animal) => `${animal}/`)].map((suffix) => [
     `${locale === 'en' ? '' : `/${locale}`}/learn/chinese-zodiac/${suffix}`,

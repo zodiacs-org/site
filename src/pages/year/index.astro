@@ -42,7 +42,7 @@ const noneTimed = YEAR_PEOPLE.every((person) => person.birthTime === null);
     <div class="tool-hero">
       <h1 class="display">The year ahead, for well-known people.</h1>
       <p>
-        Each score reads the twelve months from {from ? dayName(from) : 'the start of this month'} from a public birth date.
+        Each score reads the twelve months from {from ? dayName(from) : 'the start of this month'} from a public birth date.{' '}
         {noneTimed ? 'No birth time is published for any of them, so every chart is cast for noon.' : 'Scores without a birth time are noon charts.'}{' '}
         <a href="/year-score/">Score your own year</a>.
       </p>

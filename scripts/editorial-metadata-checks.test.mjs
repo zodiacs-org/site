@@ -24,9 +24,11 @@ describe('editorial metadata ownership', () => {
   });
 
   it('advances only the documented content revisions (the October 16 design sweep)', () => {
-    for (const slug of ['', 'houses/', 'planets/', 'placements/']) {
+    for (const slug of ['', 'houses/', 'planets/']) {
       expect(editorialMetadata(`/learn/${slug}`).modified).toBe('2026-10-16');
     }
+    // The placements hub got back the space before its count of combinations.
+    expect(editorialMetadata('/learn/placements/').modified).toBe('2026-11-28');
     // The natal planet-pair release added the hub's pair section.
     expect(editorialMetadata('/learn/aspects/').modified).toBe('2026-10-25');
     for (const [path, owner] of Object.entries(EDITORIAL_METADATA)) {
