@@ -422,12 +422,24 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
     data.sun ? `${data.sun.rashi} Sun` : data.sunCandidates.length ? `Sun in ${data.sunCandidates.join(' or ')}` : null,
     data.rising ? `${data.rising.rashi} rising` : null,
   ].filter((part): part is string => !!part);
+  const polarLimit = data.limits.find((line) => /geographic pole|no unique direction of east/iu.test(line));
+  const missingRisingNote = data.rising
+    ? '.'
+    : polarLimit
+      ? `. ${cardWords(polarLimit)}`
+      : data.timeKnown && !data.placed
+        ? '; add a birthplace for rising.'
+        : !data.timeKnown && data.placed
+          ? '; add a birth time for rising.'
+          : !data.timeKnown && !data.placed
+            ? '; add birth time and place for rising.'
+            : '.';
   const heroSummary = boundaryLabels.length > 0
     ? `Provisional near a boundary (${boundaryLabels.join(', ')}): a small shift in birth time or ayanamsa can move it.`
     : cuspLimits.length > 0
       ? 'Provisional near a sign boundary: a small shift in birth time or ayanamsa can move it.'
       : heroPlacements.length > 0
-        ? `${heroPlacements.join(', ')}${!data.rising ? '; add birth time and place for rising.' : '.'}`
+        ? `${heroPlacements.join(', ')}${missingRisingNote}`
         : cardWords(data.summary);
   const chips = [
     {

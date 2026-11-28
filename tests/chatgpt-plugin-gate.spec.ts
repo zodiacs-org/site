@@ -1237,14 +1237,18 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
 
       const enabledNames = new Set(enabledFeatures.map((tool) => tool.name));
       const candidateCases: { tool: string; label: string; args: Record<string, unknown>; patterns: RegExp[]; secrets: RegExp }[] = [
-        { tool: 'get_numerology', label: 'candidate-numerology', args: { birthDate: '1979-08-17', name: 'Philippa Quennell' }, patterns: [/Numerology, separate from astrology/, /Life Path/], secrets: /1979|08-17|Philippa|Quennell/i },
+        { tool: 'get_astrocartography', label: 'candidate-astrocartography', args: { ...PERSON_A, cities: ['Lisbon'] }, patterns: [/Astrocartography/, /Lisbon/, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
         { tool: 'get_vedic_signs', label: 'candidate-vedic', args: PERSON_A, patterns: [/Vedic signs/, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
         { tool: 'get_year_score', label: 'candidate-year-score', args: PERSON_A, patterns: [/Year Ahead Score/, /out of 10/], secrets: BIRTH_DETAILS_IN_LINK },
         { tool: 'get_solar_return', label: 'candidate-solar-return', args: PERSON_A, patterns: [/solar return/i, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
         { tool: 'find_good_days', label: 'candidate-good-days', args: { goal: 'contract', from: '2027-01-15', to: '2027-02-15', zone: 'Europe/London' }, patterns: [/Find good days/i, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
+        { tool: 'get_retrograde_for_me', label: 'candidate-retrogrades', args: PERSON_A, patterns: [/Retrogrades for you/, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
+        { tool: 'get_personal_day', label: 'candidate-personal-day', args: PERSON_A, patterns: [/Your day/i, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
+        { tool: 'get_numerology', label: 'candidate-numerology', args: { birthDate: '1979-08-17', name: 'Philippa Quennell' }, patterns: [/Numerology, separate from astrology/, /Life Path/], secrets: /1979|08-17|Philippa|Quennell/i },
       ];
-      const toRender = candidateCases.filter((item) => enabledNames.has(item.tool)).slice(0, 2);
-      expect(toRender.length, 'at least one enabled feature tool rendered').toBeGreaterThan(0);
+      const toRender = candidateCases.filter((item) => enabledNames.has(item.tool));
+      expect(toRender.length, 'every enabled feature tool has a browser gate case').toBe(enabledFeatures.length);
+      if (local) expect(toRender.length, 'all eight local candidate feature cards render').toBe(8);
       let firstRendered: { result: any; patterns: RegExp[]; secrets: RegExp } | null = null;
       for (const item of toRender) {
         const result = answered(await candidateRpc('tools/call', { name: item.tool, arguments: item.args }), item.tool);
@@ -1261,7 +1265,7 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expectClean(openaiDrawn, featuresWidget, MODES[1], 'candidate-feature/window.openai', firstRendered.secrets);
         for (const pattern of firstRendered.patterns) expect(openaiDrawn.text).toMatch(pattern);
       }
-    }, 180_000);
+    }, 240_000);
 
     it('keeps the listing policy in everything the panels put on screen', () => {
       expect(renderedText.length).toBeGreaterThanOrEqual(40);

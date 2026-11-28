@@ -331,6 +331,30 @@ describe('features-panel cards for the seven feature funnels (eight tools)', () 
     expect(vedicCuspHtml.slice(0, vedicCuspFoldAt)).not.toContain('sidereal Sun sits right on the boundary');
     expect(vedicCuspHtml.slice(vedicCuspFoldAt)).toContain('sidereal Sun sits right on the boundary');
 
+    // VedicSignsCard explains polar rising unavailability instead of asking for inputs already given, and prompts only for missing inputs.
+    const vedicPole = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30', zone: 'UTC', latitude: 90, longitude: 0 }, ALL_ON, { ref: 'chatgpt' });
+    expect(vedicPole.ok).toBe(true);
+    if (!vedicPole.ok) throw new Error('vedicPole failed');
+    const vedicPoleHtml = render(h(VedicSignsCard, { data: vedicPole.data as never, links: vedicPole.links as ToolLink[] }));
+    assertBrandedCard(vedicPoleHtml, 'VedicSignsCard (polar)', ['1990-05-03', '08:30']);
+    const vedicPoleBeforeFold = vedicPoleHtml.slice(0, vedicPoleHtml.indexOf('<details class="fold"'));
+    expect(vedicPoleBeforeFold).toContain('undefined at a geographic pole');
+    expect(vedicPoleBeforeFold).not.toMatch(/add (?:a )?birth/iu);
+
+    const vedicNoPlace = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30', zone: 'UTC' }, ALL_ON, { ref: 'chatgpt' });
+    expect(vedicNoPlace.ok).toBe(true);
+    if (!vedicNoPlace.ok) throw new Error('vedicNoPlace failed');
+    const vedicNoPlaceHtml = render(h(VedicSignsCard, { data: vedicNoPlace.data as never, links: vedicNoPlace.links as ToolLink[] }));
+    expect(vedicNoPlaceHtml.slice(0, vedicNoPlaceHtml.indexOf('<details class="fold"'))).toContain('add a birthplace for rising');
+    expect(vedicNoPlaceHtml.slice(0, vedicNoPlaceHtml.indexOf('<details class="fold"'))).not.toContain('add birth time');
+
+    const vedicNoTime = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 }, ALL_ON, { ref: 'chatgpt' });
+    expect(vedicNoTime.ok).toBe(true);
+    if (!vedicNoTime.ok) throw new Error('vedicNoTime failed');
+    const vedicNoTimeHtml = render(h(VedicSignsCard, { data: vedicNoTime.data as never, links: vedicNoTime.links as ToolLink[] }));
+    expect(vedicNoTimeHtml.slice(0, vedicNoTimeHtml.indexOf('<details class="fold"'))).toContain('add a birth time for rising');
+    expect(vedicNoTimeHtml.slice(0, vedicNoTimeHtml.indexOf('<details class="fold"'))).not.toContain('add birth time and place');
+
     // Your Day still displays a reading-confidence label even when there are zero contacts that day.
     const emptyDay = structuredClone(dayOff.data) as { contacts: unknown[]; timeKnown: boolean; placed: boolean };
     emptyDay.contacts = [];
