@@ -119,6 +119,77 @@ const round2 = (value: number) => Math.round(value * 100) / 100;
 const signedAngleDiff = (a: number, b: number) => ((((a - b) % 360) + 540) % 360) - 180;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
 
+const BOUNDARY_REFINE_MS = 250;
+const BOUNDARY_PROBE_RADII_MS = [10, 50, 250, 500] as const;
+const ASPECT_OFFSETS: Record<AspectType, readonly number[]> = {
+  conjunction: [0],
+  sextile: [60, 300],
+  square: [90, 270],
+  trine: [120, 240],
+  opposition: [180],
+};
+
+/**
+ * Refines a transit crossing that lands within `BOUNDARY_REFINE_MS` of a local day boundary (`dayStart` or `dayEnd`)
+ * using a symmetric bracket centered strictly on `boundaryMs`. Because adjacent days share the exact same boundary
+ * instant (earlier day's exclusive end === later day's inclusive start), both days evaluate the identical bracket and
+ * assign every near-midnight crossing to exactly one day.
+ */
+function refineCrossingNearBoundary(
+  mover: TransitBody,
+  pointLon: number,
+  aspect: AspectType,
+  approxMs: number,
+  boundaryMs: number,
+): number {
+  const offsets = ASPECT_OFFSETS[aspect];
+  const lonAtBoundary = bodyLongitude(mover, new Date(boundaryMs));
+  let targetLon = (pointLon + offsets[0]) % 360;
+  let bestDist = Math.abs(signedAngleDiff(lonAtBoundary, targetLon));
+  for (let i = 1; i < offsets.length; i += 1) {
+    const candidate = (pointLon + offsets[i]) % 360;
+    const dist = Math.abs(signedAngleDiff(lonAtBoundary, candidate));
+    if (dist < bestDist) {
+      bestDist = dist;
+      targetLon = candidate;
+    }
+  }
+  const errorAt = (ms: number) => signedAngleDiff(bodyLongitude(mover, new Date(ms)), targetLon);
+  const fBoundary = errorAt(boundaryMs);
+  if (fBoundary === 0) return boundaryMs;
+
+  for (const radius of BOUNDARY_PROBE_RADII_MS) {
+    const fLeft = errorAt(boundaryMs - radius);
+    const fRight = errorAt(boundaryMs + radius);
+    const crossesLeft = fLeft === 0 || (fLeft < 0) !== (fBoundary < 0);
+    const crossesRight = fRight === 0 || (fRight < 0) !== (fBoundary < 0);
+    if (!crossesLeft && !crossesRight) continue;
+    const onLeft = crossesLeft && (!crossesRight || approxMs < boundaryMs);
+    let lo = onLeft ? boundaryMs - radius : boundaryMs;
+    let hi = onLeft ? boundaryMs : boundaryMs + radius;
+    let flo = onLeft ? fLeft : fBoundary;
+    let fhi = onLeft ? fBoundary : fRight;
+    if (flo === 0) return lo;
+    if (fhi === 0) return hi;
+    while (hi - lo > 1) {
+      const mid = Math.floor((lo + hi) / 2);
+      const fm = errorAt(mid);
+      if (fm === 0) return mid;
+      if ((flo < 0) !== (fm < 0)) {
+        hi = mid;
+        fhi = fm;
+      } else {
+        lo = mid;
+        flo = fm;
+      }
+    }
+    if (onLeft && hi === boundaryMs) return lo;
+    if (!onLeft && lo === boundaryMs) return hi;
+    return Math.abs(flo) <= Math.abs(fhi) ? lo : hi;
+  }
+  return approxMs;
+}
+
 /**
  * The birth chart for the page, cast as the get_personal_day tool casts it
  * (castNatal in src/ai-tools/personal/shared.ts): whole-sign houses, the
@@ -209,15 +280,26 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   const exact = new Map<string, Date[]>();
   // Pad the scan window by one hour either side of [dayStart, dayEnd) so `dayStart` sits strictly inside the root
   // finder's interior (never triggering transit-scan-core's synthetic `from` boundary tolerance hit) while genuine
-  // crossings right on midnight are still solved cleanly, then filter strictly to [dayStart, dayEnd).
-  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, new Date(dayStart.getTime() - HOUR), new Date(dayEnd.getTime() + HOUR), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  // crossings right on midnight are still solved cleanly; refine any hit near a day boundary against that exact
+  // boundary so adjacent days agree on its side, then filter strictly to [dayStart, dayEnd).
+  const startMs = dayStart.getTime();
+  const endMs = dayEnd.getTime();
+  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, new Date(startMs - HOUR), new Date(endMs + HOUR), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
-    const at = new Date(contact.exactUtc);
-    const ms = at.getTime();
-    if (ms < dayStart.getTime() || ms >= dayEnd.getTime() || !onDate(at)) continue;
+    let ms = Date.parse(contact.exactUtc);
+    const pointLon = natalLon.get(contact.natalPoint);
+    if (pointLon !== undefined) {
+      if (Math.abs(ms - startMs) <= BOUNDARY_REFINE_MS) {
+        ms = refineCrossingNearBoundary(contact.transitBody, pointLon, contact.aspect, ms, startMs);
+      } else if (Math.abs(ms - endMs) <= BOUNDARY_REFINE_MS) {
+        ms = refineCrossingNearBoundary(contact.transitBody, pointLon, contact.aspect, ms, endMs);
+      }
+    }
+    const at = new Date(ms);
+    if (ms < startMs || ms >= endMs || !onDate(at)) continue;
     // A stationing planet can cross the same natal point twice in one local day; preserve every exact pass in order.
     const passes = exact.get(key) ?? [];
-    passes.push(at);
+    if (!passes.some((existing) => Math.abs(existing.getTime() - ms) < 100)) passes.push(at);
     exact.set(key, passes);
   }
   for (const passes of exact.values()) passes.sort((a, b) => a.getTime() - b.getTime());

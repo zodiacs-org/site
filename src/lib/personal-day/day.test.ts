@@ -593,15 +593,46 @@ describe('applying, separating and exact times on the /your-day/ page and get_pe
     expect(uranusPrevContact?.exactPasses).toBeUndefined();
     expect(uranusPrevContact?.exactLocal).toBe('23:59');
 
-    // A genuine crossing landing right on local midnight is still preserved on the new day and excluded from the previous day.
+    // A genuine crossing landing right on local midnight is preserved on the new day and excluded from the previous day.
     const exactMidnightMs = Date.parse('2026-11-09T00:00:00.000Z');
     const midnightTarget = bodyLongitude('Mars', new Date(exactMidnightMs));
     const midnightNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: midnightTarget } : row)) };
+    const midnightPrev = await readPersonalDay(midnightNatal, { birthDate: '1990-11-13', date: '2026-11-08', zone: 'UTC', now: new Date('2026-11-08T12:00:00Z') }, site);
     const midnightDay = await readPersonalDay(midnightNatal, { birthDate: '1990-11-13', date: '2026-11-09', zone: 'UTC', now: new Date('2026-11-09T12:00:00Z') }, site);
+    expect(midnightPrev.contacts.find((entry) => entry.planet === 'Mars' && entry.aspect === 'conjunction' && entry.point === 'Sun')?.exactAt ?? null).toBeNull();
     const midnightContact = midnightDay.contacts.find((entry) => entry.planet === 'Mars' && entry.aspect === 'conjunction' && entry.point === 'Sun');
     expect(midnightContact?.exactPasses).toBeUndefined();
     expect(midnightContact?.exactLocal).toBe('00:00');
-    expect(Math.abs(Date.parse(midnightContact!.exactAt!) - exactMidnightMs)).toBeLessThan(100);
+    expect(midnightContact?.exactAt).toBe('2026-11-09T00:00:00.000Z');
+
+    // Crossings milliseconds before or after midnight must be assigned to exactly one adjacent day (never both, never neither).
+    const beforeMidnightMs = Date.parse('2026-11-08T23:59:59.997Z');
+    const beforeMidnightNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: bodyLongitude('Sun', new Date(beforeMidnightMs)) } : row)) };
+    const nov8Before = await readPersonalDay(beforeMidnightNatal, { birthDate: '1990-11-13', date: '2026-11-08', zone: 'UTC', now: new Date('2026-11-08T12:00:00Z') }, site);
+    const nov9Before = await readPersonalDay(beforeMidnightNatal, { birthDate: '1990-11-13', date: '2026-11-09', zone: 'UTC', now: new Date('2026-11-09T12:00:00Z') }, site);
+    const nov8BeforeHit = nov8Before.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    const nov9BeforeHit = nov9Before.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(nov8BeforeHit?.exactAt).toBe('2026-11-08T23:59:59.997Z');
+    expect(nov8BeforeHit?.exactLocal).toBe('23:59');
+    expect(nov9BeforeHit?.exactAt ?? null).toBeNull();
+
+    const afterMidnightMs = Date.parse('2026-11-09T00:00:00.003Z');
+    const afterMidnightNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: bodyLongitude('Sun', new Date(afterMidnightMs)) } : row)) };
+    const nov8After = await readPersonalDay(afterMidnightNatal, { birthDate: '1990-11-13', date: '2026-11-08', zone: 'UTC', now: new Date('2026-11-08T12:00:00Z') }, site);
+    const nov9After = await readPersonalDay(afterMidnightNatal, { birthDate: '1990-11-13', date: '2026-11-09', zone: 'UTC', now: new Date('2026-11-09T12:00:00Z') }, site);
+    const nov8AfterHit = nov8After.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    const nov9AfterHit = nov9After.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(nov8AfterHit?.exactAt ?? null).toBeNull();
+    expect(nov9AfterHit?.exactAt).toBe('2026-11-09T00:00:00.003Z');
+    expect(nov9AfterHit?.exactLocal).toBe('00:00');
+
+    // A sub-millisecond crossing between 23:59:59.999Z and 00:00:00.000Z still belongs solely to the earlier day.
+    const subMsTarget = (bodyLongitude('Sun', new Date(exactMidnightMs - 1)) + bodyLongitude('Sun', new Date(exactMidnightMs))) / 2;
+    const subMsNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: subMsTarget } : row)) };
+    const nov8SubMs = await readPersonalDay(subMsNatal, { birthDate: '1990-11-13', date: '2026-11-08', zone: 'UTC', now: new Date('2026-11-08T12:00:00Z') }, site);
+    const nov9SubMs = await readPersonalDay(subMsNatal, { birthDate: '1990-11-13', date: '2026-11-09', zone: 'UTC', now: new Date('2026-11-09T12:00:00Z') }, site);
+    expect(nov8SubMs.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun')?.exactAt).toBe('2026-11-08T23:59:59.999Z');
+    expect(nov9SubMs.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun')?.exactAt ?? null).toBeNull();
   });
 
   it('still computes Your Day when an unrelated historical zone shard fails, and fails without retrying when the needed shard fails', async () => {

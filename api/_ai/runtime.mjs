@@ -44096,6 +44096,62 @@ var ORDINAL8 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "sev
 var round22 = (value) => Math.round(value * 100) / 100;
 var signedAngleDiff = (a, b) => ((a - b) % 360 + 540) % 360 - 180;
 var signName6 = (slug2) => SIGNS2.find((entry) => entry.slug === slug2).name;
+var BOUNDARY_REFINE_MS = 250;
+var BOUNDARY_PROBE_RADII_MS = [10, 50, 250, 500];
+var ASPECT_OFFSETS3 = {
+  conjunction: [0],
+  sextile: [60, 300],
+  square: [90, 270],
+  trine: [120, 240],
+  opposition: [180]
+};
+function refineCrossingNearBoundary(mover, pointLon, aspect2, approxMs, boundaryMs) {
+  const offsets = ASPECT_OFFSETS3[aspect2];
+  const lonAtBoundary = bodyLongitude2(mover, new Date(boundaryMs));
+  let targetLon = (pointLon + offsets[0]) % 360;
+  let bestDist = Math.abs(signedAngleDiff(lonAtBoundary, targetLon));
+  for (let i = 1; i < offsets.length; i += 1) {
+    const candidate = (pointLon + offsets[i]) % 360;
+    const dist = Math.abs(signedAngleDiff(lonAtBoundary, candidate));
+    if (dist < bestDist) {
+      bestDist = dist;
+      targetLon = candidate;
+    }
+  }
+  const errorAt = (ms) => signedAngleDiff(bodyLongitude2(mover, new Date(ms)), targetLon);
+  const fBoundary = errorAt(boundaryMs);
+  if (fBoundary === 0) return boundaryMs;
+  for (const radius of BOUNDARY_PROBE_RADII_MS) {
+    const fLeft = errorAt(boundaryMs - radius);
+    const fRight = errorAt(boundaryMs + radius);
+    const crossesLeft = fLeft === 0 || fLeft < 0 !== fBoundary < 0;
+    const crossesRight = fRight === 0 || fRight < 0 !== fBoundary < 0;
+    if (!crossesLeft && !crossesRight) continue;
+    const onLeft = crossesLeft && (!crossesRight || approxMs < boundaryMs);
+    let lo = onLeft ? boundaryMs - radius : boundaryMs;
+    let hi = onLeft ? boundaryMs : boundaryMs + radius;
+    let flo = onLeft ? fLeft : fBoundary;
+    let fhi = onLeft ? fBoundary : fRight;
+    if (flo === 0) return lo;
+    if (fhi === 0) return hi;
+    while (hi - lo > 1) {
+      const mid = Math.floor((lo + hi) / 2);
+      const fm = errorAt(mid);
+      if (fm === 0) return mid;
+      if (flo < 0 !== fm < 0) {
+        hi = mid;
+        fhi = fm;
+      } else {
+        lo = mid;
+        flo = fm;
+      }
+    }
+    if (onLeft && hi === boundaryMs) return lo;
+    if (!onLeft && lo === boundaryMs) return hi;
+    return Math.abs(flo) <= Math.abs(fhi) ? lo : hi;
+  }
+  return approxMs;
+}
 function minorLeftOut(mover, point2) {
   return mover === "Venus" || mover === "Mars" || mover === "Neptune" || point2 === "Venus" || point2 === "Jupiter";
 }
@@ -44126,13 +44182,23 @@ async function readPersonalDay(natal, input, clock2) {
   const sky = new Map(computeBodies2(midday).map((row) => [row.body, row.lon]));
   const onDate = (at) => Number(date3.slice(0, 4)) <= 1970 || dateOn3(at, zone10) === date3;
   const exact = /* @__PURE__ */ new Map();
-  if (natal.timeKnown) for (const contact2 of scanTransitContacts({ bodies: natalBodies, angles }, new Date(dayStart2.getTime() - HOUR8), new Date(dayEnd.getTime() + HOUR8), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  const startMs = dayStart2.getTime();
+  const endMs = dayEnd.getTime();
+  if (natal.timeKnown) for (const contact2 of scanTransitContacts({ bodies: natalBodies, angles }, new Date(startMs - HOUR8), new Date(endMs + HOUR8), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key2 = `${contact2.transitBody}|${contact2.natalPoint}|${contact2.aspect}`;
-    const at = new Date(contact2.exactUtc);
-    const ms = at.getTime();
-    if (ms < dayStart2.getTime() || ms >= dayEnd.getTime() || !onDate(at)) continue;
+    let ms = Date.parse(contact2.exactUtc);
+    const pointLon = natalLon.get(contact2.natalPoint);
+    if (pointLon !== void 0) {
+      if (Math.abs(ms - startMs) <= BOUNDARY_REFINE_MS) {
+        ms = refineCrossingNearBoundary(contact2.transitBody, pointLon, contact2.aspect, ms, startMs);
+      } else if (Math.abs(ms - endMs) <= BOUNDARY_REFINE_MS) {
+        ms = refineCrossingNearBoundary(contact2.transitBody, pointLon, contact2.aspect, ms, endMs);
+      }
+    }
+    const at = new Date(ms);
+    if (ms < startMs || ms >= endMs || !onDate(at)) continue;
     const passes = exact.get(key2) ?? [];
-    passes.push(at);
+    if (!passes.some((existing) => Math.abs(existing.getTime() - ms) < 100)) passes.push(at);
     exact.set(key2, passes);
   }
   for (const passes of exact.values()) passes.sort((a, b) => a.getTime() - b.getTime());
