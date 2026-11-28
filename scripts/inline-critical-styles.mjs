@@ -36,13 +36,24 @@ const deferredStyleLoader = `<script data-zdx-deferred-style-loader>
           var fonts = template.content.querySelector('script[data-zdx-font-faces]');
           if (fonts && window.FontFace && document.fonts) {
             try {
-              var pending = JSON.parse(fonts.textContent).map(function (entry) {
+              // A face with media is declared up front on those screens. There it
+              // stays, for every width the window later takes (media all: the
+              // loaded face, no new request). Elsewhere it loads here, and the
+              // up-front copy is switched off so a wider window cannot fetch it again.
+              var wide = document.querySelector('style[data-zdx-wide-faces]');
+              var pending = JSON.parse(fonts.textContent).filter(function (entry) {
+                if (!entry.media || !window.matchMedia(entry.media).matches) return true;
+                if (wide) wide.media = 'all';
+                return false;
+              }).map(function (entry) {
                 return new FontFace(entry.family, entry.source, entry.descriptors).load().catch(function () { return null; });
               });
               Promise.all(pending).then(function (faces) {
+                var added = false;
                 for (var faceIndex = 0; faceIndex < faces.length; faceIndex += 1) {
-                  if (faces[faceIndex]) document.fonts.add(faces[faceIndex]);
+                  if (faces[faceIndex]) { document.fonts.add(faces[faceIndex]); added = true; }
                 }
+                if (added && wide && wide.media !== 'all') wide.media = 'not all';
               });
               template.remove();
             } catch (error) {
@@ -138,7 +149,8 @@ const targetPaths = [
 const deferNonBaseConfig = new Map([
   ['birth-chart/index.html', {
     select: /^(?:Base|calculator)\.[A-Za-z0-9_-]+\.css$/u,
-    shape: { inline: 2, deferred: 2, external: 4 },
+    // Two deferred stylesheets and the phone mono face (phoneFacePages).
+    shape: { inline: 2, deferred: 3, external: 4 },
   }],
   ['ru/birth-chart/index.html', {
     select: /^Base\.[A-Za-z0-9_-]+\.css$/u,
@@ -310,12 +322,35 @@ const belowFoldFaces = [
   { family: 'JetBrains Mono', style: 'normal', source: '/fonts/jetbrains-mono-latin-wght-normal.woff2' },
 ];
 
-function takeBelowFoldFaces(css) {
+/**
+ * The birth chart's mono face on phones. Below 961px the sample chart sits
+ * under the form, and its first mono text ("MC", "ASC", the degrees) starts
+ * about 1,550px down a phone's page. Declared up front, the first layout
+ * fetched the 40 KB face beside the hero's fonts, and Lighthouse's simulated
+ * phone counted it on the path to the headline's LCP. From 961px the sample
+ * sits beside the form, in the first screen, so there the face stays declared
+ * up front (wideMedia) and the page renders exactly as before. On phones the
+ * deferred-style loader fetches the same file when that loader runs (island
+ * intent, a shared chart's link, or after load) and registers it, which is
+ * what the face's font-display: swap already did when it arrived late.
+ * Either way one face then serves every width: on wide screens the loader
+ * widens the up-front copy to media all, and on phones it switches that copy
+ * off once its own face is in, so a rotated tablet or a resized window keeps
+ * the face without a second request. No-JS readers keep the face in noscript.
+ */
+export const phoneFacePages = new Map([
+  ['birth-chart/index.html', {
+    faces: [{ family: 'JetBrains Mono', style: 'normal', source: '/fonts/jetbrains-mono-latin-wght-normal.woff2' }],
+    wideMedia: 'not all and (max-width: 960px)',
+  }],
+]);
+
+function takeBelowFoldFaces(css, list = belowFoldFaces) {
   const faces = [];
   const output = css.replace(/@font-face\s*\{[^{}]*\}/gi, (face) => {
     const family = declarationValue(face, 'font-family');
     const style = declarationValue(face, 'font-style') || 'normal';
-    const below = belowFoldFaces.some((entry) => entry.family === family && entry.style === style && face.includes(entry.source));
+    const below = list.some((entry) => entry.family === family && entry.style === style && face.includes(entry.source));
     if (!below) return face;
     faces.push(face);
     return '';
@@ -391,7 +426,9 @@ function takeLateFace(css) {
   return { css: output, face };
 }
 
-function fontFaceDefinitions(faces) {
+// media, when given, names the screens that already declare these faces up
+// front; the loader skips them there.
+function fontFaceDefinitions(faces, media = null) {
   const supported = new Set(['font-family', 'src', 'font-weight', 'font-style', 'font-display']);
   return JSON.stringify(faces.map((face) => {
     for (const [, descriptor] of face.matchAll(/(?:[{;])\s*([\w-]+)\s*:/g)) {
@@ -407,6 +444,7 @@ function fontFaceDefinitions(faces) {
         style: declarationValue(face, 'font-style') || 'normal',
         display: declarationValue(face, 'font-display') || 'auto',
       },
+      ...(media ? { media } : {}),
     };
   })).replace(/</g, '\\u003c');
 }
@@ -423,6 +461,12 @@ export async function inlineCriticalStyles(
   } = {},
 ) {
   if (!hasHtmlAttribute(html, marker)) return { html, stylesheets: 0, bytes: 0 };
+
+  // deferFaces: true moves the pair pages' belowFoldFaces; an object
+  // ({ faces, wideMedia }, phoneFacePages) moves its own faces and keeps them
+  // declared up front on wideMedia screens.
+  const faceList = deferFaces === true ? belowFoldFaces : deferFaces ? deferFaces.faces : [];
+  const wideMedia = deferFaces && deferFaces !== true ? deferFaces.wideMedia : null;
 
   const stabilizeChrome = hasHtmlAttribute(html, stableChromeMarker);
   if (stabilizeChrome && subsetHomepageFonts) {
@@ -502,7 +546,7 @@ export async function inlineCriticalStyles(
       ? useHomepageFontSubsets(stableResult.css)
       : { css: stableResult.css, changes: 0 };
     const faceResult = deferFaces
-      ? takeBelowFoldFaces(subsetResult.css)
+      ? takeBelowFoldFaces(subsetResult.css, faceList)
       : { css: subsetResult.css, faces: [] };
     const lateResult = lateFace
       ? takeLateFace(faceResult.css)
@@ -534,9 +578,9 @@ export async function inlineCriticalStyles(
     );
   }
 
-  if (deferFaces && deferredFaces.length !== belowFoldFaces.length) {
+  if (deferFaces && deferredFaces.length !== faceList.length) {
     throw new Error(
-      `inline-critical-styles: expected ${belowFoldFaces.length} below-fold faces, found ${deferredFaces.length}`,
+      `inline-critical-styles: expected ${faceList.length} below-fold faces, found ${deferredFaces.length}`,
     );
   }
 
@@ -566,7 +610,7 @@ export async function inlineCriticalStyles(
     assertSafeCss(faces, 'below-fold faces');
     output = output.replace(
       '</head>',
-      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces}</style><script type="application/json" data-zdx-font-faces>${fontFaceDefinitions(deferredFaces)}</script></template><noscript><style>${faces}</style></noscript></head>`,
+      `${wideMedia ? `<style media="${wideMedia}" data-zdx-wide-faces>${faces}</style>` : ''}<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces}</style><script type="application/json" data-zdx-font-faces>${fontFaceDefinitions(deferredFaces, wideMedia)}</script></template><noscript><style>${faces}</style></noscript></head>`,
     );
   }
   if (deferredTags.length > 0 || deferredFaces.length > 0) {
@@ -616,6 +660,7 @@ async function main() {
       const deferredCount = source.match(deferredStylePattern)?.length ?? 0;
       const loaderCount = source.match(/data-zdx-deferred-style-loader/g)?.length ?? 0;
       const fontDefinitionsCount = source.match(/<script type="application\/json" data-zdx-font-faces>/g)?.length ?? 0;
+      const wideFacesCount = source.match(/<style media="[^"]*" data-zdx-wide-faces>/g)?.length ?? 0;
       const lateFaceCount = source.match(/<style media="[^"]*" data-zdx-late-face>/g)?.length ?? 0;
       const lateLoaderCount = source.match(/data-zdx-late-face-loader/g)?.length ?? 0;
       const {
@@ -630,7 +675,8 @@ async function main() {
         || deferredCount !== expectedDeferredCount
         || externalCount !== expectedExternalCount
         || loaderCount !== expectedLoaderCount
-        || fontDefinitionsCount !== (pairPathSet.has(relativePath) ? 1 : 0)
+        || fontDefinitionsCount !== (pairPathSet.has(relativePath) || phoneFacePages.has(relativePath) ? 1 : 0)
+        || wideFacesCount !== (phoneFacePages.has(relativePath) ? 1 : 0)
         || lateFaceCount !== (horoscopePathSet.has(relativePath) ? 1 : 0)
         || lateLoaderCount !== lateFaceCount
       ) {
@@ -650,7 +696,7 @@ async function main() {
     const result = await inlineCriticalStyles(source, distRoot, {
       deferNonBase: deferConfig?.select,
       subsetHomepageFonts: relativePath === 'index.html',
-      deferFaces: pairPathSet.has(relativePath),
+      deferFaces: phoneFacePages.get(relativePath) ?? pairPathSet.has(relativePath),
       keepLinked: pairPathSet.has(relativePath) ? pairKeptStylesheet : null,
       lateFace: horoscopePathSet.has(relativePath),
     });
