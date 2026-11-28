@@ -17,6 +17,9 @@ const EXPECTED = [
   { slug: 'pisces', name: 'Рыбы', dates: 'с 19 фев по 20 мар', prep: 'Рыбах', element: 'мутабельный знак воды', ruler: 'Юпитер в традиции и Нептун в современной астрологии' },
 ] as const;
 
+/** Russian takes «во» before Льве and «в» before every other sign. */
+const inSign = (expected: (typeof EXPECTED)[number]) => `${expected.slug === 'leo' ? 'во' : 'в'} ${expected.prep}`;
+
 function readerText(slug: string) {
   const guide = RU_GUIDES[slug];
   if (!guide) throw new Error(`Missing fixture ${slug}`);
@@ -55,12 +58,22 @@ describe('Russian sign guides', () => {
       expect(text).toContain(expected.dates);
       expect(text).toContain(expected.element);
       expect(text).toContain(expected.ruler);
-      expect(guide?.sections[6]?.body[0]).toContain(`Солнце в ${expected.prep}`);
-      expect(guide?.sections[6]?.body[0]).toContain(`Луна в ${expected.prep}`);
-      expect(guide?.sections[6]?.body[0]).toContain(`Асцендент в ${expected.prep}`);
-      expect(guide?.sections[6]?.body[1]).toContain(`Венера в ${expected.prep}`);
-      expect(guide?.sections[6]?.body[1]).toContain(`Марс в ${expected.prep}`);
+      expect(guide?.sections[6]?.body[0]).toContain(`Солнце ${inSign(expected)}`);
+      expect(guide?.sections[6]?.body[0]).toContain(`Луна ${inSign(expected)}`);
+      expect(guide?.sections[6]?.body[0]).toContain(`Асцендент ${inSign(expected)}`);
+      expect(guide?.sections[6]?.body[1]).toContain(`Венера ${inSign(expected)}`);
+      expect(guide?.sections[6]?.body[1]).toContain(`Марс ${inSign(expected)}`);
     }
+  });
+
+  it('says «во Льве», never «в Льве», and «во» before no other sign', () => {
+    for (const expected of EXPECTED) {
+      const text = readerText(expected.slug);
+      expect(text, expected.slug).not.toMatch(/(?:^|[^\p{L}])в Льве/u);
+      expect(text, expected.slug).not.toMatch(/(?:^|[^\p{L}])во (?!Льве)(?:Овне|Тельце|Близнецах|Раке|Деве|Весах|Скорпионе|Стрельце|Козероге|Водолее|Рыбах)/u);
+    }
+    expect(RU_GUIDES.leo?.sections[6]?.body.join(' ')).toContain('Солнце во Льве');
+    expect(RU_GUIDES.leo?.sections[6]?.body.join(' ')).toContain('Асцендент во Льве');
   });
 
   it('uses the canonical chart vocabulary without English prose leakage', () => {
