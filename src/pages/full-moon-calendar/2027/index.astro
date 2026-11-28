@@ -13,6 +13,7 @@ import { nasaLunationAt } from '../../../lib/nasa-event-times-2027';
 import { worldTimes, worldTimesSentence } from '../../../world-times/world-times';
 import { FULL_MOON_CALENDAR_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
 import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
+import { artPageCard, artPageCardAlt } from '../../../lib/og-art-cards.mjs';
 
 // The 2027 full moons, cut from the same committed sky data the hub renders,
 // with the Moon's sign computed at each instant — receipts, no client
@@ -149,8 +150,8 @@ const jsonLd = [
   title="Full Moon Calendar 2027: Every Date, Time, and Sign | Zodiacs.org"
   description="All 12 full moons of 2027 with the exact time in UTC, New York, London, Kolkata and Sydney, the Moon's zodiac sign and degree, the almanac name, and a calendar file."
   path={`/full-moon-calendar/${YEAR}/`}
-  image="/assets/og/v2/tool/full-moon-calendar.png"
-  imageAlt="Full moon calendar 2027, Zodiacs.org"
+  image={artPageCard('full-moon-calendar')}
+  imageAlt={artPageCardAlt('full-moon-calendar')}
   jsonLd={jsonLd}
   sources={sources}
 >

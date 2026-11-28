@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -49,8 +50,8 @@ const jsonLd = [
   title="How to Read a Birth Chart, Step by Step | Zodiacs.org"
   description="A four-step method for reading any natal chart: the big three, planets room by room, the aspects doing the most work, and the whole-chart weather."
   path="/learn/how-to-read-a-birth-chart/"
-  image="/assets/og/v2/tool/how-to-read-a-birth-chart.png"
-  imageAlt="How to read a birth chart, Zodiacs.org"
+  image={artPageCard('how-to-read-a-birth-chart')}
+  imageAlt={artPageCardAlt('how-to-read-a-birth-chart')}
   type="article"
   jsonLd={jsonLd}
 >
