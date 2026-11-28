@@ -259,6 +259,18 @@ const jsonLd = [
   jsonLd={jsonLd}
   stableTypography
 >
+  {/* The title's date is the only EB Garamond italic above the fold, so the
+      browser found that face late and it landed after the first paint. The
+      fallback serif sets these titles 5 to 15% narrower, so the late swap
+      rewrapped up to a third of the dates (May 5 at 1440 px: CLS 0.126), and
+      no single size-adjust fits every date. The page takes the optional faces
+      (stableTypography), so the title paints in its own face or stays in the
+      fallback, and never swaps. The date wears a 6 KB cut of the italic that
+      holds only the dates' characters (scripts/build-birthday-date-font.mjs),
+      and the full italic stays next in its stack. Its preload comes before
+      the hero art's: behind the art it finished after the first paint on a
+      slow connection; ahead of it, it lands first and the art comes no later. */}
+  <link slot="head" rel="preload" href="/assets/birthday/eb-garamond-birthday-date-400-italic.woff2" as="font" type="font/woff2" crossorigin />
   {heroSign && (
     <link
       slot="head"
@@ -270,15 +282,6 @@ const jsonLd = [
       fetchpriority="high"
     />
   )}
-  {/* The title's date is the only EB Garamond italic above the fold, so the
-      browser found that face late and it landed after the first paint. The
-      fallback serif sets these titles 5 to 15% narrower, so the late swap
-      rewrapped up to a third of the dates (May 5 at 1440 px: CLS 0.126), and
-      no single size-adjust fits every date. The page takes the optional faces
-      (stableTypography) and preloads the italic, at low priority so the hero
-      art keeps its bandwidth: the title paints in its own face or stays in
-      the fallback, and never swaps. */}
-  <link slot="head" rel="preload" href="/fonts/eb-garamond-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low" />
 
   <Motion />
   <article class="bday" style={`--sign:${hue};--hue:${hue}`}>
@@ -633,6 +636,18 @@ const jsonLd = [
 </Base>
 
 <style>
+  /* The title's date face: the EB Garamond italic cut to the dates' code
+     points. Optional like the page's other faces, so it never swaps in late. */
+  @font-face {
+    font-family: 'EB Garamond Birthday Date';
+    src: url('/assets/birthday/eb-garamond-birthday-date-400-italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: optional;
+    unicode-range: U+0020, U+0030-0039, U+0041, U+0044, U+0046, U+004A, U+004D-004F, U+0053, U+0061-0063, U+0065, U+0067-0069, U+006C-0070, U+0072-0076, U+0079;
+  }
+  .bday-title em { font-family: 'EB Garamond Birthday Date', var(--font-serif); }
+
   .bday { padding-bottom: clamp(48px, 6vw, 88px); }
 
   /* ── 1. Hero (the frame is BirthdayHero.astro) ─────────────── */

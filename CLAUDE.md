@@ -148,6 +148,14 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   offer them to screens at 1.5x and above. libaom output is not byte-stable
   across platforms, so they are not in the drift job;
   `scripts/build-sign-art-avif.test.mjs` checks the set)
+- `public/assets/birthday/eb-garamond-birthday-date-400-italic.woff2` ← `node
+  scripts/build-birthday-date-font.mjs` (the birthday title's date face: the
+  EB Garamond italic in `public/fonts/` cut by `pyftsubset` to the code points
+  of the 366 dates, every layout feature, name record and hint kept. The page
+  preloads it as an optional face ahead of the full italic. Byte-stable for a
+  given fontTools and Brotli version (4.69.1 and 1.2.1 made it); `--check`
+  rebuilds and compares, and `scripts/build-birthday-date-font.test.mjs` pins
+  its digest. Rerun it when the month names or the italic change)
 - `public/data/cities/` ← `node scripts/build-cities.mjs` (GeoNames, CC-BY)
 - `src/data/astrocartography-land.json` ← `node scripts/build-astrocartography-land.mjs`
   (the 2-degree land dots the /astrocartography/ map draws, from the cities above;
