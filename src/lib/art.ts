@@ -11,6 +11,12 @@
  * inside their panels behind a soft mask, so no edge of the picture shows on
  * any background.
  *
+ * Since 2026-11-28 (owner-chosen) the profile's empty saved-charts panel
+ * and the Living Chart's empty timeline draw code-made figures instead
+ * (src/components/art/): the keepsake case is no longer placed on any page,
+ * and the sundial stays only on the birthday chart form. Both files stay
+ * published, and their entries stay here.
+ *
  * The four element medallions are round, transparent-edged WebPs at 128 and
  * 256 pixels, cut from one sheet.
  */

@@ -1,0 +1,74 @@
+/* ── Code-drawn panel figures (src/components/art/) ──
+   Small SVG pieces that stand in a panel's empty state. Lines take the
+   site's ink and hairline tokens; the only colour is the sign hues, set on
+   the shapes themselves. Each figure fills the box its page's stylesheet
+   reserves (.pf-figure), so nothing moves when it draws. Motion is
+   transform and opacity only, and none of it runs under reduced motion,
+   where the still frame is complete. */
+.pf-figure {
+  display: block;
+  pointer-events: none;
+}
+.pf-figure > .zf {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.zf-hair { stroke: var(--ink-1); stroke-opacity: 0.18; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.zf-hair--faint { stroke-opacity: 0.1; }
+.zf-tick { stroke: var(--ink-2); stroke-opacity: 0.55; stroke-width: 1; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.zf-line { stroke: var(--ink-2); stroke-opacity: 0.6; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.zf-line--ahead { stroke-opacity: 0.4; stroke-dasharray: 2 4; vector-effect: none; }
+
+/* The empty wheel: the sign ring turns once in 140 s; the three places
+   where planets will go breathe in turn. */
+.zf-wheel__ring path:not(.zf-tick) { stroke-opacity: 0.85; }
+.zf-place {
+  stroke: var(--ink-1);
+  stroke-opacity: 0.85;
+  stroke-width: 1;
+  stroke-dasharray: 2.4 3;
+  opacity: 0.85;
+}
+
+/* The timeline: five moments appear one after another, and today's ring
+   pulses outward. */
+.zf-today { fill: var(--ink-0); }
+.zf-today-ring { stroke: var(--ink-0); stroke-opacity: 0.32; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.zf-today-pulse { stroke: var(--ink-0); stroke-width: 1; opacity: 0; vector-effect: non-scaling-stroke; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .zf-wheel__ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: zf-turn 140s linear infinite;
+  }
+  .zf-place { animation: zf-breathe 6s ease-in-out infinite; }
+  .zf-place--1 { animation-delay: -4s; }
+  .zf-place--2 { animation-delay: -2s; }
+
+  .zf-moment { animation: zf-appear 12s ease-out infinite both; }
+  .zf-moment--1 { animation-delay: 0.6s; }
+  .zf-moment--2 { animation-delay: 1.2s; }
+  .zf-moment--3 { animation-delay: 1.8s; }
+  .zf-moment--4 { animation-delay: 2.4s; }
+  .zf-today-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: zf-pulse 2.8s ease-out infinite;
+  }
+}
+
+@keyframes zf-turn { to { transform: rotate(360deg); } }
+@keyframes zf-breathe { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes zf-appear {
+  0% { opacity: 0; }
+  6%, 84% { opacity: 1; }
+  94%, 100% { opacity: 0; }
+}
+@keyframes zf-pulse {
+  0% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0; transform: scale(3.4); }
+}
