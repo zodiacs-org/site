@@ -13,6 +13,7 @@ import type { MinimalBody } from '../lib/engine/synastry';
 import type { Chart } from '../lib/engine/types';
 import type { SavedChart } from '../lib/profile/schema';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
+import { hasConfirmedBirthTime, hasVerifiedSavedCalendarFlags, preserveSavedCalendarUnknown } from '../lib/time/saved-calendar';
 import type { City } from '../lib/geo/search';
 import { localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { useEngine, type EngineLoader } from '../lib/hooks/useEngine';
@@ -20,6 +21,7 @@ import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
+import type { Engine2NoticeItem } from '../lib/chart-notices';
 import type { TransitSky } from './transit/TransitRing';
 import type { CalendarPositionsSource } from './CalendarSubscribe';
 import { eventTransitQuery } from '../lib/events/transit-link';
@@ -56,6 +58,8 @@ interface SlotState {
   city: City | null;
   /** The calendar the form's date was written in; absent is Gregorian. */
   calendar?: CalendarChoice;
+  /** The entered Old Style YYYY-MM-DD when `date` was converted from Julian. */
+  writtenJulianDate?: string;
 }
 
 interface NatalWheel {
@@ -66,12 +70,16 @@ interface NatalWheel {
   cusps: number[] | null;
   minimal: MinimalBody[];
   timeKnown: boolean;
+  hostZoneDiffers: boolean;
+  flags: readonly string[];
+  fromSavedSummary?: boolean;
   itineraryTimeKnown: boolean;
   calendarPositions: CalendarPositionsSource | null;
 }
 
 interface Result {
   natal: NatalWheel;
+  engine2Notices: Engine2NoticeItem[];
   computeSky: (when: Date) => TransitSky[];
   nowMs: number;
   revision: number;
@@ -88,6 +96,8 @@ function wheelFromChart(
   utc: Date,
   houseSystem: CalendarPositionsSource['houseSystem'] = r.houses?.system ?? 'whole',
 ): NatalWheel {
+  const hostZoneDiffers = r.flags.includes('host-zone-data-differs');
+  const confirmedTime = hasConfirmedBirthTime(timeKnown, r.flags);
   return {
     computedUtc: utc,
     // South Node stays off the drawn wheel — the site-wide convention
@@ -96,15 +106,17 @@ function wheelFromChart(
     bodies: r.bodies
       .filter((b) => b.body !== 'South Node')
       .map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
-    asc: timeKnown ? (r.angles?.asc ?? null) : null,
-    mc: timeKnown ? (r.angles?.mc ?? null) : null,
-    cusps: timeKnown ? (r.houses?.cusps ?? null) : null,
-    minimal: r.bodies.filter((b) => timeKnown || b.body !== 'Moon').map(({ body, lon }) => ({ body, lon })),
+    asc: confirmedTime ? (r.angles?.asc ?? null) : null,
+    mc: confirmedTime ? (r.angles?.mc ?? null) : null,
+    cusps: confirmedTime ? (r.houses?.cusps ?? null) : null,
+    minimal: r.bodies.filter((b) => confirmedTime || b.body !== 'Moon').map(({ body, lon }) => ({ body, lon })),
     timeKnown,
-    itineraryTimeKnown: timeKnown && !r.flags.some((flag) => flag === 'no-time' || flag === 'dst-gap' || flag === 'dst-fold'),
+    hostZoneDiffers,
+    flags: [...r.flags],
+    itineraryTimeKnown: confirmedTime && !r.flags.some((flag) => flag === 'no-time' || flag === 'dst-gap' || flag === 'dst-fold'),
     calendarPositions: timeKnown ? {
-      bodies: r.bodies,
-      angles: r.angles ? { asc: r.angles.asc, mc: r.angles.mc } : null,
+      bodies: confirmedTime ? r.bodies : r.bodies.filter((b) => b.body !== 'Moon'),
+      angles: confirmedTime && r.angles ? { asc: r.angles.asc, mc: r.angles.mc } : null,
       houseSystem,
       engineVersion: r.engineVersion,
       utc,
@@ -114,10 +126,12 @@ function wheelFromChart(
 
 type Engine = Awaited<ReturnType<EngineLoader>>;
 
-function calendarPositionsFromSaved(chart: SavedChart): CalendarPositionsSource {
+function calendarPositionsFromSaved(chart: SavedChart, confirmedTime = true): CalendarPositionsSource {
   return {
-    bodies: chart.summary.bodies,
-    angles: chart.summary.angles,
+    bodies: confirmedTime
+      ? chart.summary.bodies
+      : chart.summary.bodies.filter((b) => b.body !== 'Moon'),
+    angles: confirmedTime ? chart.summary.angles : null,
     houseSystem: chart.summary.houseSystem,
     engineVersion: chart.summary.engineVersion,
     utc: chart.summary.utcISO,
@@ -126,7 +140,9 @@ function calendarPositionsFromSaved(chart: SavedChart): CalendarPositionsSource 
 
 function natalFromForm(slot: SlotState, engine: Engine): NatalWheel {
   const timeKnown = slot.timeKnown && slot.time !== '';
-  const resolved = resolveLocalToUtc(slot.date, timeKnown ? slot.time : '12:00', slot.city!.tz, { longitude: slot.city!.lon });
+  const resolved = slot.writtenJulianDate
+    ? resolveLocalToUtc(slot.date, timeKnown ? slot.time : '12:00', slot.city!.tz, { longitude: slot.city!.lon, writtenJulianDate: slot.writtenJulianDate })
+    : resolveLocalToUtc(slot.date, timeKnown ? slot.time : '12:00', slot.city!.tz, { longitude: slot.city!.lon });
   const r = engine.computeChart({
     utc: resolved.utc,
     latitude: slot.city!.lat,
@@ -145,7 +161,10 @@ function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
       chart.birth.date,
       timeKnown && chart.birth.time ? chart.birth.time : '12:00',
       chart.birth.place.tz,
-      { longitude: chart.birth.place.lon },
+      {
+        longitude: chart.birth.place.lon,
+        reconstructedCalendar: !hasVerifiedSavedCalendarFlags(chart.summary),
+      },
     );
     const r = engine.computeChart({
       utc: resolved.utc,
@@ -153,24 +172,30 @@ function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
       longitude: chart.birth.place.lon,
       houseSystem: chart.summary.houseSystem,
       timeKnown,
-      flags: resolved.flags,
+      flags: preserveSavedCalendarUnknown(resolved.flags, chart.summary, chart.birth.date),
     });
     return wheelFromChart(r, timeKnown, resolved.utc, chart.summary.houseSystem);
   }
   // No stored place — draw from the summary (bodies + ascendant), no house ring.
   const timeKnown = chart.birth.timeKnown && Boolean(chart.birth.time);
+  const savedFlags = preserveSavedCalendarUnknown(chart.summary.flags ?? [], chart.summary, chart.birth.date);
+  const hostZoneDiffers = savedFlags.includes('host-zone-data-differs');
+  const confirmedTime = hasConfirmedBirthTime(timeKnown, savedFlags);
   return {
     computedUtc: chart.summary.utcISO,
     bodies: chart.summary.bodies
       .filter((b) => b.body !== 'South Node')
       .map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
-    asc: timeKnown ? (chart.summary.angles?.asc ?? null) : null,
-    mc: timeKnown ? (chart.summary.angles?.mc ?? null) : null,
+    asc: confirmedTime ? (chart.summary.angles?.asc ?? null) : null,
+    mc: confirmedTime ? (chart.summary.angles?.mc ?? null) : null,
     cusps: null,
-    minimal: chart.summary.bodies.filter((b) => timeKnown || b.body !== 'Moon').map(({ body, lon }) => ({ body, lon })),
+    minimal: chart.summary.bodies.filter((b) => confirmedTime || b.body !== 'Moon').map(({ body, lon }) => ({ body, lon })),
     timeKnown,
+    hostZoneDiffers,
+    flags: [...savedFlags],
+    fromSavedSummary: true,
     itineraryTimeKnown: false,
-    calendarPositions: timeKnown ? calendarPositionsFromSaved(chart) : null,
+    calendarPositions: timeKnown ? calendarPositionsFromSaved(chart, confirmedTime) : null,
   };
 }
 
@@ -292,6 +317,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
           return;
         }
         capturedSlot.date = entry.date;
+        capturedSlot.writtenJulianDate = entry.writtenJulianDate;
       }
       // A birth date under 13 or still to come is refused before anything loads (a saved chart's too).
       const refusal = birthDateRefusal(capturedSlot.source === 'saved'
@@ -315,6 +341,11 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
       const natal = capturedSlot.source === 'saved'
         ? natalFromSaved(capturedChart!, engine)
         : natalFromForm(capturedSlot, engine);
+      const engine2Notices = mod.resolveEngine2Notices(locale, natal.flags, {
+        convertedFromJulian: Boolean(capturedSlot.source === 'form' && capturedSlot.writtenJulianDate),
+        fromSavedChart: capturedSlot.source === 'saved',
+        fromSavedSummary: natal.fromSavedSummary,
+      });
       const computeSky = (when: Date): TransitSky[] =>
         engine.computeBodies(when)
           .filter((b) => TRANSIT_BODIES.has(b.body))
@@ -322,7 +353,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
       if (!isCurrent()) return;
       setRingMod(mod);
       setSearchFocus(null);
-      setResult({ natal, computeSky, nowMs: eventContext.at ?? Date.now(),
+      setResult({ natal, engine2Notices, computeSky, nowMs: eventContext.at ?? Date.now(),
         eventActive: eventContext.at !== null, revision: ++resultRevision.current });
     } catch (err) {
       if (!isCurrent()) return;
@@ -367,6 +398,11 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
       { name: 'MC' as const },
     ] : []),
   ] : [];
+  const calendarNotes = result
+    ? result.engine2Notices
+      .filter(({ key }) => key.startsWith('calendar-unknown'))
+      .map(({ text }) => text)
+    : [];
 
   function openSearch(event: Event): void {
     if (!(event.currentTarget as HTMLDetailsElement).open || searchMod || searchLoading) return;
@@ -478,6 +514,18 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
           {!result.natal.timeKnown && (
             <p class="notice" role="status">{EVENT_COPY[locale].unknownTime}</p>
           )}
+          {result.engine2Notices.map(({ key, text }) => (
+            <p
+              key={key}
+              class="notice"
+              role="status"
+              data-polar-angles-notice={key === 'polar-angles' ? '' : undefined}
+              data-calendar-unknown-notice={key.startsWith('calendar-unknown') ? '' : undefined}
+              data-host-zone-differs-notice={key === 'host-zone-data-differs' || key === 'host-zone-data-differs-saved' ? '' : undefined}
+            >
+              {text}
+            </p>
+          ))}
           {/* Keyed on the result revision: a fresh result remounts the ring,
               so a stale scrub offset or focused contact never carries over
               from a previous chart. */}
@@ -488,6 +536,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
             computeSky={result.computeSky}
             nowMs={result.nowMs}
             focusRequest={searchFocus}
+            calendarNotes={calendarNotes}
             eventDate={eventContext.at !== null ? {
               active: result.eventActive,
               onSelect: () => resetDate(eventContext.at!, true),
@@ -502,7 +551,8 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
           <summary class="tsearch-host__summary"><span>Your transit itinerary</span><span class="orb" aria-hidden="true">↗</span></summary>
           <div class="core tsearch-host__core">
             {ItineraryComponent ? <ItineraryComponent key={result.revision} natal={searchNatal}
-              timeKnown={result.natal.itineraryTimeKnown} birthTimeKnown={result.natal.timeKnown} anchorMs={result.nowMs} />
+              timeKnown={result.natal.itineraryTimeKnown} birthTimeKnown={result.natal.timeKnown}
+              hostZoneDiffers={result.natal.hostZoneDiffers} calendarNotes={calendarNotes} anchorMs={result.nowMs} />
               : itineraryError ? <div><p class="calc__error" role="alert">{itineraryError}</p>
                 <button type="button" class="btn" onClick={() => openItinerary()}>Try again</button></div>
                 : <p role="status">{itineraryLoading ? 'Loading your itinerary…' : 'Open to explore your longer transit periods.'}</p>}
@@ -525,6 +575,8 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
                 nowMs={result?.nowMs ?? Date.now()}
                 onShowOnRing={(contact) => setSearchFocus({ contact })}
                 timeKnown={result?.natal.timeKnown ?? true}
+                hostZoneDiffers={result?.natal.hostZoneDiffers ?? false}
+                calendarNotes={calendarNotes}
               />
             ) : (
               searchError

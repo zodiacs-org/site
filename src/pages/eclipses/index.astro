@@ -9,6 +9,7 @@ import { signBySlug } from '../../lib/signs';
 import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/site-publication';
 import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // Every eclipse in the committed data (2026 to 2030), receipts, no
 // client ephemeris.
@@ -167,8 +168,8 @@ const jsonLd = [
   title="Eclipse Dates 2026 to 2030: Solar & Lunar, Exact | Zodiacs.org"
   description="Every solar and lunar eclipse through 2030 with exact peak times and zodiac signs, including the August 12, 2026 total solar eclipse over Iceland and Spain."
   path="/eclipses/"
-  image="/assets/og/v2/tool/eclipses.png"
-  imageAlt="Eclipse dates, Zodiacs.org"
+  image={artPageCard('eclipses')}
+  imageAlt={artPageCardAlt('eclipses')}
   jsonLd={jsonLd}
   sources={sources}
 >

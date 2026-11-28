@@ -17,9 +17,12 @@ export interface PersonalWords {
   solarAbout: string;
   /** {time}: YYYY-MM-DD HH:MM. */
   exactAt: string;
+  /** {time}: YYYY-MM-DD HH:MM, used when a device offset or calendar warning applies. */
+  calculatedAt: string;
   slowNote: string;
   pass: string;
   unknownTime: string;
+  hostZoneDiffersTime: string;
   more: string;
   note: string;
   milestones: Record<MilestoneKind, { name: string; about: string }>;
@@ -37,9 +40,11 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     solarTitle: 'Your solar return',
     solarAbout: 'The Sun comes back to {position}, where it was when you were born. Astrologers read the chart for this moment as the shape of the year ahead.',
     exactAt: 'Exact at {time} UTC.',
+    calculatedAt: 'Calculated at {time} UTC.',
     slowNote: 'A slow planet stays near this point for weeks on either side of the exact date.',
     pass: 'Pass {pass} of {count}.',
     unknownTime: 'Birth time unknown: the chart is set for noon at your birthplace, so this date is approximate.',
+    hostZoneDiffersTime: "Your device's time-zone data differs from our historical table near your birth date, so Moon contacts are left out and exact times may vary.",
     more: 'More: {url}',
     note: 'Dates are computed; what they mean is astrology’s forecast, not a guarantee.',
     milestones: {
@@ -64,9 +69,11 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     solarTitle: 'Tu retorno solar',
     solarAbout: 'El Sol vuelve a {position}, donde estaba cuando naciste. Los astrólogos leen la carta de este momento como la forma del año que empieza.',
     exactAt: 'Exacto a las {time} UTC.',
+    calculatedAt: 'Calculado a las {time} UTC.',
     slowNote: 'Un planeta lento se queda cerca de este punto varias semanas antes y después de la fecha exacta.',
     pass: 'Paso {pass} de {count}.',
     unknownTime: 'Hora de nacimiento desconocida: la carta se calcula para el mediodía en tu lugar de nacimiento, así que esta fecha es aproximada.',
+    hostZoneDiffersTime: 'Los datos de zona horaria de tu dispositivo difieren de nuestra tabla histórica cerca de tu fecha de nacimiento, así que se omiten los contactos de la Luna y las horas exactas pueden variar.',
     more: 'Más: {url}',
     note: 'Las fechas están calculadas; lo que significan es el pronóstico de la astrología, no una garantía.',
     milestones: {
@@ -100,9 +107,11 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     solarTitle: 'Sua revolução solar',
     solarAbout: 'O Sol volta a {position}, onde estava quando você nasceu. Os astrólogos leem o mapa deste momento como o formato do ano que começa.',
     exactAt: 'Exato às {time} UTC.',
+    calculatedAt: 'Calculado às {time} UTC.',
     slowNote: 'Um planeta lento fica perto deste ponto por semanas antes e depois da data exata.',
     pass: 'Passagem {pass} de {count}.',
     unknownTime: 'Hora de nascimento desconhecida: o mapa é calculado para o meio-dia no seu local de nascimento, então esta data é aproximada.',
+    hostZoneDiffersTime: 'Os dados de fuso horário do seu dispositivo diferem da nossa tabela histórica perto da sua data de nascimento, então os contatos da Lua foram omitidos e os horários exatos podem variar.',
     more: 'Mais: {url}',
     note: 'As datas são calculadas; o que significam é a previsão da astrologia, não uma garantia.',
     milestones: {
@@ -136,9 +145,11 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     solarTitle: 'Ta révolution solaire',
     solarAbout: 'Le Soleil revient à {position}, là où il était à ta naissance. Les astrologues lisent le thème de ce moment comme la forme de l’année qui commence.',
     exactAt: 'Exact à {time} UTC.',
+    calculatedAt: 'Calculé à {time} UTC.',
     slowNote: 'Une planète lente reste près de ce point des semaines avant et après la date exacte.',
     pass: 'Passage {pass} sur {count}.',
     unknownTime: 'Heure de naissance inconnue : le thème est calculé pour midi à ton lieu de naissance, donc cette date est approximative.',
+    hostZoneDiffersTime: 'Les données de fuseau horaire de ton appareil diffèrent de notre table historique autour de ta date de naissance, donc les contacts de la Lune sont omis et les heures exactes peuvent varier.',
     more: 'Plus : {url}',
     note: 'Les dates sont calculées ; ce qu’elles signifient relève de la prévision astrologique, pas d’une garantie.',
     milestones: {
@@ -172,9 +183,11 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     solarTitle: 'La tua rivoluzione solare',
     solarAbout: 'Il Sole torna a {position}, dove si trovava quando sei nato. Gli astrologi leggono il tema di questo momento come la forma dell’anno che comincia.',
     exactAt: 'Esatto alle {time} UTC.',
+    calculatedAt: 'Calcolato alle {time} UTC.',
     slowNote: 'Un pianeta lento resta vicino a questo punto per settimane prima e dopo la data esatta.',
     pass: 'Passaggio {pass} di {count}.',
     unknownTime: 'Ora di nascita sconosciuta: il tema è calcolato per mezzogiorno nel tuo luogo di nascita, quindi questa data è approssimativa.',
+    hostZoneDiffersTime: 'I dati del fuso orario del tuo dispositivo differiscono dalla nostra tabella storica vicino alla tua data di nascita, quindi i contatti della Luna sono omessi e gli orari esatti possono variare.',
     more: 'Altro: {url}',
     note: 'Le date sono calcolate; il loro significato è la previsione dell’astrologia, non una garanzia.',
     milestones: {
@@ -208,9 +221,11 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     solarTitle: 'Ваш солярный возврат',
     solarAbout: 'Солнце возвращается в {position}, где оно было в момент вашего рождения. Астрологи читают карту этого момента как очертания наступающего года.',
     exactAt: 'Точно в {time} UTC.',
+    calculatedAt: 'Рассчитано на {time} UTC.',
     slowNote: 'Медленная планета остаётся рядом с этой точкой несколько недель до и после точной даты.',
     pass: 'Прохождение {pass} из {count}.',
     unknownTime: 'Время рождения неизвестно: карта рассчитана на полдень в месте рождения, поэтому дата приблизительная.',
+    hostZoneDiffersTime: 'Данные часовых поясов вашего устройства отличаются от нашей исторической таблицы около даты вашего рождения, поэтому контакты Луны исключены, а точное время может отличаться.',
     more: 'Подробнее: {url}',
     note: 'Даты рассчитаны; их значение — астрологический прогноз, а не гарантия.',
     milestones: {

@@ -6,6 +6,7 @@ import HeroCrop from '../../components/HeroCrop.astro';
 import ReturnToolLinks from '../../components/return-visits/ReturnToolLinks.astro';
 import SaturnReturnCalculator from '../../islands/SaturnReturnCalculator';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -55,10 +56,15 @@ const jsonLd = [
   title="Saturn Return Calculator: When Is Yours? | Zodiacs.org"
   description="Find your exact Saturn return dates free: every crossing, retrograde passes included, computed from Saturn's real motion on your device. Just needs your birth date."
   path="/saturn-return/"
-  image="/assets/og/v2/tool/saturn-return.png"
-  imageAlt="Free Saturn return calculator, Zodiacs.org"
+  image={artPageCard('saturn-return')}
+  imageAlt={artPageCardAlt('saturn-return')}
   jsonLd={jsonLd}
+  stableTypography
 >
+  {/* Optional faces (stableTypography): a heading font that landed after the
+      first paint rewrapped the title and moved the calculator below it. A
+      face that misses the first paint now stays in the fallback for the
+      visit. Base already preloads the title's face. */}
   <section class="section--tight container">
     <Motion />
     <ToolHeroMark name="saturn-return" />

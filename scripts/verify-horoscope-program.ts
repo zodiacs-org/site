@@ -1,3 +1,4 @@
+import '../src/lib/engine/server-de440.mjs';
 import { readFile } from 'node:fs/promises';
 import type { HoroscopeProgram } from '../src/lib/horoscope-program';
 import {

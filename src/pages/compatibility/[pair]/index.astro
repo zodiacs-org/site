@@ -9,6 +9,7 @@ import ArtFrame from '../../../components/ArtFrame.astro';
 import Motion from '../../../components/Motion.astro';
 import AskGuideLine from '../../../components/AskGuideLine.astro';
 import PairProse from '../../../components/compat/PairProse.astro';
+import PairAnglePlate from '../../../components/compat/PairAnglePlate.astro';
 import SynastryCalculator from '../../../islands/SynastryCalculator';
 import { SIGNS, ELEMENT_LABEL, MODALITY_LABEL, type Sign } from '../../../lib/signs';
 import { signDateRange } from '../../../lib/sign-display';
@@ -19,6 +20,7 @@ import { elementMedallionSrc, elementMedallionSrcset } from '../../../lib/art';
 import '../../../styles/calculator.css';
 import '../../../styles/pair-page.css';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { pairArtCard, pairArtCardCopy } from '../../../lib/og-art-cards.mjs';
 
 export async function getStaticPaths() {
   const pairs = await getCollection('pairs', ({ data }) => !data.draft);
@@ -78,7 +80,7 @@ const jsonLd = [
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/compatibility/${facts.slug}/` },
     inLanguage: 'en',
-    image: `https://zodiacs.org/assets/og/v2/pair/${facts.slug}.png`,
+    image: `https://zodiacs.org${pairArtCard(facts.slug)}`,
     about: [
       { '@type': 'Thing', name: `${a.name} (astrology)` },
       { '@type': 'Thing', name: `${b.name} (astrology)` },
@@ -109,8 +111,8 @@ const jsonLd = [
   title={entry.data.title}
   description={entry.data.description}
   path={`/compatibility/${facts.slug}/`}
-  image={`/assets/og/v2/pair/${facts.slug}.png`}
-  imageAlt={`${a.name} and ${b.name} compatibility, Zodiacs.org`}
+  image={pairArtCard(facts.slug)}
+  imageAlt={pairArtCardCopy(facts.slug).alt}
   type="article"
   jsonLd={jsonLd}
 >
@@ -178,6 +180,10 @@ const jsonLd = [
       </div>
     </div>
 
+    {/* The angle between the two signs on the wheel: a story plate under the pattern strip, above the read. */}
+    <div class="kwrap">
+      <PairAnglePlate a={a.slug} b={b.slug} />
+    </div>
 
     <section class="ksection ph-readsec" id="read" aria-label={`The full ${a.name} and ${b.name} read`}>
       <div class="kwrap ph-read">

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "2.1.0",
-  "sourceCommit": "92825deeeb5c74c5f56b37d5d612c3439347087e",
-  "sha256": "272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc",
+  "version": "3.0.0",
+  "sourceCommit": "2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322",
+  "sha256": "0addb2f4d39ea4d8e87f54ad82a033a16a94859c78845f055d2208e04259a9a3",
   "license": "MIT AND CC-BY-4.0",
   "sourceRepository": "https://github.com/zodiacs-org/engine",
-  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/933f953dae1b9523c2752ceafcd031b3e8c6e782/artifacts/zodiacs-engine-2.1.0.tgz",
+  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/b5bfdb473b396a4f8c083e5689cf9560789784dd/artifacts/zodiacs-engine-3.0.0.tgz",
   "generator": {
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
@@ -786,7 +786,35 @@
         "De440PackDescription",
         "de440PackBytes",
         "openShippedDe440Pack",
-        "shippedDe440Source"
+        "shippedDe440Source",
+        "useDe440"
+      ]
+    },
+    "./minor-bodies": {
+      "declaration": "./dist/minor-bodies.d.ts",
+      "exports": [
+        "DateInput",
+        "EphemerisFallback",
+        "MINOR_BODIES",
+        "MINOR_BODIES_PROVENANCE",
+        "MINOR_BODIES_SPAN",
+        "MINOR_BODY_NAMES",
+        "MINOR_BODY_SPEED_STEP_DAYS",
+        "MinorBodiesProvenance",
+        "MinorBodyName",
+        "MinorBodyOptions",
+        "MinorBodyPosition",
+        "MinorBodySpec",
+        "MinorBodyTable",
+        "TimeScaleName",
+        "ZodiacSign",
+        "ceres",
+        "chiron",
+        "juno",
+        "minorBodyPosition",
+        "minorBodyPositions",
+        "pallas",
+        "vesta"
       ]
     },
     "./timing": {
@@ -963,8 +991,8 @@
   },
   "notices": {
     "release/LICENSE.txt": "9a8ab25f278db9d59a00ee82d1a82d63ee4891a9c417c53b4e2b9942aaab10df",
-    "release/LICENSING.txt": "bbc06a5db4e18f65d5c59195d6404148b5b778cc6091f7a7ae7bed70bd27a327",
-    "release/NOTICE.txt": "2d58ae216ce2c8a01f69c0dd02b9482659451ce84b82a5aa2ab586a0197b55f5",
-    "release/README.txt": "35c403ebd4a5b8a3f98f648f3f985ce798a61b1df50eb58ae28c4b439da67adb"
+    "release/LICENSING.txt": "683edeab04a404d2a82597939ff9ce5bb9c18714d09026d2a0d292e009829ca9",
+    "release/NOTICE.txt": "f17ebad07719d38fd5c8492335dc1e5a51c6ea2bab9f22cb816c8ec0f09adfad",
+    "release/README.txt": "4cdf38b80a75f447884ada36cf45649745f225a6f12029cf132ebe13f364dc84"
   }
 }

@@ -1,3 +1,4 @@
+import '../src/lib/engine/server-de440.mjs';
 import { stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';

@@ -10,6 +10,7 @@
  * All positions come through the site's vendored @zodiacs/engine package.
  * Events are refined to the minute by bisection over that engine's values.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';

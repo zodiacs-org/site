@@ -1,5 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import Motion from '../../../components/Motion.astro';
+import FullMoonYearPlate from '../../../components/sky/FullMoonYearPlate.astro';
 import '../../../styles/rx-table.css';
 import sky from '../../../data/sky.json';
 import { bodyLongitude } from '../../../lib/engine/full';
@@ -11,6 +13,7 @@ import { nasaLunationAt } from '../../../lib/nasa-event-times-2027';
 import { worldTimes, worldTimesSentence } from '../../../world-times/world-times';
 import { FULL_MOON_CALENDAR_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
 import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
+import { artPageCard, artPageCardAlt } from '../../../lib/og-art-cards.mjs';
 
 // The 2027 full moons, cut from the same committed sky data the hub renders,
 // with the Moon's sign computed at each instant — receipts, no client
@@ -45,6 +48,7 @@ const fulls = (sky.moons as { type: string; at: string }[])
     const id = `full-moon-${at.slice(0, 10)}`;
     return {
       id,
+      skyAt: at,
       // Use the Horizons result when the committed lookup matches this calculation.
       at: new Date(nasaLunationAt('full', at) ?? at),
       name: second ? 'Blue' : MONTH_NAMES[date.getUTCMonth()],
@@ -79,6 +83,7 @@ const km = (n: number) => n.toLocaleString('en-US');
 // Full moons whose calendar date differs between two of the five clocks.
 const dateMoves = fulls.filter((f) => new Set(worldTimes(f.at).map((t) => t.ymd)).size > 1);
 const supermoons = fulls.filter((f) => f.supermoon);
+const plateSigns = Object.fromEntries(fulls.map((f) => [f.skyAt, f.sign.slug]));
 
 // The first full moon after this year, from the same sky data.
 const nextRaw = (sky.moons as { type: string; at: string }[]).find((m) => m.type === 'full' && new Date(m.at).getUTCFullYear() > YEAR);
@@ -145,12 +150,13 @@ const jsonLd = [
   title="Full Moon Calendar 2027: Every Date, Time, and Sign | Zodiacs.org"
   description="All 12 full moons of 2027 with the exact time in UTC, New York, London, Kolkata and Sydney, the Moon's zodiac sign and degree, the almanac name, and a calendar file."
   path={`/full-moon-calendar/${YEAR}/`}
-  image="/assets/og/v2/tool/full-moon-calendar.png"
-  imageAlt="Full moon calendar 2027, Zodiacs.org"
+  image={artPageCard('full-moon-calendar')}
+  imageAlt={artPageCardAlt('full-moon-calendar')}
   jsonLd={jsonLd}
   sources={sources}
 >
   <section class="section--tight container container--narrow">
+    <Motion />
     <div class="tool-hero reveal">
       <a class="crumb" href="/full-moon-calendar/"><span class="crumb__arrow" aria-hidden="true">←</span>Full moon calendar</a>
       <h1 class="display">The full moons of {YEAR}.</h1>
@@ -175,6 +181,8 @@ const jsonLd = [
       </div>
     </div>
   </section>
+
+  <FullMoonYearPlate year={YEAR} signs={plateSigns} />
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">

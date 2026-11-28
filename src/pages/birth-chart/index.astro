@@ -26,9 +26,11 @@ import {
   SAMPLE_RISING,
   SAMPLE_WHEEL,
 } from '../../lib/sample-chart';
+import { WHEEL_SIZE, anatomyMarks, storyStyles } from '../../lib/birth-chart-anatomy-story';
 import '../../styles/calculator.css';
 import '../../styles/explorer.css';
 import '../../styles/post-chart-daily.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const postChartDailyEnabled = hasDailyChartEmailProvider(process.env);
 
@@ -89,29 +91,12 @@ const moon = SAMPLE_PLACEMENTS.find((p) => p.body === 'Moon')!;
 const rising = SAMPLE_RISING;
 const ordinal = (n: number) => `${n}${n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th'}`;
 
-/* The four numbered parts of the anatomy wheel, placed with the Wheel's own
-   geometry: its viewBox pads the drawing by 5% on every side, and longitude
-   runs counterclockwise from the rising degree at nine o'clock. */
-const WHEEL_SIZE = 430;
-const PAD = WHEEL_SIZE * 0.05;
-const FRAME = WHEEL_SIZE + PAD * 2;
-const at = (lon: number, radius: number) => {
-  const phi = ((180 + (lon - SAMPLE_WHEEL.asc)) * Math.PI) / 180;
-  return {
-    x: ((WHEEL_SIZE / 2 + radius * WHEEL_SIZE * Math.cos(phi) + PAD) / FRAME) * 100,
-    y: ((WHEEL_SIZE / 2 - radius * WHEEL_SIZE * Math.sin(phi) + PAD) / FRAME) * 100,
-  };
-};
-const boundaryNear = (lon: number) => Math.round(lon / 30) * 30;
+/* The anatomy wheel's four numbered marks and its story (docs/MOTION.md) are
+   computed in src/lib/birth-chart-anatomy-story.ts, which its test holds to
+   the wheel Wheel draws. */
 /* Tap-to-explain on the sample wheel: every planet, sign and house number. */
 const explainCopy = wheelExplainCopy('en').copy;
 const sampleSpots = staticWheelSpots({ ...SAMPLE_WHEEL, size: WHEEL_SIZE }, explainCopy);
-const anatomyMarks = [
-  { n: 1, ...at(boundaryNear(SAMPLE_WHEEL.asc - 125), 0.435) },
-  { n: 2, ...at(boundaryNear(SAMPLE_WHEEL.asc + 185), 0.255) },
-  { n: 3, ...at(moon.lon + 9, 0.31) },
-  { n: 4, ...at(sun.lon, 0.02) },
-];
 
 /* Sign pictures on a chart page are only ever asked for as a whole set of
    twelve in zodiac order (audit finding F-18, tests/sign-icon-requests-drive):
@@ -135,8 +120,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   title="Free Birth Chart Calculator: Sun, Moon & Rising | Zodiacs.org"
   description="Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser."
   path="/birth-chart/"
-  image="/assets/og/v2/tool/birth-chart.png"
-  imageAlt="Free birth chart calculator, Zodiacs.org"
+  image={artPageCard('birth-chart')}
+  imageAlt={artPageCardAlt('birth-chart')}
   jsonLd={jsonLd}
 >
   {/* A chart saved from an assistant links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
@@ -182,6 +167,19 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
 <style slot="head" is:inline>
   .bc-mono { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--faint); font-variant-numeric: tabular-nums; }
   .bc-section { padding-block: clamp(64px, 8vw, 120px); }
+  /* The sections after the hero skip layout until they near the screen, like
+     the footer. Laid out up front, they made the first layout lay out the
+     whole page (the sample chart twice, the positions table, the FAQ) and
+     asked for the italic and mono faces beside the hero's fonts. Each
+     estimate is the section's height on a phone; once drawn, its real height
+     is kept. */
+  .bc-what, .bc-nt, .bc-trust, .bc-next, .bc-faq, .bc-close { content-visibility: auto; }
+  .bc-what { contain-intrinsic-size: auto 2100px; }
+  .bc-nt { contain-intrinsic-size: auto 1350px; }
+  .bc-trust { contain-intrinsic-size: auto 650px; }
+  .bc-next { contain-intrinsic-size: auto 900px; }
+  .bc-faq { contain-intrinsic-size: auto 700px; }
+  .bc-close { contain-intrinsic-size: auto 450px; }
   /* The sample's sign discs: a quiet circle until the set arrives. */
   .bc-disc { flex: none; display: inline-block; vertical-align: middle; border-radius: 50%; background: rgba(198, 204, 218, 0.06); }
 
@@ -660,6 +658,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
 
     <div class="kpanel bc-anat">
       <div class="bc-anat__wheel bc-wheel">
+        <style is:inline set:html={storyStyles}></style>
+        <span class="bca-go" data-enter="draw" aria-hidden="true"></span>
         <Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel="Sample birth chart wheel, with its four parts numbered" />
         {anatomyMarks.map((mark) => (
           <span class="bc-anat__mark" style={`left:${mark.x.toFixed(2)}%;top:${mark.y.toFixed(2)}%`} aria-hidden="true">{mark.n}</span>

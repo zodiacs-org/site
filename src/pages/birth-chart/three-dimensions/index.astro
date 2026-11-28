@@ -11,6 +11,7 @@ import {
   julianCenturies,
   zenithOf,
 } from '../../../lib/wheel/ecliptic3d';
+import { artPageCard, artPageCardAlt } from '../../../lib/og-art-cards.mjs';
 
 /**
  * The Kahlo figures consume the same committed engine fixture as the homepage
@@ -115,8 +116,8 @@ const jsonLd = [
   title="The Birth Chart in Three Dimensions: Declination, Parallels, Sect | Zodiacs.org"
   description="What the flat chart wheel leaves out: declination and out-of-bounds planets, parallel aspects across the whole zodiac, and whether yours is a day or night chart."
   path="/birth-chart/three-dimensions/"
-  image="/assets/og/v2/tool/birth-chart.png"
-  imageAlt="The birth chart in three dimensions, Zodiacs.org"
+  image={artPageCard('birth-chart')}
+  imageAlt={artPageCardAlt('birth-chart')}
   type="article"
   jsonLd={jsonLd}
 >

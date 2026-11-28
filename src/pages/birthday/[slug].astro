@@ -25,7 +25,7 @@ import {
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged, boundaryMargin, preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
-import { signArtCard } from '../../lib/og-art-cards.mjs';
+import { birthdayArtCard, birthdayArtCardCopy, signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_PEOPLE_VISIBLE, peopleForBirthday } from '../../lib/people';
 import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
 import { BIRTHDAY_DAY_UPDATED, updatedIso, updatedLabel } from '../../world-times/updated';
@@ -199,10 +199,11 @@ const famousParts = famousItems.map((item, index) => ({
 }));
 
 // A one-sign share card contradicts a boundary page such as August 23,
-// whose answer is explicitly year-and-time dependent. Use the birthday card
-// for every computed cusp and advance schema/sitemap freshness together.
+// whose answer is explicitly year-and-time dependent. Every computed cusp
+// shows its own cusp card, with both signs (2026-11-27; the v2 birthday card
+// it showed before stays published for links already shared).
 const ogImage = cusp
-  ? '/assets/og/v2/tool/birthday.png'
+  ? birthdayArtCard(slug)
   : signArtCard(heroSign!.slug);
 const engineUpdated = de440UpdatedDate(`/birthday/${slug}/`);
 const pageModifiedAt = latestModifiedAt(
@@ -254,10 +255,23 @@ const jsonLd = [
   description={entry.data.description}
   path={`/birthday/${slug}/`}
   image={ogImage}
-  imageAlt={`${label} birthday astrology, Zodiacs.org`}
+  imageAlt={cusp ? birthdayArtCardCopy(slug).alt : `${label} birthday astrology, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
+  stableTypography
 >
+  {/* The title's date is the only EB Garamond italic above the fold, so the
+      browser found that face late and it landed after the first paint. The
+      fallback serif sets these titles 5 to 15% narrower, so the late swap
+      rewrapped up to a third of the dates (May 5 at 1440 px: CLS 0.126), and
+      no single size-adjust fits every date. The page takes the optional faces
+      (stableTypography), so the title paints in its own face or stays in the
+      fallback, and never swaps. The date wears a 6 KB cut of the italic that
+      holds only the dates' characters (scripts/build-birthday-date-font.mjs),
+      and the full italic stays next in its stack. Its preload comes before
+      the hero art's: behind the art it finished after the first paint on a
+      slow connection; ahead of it, it lands first and the art comes no later. */}
+  <link slot="head" rel="preload" href="/assets/birthday/eb-garamond-birthday-date-400-italic.woff2" as="font" type="font/woff2" crossorigin />
   {heroSign && (
     <link
       slot="head"
@@ -269,6 +283,7 @@ const jsonLd = [
       fetchpriority="high"
     />
   )}
+
   <Motion />
   <article class="bday" style={`--sign:${hue};--hue:${hue}`}>
     {/* 1. The answer first, the sign art in the light. */}
@@ -308,7 +323,7 @@ const jsonLd = [
     {/* 2. Where the Sun stands, open by default. */}
     <section class="kwrap bday-measure" id="measure" aria-labelledby="bday-measure-title">
       <div class="bday-measure__dial">
-        <div data-enter="rise"><BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} /></div>
+        <BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} />
       </div>
       <div class="bday-measure__head">
         <span class="kicker">Exact date and cusp check</span>
@@ -622,6 +637,18 @@ const jsonLd = [
 </Base>
 
 <style>
+  /* The title's date face: the EB Garamond italic cut to the dates' code
+     points. Optional like the page's other faces, so it never swaps in late. */
+  @font-face {
+    font-family: 'EB Garamond Birthday Date';
+    src: url('/assets/birthday/eb-garamond-birthday-date-400-italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: optional;
+    unicode-range: U+0020, U+0030-0039, U+0041, U+0044, U+0046, U+004A, U+004D-004F, U+0053, U+0061-0063, U+0065, U+0067-0069, U+006C-0070, U+0072-0076, U+0079;
+  }
+  .bday-title em { font-family: 'EB Garamond Birthday Date', var(--font-serif); }
+
   .bday { padding-bottom: clamp(48px, 6vw, 88px); }
 
   /* ── 1. Hero (the frame is BirthdayHero.astro) ─────────────── */

@@ -1,9 +1,15 @@
+// Pages computed at build time, and by astro dev, read JPL DE440 as the
+// server does (src/lib/engine/server-de440.mjs). Astro renders them in this
+// process, where the engine, which Vite leaves external to the server bundle,
+// is this same module; the browser bundles refuse the pack (browserEngineVite).
+import './src/lib/engine/server-de440.mjs';
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
 import { natalAspectRoutes } from './scripts/natal-aspects-policy.mjs';
 import { localeExpansionRoutes } from './src/lib/locale-expansion/policy.mjs';
 import { registryResearchWithheld } from './scripts/registry-research-withheld.mjs';
+import { tarotRoute } from './scripts/tarot-route.mjs';
 import { browserEngineVite } from './scripts/lib/browser-engine.mjs';
 
 function interactionDirective() {
@@ -76,7 +82,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), localeExpansionRoutes(), registryResearchWithheld(), preact(), mdx()],
+  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), localeExpansionRoutes(), registryResearchWithheld(), tarotRoute(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',

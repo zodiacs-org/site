@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
 import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -66,7 +67,7 @@ const jsonLd = [
   description="Calcula tu carta natal gratis: Sol, Luna, ascendente, planetas, casas y qué significan. Privado en tu navegador y explicado con claridad."
   path="/es/birth-chart/"
   locale="es"
-  image="/assets/og/v2/tool/birth-chart.png"
+  image={artPageCard('birth-chart')}
   imageAlt="Calculadora de carta natal gratis, Zodiacs.org"
   jsonLd={jsonLd}
 >

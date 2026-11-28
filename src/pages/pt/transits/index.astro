@@ -7,6 +7,7 @@ import PlanetGlyph from '../../../components/PlanetGlyph';
 import { dayLabel, eventList, transitMonthForEdition, monthLabel } from '../../../lib/horoscopes';
 import daily from '../../../data/daily.json';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const month = transitMonthForEdition(daily.date);
 const events = month ? eventList(month, 'pt') : [];
@@ -58,7 +59,7 @@ const jsonLd = [
   description="Os trânsitos de hoje sobre seus planetas natais, com orbe de até 3°, e um controle que move o céu até um ano antes ou depois. Grátis, no seu dispositivo."
   path="/pt/transits/"
   locale="pt"
-  image="/assets/og/v2/tool/transits.png"
+  image={artPageCard('transits')}
   imageAlt="Rastreador de trânsitos, Zodiacs.org"
   jsonLd={jsonLd}
   glass

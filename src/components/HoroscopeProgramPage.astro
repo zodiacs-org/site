@@ -13,7 +13,8 @@ import EditionText from './EditionText.astro';
 import dailyData from '../data/daily.json';
 import programData from '../data/horoscope-program.json';
 import { HOUSE_THEME, type Daily } from '../lib/daily';
-import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus } from '../lib/horoscope-wheel';
+import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus, horoscopeWheelStory } from '../lib/horoscope-wheel';
+import HoroscopeWheelStory from './HoroscopeWheelStory.astro';
 import { datedEditionText, editionDateLabel } from '../lib/edition-freshness';
 import { EDITOR_AUTHOR } from '../lib/editorial';
 import { horoscopeArtCard, signArtCard } from '../lib/og-art-cards.mjs';
@@ -345,6 +346,8 @@ const noteLabel = pageYear ? `${pageYear} for ${sign.name}` : `${meta.label} for
 const signIndex = SIGNS.findIndex((entry) => entry.slug === sign.slug);
 // Monthly rows are the month's dated events, so its wheel lights none.
 const focusBodies = surface === 'monthly' ? [] : horoscopeWheelFocus(reading.sky, daily);
+// The wheel's entrance, laid over the image by the image's own geometry.
+const wheelStory = horoscopeWheelStory({ daily, signSlug: sign.slug, focus: focusBodies });
 const listWords = (items: string[]) => items.length <= 1
   ? items.join('')
   : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
@@ -426,7 +429,8 @@ const ctaLede = edgeMoon && moonHouse
   {/* Shared entrance motion (docs/MOTION.md). The hero, the controls and the
       reading hold still, since they stay put while a period switch crossfades
       the reading. The rail's sky rows, the further reading and the sign cards
-      rise once; the chart wheel and the sign discs grow in once. */}
+      rise once; the sign discs grow in once, and the chart wheel tells its
+      story once (HoroscopeWheelStory.astro). */}
   <Motion />
   <article
     class="program"
@@ -649,15 +653,18 @@ const ctaLede = edgeMoon && moonHouse
 
     <section class="kwrap hz-section" aria-labelledby="chart-cta-heading">
       <div class="hz-cta">
-        <figure class="hz-cta__wheel hz-wheel" data-enter="disc">
-          <img
-            src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
-            width={HOROSCOPE_WHEEL_SIZE}
-            height={HOROSCOPE_WHEEL_SIZE}
-            alt={`The sky at noon UTC on ${editionLabel}, counted from ${sign.name} as the first house${focusNames.length > 0 ? `, with ${listWords(focusNames)} picked out` : ''}`}
-            loading="lazy"
-            decoding="async"
-          />
+        <figure class="hz-cta__wheel hz-wheel">
+          <div class="hz-wheel__box">
+            <img
+              src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
+              width={HOROSCOPE_WHEEL_SIZE}
+              height={HOROSCOPE_WHEEL_SIZE}
+              alt={`The sky at noon UTC on ${editionLabel}, counted from ${sign.name} as the first house${focusNames.length > 0 ? `, with ${listWords(focusNames)} picked out` : ''}`}
+              loading="lazy"
+              decoding="async"
+            />
+            <HoroscopeWheelStory story={wheelStory} />
+          </div>
           <figcaption>{wheelCaption}</figcaption>
         </figure>
         <div class="hz-cta__head">
@@ -1232,6 +1239,7 @@ const ctaLede = edgeMoon && moonHouse
   }
   .hz-cta__wheel { grid-area: wheel; margin: 0; }
   .hz-cta__wheel img { display: block; width: 100%; height: auto; }
+  .hz-wheel__box { position: relative; }
   .hz-cta__wheel figcaption {
     max-width: 46ch;
     margin: 14px auto 0;

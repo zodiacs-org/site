@@ -5,8 +5,8 @@ import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../lib/accoun
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
-const updated = '11 November 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '20 November 2026';
+const modifiedAt = '2026-11-20T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -14,14 +14,14 @@ const jsonLd = [
     name: 'Terms of use — Zodiacs.org',
     url: 'https://zodiacs.org/terms/',
     description:
-      'Terms for using Zodiacs.org astrology tools, saved charts, Registry records, and external purchase links.',
+      'Terms for using Zodiacs.org astrology tools, saved charts, accounts, and Registry records.',
     dateModified: modifiedAt,
   },
 ];
 ---
 <Base
   title="Terms of Use | Zodiacs.org"
-  description="Terms for using Zodiacs.org astrology tools, saved charts, Registry records, and external purchase links."
+  description="Terms for using Zodiacs.org astrology tools, saved charts, accounts, and Registry records."
   path="/terms/"
   jsonLd={jsonLd}
 >
@@ -36,52 +36,8 @@ const jsonLd = [
         (“Zodiacs,” “we,” “us,” or “our”). Zodiacs LLC owns and operates
         Zodiacs.org. The site is a free astrology reference with a Registry wing
         whose records, catalogue profiles, SDK, and verification tools are
-        read-only. Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. A lookup does not prove control of an address, legal ownership of an asset, or a person's identity. Purchase links open independent services with their own terms and risks. Using the site means you agree to these terms. We have tried to keep
-        them short and readable.
-      </p>
-
-      <h2>The Cabinet of Twelve and public addresses</h2>
-      <p>
-        The Cabinet of Twelve is an optional symbolic display that reads a locally
-        saved birth-chart summary, the public record of one wallet address, and
-        dated sky information side by side. It is a Zodiacs.org display
-        convention, not a traditional astrological technique, proof about a
-        person, wallet score, price prediction, or recommendation. The wallet
-        record does not change the birth chart, and no purchase is required.
-      </p>
-      <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.</p>
-
-      <h2>What “official” means in the Registry</h2>
-      <p>
-        On Zodiacs.org, “official,” “official Zodiac,” and similar wording mean
-        only that an address, contract, mint, or representation matches an
-        entry in the Zodiacs.org Registry's published canonical list. This is a
-        Registry classification—not approval by a government, regulator,
-        wallet provider, marketplace, or blockchain; not identity verification;
-        and not a promise of authenticity beyond that list, safety, value,
-        scarcity, liquidity, or future performance. Verify important details
-        independently on-chain.
-      </p>
-
-      <h2>Digital-asset risks and third-party routes</h2>
-      <p>
-        Digital assets can be highly speculative and volatile. They may have no
-        buyers, become illiquid, fall to zero market value, or result in a total
-        loss. Other risks include counterfeit assets, scams, malicious
-        approvals, software or smart-contract defects, network disruption,
-        inaccurate or delayed market data, provider or venue failure, loss of
-        wallet access, and changes in law or regulation. Past activity, rarity,
-        Registry status, an Aura reading, or displayed market context does not
-        predict value or reduce those risks.
-      </p>
-      <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Blockchain transactions are often irreversible. Zodiacs.org operates Astrofolio. <a href="/disclosure/">Disclosure</a>.</p>
-      <p>
-        A link or Registry entry is provided for reference and is not an
-        endorsement, solicitation, or statement that an asset is suitable for
-        you. The <a href="/disclosure/">Registry disclosure</a> labels each
-        statement as verified from public evidence or as a dated operator
-        attestation; an attestation is the operator's own statement and must
-        not be treated as independently verified.
+        read-only. Using the site means you agree to these terms. We have tried
+        to keep them short and readable.
       </p>
 
       <h2>What this site is</h2>

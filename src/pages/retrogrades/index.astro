@@ -11,6 +11,7 @@ import { bodyLongitude } from '../../lib/engine/full';
 import type { BodyName } from '../../lib/engine/types';
 import { formatLongitude } from '../../lib/signs';
 import { formatShortDate } from '../../lib/i18n/dates';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // All computed at build time from the committed sky data — receipts,
 // no client ephemeris.
@@ -162,11 +163,16 @@ const jsonLd = [
   title="Retrograde Planets 2026 to 2030: Every Window, Dated | Zodiacs.org"
   description="Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026 to 2030, station dates and positions for each window."
   path="/retrogrades/"
-  image="/assets/og/v2/tool/retrogrades.png"
-  imageAlt="Retrograde planets, Zodiacs.org"
+  image={artPageCard('retrogrades')}
+  imageAlt={artPageCardAlt('retrogrades')}
   jsonLd={jsonLd}
   sources={sources}
+  stableTypography
 >
+  {/* Optional faces (stableTypography): a late font rewrapped the hero
+      paragraph and moved .rx-now and everything below it. A face that misses
+      the first paint now stays in the fallback for the visit. Base already
+      preloads the hero's faces. */}
   <section class="section--tight container container--narrow">
     <Motion />
     <ToolHeroMark name="retrogrades" />

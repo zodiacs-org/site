@@ -3,6 +3,7 @@
  * the quick checks (no recomputation); --replay also rebuilds the neighbouring
  * editions and requires the committed file to match byte for byte.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { readFile } from 'node:fs/promises';
 import type { HoroscopeWindow } from '../src/ai-tools/horoscope/window';
 import {

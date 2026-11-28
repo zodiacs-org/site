@@ -140,7 +140,7 @@ describe('technical audit remediation contracts', () => {
       read('src/pages/birthday/[slug].astro'),
       read('src/pages/sitemap.xml.ts'),
     ]);
-    expect(birthdayPage).toContain("? '/assets/og/v2/tool/birthday.png'");
+    expect(birthdayPage).toContain('? birthdayArtCard(slug)');
     expect(birthdayPage).toContain('dateModified: pageModifiedAt');
     expect(sitemap).toContain('birthdayFacts.days[b.id]?.cusp');
     expect(sitemap).toContain('BIRTHDAY_CUSP_OG_MODIFIED_AT');
@@ -163,9 +163,10 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const LEGAL_IDENTITY_LASTMOD = '2026-08-29'");
     expect(sitemap).toContain("...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const)");
     // The approved trust notices revise both schemas and sitemap dates together.
-    expect(terms).toContain("const modifiedAt = '2026-11-11T00:00:00.000Z'");
+    expect(terms).toContain("const modifiedAt = '2026-11-20T00:00:00.000Z'");
     expect(sitemap).toContain("const OWNER_TRUST_LASTMOD = '2026-10-03'");
     expect(sitemap).toContain("['/terms/', '2026-11-11'] as const,");
+    expect(sitemap).toContain("['/terms/', '2026-11-20'] as const,");
     expect(sitemap).toContain("...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const)");
     // So did the elections endpoint's sentence on the privacy page, on 5 October,
     // and the hosted MCP server's request-log retention, on 9 October, and the
@@ -173,10 +174,16 @@ describe('technical audit remediation contracts', () => {
     // and what the app's links carry, on 4 November, worded exactly on 5 November,
     // and the assistants it names, with Gemini added, on 6 November, and the occasions
     // it lists with no card link, a birthday alone, on 7 November, and the share page
-    // arrival word and what the account export includes, on 13 November.
-    expect(privacy).toContain("const modifiedAt = '2026-11-13T00:00:00.000Z'");
+    // arrival word and what the account export includes, on 13 November, and the no-birth-time script, the
+    // analytics sentence and the removed Registry disclosures, on 20 November.
+    expect(privacy).toContain("const modifiedAt = '2026-11-20T00:00:00.000Z'");
     expect(sitemap).toContain("['/privacy/', '2026-11-11'] as const,");
     expect(sitemap).toContain("['/privacy/', '2026-11-13'] as const,");
+    expect(sitemap).toContain("['/privacy/', '2026-11-22'] as const,");
+    // 2026-11-24 is later than main's rendered 2026-11-23 lastmod, so the
+    // changed English privacy page is the final map entry.
+    expect(sitemap).toContain("['/privacy/', '2026-11-24'] as const,");
+    expect(sitemap.lastIndexOf("['/privacy/', '")).toBe(sitemap.indexOf("['/privacy/', '2026-11-24'] as const,"));
     expect(sitemap).toContain("const ASSISTANT_REF_LASTMOD = '2026-10-14'");
     expect(sitemap).toContain("const MCP_HOST_LOGS_LASTMOD = '2026-10-09'");
     expect(sitemap).toContain("...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const)");

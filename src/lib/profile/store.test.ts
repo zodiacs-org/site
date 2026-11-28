@@ -766,4 +766,97 @@ describe('updateChartSummaries', () => {
     expect(storage.getItem(PROFILE_KEY)).toBe(stored);
     expect(window.dispatchEvent).not.toHaveBeenCalled();
   });
+
+  it('skips a stale calendar-only refresh when a newer save changed the stored summary at the same instant', () => {
+    const staleSnapshot = makeChart('same-instant');
+    const newerSave = {
+      ...staleSnapshot,
+      summary: { ...staleSnapshot.summary, calendarChecked: true as const },
+    };
+    seedProfile([newerSave]);
+    const staleRefresh = {
+      ...staleSnapshot.summary,
+      flags: ['calendar-unknown' as const],
+    };
+
+    expect(updateChartSummaries([
+      {
+        id: 'same-instant',
+        utcISO: staleSnapshot.summary.utcISO,
+        previousSummary: staleSnapshot.summary,
+        summary: staleRefresh,
+      },
+    ])).toEqual([]);
+
+    expect(loadProfile().charts[0].summary).toEqual(newerSave.summary);
+    expect(window.dispatchEvent).not.toHaveBeenCalled();
+  });
+
+  it('rechecks a pre-patch changeover-era chart even when its pre-calendar fingerprint was cached', async () => {
+    const { prepareLocalTime, resolveLocalToUtc } = await import('../time/localToUtc');
+    const almaty: SavedPlace = { name: 'Almaty', admin1: 'Almaty', country: 'Kazakhstan', lat: 43.25, lon: 76.95, tz: 'Asia/Almaty' };
+    await prepareLocalTime('1918-02-16', almaty.tz);
+    const utcISO = resolveLocalToUtc('1918-02-16', '12:00', almaty.tz, { longitude: almaty.lon }).utc.toISOString();
+    const prePatch = {
+      ...makeChart('almaty-1918'),
+      birth: { date: '1918-02-16', time: '12:00', timeKnown: true, place: almaty },
+      summary: {
+        engineVersion: ENGINE_VERSION,
+        utcISO,
+        houseSystem: 'whole' as const,
+        bodies: [],
+        angles: null,
+        flags: ['polar-fallback' as const],
+      },
+    };
+    seedProfile([prePatch]);
+    // Simulate a fingerprint cached by the previous release (without the calendar epoch).
+    const legacyText = JSON.stringify([prePatch.id, prePatch.birth, prePatch.summary]);
+    let hash = 0x811c9dc5;
+    for (let index = 0; index < legacyText.length; index += 1) {
+      hash ^= legacyText.charCodeAt(index);
+      hash = Math.imul(hash, 0x01000193) >>> 0;
+    }
+    storage.setItem('zodiacs.profile.birthplace-checks-2026f.v1', JSON.stringify([hash.toString(36)]));
+
+    await expect(refreshSavedChartSummaries(async () => {
+      throw new Error('calendar-only refresh should not need engine');
+    })).resolves.toBe(1);
+    expect(loadProfile().charts[0].summary.flags).toEqual(['polar-fallback', 'calendar-unknown']);
+    // Second run uses the updated cached fingerprint and skips without re-writing.
+    await expect(refreshSavedChartSummaries(async () => {
+      throw new Error('already checked');
+    })).resolves.toBe(0);
+  });
+
+  it('preserves checked calendar provenance when an unchecked matching link save arrives', () => {
+    const moscow: SavedPlace = { name: 'Moscow', admin1: 'Moscow', country: 'Russia', lat: 55.75, lon: 37.62, tz: 'Europe/Moscow' };
+    const checked = {
+      ...makeChart('moscow-checked'),
+      birth: { date: '1918-02-07', time: '12:00', timeKnown: true, place: moscow },
+      summary: {
+        engineVersion: ENGINE_VERSION,
+        utcISO: '1918-02-07T09:29:41.000Z',
+        houseSystem: 'whole' as const,
+        bodies: [],
+        angles: null,
+        flags: ['lmt' as const],
+        calendarChecked: true as const,
+      },
+    };
+    seedProfile([checked]);
+
+    const uncheckedLink = {
+      ...checked,
+      id: 'new-link-id',
+      summary: {
+        ...checked.summary,
+        flags: ['lmt' as const, 'calendar-unknown' as const],
+        calendarChecked: undefined,
+      },
+    };
+    expect(saveChart(uncheckedLink)).toBe('updated');
+    expect(loadProfile().charts[0].summary.calendarChecked).toBe(true);
+    expect(loadProfile().charts[0].summary.flags).toEqual(['lmt']);
+  });
 });

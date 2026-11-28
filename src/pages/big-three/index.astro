@@ -10,6 +10,7 @@ import BigThreeQuick from '../../islands/BigThreeQuick';
 import { launchFlagOn } from '../../lib/launch-flags';
 import Motion from '../../components/Motion.astro';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // The fastest useful summary of a chart: three fields, three placements,
 // computed in the browser by the same engine as the full calculator. The
@@ -53,8 +54,8 @@ const jsonLd = [
   title="Big Three Calculator: Sun, Moon, and Rising in Seconds | Zodiacs.org"
   description="Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser."
   path="/big-three/"
-  image="/assets/og/v2/tool/big-three.png"
-  imageAlt="Big Three calculator, Zodiacs.org"
+  image={artPageCard('big-three')}
+  imageAlt={artPageCardAlt('big-three')}
   jsonLd={jsonLd}
 >
   <section class="section--tight container">

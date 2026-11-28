@@ -16,7 +16,7 @@ if (process.env.VERCEL_ENV === 'production' && /^0{40}$/.test(candidate.evidence
 }
 const description = 'Current Zodiacs developer support: the local engine, public sky data, hosted widgets, the compute API, runtime checks, calculation limits, privacy, and licenses.';
 const engineRows = [
-  ['Language and runtime', 'ESM JavaScript with TypeScript declarations. The manifest declares Node.js ^20.19.0 || >=22.7.0: astronomy-engine ships ES modules in a package without "type": "module", which plain Node loads as ES modules only from 20.19.0 and 22.7.0. There is no CommonJS export. Browser integrations need an ESM-aware bundler or equivalent dependency setup; bundlers are not affected by the Node range.'],
+  ['Language and runtime', 'ESM JavaScript with TypeScript declarations. The manifest declares Node.js ^20.19.0 || >=22.12.0, the releases whose require() loads ES modules: import and require() load the same modules. There is no CommonJS export. Browser integrations need an ESM-aware bundler or equivalent dependency setup; bundlers are not affected by the Node range.'],
   ['Recorded runtime checks', 'The linked reports record this version’s tested runtimes, package consumers and TypeScript declarations. They identify the exact artifact and validation scope; they do not certify every browser or all Node versions allowed by the manifest.'],
   ['Zodiac and positions', 'Tropical ecliptic of date; apparent geocentric positions in degrees. Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, and true North/South Moon nodes. The sidereal zodiac is in the separate @zodiacs/engine/vedic and @zodiacs/engine/calc entry points. The core has no topocentric parallax; @zodiacs/engine/calc offers a topocentric center.'],
   ['Calculations', 'Positions, natal charts, transit snapshots, synastry, Moon phase, Saturn-return seasons, secondary progressions, chart points, aspects under a configurable policy, and declinations with parallels. Separate imports add Hellenistic timing (@zodiacs/engine/timing), sidereal and Jyotish techniques (@zodiacs/engine/vedic), the engine’s own time basis, nutation and frame of date (@zodiacs/engine/time), and declinations, sect, composite midpoints and dignities without the ephemeris (@zodiacs/engine/lite). The same public API supplies calculation metadata; interpretation is separate from astronomical accuracy.'],
@@ -80,9 +80,9 @@ const engineRows = [
           <p>
             This revision vendors the {candidate.version} archive below. Its bytes
             match both the verified npm tarball and the engine repository carrier,
-            and passed clean-consumer checks on Node 22 and 24. This archive
-            identifies the local package; hosted data and widgets are separate
-            deployments.
+            passed parity checks on Node 22 and 24, and passed a clean-consumer
+            install check on Node 22. This archive identifies the local package;
+            hosted data and widgets are separate deployments.
           </p>
         </>
       ) : (
@@ -90,19 +90,18 @@ const engineRows = [
           <p>
             This revision vendors the {candidate.version} archive below, a release
             candidate that is not on npm. Its bytes match the engine repository
-            carrier, and it passed clean-consumer checks on Node 22 and 24. This
-            archive identifies the local package; hosted data and widgets are
-            separate deployments.
+            carrier, passed parity checks on Node 22 and 24, and passed a
+            clean-consumer install check on Node 22. This archive identifies the
+            local package; hosted data and widgets are separate deployments.
           </p>
           <p>
             The verified registry read of {candidate.registryObservedOn} records{' '}
-            {candidate.registryVersion} under <code>latest</code> and 0.1.1-rc.16 under{' '}
-            <code>next</code>.{' '}
+            {candidate.registryVersion} under <code>latest</code>.{' '}
             <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
             installs {candidate.registryVersion}, the release before this candidate, which
-            computes the same values but lists no{' '}
-            <a href="/developers/conventions/">convention ids</a> in its records and
-            refuses this candidate's records as <code>unsupported_feature</code>. It was
+            reads this candidate's records and computes on its DE440 pack by default,
+            where this candidate computes on Astronomy Engine until{' '}
+            <code>useDe440()</code> installs the same pack. It was
             published from the <code>release.yml</code> workflow of the{' '}
             <a href={candidate.sourceRepository}>engine repository</a> with SLSA
             provenance, which names that repository, the workflow and the commit the

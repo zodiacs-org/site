@@ -1,0 +1,15 @@
+The release before the vendored 3.0.0 candidate, as npm serves it, checked 2026-11-26T17:48:07Z with Node v22.23.5.
+
+$ npm install @zodiacs/engine@2.1.0   # in an empty package
+$ npm audit signatures
+2 packages have verified registry signatures
+
+1 package has a verified attestation
+
+$ npm audit signatures --json --include-attestations   # the SLSA provenance statement of @zodiacs/engine 2.1.0
+predicateType: https://slsa.dev/provenance/v1
+workflow: {"ref":"refs/heads/main","repository":"https://github.com/zodiacs-org/engine","path":".github/workflows/release.yml"}
+subject: pkg:npm/%40zodiacs/engine@2.1.0
+
+$ npm view @zodiacs/engine@2.1.0 dist.integrity
+sha512-Gf6OVAL3UJYDdOBqet5JKXd0Y4BTspndHvHyigmdb15jxlz9Hlah3kM+hVJpI1g5+/tG8gD4x3josmLtA3hkBg==

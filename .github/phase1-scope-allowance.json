@@ -1,23 +1,12 @@
 {
   "version": 1,
-  "id": "unknown-time-moon-four-locales-76167d0d65ca",
-  "baseCommit": "76167d0d65ca2908f325c84011deecf7b35e9a80",
+  "id": "art-share-cards-round3-1dea914277d7",
+  "baseCommit": "1dea914277d780d00ef4f98b872f71eede42ff19",
   "protectedPaths": [
-    "src/pages/es/birth-chart/index.astro",
-    "src/pages/es/index.astro",
-    "src/pages/es/methodology/index.astro",
-    "src/pages/es/moon-sign/index.astro",
-    "src/pages/fr/birth-chart/index.astro",
-    "src/pages/fr/index.astro",
-    "src/pages/fr/methodology/index.astro",
-    "src/pages/fr/moon-sign/index.astro",
-    "src/pages/it/birth-chart/index.astro",
-    "src/pages/it/index.astro",
-    "src/pages/it/methodology/index.astro",
-    "src/pages/it/moon-sign/index.astro",
-    "src/pages/pt/birth-chart/index.astro",
-    "src/pages/pt/index.astro",
-    "src/pages/pt/methodology/index.astro",
-    "src/pages/pt/moon-sign/index.astro"
+    "src/pages/es/moon-phase/index.astro",
+    "src/pages/fr/moon-phase/index.astro",
+    "src/pages/it/moon-phase/index.astro",
+    "src/pages/learn/how-to-read-a-birth-chart.astro",
+    "src/pages/pt/moon-phase/index.astro"
   ]
 }

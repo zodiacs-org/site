@@ -9,6 +9,7 @@
  * the deploy contract; check-dist walks every endpoint and document it lists
  * and fails the build if one is missing.
  */
+import '../src/lib/engine/server-de440.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

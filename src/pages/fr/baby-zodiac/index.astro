@@ -5,6 +5,7 @@ import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import BabyZodiac from '../../../islands/BabyZodiac';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -57,7 +58,7 @@ const jsonLd = [
   noindex
   nofollow
   locale="fr"
-  image="/assets/og/v2/tool/baby-zodiac.png"
+  image={artPageCard('baby-zodiac')}
   imageAlt="Calculateur du zodiaque du bébé, Zodiacs.org"
   jsonLd={jsonLd}
 >

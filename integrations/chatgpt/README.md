@@ -65,6 +65,44 @@ deployment, set `ZODIACS_MCP_STAGING_HOST` to its exact lowercase hostname;
 do not accept arbitrary Host or Origin headers. The anonymous existing compute
 and event limits are shared with other users at the same provider address.
 
+The handler (`src/ai-tools/http.ts`) applies two separate allowlists, Host
+first, then Origin:
+
+- **Host.** The request's `Host` must be `zodiacs.org` or `www.zodiacs.org`,
+  plus `ZODIACS_MCP_STAGING_HOST` when it is set and valid. Anything else gets
+  403 `host-not-allowed`, whatever its Origin.
+- **Origin.** When a request carries an `Origin` header, it must be exactly one
+  of `https://chatgpt.com`, `https://chat.openai.com`, `https://claude.ai`,
+  `https://claude.com` or `https://zodiacs.org`. Any other origin gets 403
+  `origin-not-allowed`, including a CORS preflight (`OPTIONS`). So a browser on
+  a website outside those five domains cannot call `/mcp`. This is intended,
+  not a bug, and the list is not to be widened for convenience.
+- **No Origin header.** The Origin check is skipped. Server-side callers and
+  MCP clients that send no `Origin` (desktop and command-line clients, the
+  official SDK client, curl) are unaffected by the Origin rule; the Host rule
+  still applies.
+
+`ZODIACS_MCP_STAGING_HOST` for a preview deployment:
+
+- Set it to that preview's exact hostname, lowercase, with no scheme, port,
+  path, trailing dot or wildcard, for example
+  `zodiacs-org-abc123xyz-zodiacsofficial.vercel.app`. The handler ignores a value
+  that is not a lowercase hostname (capital letters, `*.vercel.app`,
+  `https://…`, `host:443`, a path or surrounding spaces), and the preview then
+  answers 403 `host-not-allowed`, exactly as if the variable were unset.
+- Add it in the Vercel project with Preview scope only. Never set it for
+  Production; production answers only zodiacs.org and www.zodiacs.org.
+- It adds one exact hostname and nothing else: it never matches a subdomain,
+  another preview or any other `*.vercel.app` address. The Origin allowlist
+  does not change with it, so a page served from the preview's own address
+  that calls `/mcp` from a browser is still refused.
+- Git preview deployments are off for branches other than `main`, so a branch
+  preview is a deployment made on purpose, and the variable names that
+  deployment's own hostname. The account and Sky Watch sign-in paths
+  (`src/ai-tools/accounts/service.ts`, `src/ai-tools/watch/oauth.ts`) read the
+  same variable and also require a `*.vercel.app` hostname and
+  `VERCEL_ENV=preview`.
+
 Protocol coverage includes stateless 2025 clients and the SDK's newer per-request
 entry. Integration tests use the official SDK client, not a ChatGPT session.
 The public server offers no streaming subscriptions, schedules or chart storage.

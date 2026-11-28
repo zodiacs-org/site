@@ -7,6 +7,7 @@ import {
   expectedStylesheetShape,
   htmlFiles,
   inlineCriticalStyles,
+  phoneFacePages,
 } from './inline-critical-styles.mjs';
 
 const temporaryRoots = [];
@@ -31,7 +32,7 @@ describe('inlineCriticalStyles', () => {
       inlineCount: 2, deferredCount: 0, externalCount: 0, loaderCount: 0,
     });
     expect(expectedStylesheetShape('birth-chart/index.html', true)).toEqual({
-      inlineCount: 2, deferredCount: 2, externalCount: 4, loaderCount: 1,
+      inlineCount: 2, deferredCount: 3, externalCount: 4, loaderCount: 1,
     });
     expect(expectedStylesheetShape('ru/birth-chart/index.html', true)).toEqual({
       inlineCount: 1, deferredCount: 3, externalCount: 6, loaderCount: 1,
@@ -220,6 +221,65 @@ describe('inlineCriticalStyles', () => {
     expect(result.html).not.toContain('data-inline-critical-css');
   });
 
+  it('keeps the birth chart mono face up front on wide screens and behind the loader on phones', async () => {
+    const faces = {
+      sans: "@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations');font-weight:400 700;font-style:normal;font-display:swap}",
+      mono: "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:swap}",
+      phase1Mono: "@font-face{font-family:JetBrains Mono Phase1;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:optional}",
+      serifItalic: "@font-face{font-family:EB Garamond;src:url(/fonts/eb-garamond-latin-400-italic.woff2) format('woff2');font-weight:400;font-style:italic;font-display:swap}",
+    };
+    const root = await fixture({
+      'Base.hash.css': `${faces.sans}${faces.mono}${faces.phase1Mono}${faces.serifItalic}:root{--ink:#fff}`,
+      'calculator.hash.css': '.calc{color:var(--ink)}',
+      'explorer.hash.css': '.insp{color:var(--ink)}',
+    });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/calculator.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/explorer.hash.css">'
+      + '</head><body></body></html>';
+    const config = phoneFacePages.get('birth-chart/index.html');
+    const result = await inlineCriticalStyles(marked, root, {
+      deferNonBase: /^(?:Base|calculator)\.[A-Za-z0-9_-]+\.css$/u,
+      deferFaces: config,
+    });
+
+    expect(config.wideMedia).toBe('not all and (max-width: 960px)');
+    expect(result.stylesheets).toBe(2);
+    const base = result.html.match(/<style data-zdx-critical="Base\.hash\.css">([^<]*)<\/style>/)[1];
+    expect(base).toBe(`${faces.sans}${faces.phase1Mono}${faces.serifItalic}:root{--ink:#fff}`);
+    expect(result.html).toContain(`<style media="not all and (max-width: 960px)" data-zdx-wide-faces>${faces.mono}</style>`);
+    expect(result.html).toContain(`<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces.mono}</style>`);
+    expect(result.html).toContain(`<noscript><style>${faces.mono}</style></noscript>`);
+    expect(result.html.match(/<template data-zdx-deferred-style>/g)).toHaveLength(2);
+    const definitions = JSON.parse(result.html.match(/<script type="application\/json" data-zdx-font-faces>(.*?)<\/script>/)[1]);
+    expect(definitions).toEqual([
+      {
+        family: 'JetBrains Mono',
+        source: "url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations')",
+        descriptors: { weight: '300 600', style: 'normal', display: 'swap' },
+        media: 'not all and (max-width: 960px)',
+      },
+    ]);
+    expect(result.html.indexOf('data-zdx-wide-faces')).toBeLessThan(result.html.indexOf('data-zdx-deferred-style-loader'));
+    expect(result.html).not.toContain('data-zdx-late-face');
+  });
+
+  it('fails closed when the birth chart build loses its mono face', async () => {
+    const root = await fixture({
+      'Base.hash.css': ':root{--ink:#fff}',
+      'explorer.hash.css': '.insp{color:var(--ink)}',
+    });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/explorer.hash.css">'
+      + '</head></html>';
+    await expect(inlineCriticalStyles(marked, root, {
+      deferNonBase: /^Base\./u,
+      deferFaces: phoneFacePages.get('birth-chart/index.html'),
+    })).rejects.toThrow('expected 1 below-fold faces, found 0');
+  });
+
   it('fails closed when the stylesheet to keep linked is missing', async () => {
     const root = await fixture({ 'Base.hash.css': ':root{--ink:#fff}' });
     const marked = '<html data-inline-critical-css><head>'
@@ -284,14 +344,15 @@ describe('inlineCriticalStyles', () => {
 });
 
 describe('deferred font loader', () => {
-  async function harness({ supported = true, hash = '', fontTemplate = true, constructorThrowsAt = -1 } = {}) {
+  async function harness({ supported = true, hash = '', fontTemplate = true, constructorThrowsAt = -1, phoneFaces = false, wide = false } = {}) {
     const root = await fixture({
       'Base.hash.css': [
         '@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2);font-weight:400 700;font-style:italic;font-display:swap}',
         '@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2);font-weight:300 600;font-style:normal;font-display:swap}',
       ].join(''),
     });
-    const { html } = await inlineCriticalStyles('<html data-inline-critical-css><head><link rel="stylesheet" href="/_astro/Base.hash.css"></head></html>', root, { deferFaces: true });
+    const deferFaces = phoneFaces ? phoneFacePages.get('birth-chart/index.html') : true;
+    const { html } = await inlineCriticalStyles('<html data-inline-critical-css><head><link rel="stylesheet" href="/_astro/Base.hash.css"></head></html>', root, { deferFaces });
     const definitions = html.match(/<script type="application\/json" data-zdx-font-faces>(.*?)<\/script>/)[1];
     const code = html.match(/<script data-zdx-deferred-style-loader>(.*?)<\/script>/s)[1];
     const events = new Map();
@@ -299,6 +360,9 @@ describe('deferred font loader', () => {
     const loads = [];
     const added = [];
     const changes = [];
+    // The up-front copy of the phone face; pair pages have none.
+    const wideStyleMedia = html.match(/<style media="([^"]*)" data-zdx-wide-faces>/)?.[1];
+    const wideStyle = wideStyleMedia ? { media: wideStyleMedia } : null;
     const template = {
       content: {
         querySelector: () => fontTemplate ? { textContent: definitions } : null,
@@ -321,6 +385,7 @@ describe('deferred font loader', () => {
       window: {
         FontFace: supported ? TestFontFace : undefined,
         location: { hash },
+        matchMedia: (query) => ({ matches: query === 'not all and (max-width: 960px)' && wide }),
         addEventListener: (type, fn) => events.set(type, fn),
       },
       document: {
@@ -329,11 +394,12 @@ describe('deferred font loader', () => {
         addEventListener: (type, fn) => events.set(type, fn),
         removeEventListener: (type) => events.delete(type),
         querySelectorAll: () => [template],
+        querySelector: (selector) => (selector === 'style[data-zdx-wide-faces]' ? wideStyle : null),
       },
       setTimeout: (fn, delay) => { timers.push({ fn, delay }); return timers.length; },
       clearTimeout: () => {},
     });
-    return { events, timers, loads, added, changes };
+    return { events, timers, loads, added, changes, wideStyle };
   }
 
   // Flush both the load rejection handler and the batch-registration promise.
@@ -405,6 +471,46 @@ describe('deferred font loader', () => {
     await flush();
     expect(h.added).toHaveLength(0);
     expect(h.changes).toEqual(['removed']);
+  });
+
+  it('loads the birth chart mono face after load on phones', async () => {
+    const h = await harness({ phoneFaces: true });
+    expect(h.loads).toHaveLength(0);
+    h.events.get('load')();
+    h.timers[0].fn();
+    expect(h.loads.map(({ face }) => face.family)).toEqual(['JetBrains Mono']);
+    expect(h.wideStyle.media).toBe('not all and (max-width: 960px)');
+    h.loads[0].resolve();
+    await flush();
+    expect(h.added).toEqual([h.loads[0].face]);
+    expect(h.changes).toEqual(['removed']);
+    // Its own face now serves a wider window too; the up-front copy is off,
+    // so widening cannot fetch the file a second time.
+    expect(h.wideStyle.media).toBe('not all');
+  });
+
+  it('keeps the up-front copy for a wider window when the phone download fails', async () => {
+    const h = await harness({ phoneFaces: true, hash: '#p=shared-chart' });
+    h.loads[0].reject(new Error('network failure'));
+    await flush();
+    expect(h.added).toHaveLength(0);
+    expect(h.wideStyle.media).toBe('not all and (max-width: 960px)');
+  });
+
+  it('loads it at once for a shared chart', async () => {
+    const h = await harness({ phoneFaces: true, hash: '#p=shared-chart' });
+    expect(h.loads.map(({ face }) => face.family)).toEqual(['JetBrains Mono']);
+  });
+
+  it('keeps the wide screen face for any later width, without loading it again', async () => {
+    const h = await harness({ phoneFaces: true, wide: true, hash: '#p=shared-chart' });
+    expect(h.loads).toHaveLength(0);
+    // Narrowing the window below 961px later must not drop the face.
+    expect(h.wideStyle.media).toBe('all');
+    await flush();
+    expect(h.added).toHaveLength(0);
+    expect(h.changes).toEqual(['removed']);
+    expect(h.wideStyle.media).toBe('all');
   });
 
   it('still inserts ordinary deferred stylesheets on entry pages', async () => {

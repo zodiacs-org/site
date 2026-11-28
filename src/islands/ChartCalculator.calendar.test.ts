@@ -5,6 +5,7 @@ import cityIndex from '../../public/data/cities/index.json';
 import shardS from '../../public/data/cities/s.json';
 import * as actualEngine from '../lib/engine/full';
 import * as actualReceipt from '../lib/engine/calculator-receipt';
+import * as actualNotices from '../lib/chart-notices';
 import type { City } from '../lib/geo/search';
 import { moonIsUncertain } from '../lib/moon-certainty';
 import { signForLongitude } from '../lib/signs';
@@ -47,7 +48,7 @@ function birthplace(name: string): City {
 async function chartFor(date: string, city: City) {
   return await execute({
     input: { date, time: '12:00', timeKnown: true, city, houseSystem: 'placidus' },
-    mode: 'full', engine: actualEngine, receiptModule: actualReceipt,
+    mode: 'full', locale: 'en', engine: actualEngine, receiptModule: actualReceipt, noticesModule: actualNotices,
     resolveLocalToUtc, assessLocalDateReference, localDateMoonSigns, signForLongitude, moonIsUncertain,
     runIsCurrent: () => true, localDateReferenceFailure: new Error('unused'),
   }) as {

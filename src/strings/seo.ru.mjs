@@ -45,6 +45,11 @@ const STATIC_ROUTES = [
   },
   {
     key: 'chart-twins', kind: 'tool', contentPath: '/chart-twins/', publicPath: '/ru/chart-twins/', card: 'tool/chart-twins.png',
+    // The page shows its art card (2026-11-26, chartTwinsArtCard('ru') in
+    // src/lib/og-art-cards.mjs): a painting, so a JPEG beside the other art
+    // cards rather than a card in this 16-colour family. Its v2 card stays
+    // published, byte for byte, for links already shared.
+    artCard: '/assets/og/v8/ru/tool/chart-twins.jpg',
     title: 'Найдите астрологических близнецов',
     description: 'Сравните свои знаки с каталогом людей с указанными источниками. Общий знак — повод для разговора, а не доказательство сходства характеров.',
   },
@@ -173,7 +178,17 @@ export function ruOgMetaForPath(path) {
   return RU_OG_ROUTES.find((entry) => entry.contentPath === normalized) ?? null;
 }
 
+/**
+ * The card a Russian route shows: its v2 card, or the art card a route has
+ * taken in its place (the chart twins page since 2026-11-26).
+ */
 export function ruOgImageForPath(path) {
   const entry = ruOgMetaForPath(path);
-  return entry ? `/assets/og/v2/ru/${entry.card}` : null;
+  if (!entry) return null;
+  return entry.artCard ?? `/assets/og/v2/ru/${entry.card}`;
 }
+
+/** The routes that show an art card in place of their v2 card, by public path. */
+export const RU_OG_ART_CARDS = Object.freeze(Object.fromEntries(
+  RU_OG_ROUTES.filter((entry) => entry.artCard).map((entry) => [entry.publicPath, entry.artCard]),
+));

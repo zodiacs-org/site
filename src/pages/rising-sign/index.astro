@@ -23,6 +23,7 @@ import {
   traditionalRuler,
 } from '../../lib/rising-example';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -119,6 +120,21 @@ const shortestNames = RISING_SHORTEST.map((band) => band.sign.name);
 const shortestLine = `${shortestNames.length > 1 ? `${shortestNames.slice(0, -1).join(', ')} and ${shortestNames.at(-1)}` : shortestNames[0]} took ${durationLabel(RISING_SHORTEST[0].end - RISING_SHORTEST[0].start)}${shortestNames.length > 1 ? ' each' : ''}.`;
 const unevenLine = `${RISING_LONGEST.sign.name} took ${durationLabel(RISING_LONGEST.end - RISING_LONGEST.start)} to rise. ${shortestLine}`;
 const gap = later.minutes - example.minutes;
+
+/* The strip's story (docs/MOTION.md), played once by the shared entrance
+   runtime when the strip comes into view: a cursor runs from midnight to
+   midnight in SWEEP_MS at a steady pace, each band lights as the cursor
+   reaches its first minute and each pin arrives at its own minute, so the
+   wide bands visibly take longer than the narrow ones. The closing beat
+   brings in the sign discs of the longest band and the shortest ones, the
+   bands "Uneven by design" names. Each delay is its minute of the day on the
+   cursor's clock (`--t`, set beside each band's width). */
+const SWEEP_MS = 1600;
+const at = (minutes: number) => `--t:${Math.round((minutes / 1440) * SWEEP_MS)}ms`;
+const within = (band: { sign: { slug: string }; start: number; end: number }, whole: { sign: { slug: string }; start: number; end: number }) =>
+  band.sign.slug === whole.sign.slug && band.start >= whole.start && band.end <= whole.end;
+const extreme = (band: { sign: { slug: string }; start: number; end: number }) =>
+  within(band, RISING_LONGEST) || RISING_SHORTEST.some((shortest) => within(band, shortest));
 ---
 <Base
   accountSurface
@@ -126,8 +142,8 @@ const gap = later.minutes - example.minutes;
   title="Rising Sign Calculator: What Is My Rising Sign? | Zodiacs.org"
   description="Find your rising sign free with your birth time and place: how people first read you, plus the planet that rules your chart."
   path="/rising-sign/"
-  image="/assets/og/v2/tool/rising-sign.png"
-  imageAlt="Free rising sign calculator, Zodiacs.org"
+  image={artPageCard('rising-sign')}
+  imageAlt={artPageCardAlt('rising-sign')}
   jsonLd={jsonLd}
 >
   <!-- 01 · The calculator first, with an example of what it gives back. -->
@@ -205,20 +221,23 @@ const gap = later.minutes - example.minutes;
       </div>
     </div>
 
-    <!-- One day of rising signs: one strip on a wide screen, two half days on a phone. -->
+    <!-- One day of rising signs: one strip on a wide screen, two half days on a phone.
+         One story mark (.rs-go) serves whichever of the two is shown. -->
+    <div class="rs-days">
+    <span class="rs-go" data-enter="draw" aria-hidden="true"></span>
     <div class="rs-day rs-day--d">
       <div class="rs-day__head">
         <h3 class="h-3">One day in {RISING_EXAMPLE.place}, {RISING_EXAMPLE.date}</h3>
         <p>Each band is one rising sign. Wider bands took longer to rise.</p>
       </div>
       <div class="rs-track">
-        <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes)}`}><span class="rs-pin__l"><b>{example.clock}</b>{example.sign.name} rising</span></div>
-        <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes)}`}><span class="rs-pin__l"><b>{later.clock}</b>{later.sign.name} rising</span></div>
+        <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes)};${at(example.minutes)}`}><span class="rs-pin__l"><b>{example.clock}</b>{example.sign.name} rising</span></div>
+        <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes)};${at(later.minutes)}`}><span class="rs-pin__l"><b>{later.clock}</b>{later.sign.name} rising</span></div>
         <div class="rs-strip">
           {RISING_DAY.map((band, index) => (
             <span
-              class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start']}
-              style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue}`}
+              class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start', extreme(band) && 'is-extreme']}
+              style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue};${at(band.start)}`}
               title={bandTitle(band)}
             >
               {index > 0 && band.end - band.start >= 30 && <img src={`/assets/zodiac-icons/48/${band.sign.slug}.webp`} width="26" height="26" alt="" loading="lazy" decoding="async" />}
@@ -247,15 +266,15 @@ const gap = later.minutes - example.minutes;
           <div class:list={['rs-track', from !== 0 && 'rs-track--plain']}>
             {from === 0 && (
               <>
-                <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes, 0, NOON)}`}><span class="rs-pin__l"><b>{example.clock}</b>{example.sign.name} rising</span></div>
-                <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes, 0, NOON)}`}><span class="rs-pin__l"><b>{later.clock}</b>{later.sign.name}</span></div>
+                <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes, 0, NOON)};${at(example.minutes)}`}><span class="rs-pin__l"><b>{example.clock}</b>{example.sign.name} rising</span></div>
+                <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes, 0, NOON)};${at(later.minutes)}`}><span class="rs-pin__l"><b>{later.clock}</b>{later.sign.name}</span></div>
               </>
             )}
             <div class="rs-strip">
               {half(from as number, to as number).map((band) => (
                 <span
-                  class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start']}
-                  style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue}`}
+                  class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start', extreme(band) && 'is-extreme']}
+                  style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue};${at(band.start)}`}
                   title={bandTitle(band)}
                 >
                   {band.end - band.start >= 30 && <img src={`/assets/zodiac-icons/48/${band.sign.slug}.webp`} width="20" height="20" alt="" loading="lazy" decoding="async" />}
@@ -275,6 +294,7 @@ const gap = later.minutes - example.minutes;
         <div><SignIcon sign={later.sign.slug} size={32} /><span><b>{gap} minutes, a different sign</b>Born at {example.clock}: {example.sign.name} rising. Born at {later.clock} the same day: {later.sign.name} rising.</span></div>
         <div><span class="rs-n" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span><span><b>Uneven by design</b>{unevenLine}</span></div>
       </div>
+    </div>
     </div>
   </section>
 
@@ -568,6 +588,44 @@ const gap = later.minutes - example.minutes;
   .rs-n { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
   .rs-n svg { width: 16px; height: 16px; }
   .rs-day--m { display: none; }
+
+  /* The day strip's story (docs/MOTION.md; SWEEP_MS above): one pass, then
+     still. The markup is the finished picture; the waiting states apply only
+     while motion is on and the one mark (.rs-go, a 1px line across the middle
+     of whichever strip is shown) is still waiting. The words never move. */
+  .rs-days { position: relative; }
+  .rs-go { position: absolute; left: 0; top: 50%; width: 100%; height: 1px; pointer-events: none; }
+  .rs-strip { position: relative; }
+  @media screen and (prefers-reduced-motion: no-preference) {
+    /* Waiting: the bands rest dim; the pins, and the discs of the longest and
+       shortest bands, are not there yet. */
+    :global(html[data-entrance='on']) .rs-go:not(.is-in) ~ .rs-day .rs-strip__b { opacity: 0.18; }
+    :global(html[data-entrance='on']) .rs-go:not(.is-in) ~ .rs-day .rs-strip__b.is-extreme img { opacity: 0; transform: scale(0.6); }
+    :global(html[data-entrance='on']) .rs-go:not(.is-in) ~ .rs-day .rs-pin::before { opacity: 0; transform: scaleY(0.4); }
+    :global(html[data-entrance='on']) .rs-go:not(.is-in) ~ .rs-day .rs-pin::after { opacity: 0; transform: scale(0.4); }
+    :global(html[data-entrance='on']) .rs-go ~ .rs-day .rs-pin::before { transform-origin: 50% 0; }
+    /* The cursor, a line at the right edge of a box the strip's width that
+       the strip clips, exists only until the story is done. */
+    :global(html[data-entrance='on']) .rs-go:not(.is-done) ~ .rs-day .rs-strip::after {
+      content: ''; position: absolute; inset: 0 auto 0 0; width: 100%;
+      border-right: 2px solid var(--ink-0); transform: translateX(-100%); pointer-events: none;
+    }
+    /* Playing: midnight to midnight in 1600 ms at a steady pace; every delay is
+       the cursor's time at that minute. A phone's two half days take 800 ms each. */
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day .rs-strip::after { transform: none; opacity: 0; transition: transform 1600ms linear, opacity 250ms ease 1600ms; }
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day--m .rs-strip::after { transition: transform 800ms linear, opacity 150ms ease 800ms; }
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day--m .rs-track--plain .rs-strip::after { transition: transform 800ms linear 800ms, opacity 250ms ease 1600ms; }
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day .rs-strip__b { transition: opacity 300ms ease var(--t); }
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day .rs-pin::before,
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day .rs-pin::after {
+      transition: opacity 300ms ease var(--t), transform 300ms cubic-bezier(0.23, 1, 0.32, 1) var(--t);
+    }
+    /* The closing beat: the discs of the longest band and the shortest ones,
+       the bands "Uneven by design" names, arrive last; all still by 2.2 s. */
+    :global(html[data-entrance='on']) .rs-go.is-in:not(.is-done) ~ .rs-day .rs-strip__b.is-extreme img {
+      transition: opacity 440ms cubic-bezier(0.23, 1, 0.32, 1) 1750ms, transform 440ms cubic-bezier(0.23, 1, 0.32, 1) 1750ms;
+    }
+  }
 
   /* ── What it shows ── */
   .rs-shows-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 4vw, 56px); align-items: start; }

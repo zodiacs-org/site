@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
 import { SAVED_PAGE_EXCEPTION, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
+import { de440ServerInfo } from './de440-contract';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
@@ -67,8 +68,8 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   explain_astrology: { uri: READINGS_URI, icon: 'readings' },
 };
 
-/** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set<AiToolName>([MOMENT_CHART_TOOL, 'get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'find_good_days', ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
+/** Tools whose answer moves with the server's clock (today, this week, the current year), or is drawn afresh each time (draw_tarot), so a repeat call can differ. */
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set<AiToolName>([MOMENT_CHART_TOOL, 'get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'find_good_days', 'draw_tarot', ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -98,9 +99,12 @@ export function refFrom(meta: unknown): 'chatgpt' | 'assistant' {
 /** The signed-in person behind a request to a server offering accounts, or null for an anonymous request. */
 export interface AccountContext { service: AccountsService; principal: AccountPrincipal | null }
 
+/** The route a server answers on: the opt-in /mcp/de440 names itself apart in initialize (./de440-contract.ts). */
+export interface AiServerRoute { de440?: boolean }
+
 /** A fresh SDK server per HTTP request or local stdio connection. */
-export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
-  const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
+export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext, route: AiServerRoute = {}) {
+  const server = new McpServer(route.de440 ? de440ServerInfo() : { name: 'zodiacs', version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
     instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies)) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : ''),
   });

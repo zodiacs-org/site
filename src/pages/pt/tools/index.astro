@@ -9,6 +9,7 @@ import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
 import { ENGLISH_ONLY_COPY, localizePath, t } from '../../../lib/i18n';
 import { toolIconForPath } from '../../../lib/tool-icons';
 import '../../../styles/tools-hub.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const englishOnly = ENGLISH_ONLY_COPY.pt;
 const tools = [
@@ -41,7 +42,7 @@ const jsonLd = [
   description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua e trânsitos, privadas, no seu navegador."
   path="/pt/tools/"
   locale="pt"
-  image="/assets/og/v2/tool/tools.png"
+  image={artPageCard('tools')}
   imageAlt="Ferramentas gratuitas de astrologia, Zodiacs.org"
   jsonLd={jsonLd}
 >
