@@ -101,9 +101,14 @@ const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // through the share control), so the count per pair page is derived from the
 // page's own links instead of being fixed.
 const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
+// The tarot draw is built only while PUBLIC_TAROT_ENABLED is exactly '1' (src/lib/launch-flags.ts); off, its
+// path is a redirect with nothing to inline.
+const tarotEnabled = process.env.PUBLIC_TAROT_ENABLED === '1';
 // The 115 entry pages include both emitted stylesheets on the English home.
 // Its sign grid and sample chart can be on screen as soon as a reader scrolls.
-const entryInlinedStylesheets = 230;
+// The tarot draw, when on, adds one page and two stylesheets.
+const entryInlinedStylesheets = tarotEnabled ? 232 : 230;
+const entryPages = tarotEnabled ? 116 : 115;
 const targetPaths = [
   'index.html',
   'birth-chart/index.html',
@@ -112,6 +117,8 @@ const targetPaths = [
   // The numerology hero sat a few hundredths over the LCP budget in CI with
   // calculator.css on the render path and an eagerly hydrated island.
   'numerology/index.html',
+  // The tarot draw has the numerology page's hero, calculator.css and island, so it inlines the same way.
+  ...(tarotEnabled ? ['tarot/index.html'] : []),
   // Sign-guide icons need their existing geometry before the first paint;
   // the two stylesheet round trips put a cold mobile LCP over the budget.
   ...signs.map((sign) => `${sign}/index.html`),
@@ -665,13 +672,13 @@ async function main() {
   // the calculator's, at least Base, the pair styles and the wheel.
   if (
     pages + alreadyInlined !== targetPaths.length
-    || targetPaths.length !== 115 + pairPathSet.size
+    || targetPaths.length !== entryPages + pairPathSet.size
     || stylesheets !== entryInlinedStylesheets
     || pairStylesheets !== expectedPairStylesheets
     || pairStylesheets < pairPathSet.size * 3
   ) {
     throw new Error(
-      `inline-critical-styles: expected ${115 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
+      `inline-critical-styles: expected ${entryPages + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
     );
   }
   stylesheets += pairStylesheets;

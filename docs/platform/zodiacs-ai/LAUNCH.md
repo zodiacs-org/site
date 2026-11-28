@@ -223,6 +223,12 @@ Set the repository variable `TRENDING_X_ENABLED` to `1` only after the people pa
 
 Switch `PUBLIC_SOLAR_RETURN_SHARE_ENABLED` on and deploy before `ZODIACS_SOLAR_RETURN_ENABLED`, or every `get_solar_return` answer carries a `shareUrl` that answers 404. Its link to `/birthday-report/` already waits for `PUBLIC_BIRTHDAY_REPORT_ENABLED`.
 
+## Tarot switch order
+
+Switch `PUBLIC_TAROT_ENABLED` on and deploy before `ZODIACS_TAROT_ENABLED`, so `draw_tarot` links the page from its first answer; if `ZODIACS_TAROT_ENABLED` goes on first, `draw_tarot` answers without the `/tarot/` link until `PUBLIC_TAROT_ENABLED` is on (`src/ai-tools/features/tarot.ts:67`, `src/ai-tools/tarot.test.ts`). With `PUBLIC_TAROT_ENABLED` unset, `/tarot/` redirects to the 404 page, and its hub card, `NAV_MORE` link, and Guide line are all left out (`src/lib/launch-flags.ts`). The deployed Guide reads the committed `api/_assistant/context.ts` (`api/assistant.ts`), which `scripts/build-assistant-context.mjs` generates with every switch unset and the build does not regenerate, so switching `PUBLIC_TAROT_ENABLED` on alone leaves the Guide's tarot entry absent. The page is routed only while the flag is on (`scripts/tarot-route.mjs`), so a flag-off build carries none of the draw's code or meanings; `node scripts/check-tarot-dist.mjs` checks the built site both ways.
+
+`draw_tarot` is in the candidate runtime (`api/_ai/runtime.mjs`), which production serves at `/mcp/de440`. The published runtime behind `/mcp` is frozen and never lists it, whatever the switches say. To review it locally, serve the candidate: `ZODIACS_COVERAGE_ENABLED=1 ZODIACS_TAROT_ENABLED=1 node scripts/serve-hosted-mcp.mjs 4521 --candidate`, then connect to `http://127.0.0.1:4521/mcp/de440`.
+
 ## Personal release and measurement
 
 The existing synthetic Personal Week Ahead uses an arbitrary unknown-time chart
