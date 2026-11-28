@@ -105,6 +105,9 @@ same runtime as the three verbs, then holds still.
   figure. A new plate is right only when the page has no figure for that
   data.
 - Never draw a duplicate of a figure the page already has.
+- A general figure takes no birth data. The Saturn return figure marks the
+  ages every return falls near, never the reader's own; the calculator above
+  it gives the reader's dates.
 
 ### Wiring
 
@@ -179,6 +182,7 @@ the fingerprint and needs no new date.
 | Compatibility pair pages, English and translated | The angle between the two signs | `src/components/compat/PairAnglePlate.astro` | New plate | The ring, drawn round once; the other signs light as it passes, then the chord runs from the first sign to the second | The angle's arc along the ring (a ring round the one disc for a same-sign pair) |
 | Full moon calendar and its 2027 page | A year of full Moons by distance | `src/components/sky/FullMoonYearPlate.astro` | New plate | The line through the full Moons, left to right at one speed; each Moon grows in as the line reaches it | The supermoon rings, then the closest and farthest labels |
 | Mercury retrograde | Mercury's year, with its loops | `src/components/sky/MercuryYearPlate.astro` | New plate | The line through the year at one speed in time | The station dots, the date labels, then the shadows |
+| Saturn return | Saturn's laps over a life, under "What the return actually is" | `src/pages/saturn-return/_SaturnLapsPlate.astro` (figures and geometry in `_saturn-laps.ts` beside it, tested by `tests/saturn-return-story.test.ts`) | New figure (the page had none for this) | The life line from birth, one arc per lap of 29.4 years at one speed in time; each return's disc and age arrive as the line reaches them | A ring round the first return |
 | Sign horoscope pages | The sky wheel image | `src/components/HoroscopeWheelStory.astro` (geometry in `src/lib/horoscope-wheel.ts`) | Existing figure, a veil over the published image | The ring, drawn round from the page's sign in zodiac order, uncovering each sign and planet as it passes | The planets the reading draws on |
 | Birthday date pages | The dial under "Where the Sun stands" | `src/components/birthday/BirthdayDial.astro` | Existing figure (it no longer rises) | The ring, drawn round from the top in zodiac order, then the decans, the arc of the noon Sun across the years and the Sun marker | The date's own tick at full strength |
 | Rising sign | The one-day strip of risings | `src/pages/rising-sign/index.astro` | Existing figure | A cursor from midnight to midnight at one pace; each band lights and each pin arrives at its minute | The discs of the longest and shortest bands |

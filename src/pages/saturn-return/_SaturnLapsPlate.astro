@@ -1,0 +1,113 @@
+---
+/**
+ * Saturn's laps as a timeline of a life, on the Saturn return page: a line
+ * from birth, one arc above it for each of Saturn's laps of the zodiac
+ * (SATURN_LAP_YEARS each), and a return where each lap ends, at the ages the
+ * page names (SATURN_RETURN_AGES, both in ./_saturn-laps.ts). A general
+ * illustration: it takes no birth data and marks no one's age.
+ *
+ * A story figure in the /thesis/ manner, after MercuryYearPlate, played by
+ * the shared entrance runtime (docs/MOTION.md, Stories): the line draws from
+ * birth at one speed in time, one lap after another; each return's disc and
+ * its age arrive as the line reaches them, and the closing beat is a ring
+ * round the first return, the one the page's words point to. The markup is
+ * the finished picture; the hidden states apply only while
+ * html[data-entrance="on"] and the figure's one mark (.sl-go, a 1px line
+ * across its middle) is still waiting. The caption never moves. Opacity,
+ * transform and stroke-dashoffset only; the pass ends at 2.4 s, inside the
+ * runtime's 2.6 s.
+ *
+ * Wide screens and phones get two drawings of the same data; each holds its
+ * space by its aspect ratio. Inline SVG, no images. Every word comes in as a
+ * prop, so a translated page can pass its own.
+ *
+ * The figures are set in the mono face, which nothing else on the page uses
+ * before a result. As on the sign guides' Sun year plate, the figure holds
+ * them in the words' own face (.sl-hold) until 200 ms after load, or until it
+ * is within 400px of the screen, so the 40 KB face is never fetched beside
+ * the hero; <noscript> restores it. The drawing's box never changes size, so
+ * the swap moves nothing around it.
+ */
+import { NARROW, STORY, WIDE, lapsPlot, type LapsWords } from './_saturn-laps';
+
+interface Props {
+  words: LapsWords;
+}
+
+const { words } = Astro.props;
+const plots = [lapsPlot(WIDE), lapsPlot(NARROW)];
+
+// The figure's styles travel in the body, just before its markup, as one
+// inline block, so they never join the page's head stylesheets (see
+// SunYearPlate). Every class is sl- prefixed; .prose leads the rules that
+// must win over the page's prose spacing.
+const styles = `
+.prose .sl-plate { margin: clamp(26px, 4vw, 36px) 0 clamp(28px, 4vw, 38px); }
+.sl-figure { position: relative; }
+.sl-go { position: absolute; left: 0; top: 50%; width: 100%; height: 1px; pointer-events: none; }
+.sl-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.sl-svg--wide { aspect-ratio: ${WIDE.w} / ${WIDE.h}; }
+.sl-svg--narrow { display: none; aspect-ratio: ${NARROW.w} / ${NARROW.h}; }
+.sl-axis { fill: none; stroke: var(--hair-3); stroke-width: 1; }
+.sl-arc { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: butt; }
+.sl-birth { fill: var(--bg); stroke: var(--ink-2); stroke-width: 1.4; }
+.sl-return { fill: var(--ink-0); stroke: var(--bg); stroke-width: 2; }
+.sl-ring { fill: none; stroke: var(--ink-1); stroke-width: 1.1; }
+.sl-lap { fill: var(--text-2); font-family: var(--font-mono); letter-spacing: -0.01em; text-anchor: middle; }
+.sl-age { fill: var(--ink-0); font-family: var(--font-mono); letter-spacing: -0.01em; text-anchor: middle; }
+.sl-word { fill: var(--muted); font-family: var(--font-sans); text-anchor: middle; }
+.sl-hold :is(.sl-lap, .sl-age) { font-family: inherit; }
+/* A sentence, so in the reading face, not the prose figcaption's small mono. */
+.prose .sl-caption { margin: 18px 0 0; max-width: 60ch; font-family: var(--font-sans); font-size: 0.9375rem; letter-spacing: 0; line-height: 1.55; color: var(--muted); text-wrap: pretty; }
+@media (max-width: 600px) {
+  .sl-svg--wide { display: none; }
+  .sl-svg--narrow { display: block; }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-entrance='on'] .sl-go ~ .sl-svg :is(.sl-arc, .sl-ring) { stroke-dasharray: 1; }
+  html[data-entrance='on'] .sl-go ~ .sl-svg :is(.sl-birth, .sl-return) { transform-box: fill-box; transform-origin: center; }
+  html[data-entrance='on'] .sl-go:not(.is-in) ~ .sl-svg :is(.sl-arc, .sl-ring) { stroke-dashoffset: 1; }
+  html[data-entrance='on'] .sl-go:not(.is-in) ~ .sl-svg :is(.sl-birth, .sl-return) { opacity: 0; transform: scale(0.4); }
+  html[data-entrance='on'] .sl-go:not(.is-in) ~ .sl-svg :is(.sl-lap, .sl-age, .sl-word) { opacity: 0; }
+  html[data-entrance='on'] .sl-go:not(.is-done) ~ .sl-svg .sl-arc { transition: stroke-dashoffset ${STORY.lap}ms linear var(--t); }
+  html[data-entrance='on'] .sl-go:not(.is-done) ~ .sl-svg :is(.sl-birth, .sl-return) { transition: opacity 260ms ease var(--t), transform ${STORY.piece}ms cubic-bezier(0.23, 1, 0.32, 1) var(--t); }
+  html[data-entrance='on'] .sl-go:not(.is-done) ~ .sl-svg :is(.sl-lap, .sl-age, .sl-word) { transition: opacity 360ms ease var(--t); }
+  html[data-entrance='on'] .sl-go:not(.is-done) ~ .sl-svg .sl-ring { transition: stroke-dashoffset var(--d) ease-out var(--t); }
+}
+`;
+const n = (value: number) => String(value);
+---
+<style is:inline set:html={styles}></style>
+<noscript><style>.sl-hold :is(.sl-lap, .sl-age) { font-family: var(--font-mono); }</style></noscript>
+<figure class="sl-plate sl-hold">
+  <div class="sl-figure" role="img" aria-label={words.alt}>
+    <span class="sl-go" data-enter="draw" aria-hidden="true"></span>
+    {plots.map((plot) => {
+      const L = plot.layout;
+      const everyone = [{ x: plot.birth.x, t: 0, word: words.birth, age: 0 }, ...plot.returns.map((r, i) => ({ x: r.x, t: r.t, word: words.returns[i], age: r.age }))];
+      return (
+        <svg
+          class:list={['sl-svg', L === WIDE ? 'sl-svg--wide' : 'sl-svg--narrow']}
+          viewBox={`0 0 ${L.w} ${L.h}`}
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path class="sl-axis" d={plot.axis} />
+          {plot.arcs.map((arc) => <path class="sl-arc" pathLength="1" style={`--t:${arc.t}ms`} d={arc.d} />)}
+          <text class="sl-lap" style={`--t:${plot.lap.t}ms`} x={n(plot.lap.x)} y={n(plot.lap.y)} font-size={L.lapFont}>{words.lap}</text>
+          <circle class="sl-ring" pathLength="1" style={`--t:${plot.ring.t}ms;--d:${plot.ring.dur}ms`} cx={n(plot.ring.x)} cy={n(plot.ring.y)} r={n(plot.ring.r)} />
+          <circle class="sl-birth" style="--t:0ms" cx={n(plot.birth.x)} cy={n(plot.birth.y)} r={n(L.dot - 1)} />
+          {plot.returns.map((r) => <circle class="sl-return" style={`--t:${r.t}ms`} cx={n(r.x)} cy={n(r.y)} r={n(L.dot)} />)}
+          {everyone.map((p) => (
+            <Fragment>
+              <text class="sl-age" style={`--t:${p.t}ms`} x={n(p.x)} y={n(L.ageY)} font-size={L.ageFont}>{p.age}</text>
+              <text class="sl-word" style={`--t:${p.t}ms`} x={n(p.x)} y={n(L.wordY)} font-size={L.wordFont}>{p.word}</text>
+            </Fragment>
+          ))}
+        </svg>
+      );
+    })}
+  </div>
+  <figcaption class="sl-caption">{words.caption}</figcaption>
+</figure>
+<script is:inline>(function(){try{var s=document.currentScript.previousElementSibling,o,d=0,r=function(){s.classList.remove('sl-hold')},go=function(){if(d)return;d=1;if(o)o.disconnect();var t='';s.querySelectorAll('.sl-lap,.sl-age').forEach(function(e){t+=e.textContent});if(!document.fonts)return r();document.fonts.load('15px '+getComputedStyle(s).getPropertyValue('--font-mono'),t).then(r,r)};if(document.readyState==='complete'||s.getBoundingClientRect().top<innerHeight){r();go()}else{addEventListener('load',function(){setTimeout(go,200)},{once:true});if(window.IntersectionObserver){o=new IntersectionObserver(function(e){if(e[0].isIntersecting)go()},{rootMargin:'400px 0px'});o.observe(s)}}}catch(e){if(s)s.classList.remove('sl-hold')}})()</script>
