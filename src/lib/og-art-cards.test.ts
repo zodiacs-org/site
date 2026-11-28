@@ -161,7 +161,7 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       '/assets/og/v8/thesis.jpg',
       ...ART_PAGE_CARD_KEYS.map((key) => `/assets/og/v8/tool/${key}.jpg`),
     ]);
-    expect(ART_CARDS).toHaveLength(99 + 28);
+    expect(ART_CARDS).toHaveLength(99 + 29);
     // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
     expect(ART_CARD_DISC).toBeGreaterThanOrEqual(128);
     expect(read('scripts/build-og-void.mjs')).toContain('public/assets/zodiac-icons/400/${s.slug}.webp');
@@ -407,8 +407,8 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
   };
   const deDash = (value: string) => value.replace(' — ', ', ');
 
-  it('draws the twenty-eight single page cards in the English folder, each from its page\'s own painting', () => {
-    expect([...ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits', 'moon-sign', 'compatibility', 'horoscopes', 'numerology', 'moon-phase', 'full-moon-calendar', 'retrogrades', 'eclipses', 'solar-return', 'lunar-return', 'your-sky-wrapped', 'how-to-read-a-birth-chart', 'occasions', 'chart-of-the-day', 'group-charts']);
+  it('draws the twenty-nine single page cards in the English folder, each from its page\'s own painting', () => {
+    expect([...ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits', 'moon-sign', 'compatibility', 'horoscopes', 'numerology', 'moon-phase', 'full-moon-calendar', 'retrogrades', 'eclipses', 'solar-return', 'lunar-return', 'your-sky-wrapped', 'how-to-read-a-birth-chart', 'occasions', 'chart-of-the-day', 'group-charts', 'people']);
     expect([...ART_PAGE_CARDS]).toEqual(ART_PAGE_CARD_KEYS.map((key) => `${ART_CARD_DIR}/tool/${key}.jpg`));
     for (const card of ART_PAGE_CARDS) expect(ART_CARDS).toContain(card);
     for (const painting of Object.values(ART_PAGE_PAINTINGS)) expect(readFileSync(new URL(`../../${painting.src}`, import.meta.url)).length, painting.src).toBeGreaterThan(0);
@@ -529,14 +529,21 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     expect(spec('occasions').kicker).toBe('Wedding and birthday sky cards');
     expect(occasions).toContain(`<h1 class="display">${spec('occasions').title.join(' ')}</h1>`);
     expect(occasions.replace(/\s+/gu, ' ')).toContain(`<p> ${spec('occasions').line} `);
+    // The People hub (its current card was the site's fallback): the hub's kicker, the page title's
+    // "sourced birth charts" as the headline, the first sentence of its lede.
+    const people = page('src/pages/people/index.astro');
+    expect(people).toContain(`<h1 class="display">${spec('people').kicker}</h1>`);
+    expect(people).toContain(`title="${spec('people').kicker}: ${spec('people').title.join(' ').toLowerCase()} | Zodiacs.org"`);
+    expect(people.replace(/\s+/gu, ' ')).toContain(`<p class="people-page__lede"> ${spec('people').line} `);
+    expect(spec('people').alt).toContain('faces hidden');
     // The cards and their alt text name no one.
-    for (const key of ['chart-of-the-day', 'group-charts']) {
+    for (const key of ['chart-of-the-day', 'group-charts', 'people']) {
       expect(spec(key).alt, key).not.toMatch(/Kahlo|Curie|Lennon|Woolf|Einstein|Eames/u);
     }
   });
 
   it('carries the thesis card\'s row of the twelve sign discs on the 2026-11-28 cards, over their own art', () => {
-    for (const key of ['moon-sign', 'compatibility', 'horoscopes', 'moon-phase', 'full-moon-calendar', 'retrogrades', 'eclipses', 'solar-return', 'lunar-return', 'your-sky-wrapped', 'how-to-read-a-birth-chart', 'occasions', 'chart-of-the-day', 'group-charts']) {
+    for (const key of ['moon-sign', 'compatibility', 'horoscopes', 'moon-phase', 'full-moon-calendar', 'retrogrades', 'eclipses', 'solar-return', 'lunar-return', 'your-sky-wrapped', 'how-to-read-a-birth-chart', 'occasions', 'chart-of-the-day', 'group-charts', 'people']) {
       expect(artPageCardSpec(key).accent, key).toEqual({ kind: 'signDiscs' });
       expect(artPageCardSpec(key).art.filter, key).toBe('none');
     }
@@ -591,6 +598,7 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
       ['src/pages/lunar-return/index.astro', 'lunar-return'],
       ['src/pages/learn/how-to-read-a-birth-chart.astro', 'how-to-read-a-birth-chart'],
       ['src/pages/occasions/index.astro', 'occasions'],
+      ['src/pages/people/index.astro', 'people'],
     ] as const) {
       const source = read(file);
       expect(source, file).toContain(`image={artPageCard('${key}')}`);
@@ -611,6 +619,8 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     expect(read('src/components/return-visits/ChartOfDayPage.astro')).toContain(": artPageCard('chart-of-the-day')} imageAlt={locale === 'en' ? artPageCardAlt('chart-of-the-day') : s(locale, 'dayTitle')}");
     expect(read('src/components/sharing/SharingToolPage.astro')).toContain("group: artPageCard('group-charts')");
     expect(read('src/components/return-visits/ReturnToolPage.astro')).toContain("kind === 'wrapped' ? artPageCard('your-sky-wrapped')");
+    // Each person's page keeps its own card.
+    expect(read('src/pages/people/[slug].astro')).toContain('const image = `/assets/og/v2/people/${person.slug}.png${identityCardRevision}`;');
     // The Russian moon phase page keeps the card it has.
     expect(read('src/pages/ru/moon-phase/index.astro')).not.toContain('artPageCard');
     // The Russian pages keep their own cards.

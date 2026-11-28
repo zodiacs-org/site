@@ -445,7 +445,7 @@ export const ART_PAGE_PAINTINGS = Object.freeze({
   chartWheels: Object.freeze({ src: 'public/assets/art/compatibility-wheels-1200.webp', width: 1200, height: 800 }),
   veniceClock: Object.freeze({ src: 'public/assets/art/venice-clock-1200.webp', width: 1200, height: 805 }),
   numerologyDial: Object.freeze({ src: 'public/assets/art/numerology-dial-1200.webp', width: 1200, height: 805 }),
-  // The third round's art (owner-approved mockups, 2026-11-28): nine generated
+  // The third round's art (owner-approved mockups, 2026-11-28): ten generated
   // photographs (Higgsfield, 2528 × 1696, cut to 1200 px webp) and two
   // pictures of the site's own chart wheels from published People charts
   // (scripts/build-wheel-art.ts).
@@ -460,6 +460,7 @@ export const ART_PAGE_PAINTINGS = Object.freeze({
   duskCrescent: Object.freeze({ src: 'public/assets/art/dusk-crescent-1200.webp', width: 1200, height: 805 }),
   dayWheel: Object.freeze({ src: 'public/assets/art/chart-of-the-day-wheel-1200.webp', width: 1200, height: 800 }),
   groupWheels: Object.freeze({ src: 'public/assets/art/group-charts-wheels-1200.webp', width: 1200, height: 800 }),
+  instantPhotos: Object.freeze({ src: 'public/assets/art/people-instant-photos-1200.webp', width: 1200, height: 805 }),
 });
 
 /** The sign art panels' filter, as on the sign cards; the poster is drawn brighter, as the pages' hero crops show it. */
@@ -611,7 +612,7 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
     alt: 'Find your Life Path number: discover it from your birth date, or add your name to explore more numbers. Numerology is a separate tradition from astrology. Beside the words, a silver dial with a dark numbered ring, its needle on 7.',
   },
   // The third round (owner-approved mockups, 2026-11-28): eleven astrology
-  // pages, each with the twelve canonical sign discs above the kicker.
+  // pages and the People hub, each with the twelve canonical sign discs above the kicker.
   {
     key: 'moon-phase', routes: ['/moon-phase/'],
     art: framed('moonPhases'), accent: { kind: 'signDiscs' },
@@ -677,6 +678,12 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
     art: framed('groupWheels'), accent: { kind: 'signDiscs' },
     kicker: 'Free group reading', title: ['Who’s the spark,', 'who’s the glue?'], size: 80, fit: 540, line: 'Three to eight charts, each given a role.',
     alt: 'Who’s the spark, who’s the glue? Three to eight charts, each given a role. The twelve sign discs in a row beside five of the site’s chart wheels, overlapping.',
+  },
+  {
+    key: 'people', routes: ['/people/'],
+    art: framed('instantPhotos'), accent: { kind: 'signDiscs' },
+    kicker: 'People', title: ['Sourced', 'birth charts'], size: 96, line: 'Charts for people whose birth dates are a matter of public record.',
+    alt: 'Sourced birth charts: charts for people whose birth dates are a matter of public record. The twelve sign discs in a row beside four instant photographs of anonymous people with their faces hidden, scattered with star stickers.',
   },
 ].map((spec) => Object.freeze({ ...spec, card: PAGE_CARD(spec.key), size: spec.size ?? 104, fit: spec.fit ?? 500, lineCh: spec.lineCh ?? 23 })));
 

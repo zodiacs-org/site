@@ -11,6 +11,7 @@ import {
   peopleDisciplineGroups,
 } from '../../lib/people';
 import { SIGNS } from '../../lib/signs';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const disciplines = PEOPLE_DISCIPLINE_FILTERS.map((discipline) => ({
   ...discipline,
@@ -67,6 +68,8 @@ const jsonLd = [
   title="People: sourced birth charts | Zodiacs.org"
   description="Astrology charts computed from sourced public birth dates, with unknown birth times and uncertain Moon signs stated plainly."
   path="/people/"
+  image={artPageCard('people')}
+  imageAlt={artPageCardAlt('people')}
   noindex={!PEOPLE_DIRECTORY_INDEXABLE}
   nofollow={!PEOPLE_DIRECTORY_INDEXABLE}
   jsonLd={jsonLd}

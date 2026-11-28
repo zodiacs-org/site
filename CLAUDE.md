@@ -367,7 +367,7 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   og:image, twitter:image and the Article's image with one alt text. The v2
   `og/v2/thesis.png` stays published, in the v2 family, for links already
   shared)
-- `public/assets/og/v8/tool/{key}.jpg` (28 single page cards) ← `npm run
+- `public/assets/og/v8/tool/{key}.jpg` (29 single page cards) ← `npm run
   data:og -- --only-art-page-cards` (owner-delegated decisions, 2026-11-27:
   /birth-chart/ with its someone-else and three-dimensions pages, /today/,
   /rising-sign/, /big-three/, the /birthday/ hub, /tools/, the /learn/ hub
@@ -381,13 +381,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   round, each with the same row of discs): /moon-phase/, /full-moon-calendar/
   and /eclipses/ (each with its 2027 page), /retrogrades/, /solar-return/,
   /lunar-return/, /your-sky-wrapped/, /learn/how-to-read-a-birth-chart/,
-  /occasions/, /chart-of-the-day/ (its dated editions too) and /group-charts/.
-  Their art: twelve generated photographs (Higgsfield; a crescent Moon, the
+  /occasions/, /chart-of-the-day/ (its dated editions too), /group-charts/
+  and the /people/ hub (each person's page keeps its own card).
+  Their art: thirteen generated photographs (Higgsfield; a crescent Moon, the
   Venice clocktower's zodiac dial, a silver dial with a dark numbered ring,
   and for the third round the Moon's phases along an arc, a full Moon, a
   retrograde loop against the stars, a total solar eclipse, the Sun's limb in
   violet light, a Moon rising from the sea, Jupiter and Saturn, a star atlas
-  under a loupe and a crescent Moon with the evening star) cut to 1200px WebP
+  under a loupe, a crescent Moon with the evening star, and four instant
+  photographs of anonymous people with their faces hidden) cut to 1200px WebP
   in `public/assets/art/`, and three pictures of the site's own chart wheels
   (the compatibility hub's two, the chart of the day's one and the group
   charts' five: `compatibility-wheels-1200.webp`,
