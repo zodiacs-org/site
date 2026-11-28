@@ -16,12 +16,15 @@ import { mostRecentSolarReturnInstant, solarReturnInstant } from '../../lib/engi
 import { houseOf } from '../../lib/engine/houses';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
+import { earliestToday } from '../../lib/birth-date-policy';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { readsOnDate } from '../../lib/time/local-day';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock } from '../../lib/vedic-signs/clock';
 import { solarReturnThemes } from '../../lib/solar-return/themes';
 import { solarReturnShareUrl } from '../../lib/solar-return/share';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
-import { MINOR_NOTE, isUnder18, softenMinor } from './reading-guards';
+import { MINOR_NOTE, isUnderAge, softenMinor } from './reading-guards';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -82,35 +85,58 @@ function dateLabel(at: Date): string {
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
 
-/** `birthdayReportPage`: the site's /birthday-report/ is switched on (PUBLIC_BIRTHDAY_REPORT_ENABLED=1); only then does the answer link to it. */
-export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: SolarReturnClock, origin: string, birthdayReportPage = false): Promise<{ data: SolarReturnData; links: { title: string; url: string }[] }> {
+export interface SolarReturnPages {
+  /** The site's /birthday-report/ page is switched on (PUBLIC_BIRTHDAY_REPORT_ENABLED=1). */
+  birthdayReportPage?: boolean;
+  /** The site's /share/solar-return/ share route is switched on (PUBLIC_SOLAR_RETURN_SHARE_ENABLED=1). */
+  sharePage?: boolean;
+}
+
+/** `pages`: optional public route flags (or a boolean for `birthdayReportPage` alone). Only live routes are linked. */
+export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: SolarReturnClock, origin: string, pages: boolean | SolarReturnPages = false): Promise<{ data: SolarReturnData; links: { title: string; url: string }[] }> {
+  const birthdayReportPage = typeof pages === 'boolean' ? pages : !!pages.birthdayReportPage;
+  const sharePage = typeof pages === 'boolean' ? true : pages.sharePage !== false;
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 09:15.');
-  const latitude = args.latitude === undefined ? undefined : roundCoordinate(args.latitude);
+  const rawLatitude = args.latitude;
+  const roundedLatitude = rawLatitude === undefined ? undefined : roundCoordinate(rawLatitude);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
   const timeKnown = args.time !== undefined;
-  const placed = latitude !== undefined && longitude !== undefined;
+  const placed = rawLatitude !== undefined && longitude !== undefined;
   // Without a birth time the chart is cast from 12:00 UTC on the birth date whatever the zone, as /solar-return/ and the birthday report are.
   let birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  const onBirthplaceClock = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!)).utc;
-  if (args.zone) await clock.prepareLocalTime(args.birthDate, args.zone);
-  if (args.time !== undefined) birthUtc = onBirthplaceClock(args.time);
+  let clockLimit: string | null = null;
+  const resolveOnBirthClock = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!));
+  const onBirthplaceClock = (time: string) => resolveOnBirthClock(time).utc;
+  if (args.zone) {
+    await clock.prepareLocalTime(args.birthDate, args.zone);
+    if (!readsOnDate(args.birthDate, resolveOnBirthClock('00:00'))) throw new SkippedBirthDateError();
+  }
+  if (args.time !== undefined) {
+    const resolved = resolveOnBirthClock(args.time);
+    const onClock = birthTimeOnClock(resolved.flags, true);
+    if (onClock.skipped) throw new SkippedBirthTimeError();
+    clockLimit = onClock.limit;
+    birthUtc = resolved.utc;
+  }
   if (birthUtc.getTime() > now.getTime()) throw new RangeError('The birth date is still to come.');
   const natalSun = computeChart({ utc: birthUtc, houseSystem: 'whole', timeKnown }).bodies.find((row) => row.body === 'Sun')!.lon;
   const which = args.which ?? 'next';
   const latest = mostRecentSolarReturnInstant(natalSun, now);
   const instant = which === 'current' ? latest : solarReturnInstant(natalSun, new Date(latest.getTime() + 365.25 * DAY));
-  // The return is cast at the birthplace when one is given with a birth time; without a time its houses would be guesses.
-  const location = timeKnown && placed ? { latitude: latitude!, longitude: longitude! } : null;
+  // The return is cast at the birthplace when one is given with a birth time; without a time or at a geographic pole, houses are omitted.
+  // Check the raw latitude before rounding so valid near-pole coordinates (such as 89.999) match /solar-return/ and WebMCP instead of rounding onto +-90.
+  const atPole = timeKnown && placed && Math.abs(rawLatitude!) >= 90;
+  const castLatitude = atPole || !placed ? undefined : (Math.abs(roundedLatitude!) >= 90 ? rawLatitude! : roundedLatitude!);
+  const location = timeKnown && placed && !atPole ? { latitude: castLatitude!, longitude: longitude! } : null;
   const chart = computeChart({ utc: instant, ...(location ?? {}), houseSystem: 'whole', timeKnown: true });
   const cusps = location && chart.houses ? chart.houses.cusps : null;
   const asc = location && chart.angles ? chart.angles.asc : null;
   // Without a birth time the return is told as its UTC date, as the birthday report and /solar-return/ tell it.
   const shownZone = timeKnown ? args.currentZone ?? args.zone ?? 'UTC' : 'UTC';
-  const today = now.toISOString().slice(0, 10);
-  const under18 = isUnder18(args.birthDate, today);
-  const guard = (text: string) => (under18 ? softenMinor(text) : text);
+  const under18 = isUnderAge(args.birthDate, earliestToday(now), 18);
+  const guard = (text: string) => (under18 ? softenMinor(text.replace('romance, play, children', 'play, creativity, projects')) : text);
   const themes = solarReturnThemes({ bodies: chart.bodies, aspects: chart.aspects, asc, cusps, timeKnown }).map((theme) => ({ ...theme, line: guard(theme.line) }));
   const placements = chart.bodies.filter((row) => (BODIES as readonly string[]).includes(row.body)).map((row) => ({
     body: row.body as typeof BODIES[number],
@@ -126,22 +152,25 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
   const rising = asc !== null ? SIGNS[signIndexForLongitude(asc)].slug : null;
   const jupiter = placements.find((row) => row.body === 'Jupiter')!.sign;
   const limits: string[] = [];
+  if (clockLimit) limits.push(clockLimit);
   if (under18) limits.push(MINOR_NOTE);
   if (!timeKnown) limits.push('No birth time was given, so the return instant can shift by up to about a day; the Moon, the rising sign and the houses are left out.');
   else if (!placed) limits.push('No birthplace coordinates were given, so the rising sign and the houses are left out.');
+  else if (atPole) limits.push('The rising sign and houses are undefined at a geographic pole, so they are left out.');
   else limits.push('The return is cast for the birthplace. Astrologers who cast it where the person spends the birthday get a different rising sign and houses, with the same planets.');
   if (!timeKnown) limits.push('Without a birth time the return is given as its date in UTC, not a clock time, and it can be a day either side.');
   else if (!args.currentZone) limits.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
   const pageUrl = `${origin}/solar-return/`;
+  const returnYear = Number(new Intl.DateTimeFormat('en-CA', { timeZone: shownZone, year: 'numeric' }).format(instant));
   return {
     data: {
-      which, returnYear: Number(new Intl.DateTimeFormat('en-CA', { timeZone: shownZone, year: 'numeric' }).format(instant)),
+      which, returnYear,
       instantUtc: instant.toISOString(), local: timeKnown ? clockLabel(instant, shownZone) : dateLabel(instant), zone: shownZone, timeKnown, placed,
       sun: sunSign, rising, placements, themes,
       confidence: readingConfidence(detail), confidenceLabel: readingConfidenceLabel(detail),
       limits, under18, pageUrl,
-      shareUrl: solarReturnShareUrl(origin, { sun: sunSign, year: instant.getUTCFullYear(), rising, jupiter }),
+      shareUrl: sharePage ? solarReturnShareUrl(origin, { sun: sunSign, year: returnYear, rising, jupiter }) : null,
     },
     links: [
       { title: 'Solar return chart on Zodiacs', url: pageUrl },

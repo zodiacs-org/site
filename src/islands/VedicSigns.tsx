@@ -45,7 +45,7 @@ export function formatDegrees(value: number): string {
   return `${Math.floor(arcminutes / 60)}°${String(arcminutes % 60).padStart(2, '0')}′`;
 }
 
-function Placement({ title, sign, missing }: { title: string; sign: VedicSign | null; missing: string }) {
+function Placement({ title, sign, missing, cuspLabel }: { title: string; sign: VedicSign | null; missing: string; cuspLabel?: string }) {
   if (!sign) {
     return (
       <article class="tile vedic__card vedic__card--open">
@@ -60,7 +60,7 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
     <article class="tile vedic__card" style={{ '--sign': `var(--sign-${sign.sign})` }}>
       <p class="vedic__body">{title}</p>
       <img class="vedic__disc" src={signIcon(128, sign.sign)} width={56} height={56} alt="" decoding="async" />
-      <h3 class="vedic__sign">{sign.rashi} <span>{signName(sign.sign)}</span></h3>
+      <h3 class="vedic__sign">{sign.rashi} <span>{signName(sign.sign)}{sign.cusp ? ` (${cuspLabel ?? 'provisional, on boundary'})` : ''}</span></h3>
       <p class="vedic__facts">{sign.degree !== null && <><span class="mono">{formatDegrees(sign.degree)}</span> in {sign.rashi}. </>}Western sign: {sign.tropicalSign ? signName(sign.tropicalSign) : listOr(sign.tropicalCandidates.map(signName))}.</p>
       <p class="vedic__line">{sign.line.slice(sign.line.indexOf(':') + 2)}</p>
     </article>
@@ -75,6 +75,7 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
 export function VedicPlacements({ result }: { result: VedicReading }) {
   const missingRising = result.timeKnown ? 'The rising sign needs the birthplace.' : 'The rising sign needs the birth time: it changes sign about every two hours.';
   const unsettledMoon = result.moon ? '' : `The Moon changed sign that day: ${listOr(result.moonCandidates)}. A birth time settles it.`;
+  const risingTimeSensitive = result.limits.some((line) => line.includes('jumps abruptly near this birth time') || line.includes('moves rapidly across'));
   return (
     <>
       <div class="vedic__lead" data-vedic-moon>
@@ -83,9 +84,9 @@ export function VedicPlacements({ result }: { result: VedicReading }) {
           <p class="vedic__body">Moon nakshatra (lunar mansion)</p>
           {result.moonNakshatra ? (
             <>
-              <h3 class="vedic__sign">{result.moonNakshatra.name} <span>nakshatra {result.moonNakshatra.number} of 27</span></h3>
+              <h3 class="vedic__sign">{result.moonNakshatra.name} <span>nakshatra {result.moonNakshatra.number} of 27{result.moonNakshatra.cusp ? ' (provisional, on boundary)' : ''}</span></h3>
               <dl class="vedic__facts-list">
-                {result.moonNakshatra.pada !== null && <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada} of 4</dd></div>}
+                {result.moonNakshatra.pada !== null && !result.moonNakshatra.cusp && <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada} of 4</dd></div>}
                 <div><dt>Lord</dt><dd>{result.moonNakshatra.lord}</dd></div>
                 <div><dt>Deity</dt><dd>{result.moonNakshatra.deity}</dd></div>
                 <div><dt>Symbol</dt><dd>{result.moonNakshatra.symbol}</dd></div>
@@ -102,7 +103,12 @@ export function VedicPlacements({ result }: { result: VedicReading }) {
       </div>
       <div class="vedic__grid">
         <Placement title="Sun (soul and self)" sign={result.sun} missing={`The Sun changed sign that day: ${listOr(result.sunCandidates)}. A birth time settles it.`} />
-        <Placement title="Rising sign (lagna)" sign={result.rising} missing={result.limits.includes(POLAR_RISING_LIMIT) ? POLAR_RISING_LIMIT : missingRising} />
+        <Placement
+          title="Rising sign (lagna)"
+          sign={result.rising}
+          missing={result.limits.includes(POLAR_RISING_LIMIT) ? POLAR_RISING_LIMIT : missingRising}
+          cuspLabel={risingTimeSensitive ? 'provisional, time-sensitive' : 'provisional, on boundary'}
+        />
       </div>
     </>
   );
@@ -230,6 +236,8 @@ export default function VedicSigns() {
                   {shared === 'copied' ? 'Link copied.' : shared === 'failed' ? 'The link could not be copied. Open the share card and copy its address.' : 'The link carries only your sidereal Sun sign and the ayanamsa: never your Moon or rising sign, nakshatra, birth date, time or place.'}
                 </p>
               </>
+            ) : result.sun?.cusp ? (
+              <p class="vedic__share-note">Your sidereal Sun sits right on a sign boundary, so there is no single-sign card to share.</p>
             ) : (
               <p class="vedic__share-note">The Sun changed sign on that day, so there is no card to share until a birth time settles it.</p>
             )}

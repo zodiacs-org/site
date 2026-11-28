@@ -43,7 +43,7 @@ describe('the tools at the extremes their schemas accept', () => {
       const envelope = await runCalculatorTool(name, input);
       const outcome = envelope.ok ? 'ok' : envelope.error.code;
       codes[outcome] = (codes[outcome] ?? 0) + 1;
-      if (!envelope.ok && !['OUTSIDE_REFERENCE_SPAN', 'REFERENCE_BEFORE_BIRTH', 'FUTURE_BIRTH_DATE'].includes(envelope.error.code)) {
+      if (!envelope.ok && !['OUTSIDE_REFERENCE_SPAN', 'REFERENCE_BEFORE_BIRTH', 'RETURN_YEAR_BEFORE_BIRTH', 'FUTURE_BIRTH_DATE'].includes(envelope.error.code)) {
         failed.push(`${name} ${JSON.stringify(input)}: ${envelope.error.code}`);
       }
     }
@@ -61,7 +61,8 @@ describe('the tools at the extremes their schemas accept', () => {
     expect(await code('zodiacs.chart_pdf', tokyo1800)).toBe('OUTSIDE_REFERENCE_SPAN');
     expect(await code('zodiacs.year_wrapped', { birth: niue2199, year: 2000 })).toBe('FUTURE_BIRTH_DATE');
     expect(await code('zodiacs.year_wrapped', { birth: tokyo1800, year: 1800 })).toBe('OUTSIDE_REFERENCE_SPAN');
-    expect(await code('zodiacs.solar_return', { birth: tokyo1800, year: 1800 })).toBe('OUTSIDE_REFERENCE_SPAN');
+    expect(await code('zodiacs.solar_return', { birth: tokyo1800, year: 1800 })).toBe('RETURN_YEAR_BEFORE_BIRTH');
+    expect(await code('zodiacs.solar_return', { birth: { date: '2000-12-31', time: '23:00', place: NIUE }, year: 2199 })).toBe('OUTSIDE_REFERENCE_SPAN');
     expect(await code('zodiacs.solar_return', { birth: tokyo1800, year: 2000 })).toBe('ok');
     expect(await code('zodiacs.lunar_return', { birth: tokyo1800 })).toBe('OUTSIDE_REFERENCE_SPAN');
     expect(await code('zodiacs.lunar_return', { birth: { ...niue2199, place: TOKYO } })).toBe('FUTURE_BIRTH_DATE');

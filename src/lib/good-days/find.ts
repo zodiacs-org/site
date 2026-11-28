@@ -29,7 +29,8 @@ import eclipseTable from '../../data/eclipses.json';
 import { SIGNS } from '../signs';
 import { GOAL_RULES, GOOD_DAYS_NOTE, PARTNERSHIP_GOALS, type GoodDayGoal, type Significator } from './goals';
 import { UNTIMED_DROPPED_MESSAGE, personalFactors, preparePersonal, type BirthDetails, type PersonalChart, type PersonalDay } from './personal';
-import { isUnder13, isUnder18 } from '../../ai-tools/features/reading-guards';
+import { isUnder13, isUnderAge } from '../reading-guards';
+import { parseCivilDate } from '../time/civil-date';
 
 const DAY = 86_400_000;
 const HOUR = 3_600_000;
@@ -68,8 +69,10 @@ export interface GoodDaysInput {
   count?: number;
   /** The person's own birth details, for this request only. */
   birth?: BirthDetails | null;
-  /** Today on the person's clock, for the age rules. */
+  /** Today on the person's clock, for the default search window. */
   today: string;
+  /** Calendar date for under-13 and under-18 age gates (UTC-12 earliestToday so no one passes early). Defaults to today. */
+  ageToday?: string;
 }
 
 export interface Factor {
@@ -141,10 +144,13 @@ export const GOOD_DAY_VERDICTS = {
   avoid: 'A day tradition would avoid for it',
 } as const;
 
+/** Any day scoring below this reads as a day to avoid, for both verdicts and list membership. */
+const AVOID_SCORE_CUTOFF = 48;
+
 export function goodDayVerdict(score: number): string {
   if (score >= 80) return GOOD_DAY_VERDICTS.strong;
   if (score >= 66) return GOOD_DAY_VERDICTS.good;
-  if (score >= 48) return GOOD_DAY_VERDICTS.mixed;
+  if (score >= AVOID_SCORE_CUTOFF) return GOOD_DAY_VERDICTS.mixed;
   return GOOD_DAY_VERDICTS.avoid;
 }
 
@@ -524,9 +530,12 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
   const messages: string[] = [];
   let chart: PersonalChart | null = null;
   if (input.birth) {
+    // Validate an actual Gregorian date before age checks so nonexistent dates like 2015-02-29 cannot bypass or roll over.
+    if (!parseCivilDate(input.birth.date)) throw new RangeError('birthDate must be a real date, such as 1994-05-14.');
     // A child's birth date is refused before anything is worked out; nothing about it is kept.
-    if (isUnder13(input.birth.date, input.today)) throw new RangeError(UNDER_13_SENTENCE);
-    if (PARTNERSHIP_GOALS.has(input.goal) && isUnder18(input.birth.date, input.today)) throw new RangeError(UNDER_18_PARTNERSHIP_SENTENCE);
+    const ageCutoff = input.ageToday ?? input.today;
+    if (isUnder13(input.birth.date, ageCutoff)) throw new RangeError(UNDER_13_SENTENCE);
+    if (PARTNERSHIP_GOALS.has(input.goal) && isUnderAge(input.birth.date, ageCutoff, 18)) throw new RangeError(UNDER_18_PARTNERSHIP_SENTENCE);
     chart = await preparePersonal(input.birth, clock);
     if (!input.birth.time) messages.push('No birth time was given, so the natal Moon is left out of the personal reading.');
     if (chart.sun === null) messages.push('The Sun changed sign on the day of birth, so without a birth time the personal reading leaves out your Sun sign.');
@@ -574,7 +583,9 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     return { day, factors, ordered, score, avoid: factors.some((factor) => factor.avoid), spans: voids.spans, strongest };
   });
 
-  const best = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.score - a.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count).map((row): GoodDay => {
+  // Keep best and avoid strictly disjoint using the same cutoff as goodDayVerdict: never place an avoid day into best.
+  const bestCandidates = rated.filter((row) => !row.avoid && row.score >= AVOID_SCORE_CUTOFF);
+  const best = pick([...bestCandidates].sort((a, b) => b.score - a.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count).map((row): GoodDay => {
     // With a governing caution the day reads as mixed at most, and its reason says what holds it back.
     const verdict = goodDayVerdict(row.score);
     const capped = row.strongest && (verdict === GOOD_DAY_VERDICTS.strong || verdict === GOOD_DAY_VERDICTS.good) ? GOOD_DAY_VERDICTS.mixed : verdict;
@@ -584,7 +595,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
       factors: row.ordered.map((factor) => factor.text), voidOfCourse: row.spans,
     };
   });
-  const avoid = pick([...rated].filter((row) => row.avoid || row.score < 45).sort((a, b) => Number(b.avoid) - Number(a.avoid) || a.score - b.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), AVOID_COUNT)
+  const avoid = pick([...rated].filter((row) => row.avoid || row.score < AVOID_SCORE_CUTOFF).sort((a, b) => Number(b.avoid) - Number(a.avoid) || a.score - b.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), AVOID_COUNT)
     .sort((a, b) => a.day.date.localeCompare(b.day.date))
     .map((row): AvoidDay => ({ date: row.day.date, label: dayLabel(row.day.date), score: row.score, reason: oneLine(row.factors, false) }));
 
@@ -595,7 +606,8 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
   }).filter((period) => period.to >= from && period.from <= to);
   // Said when no best day reads as good: below 66, or held back by a heavy caution.
   if (best.length && !best.some((day) => day.verdict === GOOD_DAY_VERDICTS.good || day.verdict === GOOD_DAY_VERDICTS.strong)) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
-  if (best.length < count) messages.push('Every other day in the window falls on a day tradition would avoid.');
+  if (best.length === 0) messages.push('Every day in this window falls on a day tradition would avoid. A wider window may hold better days.');
+  else if (best.length < count) messages.push('Every other day in the window falls on a day tradition would avoid.');
   if (input.zone === 'UTC') messages.push('Days and times are in UTC because no time zone was given.');
 
   return {
@@ -603,6 +615,8 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     best, avoid,
     periods: [...retrogradePeriods(input.goal, skies), ...eclipsePeriods].sort((a, b) => a.from.localeCompare(b.from)),
     personal: chart ? { sun: chart.sun, timeKnown: !!input.birth?.time } : null,
-    messages, care: rule.care, note: GOOD_DAYS_NOTE,
+    messages,
+    care: best.length > 0 ? rule.care : 'No day in this window met traditional electional criteria. Try a wider date range if your schedule allows; practical commitments still come first.',
+    note: GOOD_DAYS_NOTE,
   };
 }

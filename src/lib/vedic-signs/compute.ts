@@ -1,10 +1,9 @@
 /**
  * The Vedic signs, from birth instants: the chart engine's tropical positions
  * (../engine/full), made sidereal at the boundary in ../engine/vedic, then the
- * reading (./reading). The get_vedic_signs tool runs this on the server; the
- * /vedic-signs/ page runs the same two halves in the browser, the tropical one
- * (./tropical) on the main thread and the sidereal one (./sidereal) in its
- * worker, with the same instants, so their answers are the same. Pure: no
+ * reading (./reading). The get_vedic_signs tool runs this on the server (DE440);
+ * the /vedic-signs/ page runs the same two halves in the browser
+ * (astronomy-engine), with boundary-uncertainty limits near cusps. Pure: no
  * network, storage or logging.
  */
 import type { VedicReading } from './reading';
@@ -22,9 +21,11 @@ export interface VedicSignsInstants {
   /** For an untimed birth, the two ends of the birth day; ignored with a birth time. */
   dayEnds?: readonly Date[] | undefined;
   ayanamsa: VedicAyanamsa;
+  /** True when the birth date is under 18 today (UTC-12). */
+  minor?: boolean;
 }
 
 /** Both halves at once, as the get_vedic_signs tool runs them; the page runs the same two halves split across its worker. */
 export function computeVedicSigns(input: VedicSignsInstants): VedicReading {
-  return vedicFromTropical(tropicalMoments(input), input.ayanamsa);
+  return vedicFromTropical(tropicalMoments(input), input.ayanamsa, Boolean(input.minor));
 }

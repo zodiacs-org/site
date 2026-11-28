@@ -14,6 +14,13 @@ import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import type { City } from '../lib/geo/search';
 import { createModuleLoader } from '../lib/module-load';
 import { birthDayEnds, rangeWorthShowing, untimedScoreNote, type ScoreRange } from '../lib/year-score/range';
+import {
+  SKIPPED_BIRTH_DATE,
+  SKIPPED_BIRTH_TIME,
+  SkippedBirthDateError,
+  SkippedBirthTimeError,
+  resolveYearScoreBirth,
+} from '../lib/year-score/birth-clock';
 import { yearScoreShareUrl } from '../lib/year-score/share';
 import { dayName, shortMonth, yearReading, type YearReading } from '../lib/year-score/reading';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
@@ -80,6 +87,8 @@ interface Result {
   timeKnown: boolean;
   /** Without a birth time: the lowest and highest score across the birth day. Null with a birth time. */
   range: ScoreRange | null;
+  /** Set when a repeated DST-fold birth time was read at its earlier occurrence. */
+  clockLimit: string | null;
 }
 
 export default function YearScoreCalculator() {
@@ -121,7 +130,14 @@ export default function YearScoreCalculator() {
       const [scorer] = await Promise.all([loadScorer(), placed ? prepareLocalTime(date, city.tz) : null]);
       if (run !== generation.current) return;
       const timeKnown = !!(placed && time);
-      const utc = placed ? resolveLocalToUtc(date, time || '12:00', city.tz, { longitude: city.lon }).utc : new Date(`${date}T12:00:00Z`);
+      const { utc, clockLimit } = await resolveYearScoreBirth(
+        date,
+        timeKnown ? time : null,
+        placed ? city.tz : null,
+        { prepareLocalTime, resolveLocalToUtc },
+        placed ? city.lon : undefined,
+      );
+      if (run !== generation.current) return;
       // Without a birth time, the birth day's two ends: local midnight to 23:59 with a place, every clock's version of the date without.
       let local: [Date, Date] | null | undefined;
       if (!timeKnown && placed) {
@@ -148,11 +164,16 @@ export default function YearScoreCalculator() {
         confidence: confidenceLabel(timeKnown && !!placed),
         timeKnown,
         range,
+        clockLimit,
       });
       requestAnimationFrame(() => headingRef.current?.focus());
     } catch (err) {
       if (run !== generation.current) return;
-      setError('The score could not be calculated. Check the date and try again.');
+      setError(
+        err instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME
+          : err instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE
+            : 'The score could not be calculated. Check the date and try again.',
+      );
       console.error(err);
     } finally {
       if (run === generation.current) setBusy(false);
@@ -257,6 +278,7 @@ export default function YearScoreCalculator() {
           {/* Offered only after a score, so only for a birth date that passed the under-13 check above. */}
           {REMINDER_OFFERED && <BirthdayReminderOffer month={Number(date.slice(5, 7))} day={Number(date.slice(8, 10))} />}
           {!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}
+          {result.clockLimit && <p class="field__help">{result.clockLimit}</p>}
           <div class="calc__actions">
             {(() => {
               // The link carries the Sun sign and the score only: never the birth date, time or place. No settled sign, no link.

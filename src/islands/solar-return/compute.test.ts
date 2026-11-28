@@ -3,6 +3,7 @@ import { bodyLongitude } from '../../lib/engine/full';
 import { solarReturnInstant } from '../../lib/engine/solar-return';
 import { yearScan } from '../../lib/engine/year-scan';
 import { computeSolarReturn, currentReturnYear, nearForReturnYear, prepareLocalTime } from './compute';
+import { REPEATED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../../lib/vedic-signs/clock';
 
 const KAHLO_BIRTH = new Date('1907-07-06T15:06:36Z');
 const KAHLO_SUN = bodyLongitude('Sun', KAHLO_BIRTH);
@@ -78,5 +79,98 @@ describe('the Sun sign of an untimed solar return', () => {
     const nowhere = computeSolarReturn({ ...untimed, birthDate: '1990-03-20' });
     expect(tokyo.chart.input.utc.getTime()).toBe(nowhere.chart.input.utc.getTime());
     expect(tokyo.sunSign).toBe(11);
+  });
+
+  it('rejects a custom return year on or before the birth year', () => {
+    expect(() => computeSolarReturn({ ...untimed, birthDate: '1990-05-03', year: 1990 })).toThrow(RangeError);
+    expect(() => computeSolarReturn({ ...untimed, birthDate: '1990-05-03', year: 1989 })).toThrow(RangeError);
+  });
+
+  it('suppresses angles and houses at geographic poles and sets under18 using the non-rolling leap-day cutoff', async () => {
+    await prepareLocalTime('2010-03-01', 'UTC');
+    const pole = computeSolarReturn({
+      birthDate: '2010-03-01', birthTime: '08:30', timeKnown: true,
+      birthplace: { name: 'North Pole', lat: 90, lon: 0, tz: 'UTC' },
+      savedSunLon: null, houseSystem: 'whole',
+      castLocation: { name: 'North Pole', lat: 90, lon: 0, tz: 'UTC' },
+      year: 2028,
+    }, new Date('2028-02-29T12:00:00Z'));
+    expect(pole.chart.angles).toBeNull();
+    expect(pole.chart.houses).toBeNull();
+    expect(pole.atPole).toBe(true);
+    expect(pole.under18).toBe(true);
+
+    // Just short of the pole (89.999 deg), full-precision cast coordinates keep their rising sign and houses.
+    const nearPole = computeSolarReturn({
+      birthDate: '1990-05-03', birthTime: '08:30', timeKnown: true,
+      birthplace: { name: 'Near Pole', lat: 89.999, lon: 0, tz: 'UTC' },
+      savedSunLon: null, houseSystem: 'whole',
+      castLocation: { name: 'Near Pole', lat: 89.999, lon: 0, tz: 'UTC' },
+      year: 2026,
+    });
+    expect(nearPole.atPole).toBeUndefined();
+    expect(nearPole.chart.angles).not.toBeNull();
+    expect(nearPole.chart.houses).not.toBeNull();
+  });
+
+  it('refuses skipped birth times and dates and records a notice on repeated DST-fold birth times', async () => {
+    await prepareLocalTime('1990-03-25', 'Europe/Madrid');
+    expect(() => computeSolarReturn({
+      birthDate: '1990-03-25', birthTime: '02:30', timeKnown: true,
+      birthplace: { name: 'Madrid', lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' },
+      savedSunLon: null, houseSystem: 'whole',
+      castLocation: { name: 'Madrid', lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' },
+      year: 2026,
+    })).toThrow(SkippedBirthTimeError);
+
+    // A chart previously saved with a DST-gap adjustment preserves its solar return using the saved UTC instant.
+    const savedAdjusted = computeSolarReturn({
+      birthDate: '1990-03-25', birthTime: '02:30', timeKnown: true,
+      birthplace: { name: 'Madrid', lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' },
+      savedSunLon: null, savedUtc: '1990-03-25T01:30:00.000Z', houseSystem: 'whole',
+      castLocation: { name: 'Madrid', lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' },
+      year: 2026,
+    });
+    expect(savedAdjusted.returnYear).toBe(2026);
+    expect(savedAdjusted.chart.angles).not.toBeNull();
+    expect(savedAdjusted.chart.houses).not.toBeNull();
+    expect(savedAdjusted.clockLimit).toContain('adjusted moment saved with the chart');
+
+    await prepareLocalTime('2011-12-30', 'Pacific/Apia');
+    expect(() => computeSolarReturn({
+      birthDate: '2011-12-30', birthTime: null, timeKnown: false,
+      birthplace: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      savedSunLon: null, houseSystem: 'whole', castLocation: null,
+      year: 2026,
+    })).toThrow(SkippedBirthDateError);
+    expect(() => computeSolarReturn({
+      birthDate: '2011-12-30', birthTime: '12:00', timeKnown: true,
+      birthplace: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      savedSunLon: null, houseSystem: 'whole',
+      castLocation: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      year: 2026,
+    })).toThrow(SkippedBirthDateError);
+    // An existing timed chart saved with an adjusted UTC instant across a skipped date still computes its return and notes the adjustment.
+    const savedSkippedDate = computeSolarReturn({
+      birthDate: '2011-12-30', birthTime: '12:00', timeKnown: true,
+      birthplace: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      savedSunLon: null, savedUtc: '2011-12-30T22:00:00.000Z', houseSystem: 'whole',
+      castLocation: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      year: 2026,
+    });
+    expect(savedSkippedDate.returnYear).toBe(2026);
+    expect(savedSkippedDate.chart.angles).not.toBeNull();
+    expect(savedSkippedDate.clockLimit).toContain('skipped this saved birth date');
+    expect(savedSkippedDate.clockLimit).toContain('adjusted moment saved with the chart');
+
+    await prepareLocalTime('1990-09-30', 'Europe/Madrid');
+    const fold = computeSolarReturn({
+      birthDate: '1990-09-30', birthTime: '02:30', timeKnown: true,
+      birthplace: { name: 'Madrid', lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' },
+      savedSunLon: null, houseSystem: 'whole',
+      castLocation: { name: 'Madrid', lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' },
+      year: 2026,
+    });
+    expect(fold.clockLimit).toBe(REPEATED_BIRTH_TIME);
   });
 });

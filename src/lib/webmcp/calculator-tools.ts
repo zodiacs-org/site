@@ -189,7 +189,7 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
       + 'has no houses or angles. ' + CALCULATED,
     inputSchema: object({
       birth: BIRTH,
-      year: { type: 'integer', minimum: 1800, maximum: 2199, description: 'The return\'s year; omit for the return in force now.' },
+      year: { type: 'integer', minimum: 1800, maximum: 2199, description: 'The return\'s year (must be after the birth year); omit for the return in force now.' },
       castPlace: { ...PLACE, description: 'Where to cast the return, if not the birthplace.' },
       houseSystem: HOUSE_SYSTEM,
     }, ['birth']),
@@ -221,6 +221,18 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
       birthDate: DATE,
       fullName: { type: 'string', maxLength: 200, description: 'The full name at birth.' },
       today: { ...DATE, description: 'The date for the personal cycles, YYYY-MM-DD; omit for today.' },
+      keepParts: {
+        type: 'array',
+        maxItems: 10,
+        items: { type: 'string', minLength: 1, maxLength: 20 },
+        description: 'Specific title or suffix parts (such as "Sir" or "Miss") to count as part of the birth name instead of ignoring them.',
+      },
+      keepPartIndices: {
+        type: 'array',
+        maxItems: 20,
+        items: { type: 'integer', minimum: 0, maximum: 99 },
+        description: '0-based positions among the letter-bearing name parts (such as [1] for the second "Sir" in "Sir Sir Example") to count as part of the birth name.',
+      },
     }, ['birthDate']),
   },
   {

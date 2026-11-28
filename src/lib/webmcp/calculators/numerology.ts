@@ -9,11 +9,23 @@ const reduction = (value: Reduction | null | undefined) => (value ? {
   value: value.value, total: value.total, chain: [...value.chain], karmicDebt: value.karmicDebt,
 } : null);
 
-export function numerologyResult(birthDate: string, fullName: string | null, today: string) {
+export function numerologyResult(
+  birthDate: string,
+  fullName: string | null,
+  today: string,
+  keepParts?: readonly string[],
+  keepPartIndices?: readonly number[],
+) {
   let profile;
   let nameUsed = fullName !== null && fullName.trim() !== '';
   try {
-    profile = numerologyProfile({ birthDate, fullName: fullName ?? undefined, today });
+    profile = numerologyProfile({
+      birthDate,
+      fullName: fullName ?? undefined,
+      today,
+      ...(keepParts?.length ? { keepParts } : {}),
+      ...(keepPartIndices?.length ? { keepPartIndices } : {}),
+    });
   } catch (error) {
     if (!(error instanceof NumerologyInputError) || error.code !== 'empty-name') throw error;
     profile = numerologyProfile({ birthDate, today });

@@ -3,7 +3,7 @@ import '../lib/engine/server-de440.mjs';
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, GOOD_DAYS_SWITCH_ENV, GOOD_DAYS_TOOL_NAMES, TAROT_SWITCH_ENV, TAROT_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type TarotToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
+import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, GOOD_DAYS_SWITCH_ENV, GOOD_DAYS_TOOL_NAMES, TAROT_SWITCH_ENV, TAROT_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, FEATURES_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type TarotToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
 import { createAiServer } from './server';
 import { DE440_HEALTH_ROUTE, de440Health, describeDe440Tools } from './de440-contract';
 import { AGE_FIRST_TOOLS, ageFirstRefusal, coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isTarotTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
@@ -20,7 +20,7 @@ import type { CountedToolName } from './usage';
 import { MOMENT_CHART_SWITCH } from './features/moment-chart-contract';
 
 /** The self-contained panels whose resources may exceed the usual reply budget. */
-const LARGE_PANEL_URIS: ReadonlySet<string> = new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS, READINGS_URI, LEGACY_READINGS_URI, READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI]);
+const LARGE_PANEL_URIS: ReadonlySet<string> = new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS, READINGS_URI, LEGACY_READINGS_URI, READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI, FEATURES_URI]);
 
 // Browser-side MCP clients of the assistants Zodiacs is listed in, and the site itself.
 const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', 'https://claude.ai', 'https://claude.com', ORIGIN]);
@@ -276,11 +276,11 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
       } catch { return 'unavailable'; }
     } };
-    // A personal tool links to its website page, and that page's share card, only while the page's own switch is on.
-    if (personal) dependencies.sitePageOn = (flag: string) => env[flag] === '1';
+    // Feature and personal tools link to gated website pages and share cards only while each page's own switch is on.
+    if (personal || yearScore || solarReturn || goodDays) dependencies.sitePageOn ??= (flag: string) => env[flag] === '1';
     // Those switches, and the tarot page's, are this deployment's, so on the staging host the links go to the staging
     // site, never to zodiacs.org, whose own switch may be off.
-    if ((personal || tarot) && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
+    if ((personal || tarot || yearScore || solarReturn || goodDays) && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
     const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account, { de440: Boolean(options.de440) }), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();

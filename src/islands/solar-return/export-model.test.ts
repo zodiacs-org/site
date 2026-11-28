@@ -53,6 +53,14 @@ describe('completed solar return export model', () => {
     expect(model.notes.join(' ')).not.toMatch(/noon|approximate|shift by hours/);
   });
 
+  it('explains why houses and angles are omitted for a geographic pole return', () => {
+    const model = solarReturnExportModel({ ...result(), atPole: true });
+    expect(model.atPole).toBe(true);
+    expect(model.wheel.angles).toBeNull();
+    expect(model.wheel.houses).toBeNull();
+    expect(model.notes.join(' ')).toContain('geographic pole');
+  });
+
   it('owns its geometry and changes relocation geometry even when the instant is identical', () => {
     const source = result();
     const before = solarReturnExportModel(source);

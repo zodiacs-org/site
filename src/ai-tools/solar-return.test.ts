@@ -5,6 +5,8 @@ import { createAiNodeHandler } from './http';
 import { EVERY_AI_TOOL_NAME, SOLAR_RETURN_SWITCH_ENV, UNDER_13_REFUSAL } from './contracts';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { getSolarReturn } from './features/solar-return';
+import { MINOR_NOTE } from './features/reading-guards';
+import { REPEATED_BIRTH_TIME } from '../lib/vedic-signs/clock';
 import { parseSolarReturnShare } from '../lib/solar-return/share';
 import { handleSolarReturnImageRequest, handleSolarReturnLinkRequest, isResultShareRoute } from '../server/result-preview';
 import committedWindow from '../data/horoscope-window.json';
@@ -65,8 +67,12 @@ describe('the solar return switch', () => {
     expect(tools.at(-1)!.description).not.toMatch(/[–—]/u);
     const result = message((await post(host, rpc('tools/call', { name: 'get_solar_return', arguments: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 } }))).text).result;
     expect(result.isError).toBe(false);
-    expect(result.structuredContent.data).toMatchObject({ which: 'next', returnYear: 2027, sun: 'taurus', timeKnown: true, placed: true });
+    expect(result.structuredContent.data).toMatchObject({ which: 'next', returnYear: 2027, sun: 'taurus', timeKnown: true, placed: true, shareUrl: null });
+    expect(result.structuredContent.data.pageUrl).toBe('https://zodiacs.org/solar-return/?ref=assistant');
     expect(counted).toEqual(['get_solar_return']);
+    const shareHost = await serve({ ...COVERAGE, ZODIACS_SOLAR_RETURN_ENABLED: '1', PUBLIC_SOLAR_RETURN_SHARE_ENABLED: '1' });
+    const withShare = message((await post(shareHost, rpc('tools/call', { name: 'get_solar_return', arguments: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 } }))).text).result;
+    expect(withShare.structuredContent.data.shareUrl).toContain('https://zodiacs.org/share/solar-return/');
     const child = message((await post(host, rpc('tools/call', { name: 'get_solar_return', arguments: { birthDate: '2020-01-01' } }))).text).result;
     expect(child.structuredContent.error.message).toBe(UNDER_13_REFUSAL);
   });
@@ -151,6 +157,45 @@ describe('getSolarReturn', () => {
   it('gives the current return when asked', async () => {
     const { data } = await getSolarReturn({ birthDate: '1990-05-03', which: 'current' }, NOW, clock, 'https://zodiacs.org');
     expect(data.instantUtc.slice(0, 4)).toBe('2026');
+  });
+  it('refuses skipped birth dates and DST gap times, and notes repeated DST fold times', async () => {
+    await expect(getSolarReturn({ birthDate: '2011-12-30', zone: 'Pacific/Apia' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+    await expect(getSolarReturn({ birthDate: '1990-03-25', time: '02:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+    const fold = await getSolarReturn({ birthDate: '1990-09-30', time: '02:10', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(fold.data.limits).toContain(REPEATED_BIRTH_TIME);
+  });
+  it('suppresses rising sign and houses at geographic poles while preserving them for valid near-pole coordinates', async () => {
+    for (const latitude of [90, -90]) {
+      const { data } = await getSolarReturn({ birthDate: '1990-05-03', time: '08:30', zone: 'UTC', latitude, longitude: 0 }, NOW, clock, 'https://zodiacs.org');
+      expect(data.rising).toBeNull();
+      expect(data.placements.every((row) => row.house === null)).toBe(true);
+      expect(data.limits.join(' ')).toContain('geographic pole');
+    }
+    for (const latitude of [89.999, -89.999]) {
+      const { data } = await getSolarReturn({ birthDate: '1990-05-03', time: '08:30', zone: 'UTC', latitude, longitude: 0 }, NOW, clock, 'https://zodiacs.org');
+      expect(data.rising).not.toBeNull();
+      expect(data.placements.every((row) => row.house !== null)).toBe(true);
+      expect(data.limits.join(' ')).not.toContain('geographic pole');
+    }
+  });
+  it('applies the non-rolling leap-day under-18 cutoff and keeps minor 5th-house copy free of romance or duplicated words', async () => {
+    const leapDay = new Date('2028-02-29T12:00:00Z');
+    const { data } = await getSolarReturn({ birthDate: '2010-03-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 }, leapDay, clock, 'https://zodiacs.org');
+    expect(data.under18).toBe(true);
+    expect(data.limits).toContain(MINOR_NOTE);
+    const themeText = data.themes.map((t) => `${t.title} ${t.line}`).join(' ');
+    expect(themeText).not.toMatch(/\b(?:romance|romantic|play,\s*play)\b/iu);
+  });
+  it('aligns shareUrl year with the local returnYear across UTC New Year boundaries', async () => {
+    // 1990-01-01 00:10 UTC: next solar return after 2026-11-09 falls late on 2026-12-31 UTC, which is 2027-01-01 in Pacific/Auckland.
+    const { data } = await getSolarReturn({ birthDate: '1990-01-01', time: '00:10', zone: 'UTC', currentZone: 'Pacific/Auckland' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.shareUrl).not.toBeNull();
+    expect(parseSolarReturnShare(new URL(data.shareUrl!).searchParams)!.year).toBe(data.returnYear);
+    // Late 2199-12-31 UTC is already 2200 in Pacific/Kiritimati; parseSolarReturnShare accepts y=2200 so the share link resolves.
+    const late2199 = await getSolarReturn({ birthDate: '2000-12-31', time: '12:00', zone: 'UTC', currentZone: 'Pacific/Kiritimati' }, new Date('2199-11-01T00:00:00Z'), clock, 'https://zodiacs.org');
+    expect(late2199.data.returnYear).toBe(2200);
+    expect(late2199.data.shareUrl).not.toBeNull();
+    expect(parseSolarReturnShare(new URL(late2199.data.shareUrl!).searchParams)!.year).toBe(2200);
   });
 });
 

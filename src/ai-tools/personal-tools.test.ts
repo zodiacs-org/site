@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
-import { EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, UNDER_13_REFUSAL } from './contracts';
+import { EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, FEATURES_URI, PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, UNDER_13_REFUSAL } from './contracts';
 import { COUNTED_TOOL_NAMES } from './usage';
 import { PERSONAL_TOOLS } from './personal/registry';
 import { forbiddenClaim, type PersonalToolDefinition } from './personal/shared';
@@ -123,7 +123,12 @@ describe('the personal tools switch on', () => {
     for (const tool of TOOLS) {
       const listed = tools.find((entry) => entry.name === tool.name)!;
       expect(listed).toMatchObject({ title: tool.title, description: tool.description, annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: !tool.clockDependent } });
-      expect(listed._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
+      expect(listed._meta).toEqual({
+        securitySchemes: [{ type: 'noauth' }],
+        ui: { resourceUri: FEATURES_URI, visibility: ['model', 'app'] },
+        'openai/outputTemplate': FEATURES_URI,
+        'openai/ui': { entrypoints: [{ type: 'thread' }] },
+      });
       expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[\u2013\u2014]|crypto|token|blockchain|market|invest|stock/iu);
     }
   });

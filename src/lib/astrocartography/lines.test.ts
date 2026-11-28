@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { distanceToPolylineKm, horizonLine, horizonLongitude, lineDistances, wrapLongitude, type EquatorialBody } from './lines';
+import { tilt, timeBasis } from '@zodiacs/engine/time';
+import { computeChart } from '../engine/full.js';
+import { distanceToPolylineKm, horizonLine, horizonLongitude, lineDistances, ramcFromMc, wrapLongitude, type EquatorialBody } from './lines';
+import { equatorialMoment } from './positions';
 
 const DEG = Math.PI / 180;
 
@@ -48,5 +51,27 @@ describe('distance to a rising or setting line across the date line', () => {
     const drawn = horizonLine(venus, gast, 'ASC', 0.25, 89.9);
     const crossing = drawn.findIndex((point, index) => index > 0 && Math.abs(point.lon - drawn[index - 1].lon) > 180);
     expect(crossing).toBeGreaterThan(0);
+  });
+
+  it('reaches the grazing-latitude endpoint where rising and setting meet (0 km error)', () => {
+    const body: EquatorialBody = { body: 'Sun', ra: 90, dec: 23 };
+    const gast = 0;
+    const grazingLat = 67; // 90 - |dec|
+    const ascLon = horizonLongitude(body, gast, grazingLat, 'ASC');
+    const dscLon = horizonLongitude(body, gast, grazingLat, 'DSC');
+    expect(ascLon).not.toBeNull();
+    expect(dscLon).not.toBeNull();
+    expect(ascLon!).toBeCloseTo(dscLon!, 9);
+    const rows = lineDistances({ lat: grazingLat, lon: ascLon! }, [body], gast);
+    expect(rows.find((entry) => entry.angle === 'ASC')!.km).toBeLessThan(0.05);
+    expect(rows.find((entry) => entry.angle === 'DSC')!.km).toBeLessThan(0.05);
+  });
+
+  it('uses true obliquity of date in equatorialMoment to match the engine angles', () => {
+    const utc = new Date('2026-06-21T12:00:00Z');
+    const moment = equatorialMoment(utc);
+    const chart = computeChart({ utc, latitude: 0, longitude: 0, houseSystem: 'whole', timeKnown: true });
+    const trueObliquity = tilt(timeBasis(utc.getTime()).ttDays).tobl;
+    expect(moment.gast).toBeCloseTo(ramcFromMc(chart.angles!.mc, trueObliquity), 9);
   });
 });

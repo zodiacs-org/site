@@ -9,6 +9,7 @@ import { buildChartStudio } from './build-chart-studio.mjs';
 import { buildHoroscopePanel } from './build-horoscope-panel.mjs';
 import { buildOccasionsPanel } from './build-occasions-panel.mjs';
 import { buildReadingsPanel, buildReadingsSkyEventsPanel } from './build-readings-panel.mjs';
+import { buildFeaturesPanel } from './build-features-panel.mjs';
 import { buildAccountsConsent } from './build-accounts-consent.mjs';
 import { peopleIndexCurrent, renderFromDisk, STALE_MESSAGE } from './build-ai-people.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
@@ -25,6 +26,7 @@ const panelHtml = {
   occasions: await buildOccasionsPanel(check),
   readings: await buildReadingsPanel(check),
   'readings-sky-events': await buildReadingsSkyEventsPanel(check),
+  features: await buildFeaturesPanel(check),
 };
 await syncPanelFingerprints(panelHtml, check);
 // The account consent page; the hosted function serves it only while ZODIACS_ACCOUNTS_ENABLED=1.

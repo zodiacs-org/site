@@ -79,10 +79,12 @@ export interface DayContact {
   /** Degrees from exact at midday, to two decimals. */
   orb: number;
   applying: boolean;
-  /** The exact moment, when it falls inside the local day. */
+  /** The exact moment (or first exact pass when a stationing planet crosses twice that day), when it falls inside the local day. */
   exactAt: string | null;
-  /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
+  /** The same moment(s) on the person's clock, HH:MM, with the UTC offset when repeated; multiple passes are joined with " and ". */
   exactLocal: string | null;
+  /** All exact passes when a stationing planet hits the same natal point more than once on this local day. */
+  exactPasses?: { at: string; local: string }[];
   score: number;
   title: string;
   line: string;
@@ -114,7 +116,114 @@ export interface PersonalDayReading {
 export { clockTime, dateOn, dayLabel, nextDate } from './clock';
 
 const round2 = (value: number) => Math.round(value * 100) / 100;
+const signedAngleDiff = (a: number, b: number) => ((((a - b) % 360) + 540) % 360) - 180;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
+
+const BOUNDARY_REFINE_MS = 250;
+const BOUNDARY_PROBE_RADII_MS = [10, 50, 250, 500] as const;
+const MAX_REFINE_SHIFT_MS = 50;
+const ASPECT_OFFSETS: Record<AspectType, readonly number[]> = {
+  conjunction: [0],
+  sextile: [60, 300],
+  square: [90, 270],
+  trine: [120, 240],
+  opposition: [180],
+};
+
+function bisectBoundaryRoot(
+  errorAt: (ms: number) => number,
+  loStart: number,
+  hiStart: number,
+  floStart: number,
+  fhiStart: number,
+  boundaryMs: number,
+  onLeft: boolean,
+): number {
+  let lo = loStart;
+  let hi = hiStart;
+  let flo = floStart;
+  let fhi = fhiStart;
+  if (flo === 0) return lo;
+  if (fhi === 0) return hi;
+  while (hi - lo > 1) {
+    const mid = Math.floor((lo + hi) / 2);
+    const fm = errorAt(mid);
+    if (fm === 0) return mid;
+    if ((flo < 0) !== (fm < 0)) {
+      hi = mid;
+      fhi = fm;
+    } else {
+      lo = mid;
+      flo = fm;
+    }
+  }
+  if (onLeft && hi === boundaryMs) return lo;
+  if (!onLeft && lo === boundaryMs) return hi;
+  return Math.abs(flo) <= Math.abs(fhi) ? lo : hi;
+}
+
+/**
+ * Refines a crossing estimate `approxMs` near `boundaryMs` using symmetric probes centered strictly on `boundaryMs`.
+ * Both sides of `boundaryMs` are searched independently and the root nearest `approxMs` (within solver tolerance) is
+ * chosen so asymmetric multi-pass crossings straddling midnight (e.g. -30 ms and +170 ms) each preserve their own
+ * pass while single near-midnight crossings are assigned to the same day on both adjacent day scans.
+ */
+export function refineCrossingTimeNearBoundary(
+  errorAt: (ms: number) => number,
+  approxMs: number,
+  boundaryMs: number,
+): number {
+  const fBoundary = errorAt(boundaryMs);
+  if (fBoundary === 0) return Math.abs(boundaryMs - approxMs) <= MAX_REFINE_SHIFT_MS ? boundaryMs : approxMs;
+
+  let leftRoot: number | null = null;
+  let rightRoot: number | null = null;
+  for (const radius of BOUNDARY_PROBE_RADII_MS) {
+    if (leftRoot === null) {
+      const fLeft = errorAt(boundaryMs - radius);
+      if (fLeft === 0 || (fLeft < 0) !== (fBoundary < 0)) {
+        leftRoot = bisectBoundaryRoot(errorAt, boundaryMs - radius, boundaryMs, fLeft, fBoundary, boundaryMs, true);
+      }
+    }
+    if (rightRoot === null) {
+      const fRight = errorAt(boundaryMs + radius);
+      if (fRight === 0 || (fRight < 0) !== (fBoundary < 0)) {
+        rightRoot = bisectBoundaryRoot(errorAt, boundaryMs, boundaryMs + radius, fBoundary, fRight, boundaryMs, false);
+      }
+    }
+    if (leftRoot !== null && rightRoot !== null) break;
+  }
+
+  const candidates = [leftRoot, rightRoot].filter(
+    (root): root is number => root !== null && Math.abs(root - approxMs) <= MAX_REFINE_SHIFT_MS,
+  );
+  if (candidates.length === 0) return approxMs;
+  if (candidates.length === 1) return candidates[0];
+  return Math.abs(candidates[0] - approxMs) <= Math.abs(candidates[1] - approxMs) ? candidates[0] : candidates[1];
+}
+
+function refineCrossingNearBoundary(
+  mover: TransitBody,
+  pointLon: number,
+  aspect: AspectType,
+  approxMs: number,
+  boundaryMs: number,
+): number {
+  const offsets = ASPECT_OFFSETS[aspect];
+  const lonAtBoundary = bodyLongitude(mover, new Date(boundaryMs));
+  let targetLon = (pointLon + offsets[0]) % 360;
+  let bestDist = Math.abs(signedAngleDiff(lonAtBoundary, targetLon));
+  for (let i = 1; i < offsets.length; i += 1) {
+    const candidate = (pointLon + offsets[i]) % 360;
+    const dist = Math.abs(signedAngleDiff(lonAtBoundary, candidate));
+    if (dist < bestDist) {
+      bestDist = dist;
+      targetLon = candidate;
+    }
+  }
+  const errorAt = (ms: number) => signedAngleDiff(bodyLongitude(mover, new Date(ms)), targetLon);
+  return refineCrossingTimeNearBoundary(errorAt, approxMs, boundaryMs);
+}
 
 /**
  * The birth chart for the page, cast as the get_personal_day tool casts it
@@ -203,15 +312,32 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // the clock showed at its exact moment. From 1971 that is read from Intl, as the resolver reads it; up to 1970 the
   // resolver reads the engine's zone history, and the span alone decides.
   const onDate = (at: Date) => Number(date.slice(0, 4)) <= 1970 || dateOn(at, zone) === date;
-  const exact = new Map<string, Date>();
-  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  const exact = new Map<string, Date[]>();
+  // Pad the scan window by one hour either side of [dayStart, dayEnd) so `dayStart` sits strictly inside the root
+  // finder's interior (never triggering transit-scan-core's synthetic `from` boundary tolerance hit) while genuine
+  // crossings right on midnight are still solved cleanly; refine any hit near a day boundary against that exact
+  // boundary so adjacent days agree on its side, then filter strictly to [dayStart, dayEnd).
+  const startMs = dayStart.getTime();
+  const endMs = dayEnd.getTime();
+  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, new Date(startMs - HOUR), new Date(endMs + HOUR), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
-    const at = new Date(contact.exactUtc);
-    if (!onDate(at)) continue;
-    const held = exact.get(key);
-    // Two passes in one day cannot happen for these bodies, but keep the one nearest midday if it ever did.
-    if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key, at);
+    let ms = Date.parse(contact.exactUtc);
+    const pointLon = natalLon.get(contact.natalPoint);
+    if (pointLon !== undefined) {
+      if (Math.abs(ms - startMs) <= BOUNDARY_REFINE_MS) {
+        ms = refineCrossingNearBoundary(contact.transitBody, pointLon, contact.aspect, ms, startMs);
+      } else if (Math.abs(ms - endMs) <= BOUNDARY_REFINE_MS) {
+        ms = refineCrossingNearBoundary(contact.transitBody, pointLon, contact.aspect, ms, endMs);
+      }
+    }
+    const at = new Date(ms);
+    if (ms < startMs || ms >= endMs || !onDate(at)) continue;
+    // A stationing planet can cross the same natal point twice in one local day; preserve every exact pass in order.
+    const passes = exact.get(key) ?? [];
+    if (!passes.some((existing) => Math.abs(existing.getTime() - ms) < 100)) passes.push(at);
+    exact.set(key, passes);
   }
+  for (const passes of exact.values()) passes.sort((a, b) => a.getTime() - b.getTime());
 
   // Age is taken on today, not on the day read, which can be up to a year ahead, and today is the calendar date at
   // UTC-12 (earliestToday), as the shared under-13 policy reads it: the clock the day is read on (the device's, the
@@ -232,18 +358,50 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
       const pointLon = natalLon.get(point)!;
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect);
-        const at = exact.get(`${mover}|${point}|${aspect}`) ?? null;
-        if (orb > maxOrb(mover, aspect) && !at) continue;
-        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
+        const passes = exact.get(`${mover}|${point}|${aspect}`) ?? [];
+        if (passes.length === 0 && orb > maxOrb(mover, aspect)) continue;
+        let middayApplying = orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
+        const exactPass = passes.length > 0;
+        if (passes.length > 1) {
+          const middayMs = midday.getTime();
+          if (middayMs < passes[0].getTime()) {
+            middayApplying = true;
+          } else if (middayMs >= passes[passes.length - 1].getTime()) {
+            middayApplying = false;
+          } else {
+            const nextIndex = passes.findIndex((at) => at.getTime() > middayMs);
+            if (nextIndex > 0 && middayMs === passes[nextIndex - 1].getTime()) {
+              middayApplying = false;
+            } else {
+              // Symmetric central difference of mover longitude measures the exact sign of the local velocity at midday
+              // even within a fraction of a second of a station (the quadratic term cancels identically).
+              const VELOCITY_STEP_MS = 30_000;
+              const velocityAt = (ms: number) => signedAngleDiff(
+                bodyLongitude(mover, new Date(ms + VELOCITY_STEP_MS)),
+                bodyLongitude(mover, new Date(ms - VELOCITY_STEP_MS)),
+              );
+              middayApplying = velocityAt(middayMs) * velocityAt(passes[nextIndex].getTime()) > 0;
+            }
+          }
+        }
+        const applying = passes.length === 1 ? passes[0].getTime() > midday.getTime() : middayApplying;
+        const minuteLabels = passes.map((at) => clockTime(at, zone));
+        const includeSeconds = passes.length > 1 && new Set(minuteLabels).size < minuteLabels.length;
+        const passEntries = passes.map((at, index) => ({
+          at: at.toISOString(),
+          local: includeSeconds ? clockTime(at, zone, true) : minuteLabels[index],
+        }));
+        const exactLocal = formatExactLocal(passEntries);
         // A date-only chart is never tight: its contacts carry the plain date-only confidence.
-        const tight = natal.timeKnown && (orb < 1 || at !== null);
+        const tight = natal.timeKnown && (orb < 1 || exactPass);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
         found.push({
-          group: at === null && slowMovers.has(mover) ? 'background' : 'today',
+          group: !exactPass && slowMovers.has(mover) ? 'background' : 'today',
           planet: mover, aspect, point, orb: round2(orb), applying,
-          exactAt: at ? at.toISOString() : null,
-          exactLocal: at ? clockTime(at, zone) : null,
-          score: dayScore(mover, point, aspect, orb, at !== null),
+          exactAt: passEntries[0]?.at ?? null,
+          exactLocal,
+          ...(passEntries.length > 1 ? { exactPasses: passEntries } : {}),
+          score: dayScore(mover, point, aspect, orb, exactPass),
           title: `${mover} ${aspect} your ${pointName(point)}`,
           line: `${guard(transitLine(mover, aspect, pointName(point)))} ${confidenceLabel}.`,
           confidence: readingConfidence(natal.detail, tight),
@@ -303,6 +461,20 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (found.length > contacts.length) limits.push(`Of ${found.length} contacts, ${contacts.length} are listed by score, with up to ${BACKGROUND_LIMIT} in the background.`);
 
   return { date, dayLabel: label, zone, middayUtc: midday.toISOString(), points, theme, moon: { sign: moonSign, entersSign, house, line: moonLine }, contacts, found: found.length, under18, limits };
+}
+
+function formatExactLocal(passEntries: readonly { at: string; local: string }[]): string | null {
+  if (passEntries.length === 0) return null;
+  if (passEntries.length === 1) return passEntries[0].local;
+  const groups: { local: string; count: number }[] = [];
+  for (const entry of passEntries) {
+    const prev = groups[groups.length - 1];
+    if (prev && prev.local === entry.local) prev.count += 1;
+    else groups.push({ local: entry.local, count: 1 });
+  }
+  return groups
+    .map(({ local, count }) => (count === 1 ? local : `${local} (${count === 2 ? 'twice' : `${count} passes`} within the same second)`))
+    .join(' and ');
 }
 
 /**

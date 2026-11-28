@@ -75,7 +75,8 @@ export const goodDaysData = z.object({
   care: z.string(),
   /** What the answer leaves out or assumes, in plain sentences; null when there is nothing to add. */
   message: z.string().nullable(),
-  pageUrl: z.url(),
+  /** The /good-days/ page; null while the website's page is switched off (PUBLIC_GOOD_DAYS_ENABLED). */
+  pageUrl: z.url().nullable(),
   note: z.literal(GOOD_DAYS_NOTE),
 });
 export type GoodDaysData = z.infer<typeof goodDaysData>;
@@ -83,9 +84,13 @@ export type GoodDaysData = z.infer<typeof goodDaysData>;
 export interface GoodDaysOptions {
   zone: string;
   zoneSource: GoodDaysData['zoneSource'];
-  /** Today on the person's clock, YYYY-MM-DD. */
+  /** Today on the person's clock, YYYY-MM-DD, for the default search window. */
   today: string;
+  /** Calendar date for age checks (UTC-12 earliestToday so no one passes early). Defaults to today. */
+  ageToday?: string;
   origin: string;
+  /** Whether /good-days/ is switched on (PUBLIC_GOOD_DAYS_ENABLED=1). Defaults to true for direct callers. */
+  pageOn?: boolean;
   /** The hosted boundary's event-search admission: a year of days is an event search. */
   allowEvents?: () => Promise<'allowed' | 'limited' | 'unavailable'>;
 }
@@ -97,6 +102,7 @@ export async function getGoodDays(args: GoodDaysToolInput, clock: GoodDaysClock,
   }
   const result = await findGoodDays({
     goal: args.goal, from: args.from, to: args.to, zone: options.zone, today: options.today,
+    ...(options.ageToday ? { ageToday: options.ageToday } : {}),
     ...(args.count !== undefined ? { count: args.count } : {}),
     birth: args.birthDate ? { date: args.birthDate, ...(args.birthTime ? { time: args.birthTime } : {}), ...(args.birthZone ? { zone: args.birthZone } : {}) } : null,
   }, clock);
@@ -104,6 +110,7 @@ export async function getGoodDays(args: GoodDaysToolInput, clock: GoodDaysClock,
   const label = readingConfidenceLabel(detail);
   const messages = result.messages.filter((line) => !(options.zoneSource !== 'default' && line.startsWith('Days and times are in UTC')));
   if (options.zoneSource === 'default' && !messages.some((line) => line.startsWith('Days and times are in UTC'))) messages.push('Days and times are in UTC because no time zone was given.');
+  const pageUrl = options.pageOn !== false ? `${options.origin}/good-days/` : null;
   const data: GoodDaysData = {
     goal: result.goal, goalLabel: result.goalLabel, from: result.from, to: result.to, days: result.days,
     zone: options.zone, zoneSource: options.zoneSource,
@@ -115,11 +122,11 @@ export async function getGoodDays(args: GoodDaysToolInput, clock: GoodDaysClock,
     confidenceLabel: label,
     care: result.care,
     message: messages.length ? messages.join(' ') : null,
-    pageUrl: `${options.origin}/good-days/`,
+    pageUrl,
     note: GOOD_DAYS_NOTE,
   };
   const links = [
-    { title: 'Find good days on Zodiacs', url: `${options.origin}/good-days/` },
+    ...(pageUrl ? [{ title: 'Find good days on Zodiacs', url: pageUrl }] : []),
     { title: 'Void-of-course Moon calendar', url: `${options.origin}/void-of-course-moon/` },
     { title: 'Retrogrades', url: `${options.origin}/retrogrades/` },
     { title: 'Eclipses', url: `${options.origin}/eclipses/` },

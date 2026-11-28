@@ -3,6 +3,8 @@ import {
   NumerologyInputError,
   classifyPart,
   dateNumbers,
+  droppedNamePartEntries,
+  droppedNameParts,
   formatChain,
   letterValue,
   lifePathDistribution,
@@ -14,6 +16,7 @@ import {
   personalCycles,
   reduceFully,
   reduceKeepingMasters,
+  remapYOverrides,
   totalsReducingTo,
   type CoreNumber,
   type KarmicDebt,
@@ -644,6 +647,62 @@ describe('normalizeName', () => {
     expect(normalizeName('Henry Ford II')).toEqual(['HENRY', 'FORD']);
     expect(normalizeName('Thomas Vance IV')).toEqual(['THOMAS', 'VANCE']);
     expect(normalizeName('Mr Thomas Vance Sr')).toEqual(['THOMAS', 'VANCE']);
+  });
+
+  it('reports dropped titles/suffixes and allows keeping individual parts when genuinely part of a birth name', () => {
+    expect(droppedNameParts('Sir John Smith Jr.')).toEqual(['Sir', 'Jr.']);
+    expect(droppedNameParts('Ada Lovelace')).toEqual([]);
+    expect(normalizeName('Sir John', { keepTitles: true })).toEqual(['SIR', 'JOHN']);
+    expect(normalizeName('Sir', { keepTitles: true })).toEqual(['SIR']);
+    expect(normalizeName('Sir', { keepParts: ['Sir'] })).toEqual(['SIR']);
+    // Keeping "Sir" in "Sir Example Jr." restores "Sir" while still dropping "Jr.".
+    expect(normalizeName('Sir Example Jr.', { keepParts: ['Sir'] })).toEqual(['SIR', 'EXAMPLE']);
+    expect(normalizeName('Sir Example Jr.', { keepParts: ['Jr.'] })).toEqual(['EXAMPLE', 'JR']);
+    const kept = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir John Jr.', today: '2026-11-28', keepParts: ['Sir'] });
+    expect(kept.name!.parts.map((part) => part.letters)).toEqual(['SIR', 'JOHN']);
+    // Repeated title/suffix spellings are identified by 0-based letter-bearing position so one occurrence can be kept.
+    expect(droppedNamePartEntries('Sir Sir Example Jr.')).toEqual([
+      { raw: 'Sir', key: 'SIR', index: 0, occurrence: 1, occurrences: 2 },
+      { raw: 'Sir', key: 'SIR', index: 1, occurrence: 2, occurrences: 2 },
+      { raw: 'Jr.', key: 'JR', index: 3, occurrence: 1, occurrences: 1 },
+    ]);
+    expect(normalizeName('Sir Sir Example', { keepPartIndices: [1] })).toEqual(['SIR', 'EXAMPLE']);
+    expect(normalizeName('123 Sir Sir Example', { keepPartIndices: [1] })).toEqual(['SIR', 'EXAMPLE']);
+    const singleOccurrence = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir Sir Example', today: '2026-11-28', keepPartIndices: [1] });
+    const singleExpected = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir Example', today: '2026-11-28', keepPartIndices: [0] });
+    expect(singleOccurrence.name!.expression).toEqual(singleExpected.name!.expression);
+    // Remapping Y overrides stays exact when keeping only one repeated occurrence.
+    const remapped = remapYOverrides(
+      'Sir Sir Yvonne',
+      { keepPartIndices: [] },
+      { keepPartIndices: [1] },
+      [{ part: 0, index: 0, as: 'consonant' }],
+    );
+    expect(remapped).toEqual([{ part: 1, index: 0, as: 'consonant' }]);
+  });
+
+  it('remaps Y overrides onto retained parts when toggling keepTitles', () => {
+    const initial = [
+      { part: 0, index: 3, as: 'consonant' as const },
+      { part: 1, index: 3, as: 'consonant' as const },
+    ];
+    const withTitles = remapYOverrides('Sir Tanya Kenyon Jr.', { keepTitles: false }, { keepTitles: true }, initial);
+    expect(withTitles).toEqual([
+      { part: 1, index: 3, as: 'consonant' },
+      { part: 2, index: 3, as: 'consonant' },
+    ]);
+    const backWithout = remapYOverrides('Sir Tanya Kenyon Jr.', { keepTitles: true }, { keepTitles: false }, withTitles);
+    expect(backWithout).toEqual(initial);
+    // Applying the remapped overrides keeps Tanya and Kenyon's Y overrides intact after including "Sir" and "Jr.".
+    const profile = numerologyProfile({
+      birthDate: '1990-05-03',
+      fullName: 'Sir Tanya Kenyon Jr.',
+      today: '2026-11-28',
+      keepTitles: true,
+      yOverrides: withTitles,
+    });
+    expect(profile.name?.parts[1]?.cells[3]?.vowel).toBe(false);
+    expect(profile.name?.parts[2]?.cells[3]?.vowel).toBe(false);
   });
 
   it('rejects letters that do not fold to A-Z', () => {

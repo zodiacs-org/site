@@ -46,12 +46,14 @@ describe('the Vedic signs the page and the tool share', () => {
     expect(NAKSHATRA_NAMES.flatMap((_, index) => nakshatraSigns(index)).filter((sign, index, all) => all.indexOf(sign) === index)).toHaveLength(12);
   });
 
-  it('says nothing the site does not say, and frames nothing as romance', () => {
+  it('says nothing the site does not say, keeps financial wording out, and frames nothing as romance', () => {
     const texts = [...RASHI_LINE, VEDIC_NOTE, UNDER_13_MESSAGE, ...Object.values(AYANAMSA_NAME), ...Object.values(NAKSHATRA_LORE).flatMap((lore) => [lore.deity, lore.symbol, lore.line])];
+    const financial = /\b(?:earnings?|earned|wealth|trade|profits?|money|invest\w*|stocks?)\b/iu;
     for (const text of texts) {
       expect(forbiddenClaim(text), text).toBeNull();
       expect(softenMinor(text), text).toBe(text);
       expect(text, text).not.toMatch(/[–—]/u);
+      expect(text, text).not.toMatch(financial);
     }
   });
 
@@ -246,5 +248,114 @@ describe('birth time and Vedic placements (ZOD-18)', () => {
     expect(listOr(['A'])).toBe('A');
     expect(listOr(['A', 'B'])).toBe('A or B');
     expect(listOr(['A', 'B', 'C', 'D'])).toBe('A, B, C or D');
+  });
+
+  it('flags a rising sign 0.05 deg from a cusp when it crosses within birth-time precision', () => {
+    const at = {
+      ayanamsa: 24,
+      sun: { lon: 100, tropical: 124 },
+      moon: { lon: 193, tropical: 217 },
+      rising: { lon: 29.95, tropical: 53.95 },
+      nakshatra: { index: 14, pada: 2 as const, lord: 'Rahu' },
+    };
+    const reading = vedicReading({
+      timeKnown: true,
+      placed: true,
+      ayanamsa: 'lahiri',
+      at,
+      risingBracket: [29.7, 30.2],
+      ends: null,
+    });
+    expect(reading.rising?.cusp).toBe(true);
+    expect(reading.rising?.line).toContain('Provisional, on the Aries (Mesha) or Taurus (Vrishabha) boundary');
+    expect(reading.summary).not.toContain('Your lagna (rising sign) is');
+    expect(reading.summary).toContain('Provisional, on the Aries (Mesha) or Taurus (Vrishabha) boundary');
+    expect(reading.limits.some((line) => line.includes('sidereal rising sign sits right on the boundary between Aries (Mesha) and Taurus (Vrishabha)'))).toBe(true);
+
+    // A timed Sun on a cusp marks sun.cusp, qualifies its line and summary, and suppresses single-sign share links.
+    const sunCusp = vedicReading({
+      timeKnown: true,
+      placed: false,
+      ayanamsa: 'lahiri',
+      at: { ...at, sun: { lon: 29.99, tropical: 53.99 }, rising: null },
+      ends: null,
+    });
+    expect(sunCusp.sun?.cusp).toBe(true);
+    expect(sunCusp.sun?.line).toContain('Provisional, on the Aries (Mesha) or Taurus (Vrishabha) boundary');
+    expect(sunCusp.summary).not.toContain('Your Vedic Sun is in');
+    expect(sunCusp.limits.some((line) => line.includes('sidereal Sun sits right on the boundary'))).toBe(true);
+
+    // A timed Moon on a nakshatra boundary withholds the definite pada (null) in the shared reading and tool output.
+    const nakCusp = computeVedicSigns({ birthUtc: new Date('1990-01-19T01:03:00Z'), timeKnown: true, latitude: 28.61, longitude: 77.21, ayanamsa: 'lahiri' });
+    expect(nakCusp.moonNakshatra?.cusp).toBe(true);
+    expect(nakCusp.moonNakshatra?.pada).toBeNull();
+
+    // Inside the polar circle (67 deg N, 0 deg E on 1990-05-03 02:29 UTC), an abrupt ascendant jump uses a non-exhaustive warning, never a shared sign boundary.
+    const polarFlip = computeVedicSigns({
+      birthUtc: new Date('1990-05-03T02:29:00Z'),
+      timeKnown: true,
+      latitude: 67,
+      longitude: 0,
+      ayanamsa: 'lahiri',
+    });
+    const polarLimits = polarFlip.limits.join(' ');
+    expect(polarFlip.rising?.cusp).toBe(true);
+    expect(polarFlip.rising?.line).toContain('Provisional, time-sensitive at this latitude');
+    expect(polarFlip.summary).not.toContain('Your lagna (rising sign) is');
+    expect(polarLimits).toContain('jumps abruptly near this birth time');
+    expect(polarLimits).not.toContain('sits right on the boundary between Scorpio');
+
+    // Right on the polar circle (66.56 deg N, 133.30 deg E on 2003-02-07 00:00 UTC), Aquarius appears 325 ms earlier
+    // between Sagittarius and Gemini; the warning must stay non-exhaustive and never claim only two signs are possible.
+    const polarGrazing = computeVedicSigns({
+      birthUtc: new Date('2003-02-07T00:00:00Z'),
+      timeKnown: true,
+      latitude: 66.56,
+      longitude: 133.3,
+      ayanamsa: 'lahiri',
+    });
+    const polarGrazingEarlier = computeVedicSigns({
+      birthUtc: new Date(Date.parse('2003-02-07T00:00:00Z') - 325),
+      timeKnown: true,
+      latitude: 66.56,
+      longitude: 133.3,
+      ayanamsa: 'lahiri',
+    });
+    expect(polarGrazingEarlier.rising?.sign).toBe('aquarius');
+    expect(polarGrazing.rising?.cusp).toBe(true);
+    expect(polarGrazing.limits.join(' ')).toContain('jumps abruptly near this birth time');
+    expect(polarGrazing.limits.join(' ')).not.toContain('between Sagittarius (Dhanu) and Gemini (Mithuna)');
+    expect(polarGrazingEarlier.rising?.cusp).toBe(true);
+    expect(polarGrazingEarlier.limits.join(' ')).toContain('jumps abruptly near this birth time');
+
+    // Just outside the polar circle (66.55 deg N, 12.02 deg E on 1990-05-03 02:29 UTC), rapid continuous motion across several signs refines and reports the full continuous sweep rather than a polar flip.
+    const arcticContinuous = computeVedicSigns({
+      birthUtc: new Date('1990-05-03T02:29:00Z'),
+      timeKnown: true,
+      latitude: 66.55,
+      longitude: 12.02,
+      ayanamsa: 'lahiri',
+    });
+    const arcticLimits = arcticContinuous.limits.join(' ');
+    expect(arcticContinuous.rising?.cusp).toBe(true);
+    expect(arcticLimits).toContain('moves rapidly across');
+    expect(arcticLimits).toContain('Sagittarius (Dhanu)');
+    expect(arcticLimits).toContain('Capricorn (Makara)');
+    expect(arcticLimits).toContain('Aquarius (Kumbha)');
+    expect(arcticLimits).toContain('Pisces (Meena)');
+    expect(arcticLimits).not.toContain('jumps abruptly');
+
+    // Right at the engine's polar-angles threshold (1918-03-11 05:46 UTC, 66.55 deg N, 15.42 deg E),
+    // the chart engine flags polar-angles and jumps by ~180 deg; the reading must report an abrupt jump, not a continuous sweep.
+    const polarThreshold = computeVedicSigns({
+      birthUtc: new Date('1918-03-11T05:46:00Z'),
+      timeKnown: true,
+      latitude: 66.55,
+      longitude: 15.42,
+      ayanamsa: 'lahiri',
+    });
+    expect(polarThreshold.rising?.cusp).toBe(true);
+    expect(polarThreshold.limits.join(' ')).toContain('jumps abruptly near this birth time');
+    expect(polarThreshold.limits.join(' ')).not.toContain('moves rapidly across');
   });
 });

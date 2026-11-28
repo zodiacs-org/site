@@ -187,6 +187,12 @@ export const LEGACY_READINGS_URI = 'ui://zodiacs/readings-v3.html';
  */
 export const READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v6.html';
 export const LEGACY_READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v4.html';
+/**
+ * The branded inline card panel for the seven feature funnels (eight tools: astrocartography, Vedic signs, Year Ahead
+ * Score, solar return, good days, retrogrades for you, Your Day, and numerology; tarot intentionally excluded).
+ * Registered only when at least one of those tools is offered, so flag-off output stays byte-identical.
+ */
+export const FEATURES_URI = 'ui://zodiacs/features-v1.html';
 export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v8.html', 'ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 

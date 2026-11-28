@@ -1,0 +1,15 @@
+/* The features panel's own rows; everything else is the shared card kit (../card-kit/card.css). */
+.reading-list { margin: 0; padding: 0; list-style: none; display: grid; }
+.reading-list li { padding: 10px 0; }
+.reading-list li + li { border-top: 1px solid var(--line-soft); }
+.reading-list strong { font-weight: 600; }
+.reading-sub { display: block; margin-top: 3px; color: var(--muted); font-size: 0.92em; }
+.best-days { margin: 0; padding: 0; list-style: none; display: grid; }
+.best-days li { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
+.best-days li + li { border-top: 1px solid var(--line-soft); }
+.best-day-words { display: grid; gap: 1px; min-width: 0; }
+.ring.ring-small { --size: 52px; --stroke: 4px; flex: none; }
+.ring-small .ring-number { font-size: 21px; }
+.copy-fallback { width: 100%; margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--tile); color: var(--ink); font: 400 13px/1.45 var(--sans); resize: vertical; }
+.copy-fallback:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.summary, .quiet, .reading-list, .wrap-query { overflow-wrap: anywhere; }

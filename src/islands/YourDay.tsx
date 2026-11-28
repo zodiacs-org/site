@@ -54,7 +54,7 @@ function ContactGroup({ group, contacts, timed }: { group: DayContact['group']; 
       {contacts.length > 0 && (
         <ol class="yd__contacts" aria-labelledby={headingId}>
           {contacts.map((contact) => (
-            <li class="tile yd__contact" key={`${contact.planet}${contact.aspect}${contact.point}`} style={{ '--hue': hue(contact.planet) }}>
+            <li class="tile yd__contact" key={`${contact.planet}${contact.aspect}${contact.point}${contact.exactAt ?? ''}`} style={{ '--hue': hue(contact.planet) }}>
               <div class="yd__contact-head">
                 <span class="yd__swatch" aria-hidden="true" />
                 <h3>{contact.title}</h3>

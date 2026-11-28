@@ -101,6 +101,11 @@ describe('the share link', () => {
     const card = island.slice(island.indexOf('<figure class="good-days-card"'), island.indexOf('</figure>'));
     expect(card).not.toMatch(/birth|personal/iu);
     expect(island).toContain('void run({ goal: shared.goal, from: shared.from, to: shared.to, zone: sharedZone, birth: null }, false);');
+    // Link copy/share buttons stay available even when result.best is empty; only the card figure and Print button require recommended days.
+    const actions = island.slice(island.indexOf('<div class="calc__actions good-days__actions">'), island.indexOf('<p class="good-days__link">'));
+    expect(actions).toContain('onClick={copyLink}');
+    expect(actions).toContain('onClick={shareLink}');
+    expect(actions).toContain('{result.best.length > 0 && <button type="button" class="btn" onClick={() => window.print()}>Print the card</button>}');
   });
 });
 

@@ -14,14 +14,14 @@ import type { TropicalMoment, TropicalMoments } from '../../lib/vedic-signs/trop
 import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 
 type WireMoment = Omit<TropicalMoment, 'utc'> & { utc: string };
-type Message = Omit<TropicalMoments, 'at' | 'ends'> & { at: WireMoment; ends: WireMoment[] | null; ayanamsa: VedicAyanamsa };
+type Message = Omit<TropicalMoments, 'at' | 'ends'> & { at: WireMoment; ends: WireMoment[] | null; ayanamsa: VedicAyanamsa; minor?: boolean };
 
 const moment = (wire: WireMoment): TropicalMoment => ({ ...wire, utc: new Date(wire.utc) });
 
 self.onmessage = (event: MessageEvent<Message>) => {
   try {
-    const { ayanamsa, at, ends, ...rest } = event.data;
-    self.postMessage({ reading: vedicFromTropical({ ...rest, at: moment(at), ends: ends ? ends.map(moment) : null }, ayanamsa) });
+    const { ayanamsa, at, ends, minor, ...rest } = event.data;
+    self.postMessage({ reading: vedicFromTropical({ ...rest, at: moment(at), ends: ends ? ends.map(moment) : null }, ayanamsa, Boolean(minor)) });
   } catch {
     self.postMessage({ error: true });
   }

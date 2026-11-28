@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_SWITCHED_TOOL, NUMEROLOGY_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES, UNDER_13_REFUSAL } from './contracts';
+import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_SWITCHED_TOOL, FEATURES_URI, NUMEROLOGY_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES, UNDER_13_REFUSAL } from './contracts';
 import { NUMEROLOGY_POINTER } from './features/explain';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
@@ -114,8 +114,13 @@ describe('the numerology switch on', () => {
     const tool = tools.at(-1)!;
     expect(tool).toMatchObject({ name: 'get_numerology', title: TOOL_TITLES.get_numerology, description: TOOL_DESCRIPTIONS.get_numerology,
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true, title: 'Numerology numbers' } });
-    expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
-    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone']);
+    expect(tool._meta).toEqual({
+      securitySchemes: [{ type: 'noauth' }],
+      ui: { resourceUri: FEATURES_URI, visibility: ['model', 'app'] },
+      'openai/outputTemplate': FEATURES_URI,
+      'openai/ui': { entrypoints: [{ type: 'thread' }] },
+    });
+    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone', 'keepParts', 'keepPartIndices']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
     // Labelled as separate from astrology; work and wellbeing allowed as the tradition reads them, no money forecasts (ZOD-30), with the lines it may not cross.
     expect(tool.description).toContain('Numerology is a separate tradition from astrology');
@@ -125,9 +130,14 @@ describe('the numerology switch on', () => {
     expect(tool.description).not.toMatch(/reflection/u);
     expect(tool.description).toContain('not returned, stored or put in a link');
     expect(`${tool.title} ${tool.description} ${JSON.stringify(tool.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market/iu);
-    // initialize and resources/list are as main answers them.
+    // initialize is as main answers it; resources/list appends only the inline features panel.
     expect((await post(host, REQUESTS.initialize[0])).text).toBe(FIXTURE.coverage.initialize.text);
-    expect((await post(host, REQUESTS.resourcesList[0])).text).toBe(FIXTURE.coverage.resourcesList.text);
+    const resources = message((await post(host, REQUESTS.resourcesList[0])).text).result.resources as { uri: string }[];
+    const beforeResources = message(FIXTURE.coverage.resourcesList.text).result.resources as { uri: string }[];
+    expect(resources.map((entry) => entry.uri)).toEqual([...beforeResources.map((entry) => entry.uri), FEATURES_URI]);
+    const readPanel = message((await post(host, rpc('resources/read', { uri: FEATURES_URI }))).text);
+    expect(readPanel.result.contents[0].uri).toBe(FEATURES_URI);
+    expect(readPanel.result.contents[0].text).toContain('<!doctype html>');
     // get_capabilities says what it is and that it is not astrology.
     const capabilities = (await call(host, 'get_capabilities', {})).structuredContent.data;
     expect(capabilities.limitations).toContain('For a numerology reading, use get_numerology, not explain_astrology.');
@@ -141,6 +151,31 @@ describe('the numerology switch on', () => {
     expect(result.isError).toBe(false);
     expect(result.structuredContent.data.separateFromAstrology).toContain('not astrology');
     expect(JSON.stringify(result)).not.toMatch(/reading confidence/iu);
+  });
+
+  it('reproduces per-part title/suffix overrides via keepParts while keeping the default unchanged', async () => {
+    const host = await serveAt(ON);
+    // Default rejects "Sir" as empty once stripped, while keepParts: ["Sir"] counts it cleanly without echoing it.
+    const defaultSir = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir' });
+    expect(defaultSir.isError).toBe(true);
+    const keptSir = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir', keepParts: ['Sir'] });
+    expect(keptSir.isError).toBe(false);
+    expect(keptSir.structuredContent.data.expression.number).toBe(1);
+    expect(JSON.stringify(keptSir)).not.toMatch(/\bSir\b/u);
+    // Keeping only "Sir" in "Sir Example Jr." matches "Sir Example" (still dropping "Jr.").
+    const mixed = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir Example Jr.', keepParts: ['Sir'] });
+    const expected = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir Example', keepParts: ['Sir'] });
+    expect(mixed.isError).toBe(false);
+    expect(mixed.structuredContent.data.expression).toEqual(expected.structuredContent.data.expression);
+    expect(mixed.structuredContent.data.soulUrge).toEqual(expected.structuredContent.data.soulUrge);
+    expect(mixed.structuredContent.data.personality).toEqual(expected.structuredContent.data.personality);
+    // Keeping only the second "Sir" in "Sir Sir Example" via keepPartIndices: [1] counts exactly one "Sir".
+    const repeated = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir Sir Example', keepPartIndices: [1] });
+    expect(repeated.isError).toBe(false);
+    expect(repeated.structuredContent.data.expression).toEqual(expected.structuredContent.data.expression);
+    expect(repeated.structuredContent.data.soulUrge).toEqual(expected.structuredContent.data.soulUrge);
+    expect(repeated.structuredContent.data.personality).toEqual(expected.structuredContent.data.personality);
+    expect(JSON.stringify(repeated)).not.toMatch(/\bSir\b/u);
   });
 
   it('with every released tool on, lists get_numerology after sky events, year score and solar return', async () => {
