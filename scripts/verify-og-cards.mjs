@@ -229,12 +229,15 @@ for (const [path, label] of keptCards) {
 await validatePng(wingCard, { unique: false, base: wingOut, label: `historical v5/${wingCard}` });
 
 // The art cards (v8, 2026-10-19): the homepage card, which every page without
-// a card of its own also shows, the twelve sign guide cards and each sign's
-// seven horoscope cards. The art fills the picture, so they are JPEGs under a
+// a card of its own also shows, the twelve sign guide cards, each sign's
+// seven horoscope cards, since 2026-11-26 the English chart twins card and, since
+// 2026-11-27, the thesis card (v2/thesis.png stays published and checked above). The art fills the picture, so they are JPEGs under a
 // budget chat-app previews accept, each one unique, and the folder holds
 // exactly these, under its own ceiling.
-// The Spanish, French, Italian and Portuguese cards (es/, fr/, it/, pt/) are
-// held to the same picture budget and to a ceiling of their own.
+// The Spanish, French, Italian and Portuguese cards (es/, fr/, it/, pt/), with
+// the chart twins card in those four and in Russian (ru/, since 2026-11-26; a
+// painting, so not in the 16-colour v2 Russian family) are held to the same
+// picture budget and to a ceiling of their own.
 let artBytes = 0;
 let localizedArtBytes = 0;
 for (const path of [...ART_CARDS, ...LOCALIZED_ART_CARDS]) {
@@ -378,7 +381,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide and 84 horoscope art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links) and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian and Portuguese cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
+console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide, 84 horoscope, chart twins and thesis art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links) and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian, Portuguese and Russian cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
 
 // Registry catalogue cards live outside the frozen v2 bundle. Keep their
 // source, geometry, manifest, route metadata, and size contracts in the same

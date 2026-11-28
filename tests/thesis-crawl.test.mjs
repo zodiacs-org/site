@@ -174,7 +174,18 @@ describe('the thesis page as a crawler receives it (committed source)', () => {
     expect(metaContent(THESIS, 'twitter:image')).toBe(image);
     expect(thesisArticle(THESIS).image).toBe(image);
     const bytes = await readFile(new URL(`../public${new URL(image).pathname}`, import.meta.url));
-    expect(bytes.subarray(1, 4).toString('ascii')).toBe('PNG');
+    // The bytes are what the address and the declared type say: the art card
+    // is a JPEG (since 2026-11-27); a PNG card would start with its signature.
+    const declared = metaContent(THESIS, 'og:image:type');
+    const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    const isPng = bytes.subarray(1, 4).toString('ascii') === 'PNG';
+    if (/\.jpe?g$/iu.test(image)) {
+      expect(isJpeg).toBe(true);
+      expect(declared).toBe('image/jpeg');
+    } else {
+      expect(isPng).toBe(true);
+      expect(declared ?? 'image/png').toBe('image/png');
+    }
   });
 });
 

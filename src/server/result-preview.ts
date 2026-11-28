@@ -1945,14 +1945,23 @@ const MILESTONE_NOTE = 'Dates of computed crossings and their traditional astrol
 /** The people page's caption for the noon reference chart (src/ai-tools/features/people.ts, noonChartNote), in plain punctuation. */
 const noonNote = (birthplace: string) => `Positions at 12:00 civil time in ${birthplace}, a reference instant, not a birth time. No houses, rising sign, angles, or sect were computed.`;
 
+/**
+ * The chart twins page's art card and its alt text (CHART_TWINS_ART_CARD and
+ * CHART_TWINS_ART_CARD_ALT in src/lib/og-art-cards.mjs, 2026-11-26), written
+ * here so the function's graph stays clear of the string catalogues; the
+ * test holds them equal. The v2 card stays published for links already shared.
+ */
+export const CHART_TWINS_PAGE_CARD = '/assets/og/v8/tool/chart-twins.jpg';
+export const CHART_TWINS_PAGE_CARD_ALT = 'Your chart twins: public figures who share your Sun and Moon signs, beside a painting of two cameo portraits facing each other.';
+
 function defaultChartTwinsPage(origin: string): SharePage {
   return {
     title: 'Chart twins on Zodiacs',
     description: 'Famous people who share your Sun or Moon sign.',
     heading: 'Famous people with your signs',
-    imageUrl: `${origin}/assets/og/v2/tool/chart-twins.png`,
-    imageType: 'image/png',
-    imageAlt: 'Chart twins on Zodiacs',
+    imageUrl: `${origin}${CHART_TWINS_PAGE_CARD}`,
+    imageType: 'image/jpeg',
+    imageAlt: CHART_TWINS_PAGE_CARD_ALT,
     explanation: TWINS_ABOUT,
     action: { label: 'Find your chart twins', href: '/chart-twins/' },
     note: TWINS_NOTE,

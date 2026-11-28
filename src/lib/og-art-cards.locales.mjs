@@ -400,3 +400,36 @@ export const LOCALIZED_ART_CARD_COPY = Object.freeze({
     }
   }
 });
+
+export const LOCALIZED_CHART_TWINS_ART_CARD_COPY = Object.freeze({
+  "es": {
+    "kicker": "Coinciden Sol y Luna",
+    "title": "Tus gemelos astrales",
+    "line": "Figuras públicas que comparten tus signos solar y lunar.",
+    "alt": "Tus gemelos astrales: figuras públicas que comparten tus signos solar y lunar, junto a una pintura de dos retratos en camafeo, uno frente al otro."
+  },
+  "fr": {
+    "kicker": "Soleil et Lune en commun",
+    "title": "Tes jumeaux astrologiques",
+    "line": "Des personnalités publiques qui partagent tes signes solaire et lunaire.",
+    "alt": "Tes jumeaux astrologiques : des personnalités publiques qui partagent tes signes solaire et lunaire, à côté d’une peinture de deux portraits en camée qui se font face."
+  },
+  "it": {
+    "kicker": "Sole e Luna in comune",
+    "title": "I tuoi gemelli astrologici",
+    "line": "Personaggi pubblici che condividono i tuoi segni solare e lunare.",
+    "alt": "I tuoi gemelli astrologici: personaggi pubblici che condividono i tuoi segni solare e lunare, accanto a un dipinto di due ritratti a cammeo, uno di fronte all’altro."
+  },
+  "pt": {
+    "kicker": "Sol e Lua em comum",
+    "title": "Seus gêmeos astrais",
+    "line": "Figuras públicas que compartilham seus signos solar e lunar.",
+    "alt": "Seus gêmeos astrais: figuras públicas que compartilham seus signos solar e lunar, ao lado de uma pintura de dois retratos em camafeu, um de frente para o outro."
+  },
+  "ru": {
+    "kicker": "Совпадение по Солнцу и Луне",
+    "title": "Звёздные близнецы",
+    "line": "Известные люди с вашими знаками Солнца и Луны.",
+    "alt": "Звёздные близнецы: известные люди с вашими знаками Солнца и Луны, рядом с картиной, где два портрета в камеях обращены друг к другу."
+  }
+});
