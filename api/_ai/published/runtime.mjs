@@ -45374,7 +45374,7 @@ function createAiNodeHandler(options = {}) {
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
         const validNotifParams = message.params === void 0 || typeof message.params === "object" && message.params !== null && !Array.isArray(message.params);
-      if (message.jsonrpc === "2.0" && typeof message.method === "string" && !("id" in message) && validNotifParams) {
+        if (message.jsonrpc === "2.0" && typeof message.method === "string" && !("id" in message) && validNotifParams) {
           res.statusCode = 202;
           res.end();
           return;

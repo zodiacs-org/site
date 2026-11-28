@@ -47,10 +47,10 @@ index ec99cd7..218ec2d 100644
      && message.result.content?.some((item: any) => item.type === 'text' && item.text.startsWith('Input validation error:'))) {
      // A named refusal holds only schema words; without one the fixed sentence stays.
 diff --git a/src/ai-tools/server.ts b/src/ai-tools/server.ts
-index c44025a..61c0600 100644
+index 3fbd285..f6f9892 100644
 --- a/src/ai-tools/server.ts
 +++ b/src/ai-tools/server.ts
-@@ -100,7 +100,9 @@ export interface AccountContext { service: AccountsService; principal: AccountPr
+@@ -94,7 +94,9 @@ export interface AccountContext { service: AccountsService; principal: AccountPr
  /** A fresh SDK server per HTTP request or local stdio connection. */
  export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
    const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
@@ -58,6 +58,6 @@ index c44025a..61c0600 100644
 +    // listChanged stays false: a stateless server sends no list-changed notification and refuses subscriptions/listen,
 +    // which 2026-07-28 clients open whenever it is advertised (the SDK's default is true).
 +    capabilities: { tools: { listChanged: false }, resources: { listChanged: false }, ...(watch ? { events: {} } : {}) },
-     instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies)) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : ''),
+     instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : ''),
    });
    // The current URI first; each earlier one is registered under its own name and serves the same panel.
