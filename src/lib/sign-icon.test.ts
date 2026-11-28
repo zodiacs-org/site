@@ -87,6 +87,7 @@ const LISTED: Record<string, string> = {
   'src/lib/return-visits/chart-pdf.tsx': 'fetches and embeds all twelve discs in zodiac order, regardless of the client chart',
   'src/lib/share-card-pastel-icons.ts': 'embeds all twelve discs in zodiac order',
   'src/lib/wheel/Wheel.tsx': 'draws all twelve discs in zodiac order',
+  'src/components/art/scenes/ring-in-space.ts': 'the empty profile figure loads all twelve discs in zodiac order, and only when no chart is saved',
   'src/lib/wheel/TechnicalWheel.tsx': 'draws all twelve discs in zodiac order',
   'src/islands/MiniBirthChartWidget.tsx': 'its header shows all twelve; the result uses signIcon',
   'src/islands/PwaInstallPrompt.tsx': 'shows all twelve',

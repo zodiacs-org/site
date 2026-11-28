@@ -824,8 +824,8 @@
   background: var(--void-0);
 }
 
-/* No saved chart yet: an empty chart wheel (EmptyChartWheel), waiting for
-   its first planets. */
+/* No saved chart yet: the zodiac ring in space (SavedChartsFigure), its
+   places waiting for planets. */
 .pf-page .pfd__empty {
   position: relative;
   overflow: hidden;
@@ -844,7 +844,6 @@
   right: 0;
   bottom: 0;
   width: min(58%, 560px);
-  padding: 28px 0;
 }
 
 /* Which chart is yours: a panel of its own under the header. */
@@ -948,8 +947,7 @@
     justify-self: stretch;
     width: auto;
     height: 200px;
-    margin: 0 0 -4px;
-    padding: 4px 0;
+    margin: calc(var(--pf-pad) * -1) calc(var(--pf-pad) * -1) -12px;
   }
   .pf-page .pf-art--invite {
     position: relative;
