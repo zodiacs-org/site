@@ -4,6 +4,7 @@ import Motion from '../../components/Motion.astro';
 import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import LunarReturnCalculator from '../../islands/LunarReturnCalculator';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const faq = [
   { q: 'What is a lunar return?', a: 'A lunar return is the moment the Moon reaches the same tropical zodiac longitude it occupied at your birth. This tool finds the first return after you calculate, then casts a chart for that moment. Astrologers use it as a short-term reflection chart.' },
@@ -17,7 +18,7 @@ const jsonLd = [
   { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---
-<Base accountSurface clientUi inlineCriticalCss title="Lunar Return Calculator: Your Next Moon Return | Zodiacs.org" description="Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar." path="/lunar-return/" jsonLd={jsonLd}>
+<Base accountSurface clientUi inlineCriticalCss title="Lunar Return Calculator: Your Next Moon Return | Zodiacs.org" description="Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar." path="/lunar-return/" image={artPageCard('lunar-return')} imageAlt={artPageCardAlt('lunar-return')} jsonLd={jsonLd}>
   <section class="section--tight container">
     <Motion />
     <ToolHeroMark name="lunar-return" />

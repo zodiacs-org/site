@@ -10,6 +10,7 @@ import { worldTimesSentence } from '../../../world-times/world-times';
 import { nasaEclipseAt } from '../../../lib/nasa-event-times-2027';
 import { ECLIPSES_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
 import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
+import { artPageCard, artPageCardAlt } from '../../../lib/og-art-cards.mjs';
 
 // The 2027 eclipses, from the same committed data the hub renders — receipts,
 // no client ephemeris. A year page so a search for the year lands on the
@@ -159,8 +160,8 @@ const jsonLd = [
   title="Eclipses 2027: Every Solar and Lunar Eclipse, Exact | Zodiacs.org"
   description="Every solar and lunar eclipse of 2027 with the exact peak in UTC, New York, London, Kolkata and Sydney, the eclipse type, the zodiac sign it falls in, and a calendar file."
   path={`/eclipses/${YEAR}/`}
-  image="/assets/og/v2/tool/eclipses.png"
-  imageAlt="Eclipses 2027, Zodiacs.org"
+  image={artPageCard('eclipses')}
+  imageAlt={artPageCardAlt('eclipses')}
   jsonLd={jsonLd}
   sources={sources}
 >

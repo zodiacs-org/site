@@ -12,6 +12,7 @@ import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/site-publication';
 import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
 import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
+import { artPageCard } from '../../lib/og-art-cards.mjs';
 
 type Locale = 'es' | 'pt' | 'fr' | 'it';
 interface Props { locale: Locale }
@@ -626,7 +627,7 @@ const EVENT_LINK_NOTE: Record<'es' | 'pt' | 'fr' | 'it', string> = {
   description={c.description}
   path={pagePath}
   locale={locale}
-  image="/assets/og/v2/tool/eclipses.png"
+  image={artPageCard('eclipses')}
   imageAlt={c.imageAlt}
   jsonLd={jsonLd}
   sources={sources}

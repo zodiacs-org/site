@@ -18,6 +18,7 @@ import type { BodyName } from '../../lib/engine/types';
 import { formatLongitude } from '../../lib/signs';
 import { formatShortDate } from '../../lib/i18n/dates';
 import { planetLabel } from '../../lib/i18n/astrology';
+import { artPageCard } from '../../lib/og-art-cards.mjs';
 
 type Locale = 'es' | 'pt' | 'fr' | 'it';
 interface Props { locale: Locale }
@@ -539,7 +540,7 @@ const jsonLd = [
   description={c.description}
   path={pagePath}
   locale={locale}
-  image="/assets/og/v2/tool/retrogrades.png"
+  image={artPageCard('retrogrades')}
   imageAlt={c.imageAlt}
   jsonLd={jsonLd}
   sources={sources}

@@ -6,6 +6,7 @@ import '../../styles/occasions.css';
 import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
 import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 import { launchFlagOn } from '../../lib/launch-flags';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 // The good day finder (PUBLIC_GOOD_DAYS_ENABLED): the FAQ answer and the list line point to it only while it is on.
@@ -52,6 +53,8 @@ const jsonLd = [
   title="The Sky on Your Day: Wedding & Birthday Sky Cards | Zodiacs.org"
   description="A printable card of the sky on a wedding day, birthday, new home or any day: Sun and Moon signs, the Moon's phase, sunset, golden hour and the planets after dark. Free."
   path="/occasions/"
+  image={artPageCard('occasions')}
+  imageAlt={artPageCardAlt('occasions')}
   jsonLd={jsonLd}
 >
   {/* A birthday, a baby's arrival or a coming of age saved from an assistant links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
