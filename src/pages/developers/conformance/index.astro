@@ -52,10 +52,16 @@ function residual(kind: KindSummary): string {
   return parts.join('; ') || '—';
 }
 
+// The two @zodiacs/engine runs differ in the ephemeris alone. Up to 2.1.0 a plain call computed on the DE440 pack and
+// astronomy-engine was the fallback; from 3.0.0 astronomy-engine is the default and DE440 is opt-in with useDe440()
+// (the engine's README.md, "How it compares").
+const engineMajor = (version: string | undefined): number => Number.parseInt(version ?? '', 10);
 const runHeading = (run: (typeof summary.runs)[number]): string => {
-  const base = `${run.adapter.engine} ${run.adapter.engineVersion}`;
-  if (run.file === 'results/zodiacs-engine.json') return `${base} (DE440 default)`;
-  if (run.file === 'results/zodiacs-engine-astronomy-engine.json') return `${base} (astronomy-engine fallback)`;
+  const version = run.adapter.engineVersion;
+  const base = `${run.adapter.engine} ${version}`;
+  const packDefault = engineMajor(version) < 3;
+  if (run.file === 'results/zodiacs-engine.json') return `${base} (DE440, ${packDefault ? `the default in ${version}; from 3.0.0 after useDe440()` : 'after useDe440()'})`;
+  if (run.file === 'results/zodiacs-engine-astronomy-engine.json') return `${base} (${packDefault ? `the fallback in ${version}; the default from 3.0.0` : 'the default'})`;
   return base;
 };
 
@@ -166,6 +172,16 @@ const jsonLd = [
           The @zodiacs/engine results are for version {testedEngine}, the
           version in the engine repository at that commit. This site's charts
           use version {siteEngine}.
+        </p>
+      )}
+      {engineMajor(siteEngine) >= 3 && engineMajor(testedEngine) < 3 && (
+        <p>
+          From 3.0.0 a plain call computes on astronomy-engine and DE440 is
+          opt-in with <code>useDe440()</code>: for version {siteEngine} the
+          astronomy-engine run below is the default, and the DE440 run is what{' '}
+          <code>useDe440()</code> gives. The engine's 3.0.0 README reports that
+          both runs, measured again on 3.0.0's build, give every verdict these{' '}
+          {testedEngine} results give.
         </p>
       )}
     </div>

@@ -876,6 +876,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
   ['/app/privacy/', '2026-11-22'] as const,
   ['/support/', '2026-11-22'] as const,
+  // The compute page's time-scale, browser and release wording and the conformance page's version-aware run
+  // headings (siege 3.0.0 remediation): no entry after this one names either page, so these dates win.
+  ...['/developers/compute/', '/developers/conformance/'].map((loc) => [loc, '2026-11-28'] as const),
   // The full moon calendar's plate of the year's full Moons by distance (src/components/sky/FullMoonYearPlate.astro),
   // on the day of the daily edition it was built with, last so it wins. The 2027 page takes the same day through
   // FULL_MOON_CALENDAR_2027_UPDATED, which it prints.
