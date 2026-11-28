@@ -4,7 +4,6 @@ import Base from '../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
 import { weeklyDigestSignupEnabled } from '../../lib/weekly-digest/feature-flags';
-import { configuredWalletChains } from '../../lib/wallet/config';
 import { enabledOAuthProviders } from '../../lib/auth/oauth-config';
 import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
 
@@ -15,11 +14,6 @@ const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 // The birthday reminder is named only while the site offers it (src/lib/birthday-reminder/).
 const birthdayReminderOffered = (import.meta.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED ?? process.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED) === '1';
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
-const walletChartEnabled = configuredWalletChains({
-  ...process.env,
-  PUBLIC_WALLET_CHART_ENABLED:
-    import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
-}).length > 0;
 // Google and Apple sign-in and saved pages are build flags, off until set up.
 const oauthProviders = enabledOAuthProviders({
   PUBLIC_AUTH_GOOGLE: process.env.PUBLIC_AUTH_GOOGLE,
@@ -27,8 +21,8 @@ const oauthProviders = enabledOAuthProviders({
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
-const updated = '13 November 2026';
-const modifiedAt = '2026-11-13T00:00:00.000Z';
+const updated = '20 November 2026';
+const modifiedAt = '2026-11-20T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -36,7 +30,7 @@ const jsonLd = [
     name: 'Privacy at Zodiacs.org',
     url: 'https://zodiacs.org/privacy/',
     description:
-      'How Zodiacs.org handles birth charts, browser storage, accounts, share links, Guide, analytics, public wallet lookups, and market-data requests.',
+      'How Zodiacs.org handles birth charts, browser storage, accounts, share links, Guide, the Zodiacs app, and analytics.',
     dateModified: modifiedAt,
   },
 ];
@@ -53,7 +47,7 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
 ---
 <Base
   title="Privacy — How Your Data Is Handled | Zodiacs.org"
-  description="How Zodiacs.org handles birth charts, browser storage, accounts, share links, Guide, analytics, public wallet lookups, and market-data requests."
+  description="How Zodiacs.org handles birth charts, browser storage, accounts, share links, Guide, the Zodiacs app, and analytics."
   path="/privacy/"
   jsonLd={jsonLd}
 >
@@ -62,15 +56,15 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
     <h1 class="method-title display">Your birth details leave your device only when you send them.</h1>
 
     <div class="prose">
-      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; {accountSyncV2Enabled ? 'they leave your device only if you share a link that carries them, type them into an assistant message, or choose to sync your own chart to your account. Signing in alone sends no saved chart.' : 'they leave your device only if you share a link that carries them or type them into an assistant message. Chart sync is paused: signing in sends no saved chart to your account.'} Aura sends one public wallet address (not your birth or chart data) to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
+      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation; {accountSyncV2Enabled ? 'they leave your device only if you share a link that carries them, type them into an assistant message, or choose to sync your own chart to your account. Signing in alone sends no saved chart.' : 'they leave your device only if you share a link that carries them or type them into an assistant message. Chart sync is paused: signing in sends no saved chart to your account.'} Accounts{weeklyDigestEnabled ? ' and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
 
-      <h2 id="ai-integrations">AI integration candidates</h2>
+      <h2 id="ai-integrations">The Zodiacs app</h2>
       {assistantAccountsEnabled ? (
         <p>The Zodiacs app for ChatGPT, Claude and Gemini needs no account except to save, and its sky and calendar tools need no birth information. Its horoscope tool takes a birth date, and a time and time zone if you add them, only when you ask for a personal forecast for your week. Its {assistantBirthTools} tools take the dates you give them: a birth date and, if you add them, a time, time zone, place and first names, for one or two people. They calculate from them for that answer. The app never stores or logs the birth details you give it. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. The only exception is a page a signed-in person chooses to save to their own account. A card link for a wedding or another day carries that day, and its time, time zone and coordinates rounded to two decimals when you give them; if you choose to share a date’s rating or a compatibility score, its share link carries only the day, the Sun and Moon signs and the rating, or the Sun signs and the scores, so a link preview can show the result. A birthday gets no card or share link. The page and picture a share link opens are drawn from that address and saved nowhere. Like any page address, a link appears in our host’s routine request logs. If you sign in to your Zodiacs account from the assistant and ask it to save a chart, comparison, occasion card or weekly forecast, Zodiacs works that result out again from the same details and saves it to your account. Its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no conversation text and no request or result you did not ask it to save, writes no argument logs and uses uncacheable responses. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp.</p>
       ) : assistantBirthToolsEnabled ? (
         <p>The Zodiacs app for ChatGPT, Claude and Gemini needs no account, and its sky and calendar tools need no birth information. Its horoscope tool takes a birth date, and a time and time zone if you add them, only when you ask for a personal forecast for your week. Its {assistantBirthTools} tools take the dates you give them: a birth date and, if you add them, a time, time zone, place and first names, for one or two people. They calculate from them for that answer and save none of it. The app never stores or logs the birth details you give it. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. A card link for a wedding or another day carries that day, and its time, time zone and coordinates rounded to two decimals when you give them; if you choose to share a date’s rating or a compatibility score, its share link carries only the day, the Sun and Moon signs and the rating, or the Sun signs and the scores, so a link preview can show the result. A birthday gets no card or share link. The page and picture a share link opens are drawn from that address and saved nowhere. Like any page address, a link appears in our host’s routine request logs. Its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs and uses uncacheable responses. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp.</p>
       ) : (
-      <p>The public-sky ChatGPT candidate needs no birth information or account. When enabled, its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs, uses uncacheable responses and refuses personal fields. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp and has been submitted to the ChatGPT and Claude directories.</p>
+      <p>The Zodiacs app's public-sky tools need no birth information or account. Their tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs, uses uncacheable responses and refuses personal fields. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp and has been submitted to the ChatGPT and Claude directories.</p>
       )}
       <p>The server keeps one count per day of how often each tool is used, and from which assistant. These counts hold no questions, answers, birth details, addresses or identifiers.</p>
       {assistantAccountsEnabled ? (
@@ -78,7 +72,7 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       ) : assistantBirthToolsEnabled ? (
         <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted app computes a chart from birth details only for the answer it is giving, and stores none.</p>
       ) : (
-        <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted candidate does not offer personal-chart computation or storage.</p>
+        <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted app does not offer personal-chart computation or storage.</p>
       )}
 
       <h2>Who operates this site</h2>
@@ -103,16 +97,34 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       </p>
       <p>
         Place search downloads from zodiacs.org a city file chosen by the first
-        letter you type, and searches it in your browser. For a birth before
-        1970, the calculator also downloads a file of historical clock changes
-        chosen by the birthplace's time zone. Neither request goes to any other
-        service. Which files are requested shows our host the first letter of
-        the city you typed and, for a birth before 1970, a group of time zones
-        that includes the birthplace's. When a page shows the signs of a birth
-        chart, it first requests the pictures of all twelve signs, in the same
-        order for every chart, so those requests do not show which signs the
-        chart has.
+        letter you type, and searches it in your browser. The calculator also
+        downloads, for a birth before 1970, a file of historical clock changes
+        chosen by the birthplace's time zone, and, when no birth time is given,
+        one more script, which shows our host only that no time was entered.
+        None of these requests goes to any other service. Which files are
+        requested shows our host the first letter of the city you typed and,
+        for a birth before 1970, a group of time zones that includes the
+        birthplace's. When a page shows the signs of a birth chart, it first
+        requests the pictures of all twelve signs, in the same order for every
+        chart, so those requests do not show which signs the chart has.
       </p>
+      {accountSyncV2Enabled ? (
+        <p>
+          The birth chart and compatibility calculator pages load no analytics
+          script and send nothing you type to any other service, except an
+          email address if you choose to sign up. Other pages,
+          such as the <a href="/about/">about page</a>, load Plausible, the
+          site's analytics, described under “Hosting, logs, and analytics”.
+        </p>
+      ) : (
+        <p>
+          The compatibility calculator page loads no analytics script and sends
+          nothing you type to any other service, except an email address if you
+          choose to sign up. Other pages, such as the{' '}
+          <a href="/about/">about page</a>, load Plausible, the site's
+          analytics, described under “Hosting, logs, and analytics”.
+        </p>
+      )}
 
       <h2>Guide</h2>
       <p>{t('en', 'trustGuideNotice')}</p>
@@ -248,90 +260,6 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         cannot restore it. The timeline provides portable JSON and readable
         Markdown export, per-entry edit and deletion, and a retry control when
         sync needs attention.
-      </p>
-
-      <h2>The Cabinet of Twelve and public wallet addresses</h2>
-      <p>
-        The Cabinet of Twelve reads one public wallet address and the dated sky side by
-        side. If you choose to add a chart already saved in this browser, its
-        summary is an optional on-device comparison layer. The pattern and any
-        symbolic reflection are composed on your device. When you compose or
-        refresh an Aura, our holdings endpoint receives the public address and
-        forwards it to the configured blockchain-data provider to check which
-        Zodiacs.org Registry entries are present. The configured provider is
-        currently PublicNode, operated by Allnodes. The provider receives the
-        lookup from our server, not from your browser. The request does not
-        include birth fields, chart names, chart placements, or chart geometry.
-        When the feature is enabled, Zodiac Terminal's optional
-        public Shelf uses the same endpoint and sends one public Solana address,
-        the one you enter, only after you press View; it does not send chart or
-        birth data. When Aura is off, the illustrative Shelf makes no address
-        or provider request.
-      </p>
-      {walletChartEnabled && (
-        <p>
-          The Wallet Chart page sends the public address you paste to our
-          server, which asks a blockchain-data provider (a Solana RPC service,
-          Etherscan, or a Base RPC service) for the address's first transaction
-          and the Registry signs it holds, and keeps the answer in memory for up
-          to a day. No birth or chart data is sent.
-        </p>
-      )}
-      <p>{t('en', 'trustWalletNotice')}</p>
-      <p>
-        A public address is public but not necessarily anonymous. Its on-chain
-        holdings and history may be visible and may become linked with a person
-        or other activity. Vercel, the configured blockchain-data provider, and
-        their infrastructure may process routine request metadata and
-        operational or security logs, such as IP address, time, and browser
-        information. We do not promise that a public-address request is never
-        logged by infrastructure providers whose retention practices we do not
-        control.
-      </p>
-
-      <h2>Public Astrofolio, Terminal, and Registry data sources</h2>
-      <p>
-        When a relevant Zodiac Terminal or Registry market panel is displayed, your browser may request
-        public market data from Dex Screener, public chart data from GeckoTerminal,
-        or public attention data from Wikimedia. Those automatic requests do not include a wallet address,
-        birth fields, chart data, or Aura results. The independent service still
-        receives ordinary web-request metadata, such as your IP address,
-        browser information, and request time, and its own privacy terms and
-        retention practices apply.
-      </p>
-      <p>{t('en', 'trustWalletNotice')}</p>
-      <p>
-        Each sign&rsquo;s Registry profile is read-only. It shows public market data
-        and verified token addresses, but it contains no purchase route or link
-        to a trading venue. The profile does not connect a wallet, request a
-        quote, receive your public address, or ask for a transaction. No birth
-        or chart data is included in these market-data requests.
-      </p>
-
-      <h2>Aura browser storage and sharing</h2>
-      <p>
-        By default, Aura keeps the public address, chain, Registry sign results,
-        lookup time, and optional selected chart identifier in this tab's session
-        storage. It becomes ineligible for restoration after eight hours. The
-        unchecked “Remember this address on this device” option stores the same
-        fields in local storage and makes them ineligible after 24 hours.
-        Ineligible records are deleted the next time Aura reads them; if you do
-        not return, the browser may retain the expired bytes until you clear site
-        data. “Forget address / Clear Aura data” removes both Aura records from
-        this browser; it cannot erase public blockchain history or
-        infrastructure logs.
-      </p>
-      <p>
-        Aura share images are composed on your device. The image omits the
-        public address, chart name, birth fields, exact placements, and chart
-        geometry. The seal image shows which signs are held, how many of the
-        twelve, and a date. The cabinet image shows the chain, the date, which
-        signs are held, and each one's edition, which reflects the balance, with
-        a count of gold sculptures up to 99+. Neither includes a saved-chart
-        fact. A browser share sheet or download sends the image to
-        a destination you choose, whose
-        privacy terms then apply. Clearing Aura cannot recall copies that other
-        people or services have saved or reposted.
       </p>
 
       <h2>Optional account</h2>
@@ -734,8 +662,7 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         invitation. The rest is first-party browser storage for features you
         use: what you save (charts, comparisons, Living Chart moments, learning
         progress), working state for the tools you use (such as Guide's
-        conversation and cached calculations), bounded Aura session data, an
-        optional remembered Aura address, site preferences, copies of the site's
+        conversation and cached calculations), site preferences, copies of the site's
         own files for offline use, and, if you sign in, a sign-in token. Apart
         from these cookies and what the sections above describe, this storage
         stays on your device, and none of it is used to track you across other
@@ -752,9 +679,6 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       <h2>Your choices</h2>
       <ul>
         <li>Use every calculator with no account; nothing you enter is stored off your device unless you sign in or share a chart.</li>
-        <li>Use the Aura example without a chart, address, wallet connection, or purchase.</li>
-        <li>Paste a public address instead of connecting third-party wallet software.</li>
-        <li>Leave Aura's “Remember” option unchecked and clear its browser data at any time.</li>
         <li>Delete saved charts by clearing your browser's data for this site.</li>
         {accountSyncV2Enabled
           ? <li>Export or delete an account from the profile page; choose separately whether to clear this browser.</li>

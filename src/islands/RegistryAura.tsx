@@ -1020,7 +1020,7 @@ export function RegistryAura({ availableChains }: RegistryAuraProps) {
             The lookup is read-only: it sends the public address to its
             holdings provider and checks only for the Twelve. Today’s Sun and
             Moon are computed on this device.{" "}
-            <a href="/privacy/">Privacy</a> ·{" "}
+            <a href="/disclosure/#address-lookup">Lookup details</a> ·{" "}
             <a href="/disclosure/">Disclosure</a>
           </p>
           </details>
