@@ -8,6 +8,7 @@ import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatShortDate } from '../../lib/i18n/dates';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // Build-time: the next lunations from the committed sky data, with the
 // Moon's exact position computed here in Node — no client ephemeris.
@@ -67,8 +68,8 @@ const jsonLd = [
   title="Moon Phase Today & On Your Birthday | Zodiacs.org"
   description="See tonight's moon phase or look up any date you care about: phase, illumination, and moon sign, free."
   path="/moon-phase/"
-  image="/assets/og/v2/tool/moon-phase.png"
-  imageAlt="Moon phase, tonight and any night, Zodiacs.org"
+  image={artPageCard('moon-phase')}
+  imageAlt={artPageCardAlt('moon-phase')}
   jsonLd={jsonLd}
 >
   <section class="section--tight container">

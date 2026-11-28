@@ -612,7 +612,7 @@ describe('share link pages', () => {
       expect(card.path, key).toBe(artPageCard(key));
       expect(card.alt, key).toBe(artPageCardAlt(key));
     }
-    expect(Object.keys(SHARE_FALLBACK_ART_CARDS)).toEqual(['birthday', 'sky-calendar', 'saturn-return', 'big-three', 'compatibility-invite', 'transits', 'compatibility', 'horoscopes']);
+    expect(Object.keys(SHARE_FALLBACK_ART_CARDS)).toEqual(['birthday', 'sky-calendar', 'saturn-return', 'big-three', 'compatibility-invite', 'transits', 'compatibility', 'horoscopes', 'retrogrades']);
     const yourDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/'))).text();
     expect(yourDay).toContain('content="https://zodiacs.org/assets/og/v8/tool/transits.jpg"');
     expect(yourDay).toContain('<meta property="og:image:type" content="image/jpeg">');
@@ -1102,7 +1102,8 @@ describe('a retrograde in one person’s chart', () => {
     }
     // A link that is not a share opens the plain page, which still leads to the retrogrades page.
     const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/'))).text();
-    expect(plain).toContain('content="https://zodiacs.org/assets/og/v2/tool/retrogrades.png"');
+    expect(plain).toContain('content="https://zodiacs.org/assets/og/v8/tool/retrogrades.jpg"');
+    expect(plain).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(plain).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
   });
 

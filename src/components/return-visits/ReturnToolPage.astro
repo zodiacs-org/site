@@ -31,8 +31,8 @@ const howto = calendarHowto(locale);
 const explainer = kind === 'wrapped' && locale === 'en' ? TOOL_EXPLAINERS.wrapped : null;
 // The sky calendar shows its art card (2026-11-27), in every language that
 // showed the English v2 card; the v2 cards stay published for links already shared.
-const cardImage = kind === 'calendar' ? artPageCard('sky-calendar') : `/assets/og/v2/tool/${({ kit: 'astrologer-kit', wrapped: 'your-sky-wrapped' } as const)[kind]}.png`;
-const cardAlt = kind === 'calendar' && locale === 'en' ? artPageCardAlt('sky-calendar') : s(locale, titleKey);
+const cardImage = kind === 'calendar' ? artPageCard('sky-calendar') : kind === 'wrapped' ? artPageCard('your-sky-wrapped') : '/assets/og/v2/tool/astrologer-kit.png';
+const cardAlt = kind === 'calendar' && locale === 'en' ? artPageCardAlt('sky-calendar') : kind === 'wrapped' && locale === 'en' ? artPageCardAlt('your-sky-wrapped') : s(locale, titleKey);
 const pageTitle = explainer?.title ?? `${s(locale, titleKey)} | Zodiacs.org`;
 const pageDescription = explainer?.description ?? s(locale, ledeKey);
 const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(locale, titleKey), ...(explainer ? { description: pageDescription } : {}), url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }, ...(explainer ? [explainerFaqJsonLd('wrapped')] : [])];
