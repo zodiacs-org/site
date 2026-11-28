@@ -567,8 +567,10 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
     kicker: 'Free tracker', title: ['What is active', 'in your chart?'], size: 90, fit: 470, line: 'Move the date to watch each transit build, peak, and release.',
     alt: 'What is active in your chart? Move the date to watch each transit build, peak, and release, beside a painting of the ring of sign discs.',
   },
-  // The 2026-11-28 round (owner-chosen from mockups): each card carries the
-  // twelve canonical sign discs in a row above the kicker, as the thesis card does.
+  // The 2026-11-28 round (owner-chosen from mockups): the three astrology cards
+  // carry the twelve canonical sign discs in a row above the kicker, as the
+  // thesis card does. The numerology card carries none (owner, 2026-11-28):
+  // numerology is a separate tradition from astrology.
   {
     key: 'moon-sign', routes: ['/moon-sign/'],
     art: framed('crescent'), accent: { kind: 'signDiscs' },
@@ -589,9 +591,9 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
   },
   {
     key: 'numerology', routes: ['/numerology/'],
-    art: framed('numerologyDial'), accent: { kind: 'signDiscs' },
+    art: framed('numerologyDial'), accent: null,
     kicker: 'Numerology', title: ['Find your', 'Life Path number'], size: 96, fit: 520, line: 'Discover your Life Path from your birth date, or add your name to explore more numbers.',
-    alt: 'Find your Life Path number: discover it from your birth date, or add your name to explore more numbers. Numerology is a separate tradition from astrology. The twelve sign discs in a row beside a silver dial with a dark numbered ring, its needle on 7.',
+    alt: 'Find your Life Path number: discover it from your birth date, or add your name to explore more numbers. Numerology is a separate tradition from astrology. Beside the words, a silver dial with a dark numbered ring, its needle on 7.',
   },
 ].map((spec) => Object.freeze({ ...spec, card: PAGE_CARD(spec.key), size: spec.size ?? 104, fit: spec.fit ?? 500, lineCh: spec.lineCh ?? 23 })));
 

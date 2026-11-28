@@ -6,12 +6,12 @@
  *   npx vite-node --script scripts/build-compatibility-wheels-art.ts
  *
  * Each wheel is the real <Wheel> (src/lib/wheel/Wheel.tsx) with the props the
- * People page gives it (src/pages/people/[slug].astro): Alan Turing's noon
- * reference chart large, Ada Lovelace's small. Chromium draws each one on a
+ * People page gives it (src/pages/people/[slug].astro): Charles Eames's noon
+ * reference chart large, Ray Eames's small. Chromium draws each one on a
  * transparent page; the wheel's sign band is translucent (stroke-opacity
  * 0.12), so every pixel's alpha is raised to the power 0.45 to let the band
  * read at card size; then the two are laid on a 2400 × 1600 void canvas
- * (Turing 2100 px at (1150, -250), Lovelace 1050 px at (560, 420)) and the
+ * (Charles Eames 2100 px at (1150, -250), Ray Eames 1050 px at (560, 420)) and the
  * result is written at half size as public/assets/art/compatibility-wheels-1200.webp,
  * which src/lib/og-art-cards.mjs places on the card. Chromium and libwebp
  * output, so not in the drift job; rerun it when the wheel or either
@@ -38,8 +38,8 @@ const CANVAS = { width: 2400, height: 1600 };
 const ALPHA_POWER = 0.45;
 /** Back to front: the large wheel runs off the right edge, the small one sits against it. */
 const WHEELS = [
-  { slug: 'alan-turing', size: 2100, left: 1150, top: -250 },
-  { slug: 'ada-lovelace', size: 1050, left: 560, top: 420 },
+  { slug: 'charles-eames', size: 2100, left: 1150, top: -250 },
+  { slug: 'ray-eames', size: 1050, left: 560, top: 420 },
 ] as const;
 
 /** The wheel exactly as the person's page renders it, minus the entrance animation. */

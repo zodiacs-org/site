@@ -374,14 +374,16 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   only, /sky-calendar/, /saturn-return/, /c/ (`compatibility-invite`),
   /baby-zodiac/, /mercury-retrograde/ with its 2027 page, and /transits/;
   owner-chosen from mockups 2026-11-28: /moon-sign/, the /compatibility/ hub,
-  the /horoscopes/ hub (the es and pt hubs too) and /numerology/, each with
-  the thesis card's row of the twelve canonical sign discs above the kicker.
+  the /horoscopes/ hub (the es and pt hubs too) and /numerology/, the three
+  astrology cards with the thesis card's row of the twelve canonical sign
+  discs above the kicker and the numerology card without it (numerology is a
+  separate tradition).
   Their art: three generated photographs (Higgsfield; a crescent Moon, the
   Venice clocktower's zodiac dial, a silver dial with a dark numbered ring) cut to 1200px
   WebP in `public/assets/art/`, and the compatibility hub's two chart wheels,
   `public/assets/art/compatibility-wheels-1200.webp` ← `npx vite-node --script
   scripts/build-compatibility-wheels-art.ts` (the real `Wheel.tsx` with the
-  published People charts of Alan Turing and Ada Lovelace, Chromium output,
+  published People charts of Charles and Ray Eames, Chromium output,
   so not in the drift job; rerun it when the wheel or those charts change,
   then redraw the cards). One
   template, `artPageLayout` in `build-og-void.mjs`: the page's own painting on

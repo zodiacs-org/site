@@ -502,7 +502,7 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
   });
 
   it('carries the thesis card\'s row of the twelve sign discs on the 2026-11-28 cards, over their own art', () => {
-    for (const key of ['moon-sign', 'compatibility', 'horoscopes', 'numerology']) {
+    for (const key of ['moon-sign', 'compatibility', 'horoscopes']) {
       expect(artPageCardSpec(key).accent, key).toEqual({ kind: 'signDiscs' });
       expect(artPageCardSpec(key).art.filter, key).toBe('none');
     }
