@@ -16,6 +16,7 @@ import { HERO_CROP_SIZE, heroCropAlt, heroCropSrc, heroCropSrcset, type HeroCrop
 import { learnTopic } from '../../lib/learn-topics';
 import dailyData from '../../data/daily.json';
 import type { Daily } from '../../lib/daily';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const daily = dailyData as Daily;
 const skyNow = (body: string) => {
@@ -198,8 +199,8 @@ const jsonLd = [
   title="Learn Astrology: Zodiac Signs, Dates & the Big Three | Zodiacs.org"
   description={description}
   path="/learn/"
-  image="/assets/og/v2/tool/learn.png"
-  imageAlt="Learn astrology, Zodiacs.org"
+  image={artPageCard('learn')}
+  imageAlt={artPageCardAlt('learn')}
   jsonLd={jsonLd}
 >
   <header class="lhero">

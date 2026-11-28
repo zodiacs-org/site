@@ -20,6 +20,7 @@ import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
+import { artPageCard } from '../../lib/og-art-cards.mjs';
 
 type Locale = 'es' | 'pt' | 'fr' | 'it';
 interface Props { locale: Locale }
@@ -477,7 +478,7 @@ const jsonLd = [
   description={c.description}
   path={pagePath}
   locale={locale}
-  image="/assets/og/v2/tool/mercury-retrograde.png"
+  image={artPageCard('mercury-retrograde')}
   imageAlt={c.imageAlt}
   jsonLd={jsonLd}
   sources={sources}

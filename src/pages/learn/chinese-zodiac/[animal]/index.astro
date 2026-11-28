@@ -8,6 +8,7 @@ import {
   chineseZodiacText,
   chineseYearsForAnimal,
 } from '../../../../data/chinese-zodiac';
+import { chineseZodiacArtCard, chineseZodiacArtCardCopy } from '../../../../lib/og-art-cards.mjs';
 import '../../../../styles/chinese-zodiac.css';
 
 export function getStaticPaths() {
@@ -34,6 +35,7 @@ const jsonLd = [
     author: { '@id': 'https://zodiacs.org/#org' },
     publisher: { '@id': 'https://zodiacs.org/#org' },
     inLanguage: 'en',
+    image: `https://zodiacs.org${chineseZodiacArtCard(animal.slug)}`,
   },
   {
     '@type': 'BreadcrumbList',
@@ -46,7 +48,7 @@ const jsonLd = [
   },
 ];
 ---
-<Base title={title} description={description} path={`/learn/chinese-zodiac/${animal.slug}/`} type="article" jsonLd={jsonLd} sources={sources}>
+<Base title={title} description={description} path={`/learn/chinese-zodiac/${animal.slug}/`} image={chineseZodiacArtCard(animal.slug)} imageAlt={chineseZodiacArtCardCopy(animal.slug).alt} type="article" jsonLd={jsonLd} sources={sources}>
   <article class="container container--narrow cz-page">
     <header>
       <em class="kicker">{CHINESE_ZODIAC_COPY.animalKicker} · {chineseZodiacText('numberLabel', { number: String(animal.position).padStart(2, '0') })}</em>

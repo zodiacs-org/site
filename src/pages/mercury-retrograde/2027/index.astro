@@ -11,6 +11,7 @@ import { nasaStationAt } from '../../../lib/nasa-instants';
 import { worldTimesSentence } from '../../../world-times/world-times';
 import { MERCURY_RETROGRADE_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
 import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
+import { artPageCard, artPageCardAlt } from '../../../lib/og-art-cards.mjs';
 
 // The 2027 Mercury retrograde windows, cut from the same committed sky data
 // the hub renders and refined to the hour — receipts, no client ephemeris.
@@ -143,8 +144,8 @@ const jsonLd = [
   title="Mercury Retrograde 2027: Exact Dates and Stations | Zodiacs.org"
   description="Every Mercury retrograde window of 2027 with each station's time in UTC, New York, London, Kolkata and Sydney, the degree Mercury stations at, the shadow dates, and a calendar file."
   path={`/mercury-retrograde/${YEAR}/`}
-  image="/assets/og/v2/tool/mercury-retrograde.png"
-  imageAlt="Mercury retrograde 2027, Zodiacs.org"
+  image={artPageCard('mercury-retrograde')}
+  imageAlt={artPageCardAlt('mercury-retrograde')}
   jsonLd={jsonLd}
   sources={sources}
 >

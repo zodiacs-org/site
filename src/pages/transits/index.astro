@@ -10,6 +10,7 @@ import PlanetGlyph from '../../components/PlanetGlyph';
 import { dayLabel, eventList, transitMonthForEdition, monthLabel } from '../../lib/horoscopes';
 import daily from '../../data/daily.json';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 // The month's receipts render statically from the committed transit
 // JSON — the island handles the personal part.
@@ -60,8 +61,8 @@ const jsonLd = [
   title="Transit Tracker: The Sky Moving Over Your Birth Chart | Zodiacs.org"
   description="See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release."
   path="/transits/"
-  image="/assets/og/v2/tool/transits.png"
-  imageAlt="Transit tracker, Zodiacs.org"
+  image={artPageCard('transits')}
+  imageAlt={artPageCardAlt('transits')}
   jsonLd={jsonLd}
   glass
 >

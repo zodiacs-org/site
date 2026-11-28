@@ -7,6 +7,7 @@ import SynastryCalculator from '../../../islands/SynastryCalculator';
 import { SIGNS, signName } from '../../../lib/signs';
 import { pairSlug } from '../../../lib/compat';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -52,7 +53,7 @@ const jsonLd = [
   description="Compara dos cartas natales gratis y de forma privada en tu navegador, con lecturas claras y guías para las 78 combinaciones de signos."
   path="/es/compatibility/"
   locale="es"
-  image="/assets/og/v2/tool/compatibility.png"
+  image={artPageCard('compatibility')}
   imageAlt="Calculadora de compatibilidad, Zodiacs.org"
   jsonLd={jsonLd}
   glass

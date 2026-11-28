@@ -28,6 +28,7 @@ import { SIGNS, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 
 import { COPY_FOR_HUB as COPY, type HubLocale as Locale } from './today-copy-registry';
+import { artPageCard } from '../../lib/og-art-cards.mjs';
 interface Props { locale: Locale }
 
 const { locale } = Astro.props;
@@ -58,7 +59,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   path={`/${locale}/horoscopes/`}
   locale={locale}
   editionDate={daily.date}
-  image="/assets/og/v2/tool/horoscopes.png"
+  image={artPageCard('horoscopes')}
   imageAlt={c.imageAlt}
 >
   <section class="section--tight container container--narrow" data-edition-content="true">

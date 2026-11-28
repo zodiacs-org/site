@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import BabyZodiac from '../../islands/BabyZodiac.tsx';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -53,8 +54,8 @@ const jsonLd = [
   path="/baby-zodiac/"
   noindex
   nofollow
-  image="/assets/og/v2/tool/baby-zodiac.png"
-  imageAlt="Baby zodiac calculator, Zodiacs.org"
+  image={artPageCard('baby-zodiac')}
+  imageAlt={artPageCardAlt('baby-zodiac')}
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow">

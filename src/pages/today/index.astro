@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 import ArtFrame from '../../components/ArtFrame.astro';
 import DailyWheelLegend from '../../components/DailyWheelLegend.astro';
 import EditionText from '../../components/EditionText.astro';
@@ -169,7 +170,8 @@ const monthDay = (iso: string) => ({
   title={`The Sky on ${publicationLabel}: Planets, Moon Phase and Retrogrades | Zodiacs.org`}
   description={`Where each planet is at noon UTC on ${publicationLabel}, the Moon’s phase, what is retrograde and the dates coming up, with a short note for every Sun sign.`}
   path="/today/"
-  imageAlt={`The sky on ${publicationLabel}, Zodiacs.org`}
+  image={artPageCard('today')}
+  imageAlt={artPageCardAlt('today')}
   editionDate={publication.date}
 >
   <script slot="head" is:inline define:vars={{ livingChartEnabled }}>

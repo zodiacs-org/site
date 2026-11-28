@@ -20,7 +20,7 @@ import { signBySlug, signName } from '../../lib/signs';
 import { englishOnlyCue } from '../../lib/i18n/english-only';
 import ToolExplainer from '../ToolExplainer.astro';
 import { TOOL_EXPLAINERS, explainerFaqJsonLd } from '../../lib/seo/tool-explainers';
-import { chartTwinsArtCard, chartTwinsArtCardCopy } from '../../lib/og-art-cards.mjs';
+import { artPageCard, chartTwinsArtCard, chartTwinsArtCardCopy } from '../../lib/og-art-cards.mjs';
 import '../../styles/calculator.css';
 import '../../styles/sharing-tools.css';
 interface Props { kind: 'big' | 'invite' | 'group' | 'twins'; locale?: CatalogLocale }
@@ -43,9 +43,10 @@ const pair = kind === 'invite' ? SAMPLE_PAIR_SLUGS.map((slug) => DIRECTORY_PEOPL
 const pairContacts = pair.length === 2 && pair[0] && pair[1] ? sampleContacts(pair[0], pair[1]) : [];
 const personHref = (slug: string) => `/people/${slug}/`;
 // Every chart twins page shows its art card in its own language (owner-chosen
-// 2026-11-26; the Russian one through ruOgImageForPath); the v2 cards stay
-// published for links already shared.
-const cardImage = kind === 'twins' ? chartTwinsArtCard(locale) : ({ big: '/assets/og/v2/tool/big-three.png', invite: '/assets/og/v2/tool/compatibility-private-invite.png', group: '/assets/og/v2/tool/group-charts.png' })[kind];
+// 2026-11-26; the Russian one through ruOgImageForPath), and the big three
+// pages the English big three art card they showed in v2 (2026-11-27); the v2
+// cards stay published for links already shared.
+const cardImage = kind === 'twins' ? chartTwinsArtCard(locale) : ({ big: artPageCard('big-three'), invite: '/assets/og/v2/tool/compatibility-private-invite.png', group: '/assets/og/v2/tool/group-charts.png' })[kind];
 const cardAlt = kind === 'twins' ? chartTwinsArtCardCopy(locale).alt : s(locale, titleKey);
 // English pages that otherwise serve little more than a form get a search title, a description and plain answers in the HTML.
 const explainerKind = locale === 'en' && (kind === 'group' || kind === 'twins') ? kind : null;

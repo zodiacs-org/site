@@ -9,6 +9,7 @@ import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
 import { ENGLISH_ONLY_COPY, localizePath, t } from '../../../lib/i18n';
 import { toolIconForPath } from '../../../lib/tool-icons';
 import '../../../styles/tools-hub.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const englishOnly = ENGLISH_ONLY_COPY.fr;
 const tools = [
@@ -41,7 +42,7 @@ const jsonLd = [
   description="Outils d’astrologie gratuits : thème astral, compatibilité, signe lunaire, ascendant, phase de la Lune, retour de Saturne et transits, dans ton navigateur."
   path="/fr/tools/"
   locale="fr"
-  image="/assets/og/v2/tool/tools.png"
+  image={artPageCard('tools')}
   imageAlt="Outils d’astrologie gratuits, Zodiacs.org"
   jsonLd={jsonLd}
 >

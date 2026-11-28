@@ -9,6 +9,7 @@ import { launchFlagOn } from '../../lib/launch-flags';
 import { BIRTHDAY_HUB_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../world-times/updated';
 import { worldTimesSentence } from '../../world-times/world-times';
 import sunIngresses from '../../data/sun-ingresses.json';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const days = birthdays.days as Record<string, BirthdayEntry>;
 
@@ -96,8 +97,8 @@ const jsonLd = [
   title="Birthday Astrology by Date: Signs, Traits & Cusp Answers"
   description="Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters."
   path="/birthday/"
-  image="/assets/og/v2/tool/birthday.png"
-  imageAlt="Birthday astrology, Zodiacs.org"
+  image={artPageCard('birthday')}
+  imageAlt={artPageCardAlt('birthday')}
   jsonLd={jsonLd}
 >
   <div class="container bday-hub">

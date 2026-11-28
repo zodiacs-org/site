@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "inline-link-spacing-024193669a6a",
-  "baseCommit": "024193669a6ae62c793e72c99d4df3301538dcc3",
+  "id": "inline-link-spacing-1dea914277d7",
+  "baseCommit": "1dea914277d780d00ef4f98b872f71eede42ff19",
   "protectedPaths": [
     "src/pages/es/privacy/index.astro",
     "src/pages/fr/privacy/index.astro",
