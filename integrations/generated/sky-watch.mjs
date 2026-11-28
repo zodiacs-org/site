@@ -44087,10 +44087,11 @@ async function readPersonalDay(natal, input, clock2) {
   const sky = new Map(computeBodies2(midday).map((row) => [row.body, row.lon]));
   const onDate = (at) => Number(date3.slice(0, 4)) <= 1970 || dateOn3(at, zone10) === date3;
   const exact = /* @__PURE__ */ new Map();
-  if (natal.timeKnown) for (const contact2 of scanTransitContacts({ bodies: natalBodies, angles }, dayStart2, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  if (natal.timeKnown) for (const contact2 of scanTransitContacts({ bodies: natalBodies, angles }, new Date(dayStart2.getTime() - HOUR8), new Date(dayEnd.getTime() + HOUR8), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key2 = `${contact2.transitBody}|${contact2.natalPoint}|${contact2.aspect}`;
     const at = new Date(contact2.exactUtc);
-    if (!onDate(at)) continue;
+    const ms = at.getTime();
+    if (ms < dayStart2.getTime() || ms >= dayEnd.getTime() || !onDate(at)) continue;
     const passes = exact.get(key2) ?? [];
     passes.push(at);
     exact.set(key2, passes);
@@ -44108,19 +44109,7 @@ async function readPersonalDay(natal, input, clock2) {
       const pointLon = natalLon.get(point2);
       for (const aspect2 of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect2);
-        const VELOCITY_STEP_MS = 3e4;
-        const velocityAt = (ms) => signedAngleDiff(
-          bodyLongitude2(mover, new Date(ms + VELOCITY_STEP_MS)),
-          bodyLongitude2(mover, new Date(ms - VELOCITY_STEP_MS))
-        );
-        let passes = exact.get(`${mover}|${point2}|${aspect2}`) ?? [];
-        if (passes.length > 1 && passes[0].getTime() === dayStart2.getTime()) {
-          if (velocityAt(passes[0].getTime()) * velocityAt(passes[1].getTime()) > 0) {
-            const firstOrb = orbOf(bodyLongitude2(mover, passes[0]), pointLon, aspect2);
-            const secondOrb = orbOf(bodyLongitude2(mover, passes[1]), pointLon, aspect2);
-            passes = secondOrb <= firstOrb ? passes.slice(1) : [passes[0], ...passes.slice(2)];
-          }
-        }
+        const passes = exact.get(`${mover}|${point2}|${aspect2}`) ?? [];
         if (passes.length === 0 && orb > maxOrb(mover, aspect2)) continue;
         let middayApplying = orbOf(moverAfter, pointLon, aspect2) < orbOf(moverBefore, pointLon, aspect2);
         const exactPass = passes.length > 0;
@@ -44135,6 +44124,11 @@ async function readPersonalDay(natal, input, clock2) {
             if (nextIndex > 0 && middayMs === passes[nextIndex - 1].getTime()) {
               middayApplying = false;
             } else {
+              const VELOCITY_STEP_MS = 3e4;
+              const velocityAt = (ms) => signedAngleDiff(
+                bodyLongitude2(mover, new Date(ms + VELOCITY_STEP_MS)),
+                bodyLongitude2(mover, new Date(ms - VELOCITY_STEP_MS))
+              );
               middayApplying = velocityAt(middayMs) * velocityAt(passes[nextIndex].getTime()) > 0;
             }
           }

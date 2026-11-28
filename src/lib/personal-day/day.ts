@@ -207,10 +207,14 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // resolver reads the engine's zone history, and the span alone decides.
   const onDate = (at: Date) => Number(date.slice(0, 4)) <= 1970 || dateOn(at, zone) === date;
   const exact = new Map<string, Date[]>();
-  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  // Pad the scan window by one hour either side of [dayStart, dayEnd) so `dayStart` sits strictly inside the root
+  // finder's interior (never triggering transit-scan-core's synthetic `from` boundary tolerance hit) while genuine
+  // crossings right on midnight are still solved cleanly, then filter strictly to [dayStart, dayEnd).
+  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, new Date(dayStart.getTime() - HOUR), new Date(dayEnd.getTime() + HOUR), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
-    if (!onDate(at)) continue;
+    const ms = at.getTime();
+    if (ms < dayStart.getTime() || ms >= dayEnd.getTime() || !onDate(at)) continue;
     // A stationing planet can cross the same natal point twice in one local day; preserve every exact pass in order.
     const passes = exact.get(key) ?? [];
     passes.push(at);
@@ -237,22 +241,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
       const pointLon = natalLon.get(point)!;
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect);
-        const VELOCITY_STEP_MS = 30_000;
-        const velocityAt = (ms: number) => signedAngleDiff(
-          bodyLongitude(mover, new Date(ms + VELOCITY_STEP_MS)),
-          bodyLongitude(mover, new Date(ms - VELOCITY_STEP_MS)),
-        );
-        let passes = exact.get(`${mover}|${point}|${aspect}`) ?? [];
-        // transit-scan-core prepends a synthetic `from` (dayStart) hit when a slow planet is within 1e-8 deg of exact
-        // right before a real crossing. If the planet did not reverse between dayStart and the next pass (same velocity
-        // sign), they are one crossing: keep the tighter instant and drop the synthetic duplicate.
-        if (passes.length > 1 && passes[0].getTime() === dayStart.getTime()) {
-          if (velocityAt(passes[0].getTime()) * velocityAt(passes[1].getTime()) > 0) {
-            const firstOrb = orbOf(bodyLongitude(mover, passes[0]), pointLon, aspect);
-            const secondOrb = orbOf(bodyLongitude(mover, passes[1]), pointLon, aspect);
-            passes = secondOrb <= firstOrb ? passes.slice(1) : [passes[0], ...passes.slice(2)];
-          }
-        }
+        const passes = exact.get(`${mover}|${point}|${aspect}`) ?? [];
         if (passes.length === 0 && orb > maxOrb(mover, aspect)) continue;
         let middayApplying = orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
         const exactPass = passes.length > 0;
@@ -269,6 +258,11 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
             } else {
               // Symmetric central difference of mover longitude measures the exact sign of the local velocity at midday
               // even within a fraction of a second of a station (the quadratic term cancels identically).
+              const VELOCITY_STEP_MS = 30_000;
+              const velocityAt = (ms: number) => signedAngleDiff(
+                bodyLongitude(mover, new Date(ms + VELOCITY_STEP_MS)),
+                bodyLongitude(mover, new Date(ms - VELOCITY_STEP_MS)),
+              );
               middayApplying = velocityAt(middayMs) * velocityAt(passes[nextIndex].getTime()) > 0;
             }
           }
