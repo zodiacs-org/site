@@ -126,6 +126,8 @@ const {
   ART_PAGE_CARD_ACCENT,
   ART_PAGE_CARD_KEYS,
   ART_PAGE_CARD_QUALITY,
+  REPLACED_ART_PAGE_CARDS,
+  REPLACED_BIRTHDAY_ART_CARDS,
   ART_PAGE_CARD_SHADE,
   artPageCardSpec,
   BIRTHDAY_ART_CARD_ART,
@@ -896,7 +898,7 @@ function pairArtPageCard(slug) {
   return artPageLayout({ ...copy, art: pairPaintings(copy.a, copy.b), accent: { kind: 'pair', signs: [copy.a, copy.b] }, route: `/compatibility/${slug}/` });
 }
 
-/** A cusp birthday page's card: the birthday hub's sundial and the two signs' discs. */
+/** A cusp birthday page's card: the birthday hub's analemma and the two signs' discs. */
 function birthdayArtPageCard(slug) {
   const copy = birthdayArtCardCopy(slug);
   return artPageLayout({ ...copy, art: `${paintingLayer(BIRTHDAY_ART_CARD_ART)}${shadeLayer()}`, accent: { kind: 'pair', signs: [copy.a, copy.b] }, route: `/birthday/${slug}/` });
@@ -943,7 +945,8 @@ const ART_PAGE_FAMILIES = {
     cards: () => ART_PAGE_CARD_KEYS.map((key) => [artPageCardSpec(key).card, () => artPageCard(key)]),
     paintings: () => ART_PAGE_CARD_KEYS.map((key) => artPageCardSpec(key).art.src),
     quality: ART_PAGE_CARD_QUALITY.page,
-    ceiling: () => [ART_CARDS, ART_CARDS_MAX_TOTAL_BYTES],
+    // The cards the 2026-11-28 redraw replaced stay published in the same folder and count toward its ceiling.
+    ceiling: () => [[...ART_CARDS, ...REPLACED_ART_PAGE_CARDS], ART_CARDS_MAX_TOTAL_BYTES],
   },
   pair: {
     flag: '--only-pair-art-cards',
@@ -959,7 +962,7 @@ const ART_PAGE_FAMILIES = {
     cards: () => BIRTHDAY_CUSP_DATES.map((date) => [birthdayArtCard(date.slug), () => birthdayArtPageCard(date.slug)]),
     paintings: () => [BIRTHDAY_ART_CARD_ART.src],
     quality: ART_PAGE_CARD_QUALITY.birthday,
-    ceiling: () => [BIRTHDAY_CUSP_DATES.map((date) => birthdayArtCard(date.slug)), BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES],
+    ceiling: () => [[...BIRTHDAY_CUSP_DATES.map((date) => birthdayArtCard(date.slug)), ...REPLACED_BIRTHDAY_ART_CARDS], BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES],
   },
   chineseZodiac: {
     flag: '--only-chinese-zodiac-art-cards',

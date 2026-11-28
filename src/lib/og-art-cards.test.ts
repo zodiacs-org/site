@@ -76,6 +76,11 @@ import {
   PAIR_ART_CARDS,
   PAIR_ART_CARDS_MAX_TOTAL_BYTES,
   PAIR_SLUGS,
+  REDRAWN_ART_CARD_STAMP,
+  REDRAWN_ART_PAGE_CARD_KEYS,
+  REPLACED_ART_PAGE_CARDS,
+  REPLACED_BIRTHDAY_ART_CARDS,
+  BIRTHDAY_ART_CARD_ART,
   artPageCard,
   artPageCardAlt,
   artPageCardSpec,
@@ -159,7 +164,7 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       ...SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => `/assets/og/v8/horoscope/${sign.slug}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`)),
       '/assets/og/v8/tool/chart-twins.jpg',
       '/assets/og/v8/thesis.jpg',
-      ...ART_PAGE_CARD_KEYS.map((key) => `/assets/og/v8/tool/${key}.jpg`),
+      ...ART_PAGE_CARD_KEYS.map((key) => `/assets/og/v8/tool/${key}${REDRAWN_ART_PAGE_CARD_KEYS.includes(key) ? '-20261128' : ''}.jpg`),
     ]);
     expect(ART_CARDS).toHaveLength(99 + 29);
     // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
@@ -409,7 +414,7 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
 
   it('draws the twenty-nine single page cards in the English folder, each from its page\'s own painting', () => {
     expect([...ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits', 'moon-sign', 'compatibility', 'horoscopes', 'numerology', 'moon-phase', 'full-moon-calendar', 'retrogrades', 'eclipses', 'solar-return', 'lunar-return', 'your-sky-wrapped', 'how-to-read-a-birth-chart', 'occasions', 'chart-of-the-day', 'group-charts', 'people']);
-    expect([...ART_PAGE_CARDS]).toEqual(ART_PAGE_CARD_KEYS.map((key) => `${ART_CARD_DIR}/tool/${key}.jpg`));
+    expect([...ART_PAGE_CARDS]).toEqual(ART_PAGE_CARD_KEYS.map((key) => `${ART_CARD_DIR}/tool/${key}${REDRAWN_ART_PAGE_CARD_KEYS.includes(key) ? '-20261128' : ''}.jpg`));
     for (const card of ART_PAGE_CARDS) expect(ART_CARDS).toContain(card);
     for (const painting of Object.values(ART_PAGE_PAINTINGS)) expect(readFileSync(new URL(`../../${painting.src}`, import.meta.url)).length, painting.src).toBeGreaterThan(0);
     for (const key of ART_PAGE_CARD_KEYS) {
@@ -542,6 +547,32 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     }
   });
 
+  it('redraws the thirteen first-round cards on new art under new dated names, keeping the cards they replace (owner, 2026-11-28)', () => {
+    expect([...REDRAWN_ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits']);
+    expect(REDRAWN_ART_CARD_STAMP).toBe('20261128');
+    for (const key of REDRAWN_ART_PAGE_CARD_KEYS) {
+      expect(artPageCard(key), key).toBe(`/assets/og/v8/tool/${key}-20261128.jpg`);
+      expect(artPageCardSpec(key).accent, key).toEqual({ kind: 'signDiscs' });
+      expect(artPageCardSpec(key).art.filter, key).toBe('none');
+      expect(artPageCardSpec(key).alt, key).toMatch(/ The twelve sign discs in a row beside [^.]+\.$/u);
+      expect(artPageCardSpec(key).alt, key).not.toMatch(/painting|brass|gilded/u);
+    }
+    expect(REPLACED_ART_PAGE_CARDS).toEqual(REDRAWN_ART_PAGE_CARD_KEYS.map((key) => `/assets/og/v8/tool/${key}.jpg`));
+    for (const kept of REPLACED_ART_PAGE_CARDS) {
+      expect(readFileSync(new URL(`../../public${kept}`, import.meta.url)).length, kept).toBeGreaterThan(0);
+      expect(ART_CARDS, kept).not.toContain(kept);
+    }
+    // The invitation card keeps its ledgered privacy sentence word for word.
+    expect(artPageCardAlt('compatibility-invite').startsWith('An invitation to a private compatibility reading: their side is entered, yours stays in your browser. ')).toBe(true);
+    // The birth chart card's wheel: the developer demo's published preset chart, never a person, with a fixed sky.
+    expect(artPageCardSpec('birth-chart').art.src).toBe('public/assets/art/birth-chart-wheel-1200.webp');
+    const wheels = read('scripts/build-wheel-art.ts');
+    expect(wheels).toContain("import developerDemo from '../src/data/developer-demo.json';");
+    expect(wheels).toContain("const BIRTH_CHART_SKY = new Date('2026-11-28T12:00:00Z');");
+    expect(wheels).toContain("output: 'public/assets/art/birth-chart-wheel-1200.webp'");
+    expect(read('src/pages/developers/demo/index.astro').length).toBeGreaterThan(0);
+  });
+
   it('carries the thesis card\'s row of the twelve sign discs on the 2026-11-28 cards, over their own art', () => {
     for (const key of ['moon-sign', 'compatibility', 'horoscopes', 'moon-phase', 'full-moon-calendar', 'retrogrades', 'eclipses', 'solar-return', 'lunar-return', 'your-sky-wrapped', 'how-to-read-a-birth-chart', 'occasions', 'chart-of-the-day', 'group-charts', 'people']) {
       expect(artPageCardSpec(key).accent, key).toEqual({ kind: 'signDiscs' });
@@ -666,7 +697,11 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     const cusps = Object.entries(data.days).filter(([, day]) => day.cusp).map(([slug, day]) => ({ slug, a: day.cusp!.a, b: day.cusp!.b }));
     expect(BIRTHDAY_CUSP_DATES.map((date) => ({ ...date }))).toEqual(cusps);
     expect(BIRTHDAY_ART_CARDS).toHaveLength(29);
-    expect(BIRTHDAY_ART_CARDS).toEqual(BIRTHDAY_CUSP_DATES.map((date) => `${BIRTHDAY_ART_CARD_DIR}/${date.slug}.jpg`));
+    expect(BIRTHDAY_ART_CARDS).toEqual(BIRTHDAY_CUSP_DATES.map((date) => `${BIRTHDAY_ART_CARD_DIR}/${date.slug}-20261128.jpg`));
+    // Redrawn on the birthday hub's analemma (2026-11-28); the sundial cards stay published for links already shared.
+    expect(BIRTHDAY_ART_CARD_ART.src).toBe('public/assets/art/analemma-1200.webp');
+    expect(REPLACED_BIRTHDAY_ART_CARDS).toEqual(BIRTHDAY_CUSP_DATES.map((date) => `${BIRTHDAY_ART_CARD_DIR}/${date.slug}.jpg`));
+    for (const kept of REPLACED_BIRTHDAY_ART_CARDS) expect(readFileSync(new URL(`../../public${kept}`, import.meta.url)).length, kept).toBeGreaterThan(0);
     expect(BIRTHDAY_ART_CARD_DIR).toBe('/assets/og/v8/birthday');
     expect(BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES).toBe(4 * 1024 * 1024);
     expect(() => birthdayArtCard('march-22')).toThrow(/not a cusp date/u);

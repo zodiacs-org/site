@@ -461,6 +461,23 @@ export const ART_PAGE_PAINTINGS = Object.freeze({
   dayWheel: Object.freeze({ src: 'public/assets/art/chart-of-the-day-wheel-1200.webp', width: 1200, height: 800 }),
   groupWheels: Object.freeze({ src: 'public/assets/art/group-charts-wheels-1200.webp', width: 1200, height: 800 }),
   instantPhotos: Object.freeze({ src: 'public/assets/art/people-instant-photos-1200.webp', width: 1200, height: 805 }),
+  // The fourth round's art (owner-approved, 2026-11-28), for the thirteen
+  // first-round cards redrawn: twelve generated photographs (Higgsfield,
+  // 2528 × 1696, cut to 1200 px webp) and the birth chart card's full wheel
+  // (scripts/build-wheel-art.ts).
+  birthChartWheel: Object.freeze({ src: 'public/assets/art/birth-chart-wheel-1200.webp', width: 1200, height: 800 }),
+  sunOverEarth: Object.freeze({ src: 'public/assets/art/sun-over-earth-1200.webp', width: 1200, height: 805 }),
+  starOverSea: Object.freeze({ src: 'public/assets/art/star-over-sea-1200.webp', width: 1200, height: 805 }),
+  threeWorlds: Object.freeze({ src: 'public/assets/art/three-worlds-1200.webp', width: 1200, height: 805 }),
+  analemma: Object.freeze({ src: 'public/assets/art/analemma-1200.webp', width: 1200, height: 805 }),
+  armillarySphere: Object.freeze({ src: 'public/assets/art/armillary-sphere-1200.webp', width: 1200, height: 805 }),
+  celestialGlobe: Object.freeze({ src: 'public/assets/art/celestial-globe-1200.webp', width: 1200, height: 805 }),
+  moonMonthGrid: Object.freeze({ src: 'public/assets/art/moon-month-grid-1200.webp', width: 1200, height: 805 }),
+  saturnRings: Object.freeze({ src: 'public/assets/art/saturn-rings-1200.webp', width: 1200, height: 805 }),
+  twoCrescents: Object.freeze({ src: 'public/assets/art/two-crescents-1200.webp', width: 1200, height: 805 }),
+  starNursery: Object.freeze({ src: 'public/assets/art/star-nursery-1200.webp', width: 1200, height: 805 }),
+  mercuryCratered: Object.freeze({ src: 'public/assets/art/mercury-cratered-1200.webp', width: 1200, height: 805 }),
+  jupiterMoonShadow: Object.freeze({ src: 'public/assets/art/jupiter-moon-shadow-1200.webp', width: 1200, height: 805 }),
 });
 
 /** The sign art panels' filter, as on the sign cards; the poster is drawn brighter, as the pages' hero crops show it. */
@@ -494,7 +511,17 @@ function posterRegion(x, y, width, more = {}) {
   return placed('poster', x + width / 2, y + height / 2, Math.min(1.42, 720 / width), { filter: POSTER_FILTER, ...more });
 }
 
-const PAGE_CARD = (name) => `${ART_CARD_DIR}/tool/${name}.jpg`;
+/**
+ * The thirteen first-round single page cards, redrawn on new art (owner,
+ * 2026-11-28). A published card keeps the design it was published with, so
+ * each redrawn card takes a new dated name beside the old one, as the
+ * homepage card's does (`tool/{key}-20261128.jpg`); the cards they replace,
+ * `tool/{key}.jpg`, stay published, byte for byte, for links already shared
+ * (REPLACED_ART_PAGE_CARDS), and count toward the same folder's ceiling.
+ */
+export const REDRAWN_ART_CARD_STAMP = '20261128';
+export const REDRAWN_ART_PAGE_CARD_KEYS = Object.freeze(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits']);
+const PAGE_CARD = (name) => `${ART_CARD_DIR}/tool/${name}${REDRAWN_ART_PAGE_CARD_KEYS.includes(name) ? `-${REDRAWN_ART_CARD_STAMP}` : ''}.jpg`;
 
 /**
  * The single page cards. `title` is the headline's lines; `size` its type
@@ -507,81 +534,81 @@ const PAGE_CARD = (name) => `${ART_CARD_DIR}/tool/${name}.jpg`;
 const ART_PAGE_CARD_SPECS = Object.freeze([
   {
     key: 'birth-chart', routes: ['/birth-chart/', '/birth-chart/someone-else/', '/birth-chart/three-dimensions/'],
-    art: placed('astrolabe', 619, 330, 0.8, { cx: 900, cy: 300 }), accent: { kind: 'wheel' },
+    art: framed('birthChartWheel'), accent: { kind: 'signDiscs' },
     kicker: 'Free calculator', title: ['Your birth', 'chart'], line: 'Your Sun, Moon and rising sign, every planet and house.',
-    alt: 'Your birth chart: your Sun, Moon and rising sign, every planet and house, beside a painting of a zodiac dial with the twelve sign figures around a gilded star.',
+    alt: 'Your birth chart: your Sun, Moon and rising sign, every planet and house. The twelve sign discs in a row beside a full chart wheel with its houses, its ascendant and midheaven, and the transiting sky on the outer ring.',
   },
   {
     key: 'today', routes: ['/today/'],
-    art: placed('orrery', 610, 300, 0.98, { cx: 880 }), accent: { kind: 'phases', size: 30, gap: 9 },
+    art: framed('sunOverEarth'), accent: { kind: 'signDiscs' },
     kicker: 'Planets, Moon phase and retrogrades', title: ['The sky', 'today'], line: 'Where every planet is, and what comes next on the calendar.',
-    alt: 'The sky today: where every planet is, and what comes next on the calendar, beside a painting of an orrery with the Sun at its centre and planets on their rings.',
+    alt: 'The sky today: where every planet is, and what comes next on the calendar. The twelve sign discs in a row beside the Sun breaking over the edge of the Earth, seen from orbit.',
   },
   {
     key: 'rising-sign', routes: ['/rising-sign/'],
-    art: placed('horizon', 330, 380, 1.0, { cx: 880, cy: 310, fade: [480, 700] }), accent: { kind: 'rising' },
+    art: framed('starOverSea'), accent: { kind: 'signDiscs' },
     kicker: 'Free calculator', title: ['Your rising', 'sign'], line: 'How people first read you, from your birth time and place.',
-    alt: 'Your rising sign: how people first read you, from your birth time and place, beside a painting of a pastel disc rising over a band of sign discs.',
+    alt: 'Your rising sign: how people first read you, from your birth time and place. The twelve sign discs in a row beside one bright star rising over a dark sea.',
   },
   {
     key: 'big-three', routes: ['/big-three/'],
-    art: posterRegion(376, 0, 775), accent: { kind: 'bigThree' },
+    art: framed('threeWorlds'), accent: { kind: 'signDiscs' },
     kicker: 'Sun, Moon and Rising', title: ['Your big', 'three'], line: 'Three signs in seconds, with a card to share.',
-    alt: 'Your big three: Sun, Moon and Rising, three signs in seconds, with a card to share, beside a painting of the Sun and the Moon above the band of zodiac figures.',
+    alt: 'Your big three: Sun, Moon and Rising, three signs in seconds, with a card to share. The twelve sign discs in a row beside three worlds in a row: the Sun in violet light, the Moon and the blue edge of the Earth.',
   },
   {
     key: 'birthday', routes: ['/birthday/'],
-    art: placed('sundial', 600, 262, 1.24, { cx: 900, cy: 296 }), accent: { kind: 'sun' },
+    art: framed('analemma'), accent: { kind: 'signDiscs' },
     kicker: 'Birthday astrology', title: ['Your birthday,', 'read closely'], size: 96, line: 'Choose a date for a reading of character, love, work, and growth.',
-    alt: 'Your birthday, read closely: choose a date for a reading of character, love, work, and growth, beside a painting of a brass sundial casting its shadow across the hours.',
+    alt: 'Your birthday, read closely: choose a date for a reading of character, love, work, and growth. The twelve sign discs in a row beside the Sun’s yearly figure of eight across the sky.',
   },
   {
     key: 'tools', routes: ['/tools/'],
-    art: placed('lens', 700, 360, 0.9, { cx: 880 }), accent: null,
+    art: framed('armillarySphere'), accent: { kind: 'signDiscs' },
     kicker: 'Free, no signup', title: ['Free astrology', 'tools'], size: 98, line: 'Sorted by what you want to know. New here? Start with your birth chart.',
-    alt: 'Free astrology tools, no signup: sorted by what you want to know, beside a painting of a lens and a compass over an old star map.',
+    alt: 'Free astrology tools, no signup: sorted by what you want to know. The twelve sign discs in a row beside a silver armillary sphere.',
   },
   {
     key: 'learn', routes: ['/learn/'],
-    art: placed('atlas', 640, 440, 0.8, { cx: 900 }), accent: { kind: 'signDiscs' },
+    art: framed('celestialGlobe'), accent: { kind: 'signDiscs' },
     kicker: 'Learn astrology', title: ['What does your', 'chart say about you?'], size: 76, fit: 560, line: 'Short guides to the signs, planets, houses and aspects.',
-    alt: 'Learn astrology: what does your chart say about you? Short guides to the signs, planets, houses and aspects, beside a painting of an open atlas of the zodiac figures.',
+    alt: 'Learn astrology: what does your chart say about you? Short guides to the signs, planets, houses and aspects. The twelve sign discs in a row beside an old celestial globe.',
   },
   {
     key: 'sky-calendar', routes: ['/sky-calendar/'],
-    art: placed('skyDial', 610, 380, 0.84, { cx: 880, cy: 300 }), accent: null,
+    art: framed('moonMonthGrid'), accent: { kind: 'signDiscs' },
     kicker: 'The calendar', title: ['Subscribe', 'to the sky'], line: 'New and full moons, eclipse peaks, and retrograde windows in your calendar.',
-    alt: 'Subscribe to the sky: new and full moons, eclipse peaks, and retrograde windows in your calendar, beside a painting of a crescent and a full Moon on a starry dial.',
+    alt: 'Subscribe to the sky: new and full moons, eclipse peaks, and retrograde windows in your calendar. The twelve sign discs in a row beside a month of Moons in a grid.',
   },
   {
     key: 'saturn-return', routes: ['/saturn-return/'],
-    art: placed('hourglass', 596, 400, 0.8, { cx: 880, cy: 300 }), accent: { kind: 'saturn' },
+    art: framed('saturnRings'), accent: { kind: 'signDiscs' },
     kicker: 'Free calculator', title: ['Your Saturn', 'return'], line: 'Every pass and retrograde loop, from your birth date alone.',
-    alt: 'Your Saturn return: every pass and retrograde loop, from your birth date alone, beside a painting of an hourglass inside a ringed orbit.',
+    alt: 'Your Saturn return: every pass and retrograde loop, from your birth date alone. The twelve sign discs in a row beside Saturn and its rings.',
   },
   {
     key: 'compatibility-invite', routes: ['/c/'],
-    art: placed('invitation', 790, 470, 1.08, { cx: 880, cy: 300 }), accent: { kind: 'twoWheels' },
+    art: framed('twoCrescents'), accent: { kind: 'signDiscs' },
     kicker: 'A private compatibility reading', title: ['An', 'invitation'], line: 'Their side is entered. Yours stays in your browser.',
-    alt: 'An invitation to a private compatibility reading: their side is entered, yours stays in your browser. Beside it, a painting of a sealed envelope among brass instruments.',
+    alt: 'An invitation to a private compatibility reading: their side is entered, yours stays in your browser. The twelve sign discs in a row beside two crescent Moons, a small one against a large one.',
   },
   {
     key: 'baby-zodiac', routes: ['/baby-zodiac/'],
-    art: posterRegion(96, 328, 650), accent: null,
+    art: framed('starNursery'), accent: { kind: 'signDiscs' },
     kicker: 'Free calculator', title: ['What sign will', 'the baby be?'], size: 92, line: 'The due date’s near-certain Sun, and the week’s possible Moons.',
-    alt: 'What sign will the baby be? The due date’s near-certain Sun, and the week’s possible Moons, beside a painting of the zodiac figures on their band of sign discs.',
+    alt: 'What sign will the baby be? The due date’s near-certain Sun, and the week’s possible Moons. The twelve sign discs in a row beside a soft pastel star nursery.',
   },
   {
     key: 'mercury-retrograde', routes: ['/mercury-retrograde/', '/mercury-retrograde/2027/'],
-    art: posterRegion(520, 424, 650, { cx: 930 }), accent: { kind: 'retrograde', sign: 'gemini' },
+    art: framed('mercuryCratered'), accent: { kind: 'signDiscs' },
     kicker: 'The calendar', title: ['Mercury', 'retrograde'], line: 'Every window through 2030, with station dates.',
-    alt: 'Mercury retrograde: every window through 2030, with station dates, beside a painting of the band of sign discs and a clock hand.',
+    alt: 'Mercury retrograde: every window through 2030, with station dates. The twelve sign discs in a row beside Mercury, cratered and lit from the side.',
   },
   {
     key: 'transits', routes: ['/transits/'],
-    art: posterRegion(640, 304, 700, { cx: 990, cy: 300 }), accent: null,
+    art: framed('jupiterMoonShadow'), accent: { kind: 'signDiscs' },
     kicker: 'Free tracker', title: ['What is active', 'in your chart?'], size: 90, fit: 470, line: 'Move the date to watch each transit build, peak, and release.',
-    alt: 'What is active in your chart? Move the date to watch each transit build, peak, and release, beside a painting of the ring of sign discs.',
+    alt: 'What is active in your chart? Move the date to watch each transit build, peak, and release. The twelve sign discs in a row beside Jupiter with a moon’s shadow crossing it.',
   },
   // The 2026-11-28 round (owner-chosen from mockups): the three astrology cards
   // carry the twelve canonical sign discs in a row above the kicker, as the
@@ -825,7 +852,7 @@ function cuspDate(slug) {
 
 /** A cusp birthday page's card: `birthday/march-21.jpg`. @param {string} slug */
 export function birthdayArtCard(slug) {
-  return `${BIRTHDAY_ART_CARD_DIR}/${cuspDate(slug).slug}.jpg`;
+  return `${BIRTHDAY_ART_CARD_DIR}/${cuspDate(slug).slug}-${REDRAWN_ART_CARD_STAMP}.jpg`;
 }
 
 export const BIRTHDAY_ART_CARDS = Object.freeze(BIRTHDAY_CUSP_DATES.map((date) => birthdayArtCard(date.slug)));
@@ -852,12 +879,21 @@ export function birthdayArtCardCopy(slug) {
     kicker: `${a.name} or ${b.name}, by year`,
     title: Object.freeze(['Born on', label]),
     line: BIRTHDAY_ART_CARD_LINE,
-    alt: `Born on ${label}: ${a.name} or ${b.name}, by year. The year table and birth hour settle it. The two sign discs beside a painting of a brass sundial.`,
+    alt: `Born on ${label}: ${a.name} or ${b.name}, by year. The year table and birth hour settle it. The two sign discs beside the Sun’s yearly figure of eight across the sky.`,
   });
 }
 
-/** The cusp birthday cards' painting, the birthday hub's sundial, placed as on its card. */
+/** The cusp birthday cards' picture, the birthday hub's analemma (since 2026-11-28; the sundial before), placed as on its card. */
 export const BIRTHDAY_ART_CARD_ART = artPageCardSpec('birthday').art;
+
+/**
+ * The cards the 2026-11-28 redraw replaced, kept published byte for byte for
+ * links already shared: the thirteen first-round single page cards (in the
+ * English art cards' folder and ceiling) and the 29 cusp birthday cards on the
+ * brass sundial (in the birthday folder and its ceiling).
+ */
+export const REPLACED_ART_PAGE_CARDS = Object.freeze(REDRAWN_ART_PAGE_CARD_KEYS.map((key) => `${ART_CARD_DIR}/tool/${key}.jpg`));
+export const REPLACED_BIRTHDAY_ART_CARDS = Object.freeze(BIRTHDAY_CUSP_DATES.map((date) => `${BIRTHDAY_ART_CARD_DIR}/${date.slug}.jpg`));
 
 // ── The 12 Chinese zodiac animal cards ─────────────────────────────────────
 
