@@ -108,16 +108,4 @@ jobs:
             - [ ] pisces
 
             House rules: every claim cites a dated event from the JSON, solar-houses framing stated once, 250–400 words, no headings. Match the exemplar at `src/content/horoscopes/2026-07-aries.mdx` and the voice rules in `CLAUDE.md`. The pages render the latest complete month automatically.
-        run: |
-          LABEL=$(date -u -d "${MONTH}-01" "+%B %Y")
-          if [ "$(gh issue list --search "in:title \"Write the ${LABEL} horoscopes\"" --json number --jq length)" != "0" ]; then
-            echo "Issue already open"
-            exit 0
-          fi
-          if [ "$(find src/content/horoscopes -maxdepth 1 -name "${MONTH}-*.mdx" | wc -l)" -ge 12 ]; then
-            echo "All twelve ${LABEL} entries are already in the tree"
-            exit 0
-          fi
-          BODY=${ISSUE_BODY//__MONTH__/$MONTH}
-          BODY=${BODY//__LABEL__/$LABEL}
-          gh issue create --title "Write the ${LABEL} horoscopes" --body "$BODY"
+        run: node scripts/monthly-horoscope-reminder.mjs

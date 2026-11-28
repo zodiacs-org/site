@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { HOROSCOPE_SIGNS } from './horoscope-freshness-lib.mjs';
+import { decideMonthlyReminder } from './monthly-horoscope-reminder.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFile(resolve(root, path), 'utf8');
@@ -38,10 +40,53 @@ describe('daily publication operations', () => {
     // did not open for December 2026, and the freshness gate fails every deploy when a month starts empty.
     const workflow = await read('.github/workflows/transits-monthly.yml');
     const step = workflow.slice(workflow.indexOf('- name: Open the horoscope reminder issue'));
-    expect(step).toContain('gh issue create');
+    expect(step).toContain('node scripts/monthly-horoscope-reminder.mjs');
     expect(step).not.toMatch(/\n\s+if:/);
     expect(workflow).not.toContain("if: steps.commit.outputs.committed == 'true'");
-    expect(step).toContain('src/content/horoscopes');
+
+    const allTwelve = HOROSCOPE_SIGNS.map((sign) => ({ sign, month: '2026-12', draft: false }));
+    const created = [];
+    const base = {
+      month: '2026-12',
+      label: 'December 2026',
+      issueBody: 'Sky for __LABEL__ at src/data/transits-__MONTH__.json',
+      createIssue: (item) => created.push(item),
+    };
+
+    // Twelve live distinct signs skip without even querying GitHub.
+    expect(
+      decideMonthlyReminder({
+        ...base,
+        monthlyEntries: allTwelve,
+        listOpenIssues: () => { throw new Error('must not query when complete'); },
+      }).action,
+    ).toBe('skip-complete');
+    expect(created).toHaveLength(0);
+
+    // One draft entry still opens the reminder, matching the deployment gate.
+    const withDraft = allTwelve.map((entry, idx) => (idx === 0 ? { ...entry, draft: true } : entry));
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: withDraft, listOpenIssues: () => 0 }).action).toBe('created');
+    expect(created).toHaveLength(1);
+    expect(created[0].title).toBe('Write the December 2026 horoscopes');
+    expect(created[0].body).toContain('transits-2026-12.json');
+
+    // Duplicate sign (12 files, only 11 distinct signs) still opens the reminder.
+    const withDuplicate = allTwelve.map((entry, idx) => (idx === 11 ? { ...entry, sign: 'aries' } : entry));
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: withDuplicate, listOpenIssues: () => 0 }).action).toBe('created');
+    expect(created).toHaveLength(2);
+
+    // Existing open issue skips creating a duplicate.
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: [], listOpenIssues: () => 1 }).action).toBe('skip-open');
+    expect(created).toHaveLength(2);
+
+    // A failed issue lookup throws rather than silently treating the failure as an existing issue.
+    expect(() =>
+      decideMonthlyReminder({
+        ...base,
+        monthlyEntries: [],
+        listOpenIssues: () => { throw new Error('gh issue list failed (1)'); },
+      }),
+    ).toThrow('gh issue list failed');
   });
 
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {
