@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "art-share-cards-b9a48f900adf",
-  "baseCommit": "b9a48f900adf3e3770992f05d573e8ae7d1e5bb4",
+  "id": "art-share-cards-024193669a6a",
+  "baseCommit": "024193669a6ae62c793e72c99d4df3301538dcc3",
   "protectedPaths": [
     "src/pages/es/baby-zodiac/index.astro",
     "src/pages/es/birth-chart/index.astro",
