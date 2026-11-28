@@ -1,0 +1,42 @@
+{
+  "sourceCommit": "4704acc5c7a0625dedd7601009b9c17207892ba9",
+  "node": "v22.23.2",
+  "logs": [
+    {
+      "file": "build-node22.log",
+      "originalSha256": "8307f603d79b0eb40f92c630de3980af280b40035933e90b4318b164ee412bad",
+      "publishedSha256": "e0a1cac797fbb6fbee2c4b2d652aae9b3dba2e429d134e4d1e591fad376744f3",
+      "normalization": "ANSI colors removed; workspace path replaced with <site>; trailing whitespace and empty EOF lines removed."
+    },
+    {
+      "file": "check-node22.log",
+      "originalSha256": "932744c2d82d8634ea42bd5ce224b5456f205611d53444e18910b97b89a12654",
+      "publishedSha256": "c40d166be30044f70b58794756be27b156f37ab2e377ae62b6463545787c1358",
+      "normalization": "ANSI colors removed; workspace path replaced with <site>; trailing whitespace and empty EOF lines removed."
+    },
+    {
+      "file": "tests-node22.log",
+      "originalSha256": "ec34d6e1ab2988239c5283c34397d8013c47f894e3d8654c7fea42fefc5b2909",
+      "publishedSha256": "4aa0faae44ecf94236cfe65b079027a3d3f31a861841b1efffba5e40d48fe772",
+      "normalization": "ANSI colors removed; workspace path replaced with <site>; trailing whitespace and empty EOF lines removed."
+    },
+    {
+      "file": "first-test-timeouts.log",
+      "originalSha256": "7e8532153aee9d74a5edc7c35e75449e56547ce737ddb473492eadee766bf66e",
+      "publishedSha256": "3af489b275023a11433def342c7917bfead3ef9d644de956aef8b50f269f1f47",
+      "normalization": "ANSI colors removed; workspace path replaced with <site>; trailing whitespace and empty EOF lines removed."
+    },
+    {
+      "file": "focused-node22.log",
+      "originalSha256": "13024142f0c15faae13f8586d3227b384a688562e125bcab427d1eee2762f3e2",
+      "publishedSha256": "8a151434bf7d553e24def10a2be8cdb0fe220bfdb31a82ec20e6367f0ea1c525",
+      "normalization": "ANSI colors removed; workspace path replaced with <site>; trailing whitespace and empty EOF lines removed."
+    },
+    {
+      "file": "scope-guard.log",
+      "originalSha256": "fcfb1778247c7ab49efd3f74728badcd4ce1b4169a6810e26765698df0f27b29",
+      "publishedSha256": "fcfb1778247c7ab49efd3f74728badcd4ce1b4169a6810e26765698df0f27b29",
+      "normalization": "ANSI colors removed; workspace path replaced with <site>; trailing whitespace and empty EOF lines removed."
+    }
+  ]
+}

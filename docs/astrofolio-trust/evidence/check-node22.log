@@ -1,0 +1,77 @@
+
+> zodiacs-org@1.0.0 check
+> npm run check:consumer-boundary && npm run footer:check && astro check
+
+
+> zodiacs-org@1.0.0 check:consumer-boundary
+> node scripts/check-consumer-boundary.mjs
+
+consumer-boundary: clear · 1423 source files checked
+
+> zodiacs-org@1.0.0 footer:check
+> node scripts/sync-site-footer-css.mjs --check && node scripts/check-site-footer-standard.mjs
+
+site-footer.css: public copy matches the canonical source
+site-footer-standard: canonical footer sources and surfaces verified
+03:36:17 [content] Syncing content
+03:36:17 [content] Synced content
+03:36:17 [types] Generated 1.12s
+03:36:17 [check] Getting diagnostics for Astro files in <site>...
+src/exchange/chart-model.mjs:89:42 - warning ts(6133): 'timeframe' is declared but its value is never read.
+
+89 export function timeTickIndices(candles, timeframe, maxLabels = 6) {
+                                            ~~~~~~~~~
+
+src/exchange/chart.mjs:24:7 - warning ts(6133): 'INK' is declared but its value is never read.
+
+24 const INK = '#EEF1F7';
+         ~~~
+
+src/exchange/terminal.mjs:105:10 - warning ts(80006): This may be converted to an async function.
+
+105 function fetchWithin(url, deadline) {
+             ~~~~~~~~~~~
+
+src/islands/LunarReturnCalculator.test.tsx:59:8 - warning ts(6133): 'CalculationReload' is declared but its value is never read.
+
+59 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
+          ~~~~~~~~~~~~~~~~~
+
+src/lib/people.ts:17:35 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; pattern?: RegExp | undefined; normalize?: boolean | undefined; hostname?: RegExp | undefined; protocol?: RegExp | undefined; error?: string | ... 1 more ... | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+17 const httpsUrlSchema = z.string().url().refine((value) => value.startsWith('https://'));
+                                     ~~~
+src/lib/people.ts:16:37 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; precision?: number | null | undefined; local?: boolean | undefined; offset?: boolean | undefined; error?: string | $ZodErrorMap<$ZodIssueInvalidStringFormat> | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+16 const isoInstantSchema = z.string().datetime({ offset: true });
+                                       ~~~~~~~~
+
+src/pages/astrofolio/how-to-buy/index.astro:434:31 - warning ts(6387): The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+434       const copied = document.execCommand('copy');
+                                  ~~~~~~~~~~~
+
+src/pages/bio/index.astro:163:31 - warning ts(6387): The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+163         var copied = document.execCommand('copy');
+                                  ~~~~~~~~~~~
+
+src/pages/widgets/index.astro:171:20 - warning ts(6387): The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+171           document.execCommand('copy');
+                       ~~~~~~~~~~~
+
+src/registry/selected-token-chart.mjs:320:3 - warning ts(6133): 'last' is declared but its value is never read.
+
+320   last,
+      ~~~~
+
+src/shelf/card.mjs:27:10 - warning ts(80006): This may be converted to an async function.
+
+27 function fetchWithin(url, ms, init) {
+            ~~~~~~~~~~~
+
+Result (1028 files):
+- 0 errors
+- 0 warnings
+- 11 hints
