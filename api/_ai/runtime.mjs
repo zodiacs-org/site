@@ -42756,15 +42756,35 @@ function foldToken(token) {
   }
   return folded2.replace(/[^A-Z]/g, "");
 }
+function foldNamePartKey(part) {
+  if (typeof part !== "string") return "";
+  const decomposed = part.normalize("NFKD").replace(new RegExp("\\p{M}+", "gu"), "").replace(MODIFIER_APOSTROPHES, "");
+  let folded2 = "";
+  for (const ch of decomposed) folded2 += FOLD_MAP[ch] ?? ch;
+  return folded2.toUpperCase().replace(/[^A-Z]/g, "");
+}
+function keptPartSet(options) {
+  const out = /* @__PURE__ */ new Set();
+  for (const part of options?.keepParts ?? []) {
+    const key2 = foldNamePartKey(part);
+    if (key2) out.add(key2);
+  }
+  return out;
+}
+function isPartKept(letters, keepTitles, kept2) {
+  if (!SUFFIXES.has(letters) && !TITLES.has(letters)) return true;
+  return keepTitles || kept2.has(letters);
+}
 function normalizeNameParts(input, options = {}) {
   if (typeof input !== "string") throw new NumerologyInputError("empty-name");
   const keepTitles = options.keepTitles === true;
+  const kept2 = keptPartSet(options);
   const parts = [];
   for (const raw of input.split(/\s+/)) {
     if (!raw) continue;
     const letters = foldToken(raw);
     if (!letters) continue;
-    if (!keepTitles && (SUFFIXES.has(letters) || TITLES.has(letters))) continue;
+    if (!isPartKept(letters, keepTitles, kept2)) continue;
     parts.push({ raw, letters });
   }
   if (parts.length === 0) throw new NumerologyInputError("empty-name");
@@ -43129,9 +43149,9 @@ function personalYear(birthDate, year) {
   while (chain[chain.length - 1] > 9) chain.push(digitSum2(chain[chain.length - 1]));
   return { number: chain[chain.length - 1], chain: chain.join("/") };
 }
-function numerologyReading({ birthDate, name, year }) {
+function numerologyReading({ birthDate, name, keepTitles, keepParts, year }) {
   const date3 = dateNumbers(birthDate);
-  const names = name !== void 0 ? nameNumbers(name) : null;
+  const names = name !== void 0 ? nameNumbers(name, [], { keepTitles, keepParts }) : null;
   const cycle = personalYear(date3.iso, year);
   const carriers = /* @__PURE__ */ new Map();
   const positions2 = [
@@ -43164,7 +43184,8 @@ var numerologyInput = z14.strictObject({
   birthDate: z14.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1994-05-14. Gives the Life Path and the Personal Year."),
   name: z14.string().min(1).max(120).optional().describe("Optional: the full name at birth, such as it appears on a birth certificate, for the Expression, Soul Urge and Personality numbers. Only if the person gives it for this reading. Latin letters; accents are folded. Used for this answer only: it is not returned, put in a link or stored."),
   year: z14.number().int().min(NUMEROLOGY_MIN_YEAR).max(NUMEROLOGY_MAX_YEAR).optional().describe("Optional: the calendar year for the Personal Year, such as 2027. Without it, the current year where the person is."),
-  zone: z14.string().min(1).max(64).regex(ZONE_PATTERN11).optional().describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC.")
+  zone: z14.string().min(1).max(64).regex(ZONE_PATTERN11).optional().describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC."),
+  keepParts: z14.array(z14.string().min(1).max(20)).max(10).optional().describe('Optional: specific title or suffix parts (such as "Sir" or "Miss") to count as part of the birth name instead of ignoring them, matching the /numerology/ calculator. Used for this answer only: not returned, stored or put in a link.')
 });
 var NUMBER_VALUES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
 var numberReading2 = z14.object({
@@ -43218,7 +43239,12 @@ var REFUSALS = {
 function getNumerology(args, context) {
   let reading;
   try {
-    reading = numerologyReading({ birthDate: args.birthDate, ...args.name !== void 0 ? { name: args.name } : {}, year: args.year ?? context.currentYear });
+    reading = numerologyReading({
+      birthDate: args.birthDate,
+      ...args.name !== void 0 ? { name: args.name } : {},
+      ...args.keepParts?.length ? { keepParts: args.keepParts } : {},
+      year: args.year ?? context.currentYear
+    });
   } catch (error) {
     if (error instanceof NumerologyInputError) throw new RangeError(REFUSALS[error.code]);
     throw error;

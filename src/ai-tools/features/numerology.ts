@@ -27,6 +27,8 @@ export const numerologyInput = z.strictObject({
     .describe('Optional: the calendar year for the Personal Year, such as 2027. Without it, the current year where the person is.'),
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional()
     .describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC."),
+  keepParts: z.array(z.string().min(1).max(20)).max(10).optional()
+    .describe('Optional: specific title or suffix parts (such as "Sir" or "Miss") to count as part of the birth name instead of ignoring them, matching the /numerology/ calculator. Used for this answer only: not returned, stored or put in a link.'),
 });
 export type NumerologyInput = z.infer<typeof numerologyInput>;
 
@@ -95,7 +97,12 @@ export interface NumerologyContext {
 export function getNumerology(args: NumerologyInput, context: NumerologyContext): { data: NumerologyData; links: { title: string; url: string }[] } {
   let reading: ReturnType<typeof numerologyReading>;
   try {
-    reading = numerologyReading({ birthDate: args.birthDate, ...(args.name !== undefined ? { name: args.name } : {}), year: args.year ?? context.currentYear });
+    reading = numerologyReading({
+      birthDate: args.birthDate,
+      ...(args.name !== undefined ? { name: args.name } : {}),
+      ...(args.keepParts?.length ? { keepParts: args.keepParts } : {}),
+      year: args.year ?? context.currentYear,
+    });
   } catch (error) {
     if (error instanceof NumerologyInputError) throw new RangeError(REFUSALS[error.code]);
     throw error;

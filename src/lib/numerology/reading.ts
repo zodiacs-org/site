@@ -54,6 +54,10 @@ export interface NumerologyReadingInput {
   birthDate: string;
   /** The full name at birth; leave it out for the birth date numbers alone. */
   name?: string;
+  /** Keep all parts matching the title/suffix list as part of the birth name. */
+  keepTitles?: boolean;
+  /** Specific title/suffix parts (e.g. ["Sir"]) to keep as part of the birth name while still dropping others. */
+  keepParts?: readonly string[];
   /** The calendar year for the Personal Year. */
   year: number;
 }
@@ -81,9 +85,9 @@ function personalYear(birthDate: string, year: number) {
   return { number: chain[chain.length - 1] as SingleDigit, chain: chain.join('/') };
 }
 
-export function numerologyReading({ birthDate, name, year }: NumerologyReadingInput): NumerologyReading {
+export function numerologyReading({ birthDate, name, keepTitles, keepParts, year }: NumerologyReadingInput): NumerologyReading {
   const date = dateNumbers(birthDate);
-  const names = name !== undefined ? nameNumbers(name) : null;
+  const names = name !== undefined ? nameNumbers(name, [], { keepTitles, keepParts }) : null;
   const cycle = personalYear(date.iso, year);
   const carriers = new Map<KarmicDebt, DebtPosition[]>();
   const positions: [DebtPosition, Reduction | undefined][] = [

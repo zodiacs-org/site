@@ -208,7 +208,7 @@ describe('each tool\'s schema and its reader agree', () => {
       }
     };
     for (const tool of CALCULATOR_TOOLS) walk(tool.inputSchema, '');
-    expect([...bounded].sort()).toEqual(['fullName', 'name', 'timeZone']);
+    expect([...bounded].sort()).toEqual(['fullName', 'keepParts', 'name', 'timeZone']);
     // A crescent moon is one code point and two UTF-16 code units; a lone surrogate is one of each.
     const moon = '\u{1F319}';
     const group = (name: string) => ({ people: [{ name, birth: BIRTH }, ...(VALID['zodiacs.group_chart'] as { people: unknown[] }).people.slice(1)] });
@@ -220,6 +220,8 @@ describe('each tool\'s schema and its reader agree', () => {
       ['zodiacs.group_chart', group(`${'x'.repeat(24)}\uDE19`), false],
       ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: moon.repeat(200), today: '2026-10-15' }, true],
       ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: moon.repeat(201), today: '2026-10-15' }, false],
+      ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: 'Sir', keepParts: [moon.repeat(20)], today: '2026-10-15' }, true],
+      ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: 'Sir', keepParts: [moon.repeat(21)], today: '2026-10-15' }, false],
     ];
     for (const [name, input, fits] of cases) {
       expect(validators.get(name)!(input), JSON.stringify(input)).toBe(fits);

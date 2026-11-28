@@ -16,7 +16,7 @@ import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-read
 import StoryCardShare from '../components/StoryCardShare';
 import { numerologyStoryContent, prepareNumerologyStoryCard } from '../lib/numerology/story-card';
 import {
-  droppedNameParts,
+  droppedNamePartEntries,
   formatChain,
   lifePathExample,
   numerologyProfile,
@@ -61,7 +61,7 @@ interface Submitted {
   name: string;
   date: string;
   today: string;
-  keepTitles: boolean;
+  keptParts?: string[];
 }
 
 /** Local calendar date as YYYY-MM-DD; personal cycles run on the reader's own calendar. */
@@ -116,21 +116,22 @@ interface Computed {
   example: string;
   /** Set when a non-blank name normalised to nothing and the date numbers were computed alone. */
   nameEmptied: boolean;
-  /** Tokens matching the title/suffix list (e.g. "Sir", "Miss") so the reader can include them if part of their birth name. */
-  droppedParts: string[];
+  /** Distinct name parts matching the title/suffix list (e.g. "Sir", "Jr.") so the reader can include or ignore each one. */
+  droppedParts: { raw: string; key: string }[];
 }
 
 function compute(input: Submitted, overrides: readonly YOverride[]): Computed {
   const example = lifePathExample(input.date);
+  const keptParts = input.keptParts ?? [];
+  const droppedParts = input.name.trim() ? droppedNamePartEntries(input.name) : [];
   try {
     const profile = numerologyProfile({
       birthDate: input.date,
       fullName: input.name,
       today: input.today,
       yOverrides: overrides,
-      keepTitles: input.keepTitles,
+      keepParts: keptParts,
     });
-    const droppedParts = input.name.trim() ? droppedNameParts(input.name) : [];
     return {
       profile,
       example,
@@ -139,7 +140,6 @@ function compute(input: Submitted, overrides: readonly YOverride[]): Computed {
     };
   } catch (err) {
     if (err instanceof NumerologyInputError && err.code === 'empty-name') {
-      const droppedParts = input.name.trim() ? droppedNameParts(input.name) : [];
       return {
         profile: numerologyProfile({ birthDate: input.date, today: input.today }),
         example,
@@ -313,11 +313,11 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
       setError(birthDateRefusalText(refusal));
       return;
     }
-    // Y overrides and keepTitles index into one specific name; a different name starts clean.
+    // Y overrides and keptParts index into one specific name; a different name starts clean.
     const sameName = submitted !== null && submitted.name === name;
     const nextOverrides = sameName ? overrides : [];
-    const nextKeepTitles = sameName ? submitted.keepTitles : false;
-    const input: Submitted = { name, date, today: localIsoDate(new Date()), keepTitles: nextKeepTitles };
+    const nextKeptParts = sameName ? (submitted.keptParts ?? []) : [];
+    const input: Submitted = { name, date, today: localIsoDate(new Date()), keptParts: nextKeptParts };
     try {
       setResult(compute(input, nextOverrides));
       setSubmitted(input);
@@ -327,14 +327,18 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
     }
   }
 
-  function toggleKeepTitles() {
+  function toggleDroppedPart(partKey: string) {
     if (!submitted) return;
-    const nextInput: Submitted = { ...submitted, keepTitles: !submitted.keepTitles };
+    const prevKept = submitted.keptParts ?? [];
+    const nextKept = prevKept.includes(partKey)
+      ? prevKept.filter((key) => key !== partKey)
+      : [...prevKept, partKey];
+    const nextInput: Submitted = { ...submitted, keptParts: nextKept };
     try {
       const nextOverrides = remapYOverrides(
         submitted.name,
-        { keepTitles: submitted.keepTitles },
-        { keepTitles: nextInput.keepTitles },
+        { keepParts: prevKept },
+        { keepParts: nextKept },
         overrides,
       );
       setError('');
@@ -440,18 +444,37 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
 
           {result?.nameEmptied && result.droppedParts.length === 0 && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
 
-          {result && result.droppedParts.length > 0 && (
-            <div class="notice" role="status">
-              <p>
-                {submitted?.keepTitles
-                  ? `Including ${listJoin(result.droppedParts.map((part) => `"${part}"`))} as part of your birth name.`
-                  : `Ignored ${listJoin(result.droppedParts.map((part) => `"${part}"`))} as a title or suffix. If it is part of your birth name, include it.`}
-              </p>
-              <button type="button" class="btn btn--ghost" onClick={toggleKeepTitles}>
-                {submitted?.keepTitles ? 'Ignore titles and suffixes' : 'Include in birth name'}
-              </button>
-            </div>
-          )}
+          {result && result.droppedParts.length > 0 && (() => {
+            const keptSet = new Set(submitted?.keptParts ?? []);
+            const keptList = result.droppedParts.filter((part) => keptSet.has(part.key));
+            const ignoredList = result.droppedParts.filter((part) => !keptSet.has(part.key));
+            return (
+              <div class="notice" role="status">
+                <p>
+                  {ignoredList.length > 0 && keptList.length > 0
+                    ? `Ignored ${listJoin(ignoredList.map((part) => `"${part.raw}"`))} as a title or suffix. Including ${listJoin(keptList.map((part) => `"${part.raw}"`))} as part of your birth name.`
+                    : keptList.length > 0
+                      ? `Including ${listJoin(keptList.map((part) => `"${part.raw}"`))} as part of your birth name.`
+                      : `Ignored ${listJoin(ignoredList.map((part) => `"${part.raw}"`))} as a title or suffix. If ${ignoredList.length === 1 ? 'it is' : 'any is'} part of your birth name, include it.`}
+                </p>
+                <div class="num__part-actions">
+                  {result.droppedParts.map((part) => {
+                    const isKept = keptSet.has(part.key);
+                    return (
+                      <button
+                        key={part.key}
+                        type="button"
+                        class="btn btn--ghost"
+                        onClick={() => toggleDroppedPart(part.key)}
+                      >
+                        {isKept ? `Ignore "${part.raw}"` : `Include "${part.raw}" in birth name`}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
 
           <div class="num__lead shell tinted" style={`--sign:${hueFor(lifePath.value)}`}>
             <div class="core tinted num__lead-core">

@@ -203,15 +203,26 @@ async function lunarReturn(input: unknown) {
 }
 
 async function numerology(input: unknown) {
-  const { birthDate, fullName, today } = fields(input, ['birthDate', 'fullName', 'today']);
+  const { birthDate, fullName, today, keepParts } = fields(input, ['birthDate', 'fullName', 'today', 'keepParts']);
   const date = need(readDate(birthDate));
   admitBirthDate(date);
   if (fullName !== undefined && (typeof fullName !== 'string' || characters(fullName) > 200)) {
     throw new Refusal('INVALID_INPUT');
   }
+  let kept: string[] | undefined;
+  if (keepParts !== undefined) {
+    if (
+      !Array.isArray(keepParts)
+      || keepParts.length > 10
+      || !keepParts.every((item) => typeof item === 'string' && characters(item) >= 1 && characters(item) <= 20)
+    ) {
+      throw new Refusal('INVALID_INPUT');
+    }
+    kept = keepParts as string[];
+  }
   const forDate = today === undefined ? localToday(new Date()) : need(readDate(today));
   try {
-    return numerologyResult(date, (fullName as string | undefined) ?? null, forDate);
+    return numerologyResult(date, (fullName as string | undefined) ?? null, forDate, kept);
   } catch (error) {
     if (error instanceof NumerologyInputError) {
       throw new Refusal(error.code === 'unsupported-letters' ? 'UNSUPPORTED_NAME' : 'INVALID_INPUT');

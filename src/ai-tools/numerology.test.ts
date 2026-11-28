@@ -120,7 +120,7 @@ describe('the numerology switch on', () => {
       'openai/outputTemplate': FEATURES_URI,
       'openai/ui': { entrypoints: [{ type: 'thread' }] },
     });
-    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone']);
+    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone', 'keepParts']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
     // Labelled as separate from astrology; work and wellbeing allowed as the tradition reads them, no money forecasts (ZOD-30), with the lines it may not cross.
     expect(tool.description).toContain('Numerology is a separate tradition from astrology');
@@ -151,6 +151,24 @@ describe('the numerology switch on', () => {
     expect(result.isError).toBe(false);
     expect(result.structuredContent.data.separateFromAstrology).toContain('not astrology');
     expect(JSON.stringify(result)).not.toMatch(/reading confidence/iu);
+  });
+
+  it('reproduces per-part title/suffix overrides via keepParts while keeping the default unchanged', async () => {
+    const host = await serveAt(ON);
+    // Default rejects "Sir" as empty once stripped, while keepParts: ["Sir"] counts it cleanly without echoing it.
+    const defaultSir = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir' });
+    expect(defaultSir.isError).toBe(true);
+    const keptSir = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir', keepParts: ['Sir'] });
+    expect(keptSir.isError).toBe(false);
+    expect(keptSir.structuredContent.data.expression.number).toBe(1);
+    expect(JSON.stringify(keptSir)).not.toMatch(/\bSir\b/u);
+    // Keeping only "Sir" in "Sir Example Jr." matches "Sir Example" (still dropping "Jr.").
+    const mixed = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir Example Jr.', keepParts: ['Sir'] });
+    const expected = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir Example', keepParts: ['Sir'] });
+    expect(mixed.isError).toBe(false);
+    expect(mixed.structuredContent.data.expression).toEqual(expected.structuredContent.data.expression);
+    expect(mixed.structuredContent.data.soulUrge).toEqual(expected.structuredContent.data.soulUrge);
+    expect(mixed.structuredContent.data.personality).toEqual(expected.structuredContent.data.personality);
   });
 
   it('with every released tool on, lists get_numerology after sky events, year score and solar return', async () => {

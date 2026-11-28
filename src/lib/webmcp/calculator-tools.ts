@@ -221,6 +221,12 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
       birthDate: DATE,
       fullName: { type: 'string', maxLength: 200, description: 'The full name at birth.' },
       today: { ...DATE, description: 'The date for the personal cycles, YYYY-MM-DD; omit for today.' },
+      keepParts: {
+        type: 'array',
+        maxItems: 10,
+        items: { type: 'string', minLength: 1, maxLength: 20 },
+        description: 'Specific title or suffix parts (such as "Sir" or "Miss") to count as part of the birth name instead of ignoring them.',
+      },
     }, ['birthDate']),
   },
   {

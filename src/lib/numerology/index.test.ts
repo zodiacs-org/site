@@ -648,12 +648,16 @@ describe('normalizeName', () => {
     expect(normalizeName('Mr Thomas Vance Sr')).toEqual(['THOMAS', 'VANCE']);
   });
 
-  it('reports dropped titles/suffixes and allows keeping them when genuinely part of a birth name', () => {
+  it('reports dropped titles/suffixes and allows keeping individual parts when genuinely part of a birth name', () => {
     expect(droppedNameParts('Sir John Smith Jr.')).toEqual(['Sir', 'Jr.']);
     expect(droppedNameParts('Ada Lovelace')).toEqual([]);
     expect(normalizeName('Sir John', { keepTitles: true })).toEqual(['SIR', 'JOHN']);
     expect(normalizeName('Sir', { keepTitles: true })).toEqual(['SIR']);
-    const kept = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir John', today: '2026-11-28', keepTitles: true });
+    expect(normalizeName('Sir', { keepParts: ['Sir'] })).toEqual(['SIR']);
+    // Keeping "Sir" in "Sir Example Jr." restores "Sir" while still dropping "Jr.".
+    expect(normalizeName('Sir Example Jr.', { keepParts: ['Sir'] })).toEqual(['SIR', 'EXAMPLE']);
+    expect(normalizeName('Sir Example Jr.', { keepParts: ['Jr.'] })).toEqual(['EXAMPLE', 'JR']);
+    const kept = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir John Jr.', today: '2026-11-28', keepParts: ['Sir'] });
     expect(kept.name!.parts.map((part) => part.letters)).toEqual(['SIR', 'JOHN']);
   });
 
