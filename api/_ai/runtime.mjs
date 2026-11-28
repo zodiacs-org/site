@@ -50881,7 +50881,7 @@ function registerSaveTool(server, dependencies, account) {
 var REVISION = /^\d{4}-\d{2}-\d{2}$/u;
 function revisions(data) {
   const supported = Array.isArray(data?.supported) ? data.supported.filter((value) => typeof value === "string" && REVISION.test(value)) : [];
-  return { supported, ...typeof data?.requested === "string" && REVISION.test(data.requested) ? { requested: data.requested } : {} };
+  return { supported };
 }
 function sanitizeProtocolMessage(message, refusal) {
   if (message.error) message.error = {
@@ -51255,7 +51255,7 @@ function createAiNodeHandler(options = {}) {
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
-        if (typeof message.method === "string" && !("id" in message)) {
+        if (message.jsonrpc === "2.0" && typeof message.method === "string" && !("id" in message)) {
           res.statusCode = 202;
           res.end();
           return;

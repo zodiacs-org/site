@@ -1,13 +1,12 @@
 const REVISION = /^\d{4}-\d{2}-\d{2}$/u;
 
 /**
- * An unsupported protocol version (-32022) keeps the revisions the server supports, a constant of the server that a
- * client needs to retry with one both sides speak, and the one it asked for when that is a revision date. Nothing
- * else from the request is repeated.
+ * An unsupported protocol version (-32022) keeps only the revisions the server supports, a constant of the server
+ * that a client needs to retry with one both sides speak. Nothing from the request is echoed.
  */
 function revisions(data: any) {
   const supported = Array.isArray(data?.supported) ? data.supported.filter((value: unknown) => typeof value === 'string' && REVISION.test(value)) : [];
-  return { supported, ...(typeof data?.requested === 'string' && REVISION.test(data.requested) ? { requested: data.requested } : {}) };
+  return { supported };
 }
 
 /** Remove SDK validation diagnostics that can echo input values or property names. */
