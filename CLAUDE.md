@@ -367,7 +367,7 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   og:image, twitter:image and the Article's image with one alt text. The v2
   `og/v2/thesis.png` stays published, in the v2 family, for links already
   shared)
-- `public/assets/og/v8/tool/{key}.jpg` (17 single page cards) ← `npm run
+- `public/assets/og/v8/tool/{key}.jpg` (28 single page cards) ← `npm run
   data:og -- --only-art-page-cards` (owner-delegated decisions, 2026-11-27:
   /birth-chart/ with its someone-else and three-dimensions pages, /today/,
   /rising-sign/, /big-three/, the /birthday/ hub, /tools/, the /learn/ hub
@@ -377,15 +377,25 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   the /horoscopes/ hub (the es and pt hubs too) and /numerology/, the three
   astrology cards with the thesis card's row of the twelve canonical sign
   discs above the kicker and the numerology card without it (numerology is a
-  separate tradition).
-  Their art: three generated photographs (Higgsfield; a crescent Moon, the
-  Venice clocktower's zodiac dial, a silver dial with a dark numbered ring) cut to 1200px
-  WebP in `public/assets/art/`, and the compatibility hub's two chart wheels,
-  `public/assets/art/compatibility-wheels-1200.webp` ← `npx vite-node --script
-  scripts/build-compatibility-wheels-art.ts` (the real `Wheel.tsx` with the
-  published People charts of Charles and Ray Eames, Chromium output,
-  so not in the drift job; rerun it when the wheel or those charts change,
-  then redraw the cards). One
+  separate tradition); and, owner-approved mockups of 2026-11-28 (the third
+  round, each with the same row of discs): /moon-phase/, /full-moon-calendar/
+  and /eclipses/ (each with its 2027 page), /retrogrades/, /solar-return/,
+  /lunar-return/, /your-sky-wrapped/, /learn/how-to-read-a-birth-chart/,
+  /occasions/, /chart-of-the-day/ (its dated editions too) and /group-charts/.
+  Their art: twelve generated photographs (Higgsfield; a crescent Moon, the
+  Venice clocktower's zodiac dial, a silver dial with a dark numbered ring,
+  and for the third round the Moon's phases along an arc, a full Moon, a
+  retrograde loop against the stars, a total solar eclipse, the Sun's limb in
+  violet light, a Moon rising from the sea, Jupiter and Saturn, a star atlas
+  under a loupe and a crescent Moon with the evening star) cut to 1200px WebP
+  in `public/assets/art/`, and three pictures of the site's own chart wheels
+  (the compatibility hub's two, the chart of the day's one and the group
+  charts' five: `compatibility-wheels-1200.webp`,
+  `chart-of-the-day-wheel-1200.webp`, `group-charts-wheels-1200.webp`) ←
+  `npx vite-node --script scripts/build-wheel-art.ts` (the real `Wheel.tsx`
+  with published People charts, named in the script, never on the cards;
+  Chromium output, so not in the drift job; rerun it when the wheel or those
+  charts change, then redraw the cards). One
   template, `artPageLayout` in `build-og-void.mjs`: the page's own painting on
   the right, a small accent in the sign hues or the canonical discs, kicker,
   two-line headline and line; every card's art, accent, words and alt text
@@ -414,7 +424,8 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   output); `verify-og-cards` checks each family, its folder and its ceiling.
   The v2 `og/v2/tool/*.png` and `og/v2/pair/*.png` cards stay published and
   verified, byte for byte, for links already shared, and the pages not in
-  this round (moon sign, eclipses, the learn guides that borrow its card and
+  these rounds (the learn guides that borrow the learn card, the moon journal
+  and the retrogrades for-you page that borrow theirs, the Russian pages and
   the rest) keep their current cards
 - `public/assets/og/year-sky/v1/2027.jpg` ← `npm run data:og -- --only-year-sky-card`
   (the share card for /your-2027-sky/; words in `OG_EN.yearSky`. Not in the
