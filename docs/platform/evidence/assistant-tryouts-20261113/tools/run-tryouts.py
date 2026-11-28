@@ -2,18 +2,26 @@
 """Asks each question once, in a new conversation, with the Zodiacs tools on offer, and records the tools the model
 calls in its first turn. Nothing is scored here; see score.py.
 
-  run-tryouts.py --provider openai --model gpt-6.1-sol --tools raw/live --out runs/live.gpt-6.1-sol.jsonl [--forward]
   run-tryouts.py --provider claude --model claude-sonnet-5-5 --tools raw/live --out runs/live.claude-sonnet-5-5.jsonl [--forward]
 
 --tools is a folder with tools-list.json and initialize.json (a saved tools/list and initialize result).
 --forward sends each call the model makes on to the live connector, read-only, and records how it answered.
-openai: the Responses API, each tool offered as a function with its name, description and input schema.
+openai: no longer runs. The owner has not approved OpenAI API spend (ZOD-207); the OpenAI runs recorded in runs/
+are kept as evidence, and `--provider openai` stops (exit 1) before any request is made.
 claude: `claude -p` (Claude Code, headless) with no built-in tools, its system prompt replaced, and the tools served
 by tools/stub-mcp.mjs over MCP. The first turn only (--max-turns 1).
-Both get the same system prompt: one line that sets the scene, the date, and the connector's own instructions.
-The OpenAI key is read from OPENAI_API_KEY; Claude uses the machine's signed-in Claude Code. No key is written anywhere.
+The system prompt is one line that sets the scene, the date, and the connector's own instructions.
+Claude uses the machine's signed-in Claude Code. No key is read or written here. Its environment is built from an
+allowlist of names (CHILD_ENV below); no other variable, key or OPENAI_* value is read or passed on. Gateways are not
+supported: ANTHROPIC_BASE_URL may be set only to an https URL on the host api.anthropic.com (it is passed on then);
+anything else stops the run (exit 1) before any request. Claude Code also reads its managed settings whatever
+--setting-sources says (managed-settings.json and every *.json in managed-settings.d, under /etc/claude-code and, on
+macOS, /Library/Application Support/ClaudeCode), so the run stops too if any of them sets an ANTHROPIC_BASE_URL that is
+not https on api.anthropic.com, or cannot be read. A --provider value containing "openai" (also as --provider=...,
+or under an abbreviated flag starting --prov) stops the run before argparse, and flags must be spelled in full.
 """
-import argparse, json, os, subprocess, sys, tempfile, time, urllib.request, urllib.error
+import argparse, json, os, subprocess, sys, tempfile, time
+from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -25,44 +33,20 @@ def system_prompt(instructions):
             f"so its tools are available to you. Use a tool when it helps answer; answer directly when no tool fits.\n\n"
             f"Zodiacs connector instructions: {instructions}")
 
+OPENAI_REFUSAL = ('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207). '
+                  'Use the recorded runs in runs/ instead.')
+
 class LimitStop(Exception): pass
 
-def post(url, body, headers, timeout=180):
-    request = urllib.request.Request(url, data=json.dumps(body).encode(), headers={'Content-Type': 'application/json', **headers})
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return response.status, response.read().decode(), response.headers.get('content-type', '')
-    except urllib.error.HTTPError as error:
-        return error.code, error.read().decode(), error.headers.get('content-type', '')
+# The only variables the claude child sees. Values are read for these names only.
+CHILD_ENV = ('PATH', 'HOME', 'LANG', 'LC_ALL', 'TERM', 'TMPDIR', 'USER', 'CLAUDE_CONFIG_DIR')
 
-def live_call(name, arguments):
-    status, text, kind = post(LIVE, {'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call', 'params': {'name': name, 'arguments': arguments}},
-                              {'Accept': 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18'})
-    try:
-        body = json.loads(next(line for line in text.split('\n') if line.startswith('data: '))[6:] if 'event-stream' in kind else text)
-        result = body.get('result') or {}
-        structured = result.get('structuredContent') or {}
-        return {'status': status, 'isError': result.get('isError', 'error' in body), 'ok': structured.get('ok'),
-                'error': (body.get('error') or {}).get('message') or (structured.get('error') or {}).get('code')}
-    except Exception as error:
-        return {'status': status, 'failed': str(error)[:200]}
-
-def ask_openai(args, tools, system, question):
-    body = {'model': args.model, 'instructions': system, 'input': question['question'], 'store': False,
-            'tools': [{'type': 'function', 'name': t['name'], 'description': t['description'], 'parameters': t['inputSchema'], 'strict': False} for t in tools]}
-    for attempt in range(4):
-        status, text, _ = post('https://api.openai.com/v1/responses', body, {'Authorization': f"Bearer {os.environ['OPENAI_API_KEY']}"})
-        if status == 200: break
-        if status == 429 and 'insufficient_quota' in text: raise LimitStop(text[:300])
-        time.sleep(5 * (attempt + 1))
-    else:
-        return {'error': f'HTTP {status}: {text[:300]}'}
-    reply = json.loads(text)
-    calls = [{'name': item['name'], 'arguments': json.loads(item.get('arguments') or '{}')} for item in reply['output'] if item['type'] == 'function_call']
-    said = ''.join(part.get('text', '') for item in reply['output'] if item['type'] == 'message' for part in item.get('content', []))
-    if args.forward:
-        for call in calls: call['live'] = live_call(call['name'], call['arguments'])
-    return {'modelReported': reply.get('model'), 'calls': calls, 'text': said[:600]}
+def child_environment():
+    environment = {name: os.environ[name] for name in CHILD_ENV if name in os.environ}
+    # Only reached after refuse_gateway(): if set, it is https on api.anthropic.com.
+    if 'ANTHROPIC_BASE_URL' in os.environ: environment['ANTHROPIC_BASE_URL'] = os.environ['ANTHROPIC_BASE_URL']
+    environment['ENABLE_TOOL_SEARCH'] = 'false'
+    return environment
 
 def ask_claude(args, tools_file, system, question):
     with tempfile.TemporaryDirectory() as work:
@@ -72,9 +56,7 @@ def ask_claude(args, tools_file, system, question):
         command = ['claude', '-p', question['question'], '--model', args.model, '--system-prompt', system, '--mcp-config', json.dumps(config),
                    '--strict-mcp-config', '--tools', '', '--max-turns', '1', '--output-format', 'stream-json', '--verbose',
                    '--permission-mode', 'bypassPermissions', '--setting-sources', '']
-        environment = {k: v for k, v in os.environ.items() if k != 'ANTHROPIC_API_KEY'}
-        environment['ENABLE_TOOL_SEARCH'] = 'false'
-        done = subprocess.run(command, cwd=work, env=environment, capture_output=True, text=True, timeout=300)
+        done = subprocess.run(command, cwd=work, env=child_environment(), capture_output=True, text=True, timeout=300)
         out = done.stdout
         if 'model_requires_usage_credits' in out or '"api_error_status":429' in out.replace(' ', ''):
             raise LimitStop(out[-600:])
@@ -97,8 +79,74 @@ def ask_claude(args, tools_file, system, question):
             for call, record in zip(calls, live): call['live'] = record.get('live')
         return {'modelReported': model, 'toolsOffered': offered, 'otherTools': other, 'calls': calls, 'text': text[:600]}
 
+def refuse_openai(argv):
+    # Runs before argparse. Any --provider value naming openai exits 1, whether given as --provider X or
+    # --provider=X, or under any token starting --prov (an abbreviation attempt; argparse rejects those anyway).
+    # Other arguments, paths included, may contain "openai".
+    for i, arg in enumerate(argv):
+        if not arg.startswith('--prov'): continue
+        if '=' in arg: value = arg.split('=', 1)[1]
+        else: value = argv[i + 1] if i + 1 < len(argv) else ''
+        if 'openai' in value.lower():
+            print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
+
+def is_anthropic_url(value):
+    # True only for an https URL whose hostname is exactly api.anthropic.com.
+    if not isinstance(value, str): return False
+    try:
+        url = urlparse(value)
+        url.port  # raises ValueError on a malformed port
+        return url.scheme == 'https' and url.hostname == 'api.anthropic.com'
+    except ValueError:
+        return False
+
+def refuse_gateway():
+    # Gateways are not supported: Claude Code is only ever pointed at its default host. The value is never printed.
+    if 'ANTHROPIC_BASE_URL' in os.environ and not is_anthropic_url(os.environ['ANTHROPIC_BASE_URL']):
+        print('ANTHROPIC_BASE_URL is not https on api.anthropic.com; unset it. '
+              'Gateways are not supported by this runner (ZOD-207).', file=sys.stderr); sys.exit(1)
+
+# Claude Code loads these even with --setting-sources ''.
+MANAGED_ROOTS_LINUX = ('/etc/claude-code',)
+MANAGED_ROOTS_MACOS = ('/etc/claude-code', '/Library/Application Support/ClaudeCode')
+
+def managed_settings_files(roots):
+    # managed-settings.json, then every *.json in managed-settings.d, under each root. Listing only, no reads.
+    files = []
+    for root in roots:
+        files.append(os.path.join(root, 'managed-settings.json'))
+        drop_ins = os.path.join(root, 'managed-settings.d')
+        if os.path.isdir(drop_ins):
+            files += sorted(os.path.join(drop_ins, name) for name in os.listdir(drop_ins) if name.endswith('.json'))
+    return [path for path in files if os.path.exists(path)]
+
+def refuse_managed_gateway(roots=None):
+    # roots is for tests only; by default the platform's real managed settings locations are checked.
+    # Only the check's result and the file path are ever printed, never a value from a file.
+    if roots is None: roots = MANAGED_ROOTS_MACOS if sys.platform == 'darwin' else MANAGED_ROOTS_LINUX
+    try:
+        paths = managed_settings_files(roots)
+    except OSError:
+        print('The managed settings folders could not be listed; the run stops (ZOD-207).', file=sys.stderr); sys.exit(1)
+    for path in paths:
+        try:
+            with open(path) as f: settings = json.load(f)
+            if not isinstance(settings, dict): raise ValueError
+            env = settings.get('env')
+            if env is None: env = {}
+            if not isinstance(env, dict): raise ValueError
+            ok = 'ANTHROPIC_BASE_URL' not in env or is_anthropic_url(env['ANTHROPIC_BASE_URL'])
+        except Exception:
+            print(f'{path} could not be read as settings; the run stops (ZOD-207).', file=sys.stderr); sys.exit(1)
+        if not ok:
+            print(f'{path} sets ANTHROPIC_BASE_URL to something other than https on api.anthropic.com. '
+                  'Gateways are not supported by this runner (ZOD-207).', file=sys.stderr); sys.exit(1)
+
 def main():
-    parser = argparse.ArgumentParser()
+    refuse_openai(sys.argv[1:])
+    refuse_gateway()
+    refuse_managed_gateway()
+    parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument('--provider', required=True, choices=['openai', 'claude'])
     parser.add_argument('--model', required=True)
     parser.add_argument('--tools', required=True)
@@ -109,6 +157,7 @@ def main():
     parser.add_argument('--only', default='')
     parser.add_argument('--without-instructions', action='store_true', help='leave the connector instructions out of the system prompt')
     args = parser.parse_args()
+    if args.provider == 'openai': print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
     tools_file = os.path.abspath(os.path.join(args.tools, 'tools-list.json'))
     tools = json.load(open(tools_file))['tools']
     system = system_prompt(json.load(open(os.path.join(args.tools, 'initialize.json')))['instructions'])
@@ -119,7 +168,7 @@ def main():
     todo = [q for q in questions if q['id'] not in done]
     def one(question):
         try:
-            result = ask_openai(args, tools, system, question) if args.provider == 'openai' else ask_claude(args, tools_file, system, question)
+            result = ask_claude(args, tools_file, system, question)
         except LimitStop: raise
         except Exception as error: result = {'error': str(error)[:300]}
         return {'id': question['id'], 'question': question['question'], 'provider': args.provider, 'model': args.model,

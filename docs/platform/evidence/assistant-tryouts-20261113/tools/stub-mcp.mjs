@@ -3,6 +3,8 @@
 // and records every tools/call. With FORWARD set it passes the call on to that MCP endpoint (the live connector,
 // read-only) and returns its answer; without it, it answers that the call was recorded.
 // Usage: TOOLS=tools-list.json LOG=calls.jsonl [FORWARD=https://zodiacs.org/mcp] node stub-mcp.mjs
+// FORWARD must be https on the host zodiacs.org; any other target is refused before sending, and redirects are
+// refused too (ZOD-207).
 import { readFileSync, appendFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 
@@ -10,8 +12,18 @@ const tools = JSON.parse(readFileSync(process.env.TOOLS, 'utf8')).tools
   .map(({ name, title, description, inputSchema, annotations }) => ({ name, title, description, inputSchema, annotations }));
 const send = (message) => process.stdout.write(JSON.stringify(message) + '\n');
 
+const FORWARD_HOSTS = new Set(['zodiacs.org']);
+
+async function guardedFetch(target, init) {
+  const url = new URL(target);
+  if (url.protocol !== 'https:' || url.port || url.username || url.password || !FORWARD_HOSTS.has(url.hostname)) {
+    throw new Error(`Refusing to forward to ${url.protocol}//${url.host}: only https to ${[...FORWARD_HOSTS].join(', ')} is allowed (ZOD-207)`);
+  }
+  return fetch(url, { ...init, redirect: 'error' });
+}
+
 async function forward(params) {
-  const response = await fetch(process.env.FORWARD, { method: 'POST',
+  const response = await guardedFetch(process.env.FORWARD, { method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params }) });
   const text = await response.text();
