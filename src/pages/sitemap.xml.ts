@@ -873,6 +873,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // This PR's Origin and Host rules on the MCP developer page remain after
   // main's 27 November engine 3.0.0 lastmod, so the sitemap date must be later.
   ['/developers/mcp/', '2026-11-28'] as const,
+  // npm serves engine 3.0.0 under latest (registry read 2026-11-28), and MCP adapter 0.1.0-rc.31 labels it
+  // published: the pages that state the engine's release status or the adapter's version, and the guides,
+  // whose header names the release status, last so they win.
+  ...['/developers/', '/developers/engine/', '/developers/mcp/', '/developers/support/', ...DEVELOPER_GUIDES_ROUTES].map(
+    (loc) => [loc, '2026-11-28'] as const,
+  ),
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
   ['/app/privacy/', '2026-11-22'] as const,
   ['/support/', '2026-11-22'] as const,
