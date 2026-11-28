@@ -322,6 +322,11 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 6, title: 'Numerology', promise: 'Life Path and more, with every step shown.', group: 'you' },
   },
   {
+    // Tarot is a separate practice from astrology; the promise says so.
+    href: '/tarot/', flag: 'PUBLIC_TAROT_ENABLED',
+    hub: { order: 6.5, title: 'Tarot', promise: 'A card or a full spread, apart from astrology.', group: 'you' },
+  },
+  {
     href: '/horoscopes/',
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },
@@ -378,8 +383,8 @@ interface NavMoreEntry { href: string; label: Record<Locale, string>; flag?: Lau
 
 /**
  * Newer sharing and return-visit tools, listed under the main eight in the
- * Tools menu with short labels. Every one has a route in all six catalog
- * locales; the Chinese zodiac section links their English pages.
+ * Tools menu with short labels. Entries behind a launch switch stay hidden
+ * until their switch is '1'.
  */
 export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
@@ -397,6 +402,7 @@ export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/retrogrades/for-you/', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', label: { en: 'Retrogrades for you', es: 'Tus retrógrados', pt: 'Seus retrógrados', fr: 'Tes rétrogrades', it: 'I tuoi retrogradi', ru: 'Ваши ретрограды', 'zh-hans': '你的逆行', 'zh-hant': '你的逆行' } },
   { href: '/astrocartography/', flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', label: { en: 'Astrocartography map', es: 'Mapa de astrocartografía', pt: 'Mapa de astrocartografia', fr: 'Carte d’astrocartographie', it: 'Mappa di astrocartografia', ru: 'Астрокартография', 'zh-hans': '占星地图', 'zh-hant': '占星地圖' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
+  { href: '/tarot/', flag: 'PUBLIC_TAROT_ENABLED', label: { en: 'Tarot', es: 'Tarot', pt: 'Tarô', fr: 'Tarot', it: 'Tarocchi', ru: 'Таро', 'zh-hans': '塔罗抽牌', 'zh-hant': '塔羅抽牌' } },
 ];
 /** The menu a build shows: an entry behind a switch that is off is left out. */
 export const visibleNavMore = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn) => ALL_NAV_MORE.filter((entry) => !entry.flag || isOn(entry.flag));

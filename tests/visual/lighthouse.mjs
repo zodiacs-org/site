@@ -24,6 +24,8 @@ const routes = [
   { name: 'lunar-return', path: '/lunar-return/' },
   { name: 'numerology', path: '/numerology/' },
   { name: 'life-path-7', path: '/numerology/life-path/7/' },
+  // The tarot draw is built only while PUBLIC_TAROT_ENABLED is on (src/lib/launch-flags.ts).
+  ...(process.env.PUBLIC_TAROT_ENABLED === '1' ? [{ name: 'tarot', path: '/tarot/' }] : []),
   { name: 'void-of-course-moon', path: '/void-of-course-moon/' },
   { name: 'aries', path: '/aries/' },
   { name: 'thesis', path: '/thesis/' },

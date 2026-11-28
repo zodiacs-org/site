@@ -730,6 +730,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The Year Ahead Score calculator, published 2026-11-09.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', '2026-11-09'] as const] : []),
   ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', '2026-11-09'] as const] : []),
+  // The tarot draw, first published 2026-11-10. Only while PUBLIC_TAROT_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [['/tarot/', '2026-11-10'] as const] : []),
   ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
   ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
   // Your 2027 sky's eclipse lines read the full longitude, so 1°59′ Virgo prints 1°, not 2° (every language).
@@ -922,6 +924,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/lunar-return/', priority: 0.85 },
     ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [{ loc: '/vedic-signs/', priority: 0.85 }] : []),
     { loc: '/numerology/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [{ loc: '/tarot/', priority: 0.8 }] : []),
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
     ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [{ loc: '/birthday-report/', priority: 0.8 }] : []),
