@@ -47,7 +47,7 @@ const sets = receipt ? [
         )}. NASA's answers name <code>{receipt.source.ephemeris}</code> as their source.
       </p>
       <p>
-        The suite compares our positions with <a href={`${receipt.source.repository}/tree/${receipt.source.commit}/conformance`}>NASA's recorded positions</a>
+        The suite compares our positions with <a href={`${receipt.source.repository}/tree/${receipt.source.commit}/conformance`}>NASA's recorded positions</a>{' '}
         carried into <code>{receipt.frames.suite}</code>. The rolling check uses midnight Terrestrial Time on the
         first of each coming month and compares directly with <a href={receipt.source.horizons}>Horizons</a> in its{' '}
         <code>{receipt.frames.rolling}</code> frame. The rolling differences include the change of frame.

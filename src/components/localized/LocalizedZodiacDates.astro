@@ -111,7 +111,7 @@ const when = (iso: string) => `${dayMonth(locale, iso)}, ${utcClock(iso)}`;
       <h2>{c.explainerHeading}</h2>
       {c.explainer.map((paragraph) => <p>{paragraph}</p>)}
       <p>
-        <a href={calculator.href} hreflang={calculator.english ? 'en' : undefined}>{c.calculatorLink}</a> ·
+        <a href={calculator.href} hreflang={calculator.english ? 'en' : undefined}>{c.calculatorLink}</a> ·{' '}
         <a href={method.href} hreflang={method.english ? 'en' : undefined}>{c.methodLink}</a>
       </p>
     </section>
