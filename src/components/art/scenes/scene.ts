@@ -102,4 +102,18 @@ export function glow(ctx: CanvasRenderingContext2D, x: number, y: number, radius
   ctx.fill();
 }
 
+/** A glow with a bright centre and a long, gentle falloff (no hard rim). */
+export function softGlow(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, colour: string, alpha: number): void {
+  if (radius <= 0 || alpha <= 0) return;
+  const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  gradient.addColorStop(0, `rgba(${colour},${alpha})`);
+  gradient.addColorStop(0.18, `rgba(${colour},${alpha * 0.55})`);
+  gradient.addColorStop(0.45, `rgba(${colour},${alpha * 0.18})`);
+  gradient.addColorStop(1, `rgba(${colour},0)`);
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, TAU);
+  ctx.fill();
+}
+
 export { TAU };

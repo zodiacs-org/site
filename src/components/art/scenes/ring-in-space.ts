@@ -7,14 +7,14 @@
  * scale and alpha: the back half first and faint, the front half last.
  */
 import { SIGNS } from '../../../lib/signs';
-import { drawStars, glow, makeStars, rgb, TAU, type Scene } from './scene';
+import { drawStars, glow, makeStars, rgb, softGlow, TAU, type Scene } from './scene';
 
 const CX = 200;
 const CY = 120;
 const KY = 0.44;
 const R = 112;
 const HUES = SIGNS.map((sign) => rgb(sign.hue));
-const STARS = makeStars(7, 170);
+const STARS = makeStars(7, 210);
 const TURN = TAU / 140;
 
 interface Projected { x: number; y: number; p: number; z: number }
@@ -72,9 +72,9 @@ function beads(ctx: CanvasRenderingContext2D, turn: number, front: boolean, icon
     const angle = turn + ((index * 30 + 15) * Math.PI) / 180;
     const q = project(angle, R, KY);
     if ((q.z >= 0) !== front) continue;
-    const size = (front ? 21 : 15) * q.p;
+    const size = (front ? 21 : 17) * q.p;
     // The arc in this sign's hue, on to the next bead.
-    ctx.strokeStyle = `rgba(${HUES[index]},${front ? 0.9 : 0.3})`;
+    ctx.strokeStyle = `rgba(${HUES[index]},${front ? 0.9 : 0.36})`;
     ctx.lineWidth = (front ? 2.2 : 1.2) * q.p;
     ctx.lineCap = 'round';
     ctx.beginPath();
@@ -88,7 +88,7 @@ function beads(ctx: CanvasRenderingContext2D, turn: number, front: boolean, icon
     if (front) glow(ctx, q.x, q.y, size * 1.25, HUES[index], 0.32);
     const icon = icons[index];
     if (icon?.complete && icon.naturalWidth) {
-      ctx.globalAlpha = front ? 1 : 0.42;
+      ctx.globalAlpha = front ? 1 : 0.62;
       ctx.drawImage(icon, q.x - size / 2, q.y - size / 2, size, size);
       ctx.globalAlpha = 1;
     }
@@ -108,7 +108,15 @@ const scene: Scene = {
   images: SIGNS.map((sign) => `/assets/zodiac-icons/128/${sign.slug}.webp`),
   draw(ctx, t, view, { images, palette }) {
     const { ink, line } = palette;
-    drawStars(ctx, STARS, t, view, ink, [HUES[6], HUES[3]]);
+    // Stars thin out towards the box's edges, so the field dissolves into
+    // the panel under the stylesheet's mask with no edge of its own.
+    const edge = (x: number, y: number) => {
+      const dx = (x - (view.x0 + view.w / 2)) / (view.w / 2);
+      const dy = (y - (view.y0 + view.h / 2)) / (view.h / 2);
+      const reach = Math.hypot(dx, dy);
+      return reach < 0.55 ? 1 : Math.max(0, 1 - (reach - 0.55) / 0.4);
+    };
+    drawStars(ctx, STARS, t, view, ink, [HUES[6], HUES[3]], edge);
     const turn = t * TURN;
     glow(ctx, CX, CY, 120, HUES[7], 0.08);
 
@@ -119,11 +127,12 @@ const scene: Scene = {
     beads(ctx, turn, false, images);
 
     for (const { radius, ky, rot } of ORBITS) orbit(ctx, radius, ky, rot, false, 0.2, 0.6, line);
-    glow(ctx, CX, CY, 44, HUES[3], 0.42);
-    glow(ctx, CX, CY, 13, ink, 0.9);
+    // The centre: a wide, faint halo and a small, tight core.
+    softGlow(ctx, CX, CY, 46, HUES[3], 0.2);
+    softGlow(ctx, CX, CY, 11, ink, 0.75);
     ctx.fillStyle = `rgb(${ink})`;
     ctx.beginPath();
-    ctx.arc(CX, CY, 3.4, 0, TAU);
+    ctx.arc(CX, CY, 2.6, 0, TAU);
     ctx.fill();
 
     for (const { radius, ky, rot, speed, hues, places } of ORBITS) {
