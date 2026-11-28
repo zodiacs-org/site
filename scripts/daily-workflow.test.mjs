@@ -33,6 +33,17 @@ describe('daily publication operations', () => {
     expect(workflow).toContain('git push origin "HEAD:$DEFAULT_BRANCH"');
   });
 
+  it('opens the monthly horoscope reminder whether or not new transit data was committed', async () => {
+    // The transit files run years ahead, so the monthly run commits nothing; a reminder gated on that commit
+    // did not open for December 2026, and the freshness gate fails every deploy when a month starts empty.
+    const workflow = await read('.github/workflows/transits-monthly.yml');
+    const step = workflow.slice(workflow.indexOf('- name: Open the horoscope reminder issue'));
+    expect(step).toContain('gh issue create');
+    expect(step).not.toMatch(/\n\s+if:/);
+    expect(workflow).not.toContain("if: steps.commit.outputs.committed == 'true'");
+    expect(step).toContain('src/content/horoscopes');
+  });
+
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {
     const [daily, snapshot, transits, seasonClose, weeklyRecap, pulse, publisher, signPages] = await Promise.all([
       read('.github/workflows/daily-horoscopes.yml'),
