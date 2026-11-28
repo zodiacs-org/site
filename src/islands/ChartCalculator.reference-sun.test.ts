@@ -79,6 +79,7 @@ describe('reference Sun downstream interpretation', () => {
         AUTO_NAME_SUN: { en: 'Sun', es: 'Sol', fr: 'Soleil', it: 'Sole', pt: 'Sol' } },
     ) as string[];
     expect(leo).toContain('Солнце во Льве · 2024-08-05');
+    // The earlier «в Льве» spelling is only recognized on saved names, never written (see the test below).
     expect(leo).toContain('Солнце в Льве · 2024-08-05');
     // Share links cap names at NAME_MAX, so the capped spellings are automatic too.
     expect(russian).toContain('Солнце в Близнецах · 2024-06-05'.slice(0, NAME_MAX).trim());
@@ -88,6 +89,21 @@ describe('reference Sun downstream interpretation', () => {
       'Gemini Sun · 2024-06-05', 'Géminis Sol · 2024-06-05', 'Gêmeos Sol · 2024-06-05',
       'Gémeaux Soleil · 2024-06-05', 'Gemelli Sole · 2024-06-05',
     ]);
+  });
+
+  it('writes «во Льве» in the Russian automatic name, never «в Льве», and «во» before no other sign', () => {
+    const code = ['referenceName', 'autoName'].map(name => `const ${declarations.get(name)!.getText(ast)};`).join('\n');
+    for (const [index, slug] of ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'].entries()) {
+      const sunSign = signForLongitude(index * 30 + 15);
+      expect(sunSign.slug).toBe(slug);
+      const name = evaluate(code + '\nreturn autoName;', { locale: 'ru', t, sunSign, signName, signPrepositional, signInRu, date: '2024-08-05',
+        computedInput: { date: '2024-08-05', timeKnown: true }, russianCopy: RUSSIAN_RUNTIME,
+        AUTO_NAME_SUN: { en: 'Sun', es: 'Sol', fr: 'Soleil', it: 'Sole', pt: 'Sol' } }) as string;
+      expect(name).toBe(`Солнце ${signInRu(sunSign)} · 2024-08-05`);
+      expect(name).not.toMatch(/(?:^|[^\p{L}])в Льве/u);
+      if (slug === 'leo') expect(name).toBe('Солнце во Льве · 2024-08-05');
+      else expect(name).toMatch(/^Солнце в [^\s]+ · /u);
+    }
   });
 
   it('recognizes automatic reference names without requesting another client catalog', () => {

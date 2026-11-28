@@ -1,4 +1,5 @@
 import type { Sign } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 
 export interface RussianGuide {
   sign: string;
@@ -12,7 +13,6 @@ export interface RussianGuide {
 interface Profile {
   name: string;
   genitive: string;
-  prepositional: string;
   plural: boolean;
   dates: string;
   elementMode: string;
@@ -44,7 +44,6 @@ const PROFILES: Record<string, Profile> = {
   aries: {
     name: 'Овен',
     genitive: 'Овна',
-    prepositional: 'Овне',
     plural: false,
     dates: 'с 21 мар по 19 апр',
     elementMode: 'кардинальный знак огня',
@@ -71,7 +70,6 @@ const PROFILES: Record<string, Profile> = {
   taurus: {
     name: 'Телец',
     genitive: 'Тельца',
-    prepositional: 'Тельце',
     plural: false,
     dates: 'с 20 апр по 20 мая',
     elementMode: 'фиксированный знак земли',
@@ -98,7 +96,6 @@ const PROFILES: Record<string, Profile> = {
   gemini: {
     name: 'Близнецы',
     genitive: 'Близнецов',
-    prepositional: 'Близнецах',
     plural: true,
     dates: 'с 21 мая по 20 июн',
     elementMode: 'мутабельный знак воздуха',
@@ -125,7 +122,6 @@ const PROFILES: Record<string, Profile> = {
   cancer: {
     name: 'Рак',
     genitive: 'Рака',
-    prepositional: 'Раке',
     plural: false,
     dates: 'с 21 июн по 22 июл',
     elementMode: 'кардинальный знак воды',
@@ -152,7 +148,6 @@ const PROFILES: Record<string, Profile> = {
   leo: {
     name: 'Лев',
     genitive: 'Льва',
-    prepositional: 'Льве',
     plural: false,
     dates: 'с 23 июл по 22 авг',
     elementMode: 'фиксированный знак огня',
@@ -179,7 +174,6 @@ const PROFILES: Record<string, Profile> = {
   virgo: {
     name: 'Дева',
     genitive: 'Девы',
-    prepositional: 'Деве',
     plural: false,
     dates: 'с 23 авг по 22 сен',
     elementMode: 'мутабельный знак земли',
@@ -206,7 +200,6 @@ const PROFILES: Record<string, Profile> = {
   libra: {
     name: 'Весы',
     genitive: 'Весов',
-    prepositional: 'Весах',
     plural: true,
     dates: 'с 23 сен по 22 окт',
     elementMode: 'кардинальный знак воздуха',
@@ -233,7 +226,6 @@ const PROFILES: Record<string, Profile> = {
   scorpio: {
     name: 'Скорпион',
     genitive: 'Скорпиона',
-    prepositional: 'Скорпионе',
     plural: false,
     dates: 'с 23 окт по 21 ноя',
     elementMode: 'фиксированный знак воды',
@@ -260,7 +252,6 @@ const PROFILES: Record<string, Profile> = {
   sagittarius: {
     name: 'Стрелец',
     genitive: 'Стрельца',
-    prepositional: 'Стрельце',
     plural: false,
     dates: 'с 22 ноя по 21 дек',
     elementMode: 'мутабельный знак огня',
@@ -287,7 +278,6 @@ const PROFILES: Record<string, Profile> = {
   capricorn: {
     name: 'Козерог',
     genitive: 'Козерога',
-    prepositional: 'Козероге',
     plural: false,
     dates: 'с 22 дек по 19 янв',
     elementMode: 'кардинальный знак земли',
@@ -314,7 +304,6 @@ const PROFILES: Record<string, Profile> = {
   aquarius: {
     name: 'Водолей',
     genitive: 'Водолея',
-    prepositional: 'Водолее',
     plural: false,
     dates: 'с 20 янв по 18 фев',
     elementMode: 'фиксированный знак воздуха',
@@ -341,7 +330,6 @@ const PROFILES: Record<string, Profile> = {
   pisces: {
     name: 'Рыбы',
     genitive: 'Рыб',
-    prepositional: 'Рыбах',
     plural: true,
     dates: 'с 19 фев по 20 мар',
     elementMode: 'мутабельный знак воды',
@@ -371,6 +359,8 @@ function buildGuide(slug: string, p: Profile): RussianGuide {
   const seek = p.plural ? 'ищут' : 'ищет';
   const can = p.plural ? 'могут' : 'может';
   const say = p.plural ? 'говорят' : 'говорит';
+  /** «в Овне», «во Льве». */
+  const inSign = signInRu(slug);
   const intro = [
     `${p.name}: ${p.core}. Это ${p.elementMode}; управитель — ${p.ruler}. Такое сочетание описывает один из возможных ритмов, а не готовый характер человека.`,
     `Положение ${p.genitive} в натальной карте показывает область, где вы можете ${p.strength}. Эта способность становится точнее, когда остаётся осознанным выбором, а не автоматической реакцией.`,
@@ -424,8 +414,8 @@ function buildGuide(slug: string, p: Profile): RussianGuide {
       heading: `${p.name} в положениях карты`,
       risingProfile: true,
       body: [
-        `Солнце в ${p.prepositional} описывает ${p.sun}. Луна в ${p.prepositional} показывает ${p.moon}. Асцендент в ${p.prepositional} даёт миру первое впечатление: ${p.rising}.`,
-        `Венера в ${p.prepositional} описывает ${p.venus}. Марс в ${p.prepositional} описывает ${p.mars}. Эти положения иногда объясняют, почему человек не узнаёт себя в привычном портрете солнечного знака.`,
+        `Солнце ${inSign} описывает ${p.sun}. Луна ${inSign} показывает ${p.moon}. Асцендент ${inSign} даёт миру первое впечатление: ${p.rising}.`,
+        `Венера ${inSign} описывает ${p.venus}. Марс ${inSign} описывает ${p.mars}. Эти положения иногда объясняют, почему человек не узнаёт себя в привычном портрете солнечного знака.`,
         `Область карты со знаком ${p.name} указывает на ${p.house}. Полная натальная карта с временем и местом рождения покажет, относится ли это к личности, отношениям, работе, семье или внутренней жизни.`,
         `Даты ${p.genitive} обычно приходятся на период ${p.dates}, но Солнце переходит в знак не в один и тот же час каждый год. Рядом с границей точный ответ даёт расчёт по данным рождения.`,
       ],
