@@ -166,6 +166,19 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
 <style slot="head" is:inline>
   .bc-mono { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--faint); font-variant-numeric: tabular-nums; }
   .bc-section { padding-block: clamp(64px, 8vw, 120px); }
+  /* The sections after the hero skip layout until they near the screen, like
+     the footer. Laid out up front, they made the first layout lay out the
+     whole page (the sample chart twice, the positions table, the FAQ) and
+     asked for the italic and mono faces beside the hero's fonts. Each
+     estimate is the section's height on a phone; once drawn, its real height
+     is kept. */
+  .bc-what, .bc-nt, .bc-trust, .bc-next, .bc-faq, .bc-close { content-visibility: auto; }
+  .bc-what { contain-intrinsic-size: auto 2100px; }
+  .bc-nt { contain-intrinsic-size: auto 1350px; }
+  .bc-trust { contain-intrinsic-size: auto 650px; }
+  .bc-next { contain-intrinsic-size: auto 900px; }
+  .bc-faq { contain-intrinsic-size: auto 700px; }
+  .bc-close { contain-intrinsic-size: auto 450px; }
   /* The sample's sign discs: a quiet circle until the set arrives. */
   .bc-disc { flex: none; display: inline-block; vertical-align: middle; border-radius: 50%; background: rgba(198, 204, 218, 0.06); }
 

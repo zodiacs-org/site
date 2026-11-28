@@ -462,8 +462,10 @@ async function capture(browser, baseURL, testCase, judge) {
       }
       /* Full-page rasterization starts at the top and may substitute the
          production footer's intrinsic placeholder after the lazy sweep has
-         returned there. Keep the test receipt on the settled visual state. */
-      .zfooter { content-visibility: visible !important; }
+         returned there. Keep the test receipt on the settled visual state.
+         The birth chart's sections after the hero skip layout the same way. */
+      .zfooter,
+      .bc-what, .bc-nt, .bc-trust, .bc-next, .bc-faq, .bc-close { content-visibility: visible !important; }
     `,
   });
   await settlePage(page, testCase);
