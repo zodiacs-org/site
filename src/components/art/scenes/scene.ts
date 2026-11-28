@@ -32,6 +32,8 @@ export interface Scene {
   images?: readonly string[];
   /** The time, in seconds, of the still frame drawn under reduced motion. */
   still: number;
+  /** The time, in seconds, the animation opens at (default 0). */
+  start?: number;
   draw(ctx: CanvasRenderingContext2D, t: number, view: SceneView, assets: SceneAssets): void;
 }
 

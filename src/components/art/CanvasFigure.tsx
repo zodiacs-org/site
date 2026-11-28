@@ -119,6 +119,7 @@ export default function CanvasFigure({ load, name, class: className }: Props) {
         const loaded = (await load()).default;
         if (!alive) return;
         scene = loaded;
+        clock = loaded.start ?? 0;
         palette = { ink: tokenRgb(box, '--ink-0', palette.ink), line: tokenRgb(box, '--ink-2', palette.line) };
         images = (scene.images ?? []).map((src) => {
           const image = new Image();

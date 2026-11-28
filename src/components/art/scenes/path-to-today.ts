@@ -91,8 +91,8 @@ function nearness(z: number): number {
 
 /** The five moments, evenly spaced on screen on the far side of the path: depth, side and sign hue. */
 const MOMENTS = [
-  { z: 16.6, side: 1, hue: 2 },
-  { z: 9.8, side: 1, hue: 11 },
+  { z: 15, side: 1, hue: 2 },
+  { z: 9.3, side: 1, hue: 11 },
   { z: 7, side: 1, hue: 4 },
   { z: 5.45, side: 1, hue: 9 },
   { z: 4.45, side: 1, hue: 6 },
@@ -121,6 +121,8 @@ const scene: Scene = {
   width: WIDTH,
   height: HEIGHT,
   still: 9.5,
+  // Open with four moments standing and the fifth rising.
+  start: 3.6,
   draw(ctx, t, view, { palette }) {
     const { ink, line } = palette;
 
@@ -183,14 +185,16 @@ const scene: Scene = {
       const near = nearness(z);
       const colour = HUES[hue];
       const height = 0.7 * foot.s * shown;
-      const radius = Math.max(2.1, 0.09 * foot.s);
-      const alpha = (0.4 + 0.6 * near) * Math.min(1, shown * 1.4);
+      // The farthest beads keep a floor size so all five read on a phone.
+      const radius = Math.max(3.1, 0.09 * foot.s);
+      const alpha = (0.55 + 0.45 * near) * Math.min(1, shown * 1.4);
       const top = foot.y - height;
-      // A small pool of light where the stem meets the ground.
-      ctx.fillStyle = `rgba(${colour},${0.16 * alpha})`;
-      ctx.beginPath();
-      ctx.ellipse(foot.x, foot.y, radius * 1.3, radius * 0.42, 0, 0, TAU);
-      ctx.fill();
+      // A soft pool of light on the ground where the stem stands.
+      ctx.save();
+      ctx.translate(foot.x, foot.y);
+      ctx.scale(1, 0.3);
+      glow(ctx, 0, 0, radius * 2.4, colour, 0.32 * alpha);
+      ctx.restore();
       ctx.strokeStyle = `rgba(${colour},${0.75 * alpha})`;
       ctx.lineWidth = 0.6 + 0.6 * near;
       ctx.beginPath();
