@@ -110,7 +110,10 @@ describe('claims ledger', () => {
     expect(problems, report(problems)).toEqual([]);
   });
 
-  it('R3 resolves every claim\'s evidence', () => {
+  // R3 reads every evidence file of every claim (over 2,000 items, about
+  // 165 MB with repeats), hashing and parsing as it goes: about 2 s alone or
+  // in a full run, and past the 5 s default on a loaded machine.
+  it('R3 resolves every claim\'s evidence', { timeout: 30_000 }, () => {
     const findings = read('docs/platform/evidence/engine-audit-2026-09-22/LEDGER.md');
     const brief = read('docs/platform/ENGINE-AND-PLATFORM-BRIEF.md');
     const ciSources = ciCorpus();

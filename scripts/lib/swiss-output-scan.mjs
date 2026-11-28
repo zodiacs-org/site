@@ -156,33 +156,45 @@ export const scanned = (name) => name.startsWith('src/') || DATA_EXTENSIONS.has(
  * Walks the tree and calls visit(entry) for every tracked file and archive
  * member: { path, member, bytes, scanned }, where path is the tracked file
  * and member the name inside it (null for the file itself).
+ *
+ * The walk reads the whole tree and takes 40 s to over two minutes on a busy
+ * machine. It hands the event loop back between files and archive members at
+ * least once a second: a vitest 3 worker that holds its thread for 60 s cannot
+ * read the reply to the task update it sent first, and the run fails with
+ * `Timeout calling "onTaskUpdate"` although every test passes
+ * (vitest-dev/vitest#8164).
  */
-export function walkTree(root, visit) {
+export async function walkTree(root, visit) {
   // Tracked files, and the ones not ignored that a commit would add.
   const files = [...new Set(execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, maxBuffer: 1 << 28 })
     .toString('utf8').split('\0').filter(Boolean))];
-  const open = (path, member, name, bytes, depth) => {
+  let yielded = Date.now();
+  const open = async (path, member, name, bytes, depth) => {
+    if (Date.now() - yielded >= 1000) {
+      await new Promise((done) => setImmediate(done));
+      yielded = Date.now();
+    }
     const low = name.toLowerCase();
     if (depth < 3) {
       try {
         if (low.endsWith('.tgz') || low.endsWith('.tar.gz')) {
-          for (const [inner, data] of tarMembers(gunzipSync(bytes))) open(path, member ? `${member}!${inner}` : inner, inner, data, depth + 1);
+          for (const [inner, data] of tarMembers(gunzipSync(bytes))) await open(path, member ? `${member}!${inner}` : inner, inner, data, depth + 1);
           visit({ path, member, name, bytes, scanned: false, archive: true });
           return;
         }
         if (low.endsWith('.tar')) {
-          for (const [inner, data] of tarMembers(bytes)) open(path, member ? `${member}!${inner}` : inner, inner, data, depth + 1);
+          for (const [inner, data] of tarMembers(bytes)) await open(path, member ? `${member}!${inner}` : inner, inner, data, depth + 1);
           visit({ path, member, name, bytes, scanned: false, archive: true });
           return;
         }
         if (low.endsWith('.gz')) {
           const inner = name.slice(0, -3);
-          open(path, member ? `${member}!${inner}` : inner, inner, gunzipSync(bytes), depth + 1);
+          await open(path, member ? `${member}!${inner}` : inner, inner, gunzipSync(bytes), depth + 1);
           visit({ path, member, name, bytes, scanned: false, archive: true });
           return;
         }
         if (low.endsWith('.zip')) {
-          for (const [inner, data] of zipMembers(bytes)) open(path, member ? `${member}!${inner}` : inner, inner, data, depth + 1);
+          for (const [inner, data] of zipMembers(bytes)) await open(path, member ? `${member}!${inner}` : inner, inner, data, depth + 1);
           visit({ path, member, name, bytes, scanned: false, archive: true });
           return;
         }
@@ -197,7 +209,7 @@ export function walkTree(root, visit) {
     let stat;
     try { stat = lstatSync(full); } catch { continue; }
     if (!stat.isFile()) continue;
-    open(path, null, path, readFileSync(full), 0);
+    await open(path, null, path, readFileSync(full), 0);
   }
   return files.length;
 }
