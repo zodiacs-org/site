@@ -111,5 +111,5 @@ echoing request input, drop `"params": null` before SDK parsing, and return
 HTTP 202 with an empty body for valid JSON-RPC 2.0 notifications outside the
 method allowlist. All published tool definitions, directory fixtures, and the
 Astronomy Engine 1.1.0-rc.2 ephemeris remain unchanged. Both the updated
-published bundle digest (`6a2e2a3b1cf980c51ec4a2d8d35945fd6ddaab3dafbd2f941a318a117564e524`) and the patch digest (`b871cbe849a4f86df972df52a2708fc4437439def3efc0ef340f1f972a68777a`) are
+published bundle digest (`7b2088d9aa9044fa2ec36d530f83c494617491fae50e891ca3acd55de58ad3c7`) and the patch digest (`b871cbe849a4f86df972df52a2708fc4437439def3efc0ef340f1f972a68777a`) are
 recorded in `publishedSha256`.

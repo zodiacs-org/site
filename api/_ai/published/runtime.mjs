@@ -44924,6 +44924,8 @@ function refFrom(meta) {
 }
 function createAiServer(dependencies, watch, account) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
+    // listChanged stays false: a stateless server sends no list-changed notification and refuses subscriptions/listen,
+    // which 2026-07-28 clients open whenever it is advertised (the SDK's default is true).
     capabilities: { tools: { listChanged: false }, resources: { listChanged: false }, ...watch ? { events: {} } : {} },
     instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage) + (dependencies.occasions && dependencies.coverage && dependencies.momentChart ? ` ${MOMENT_ROUTING}` : "")
   });
