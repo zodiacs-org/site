@@ -5,16 +5,20 @@ import { TOOL_ICONS, TOOL_ICON_FOR_PATH, TOOL_ICON_NAMES, toolIconForPath } from
 
 const SIGN_HUES = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
+/** A page an integration routes from another file: the tarot draw (scripts/tarot-route.mjs, routed while its flag is on). */
+const INJECTED: Readonly<Record<string, string>> = { '/tarot/': 'src/pages/tarot/_draw.astro' };
+
 function routeExists(path: string): boolean {
+  if (INJECTED[path]) return existsSync(resolve(INJECTED[path]));
   const dir = resolve('src/pages', `.${path}`);
   return existsSync(resolve(dir, 'index.astro'));
 }
 
 describe('tool icon set', () => {
-  it('has thirty-eight distinct drawings, each on one of the twelve sign hues', () => {
-    expect(TOOL_ICON_NAMES).toHaveLength(38);
+  it('has thirty-nine distinct drawings, each on one of the twelve sign hues', () => {
+    expect(TOOL_ICON_NAMES).toHaveLength(39);
     const bodies = new Set(TOOL_ICON_NAMES.map((name) => TOOL_ICONS[name].body));
-    expect(bodies.size).toBe(38);
+    expect(bodies.size).toBe(39);
     for (const name of TOOL_ICON_NAMES) expect(SIGN_HUES).toContain(TOOL_ICONS[name].hue);
   });
 

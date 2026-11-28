@@ -118,6 +118,7 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
 // never recommended. Commit the output generated with every switch unset.
 export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED',
+  '/tarot/': 'PUBLIC_TAROT_ENABLED',
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
   '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
   '/astrocartography/': 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
@@ -277,6 +278,10 @@ async function loadHoroscopes(root) {
   return { latestMonth, current };
 }
 
+// A page an integration routes from an underscore file, by its route: the tarot draw (scripts/tarot-route.mjs) is
+// src/pages/tarot/_draw.astro at /tarot/, and launchedRoute still holds it to its switch.
+const INJECTED_PAGES = new Map([['tarot/_draw.astro', '/tarot/']]);
+
 async function loadStaticPages(repoRoot, context, env) {
   const pagesRoot = resolve(repoRoot, 'src/pages');
   const pages = [];
@@ -286,9 +291,10 @@ async function loadStaticPages(repoRoot, context, env) {
     if (local.startsWith('embed/')) continue;
     if (local.includes('[')) continue;
     if (local === '404.astro') continue;
-    // Astro makes no route of a file or folder whose name starts with an underscore.
-    if (local.split('/').some((part) => part.startsWith('_'))) continue;
-    const route = pagePath(file, pagesRoot);
+    // Astro makes no route of a file or folder whose name starts with an underscore, unless an integration does.
+    const injected = INJECTED_PAGES.get(local);
+    if (!injected && local.split('/').some((part) => part.startsWith('_'))) continue;
+    const route = injected ?? pagePath(file, pagesRoot);
     if (UNLISTED_ROUTE_PREFIXES.some((prefix) => route.startsWith(prefix))) continue;
     if (!launchedRoute(route, env)) continue;
     // Labeled sample pages for event-template review: never part of the
