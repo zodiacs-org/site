@@ -553,6 +553,17 @@ describe('applying, separating and exact times on the /your-day/ page and get_pe
     const separatingContact = beforeStation.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
     expect(separatingContact?.exactPasses?.length).toBe(2);
     expect(separatingContact?.applying).toBe(false);
+
+    // Even 200 ms on either side of the station (less than a 1 s forward step), applying reflects the true local slope without crossing the turn.
+    const justBeforeStation = await readPersonalDay(wideNatal, { birthDate: '1990-11-13', date: '2026-10-24', zone: 'UTC', now: new Date('2026-10-24T12:00:00Z') }, clockWithMidday(peakMs - 200));
+    const justBeforeContact = justBeforeStation.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(justBeforeContact?.exactPasses?.length).toBe(2);
+    expect(justBeforeContact?.applying).toBe(false);
+
+    const justAfterStation = await readPersonalDay(wideNatal, { birthDate: '1990-11-13', date: '2026-10-24', zone: 'UTC', now: new Date('2026-10-24T12:00:00Z') }, clockWithMidday(peakMs + 200));
+    const justAfterContact = justAfterStation.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(justAfterContact?.exactPasses?.length).toBe(2);
+    expect(justAfterContact?.applying).toBe(true);
   });
 
   it('still computes Your Day when an unrelated historical zone shard fails, and fails without retrying when the needed shard fails', async () => {

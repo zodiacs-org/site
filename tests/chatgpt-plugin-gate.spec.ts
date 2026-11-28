@@ -1221,10 +1221,7 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       expect(listedResources.status).toBe(200);
       const candidateResources = (listedResources.message.result?.resources ?? []) as { uri: string; mimeType: string; _meta?: any }[];
       const featuresRes = candidateResources.find((item) => item.uri === FEATURES_URI);
-      if (enabledFeatures.length === 0) {
-        expect(featuresRes, 'features-v1.html stays omitted when no feature tool is enabled').toBeUndefined();
-        return;
-      }
+      expect(enabledFeatures.length, 'candidate connector exposes at least one enabled feature tool').toBeGreaterThan(0);
       expect(featuresRes, 'features-v1.html listed on candidate connector').toBeDefined();
       expect(featuresRes?.mimeType).toBe('text/html;profile=mcp-app');
 

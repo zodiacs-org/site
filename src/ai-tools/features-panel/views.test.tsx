@@ -372,6 +372,19 @@ describe('features-panel cards for the seven feature funnels (eight tools)', () 
     expect(vedicNoTimeHtml.slice(0, vedicNoTimeHtml.indexOf('<details class="fold"'))).toContain('add a birth time for rising');
     expect(vedicNoTimeHtml.slice(0, vedicNoTimeHtml.indexOf('<details class="fold"'))).not.toContain('add birth time and place');
 
+    // A polar rising-sign jump or rapid sweep explains birth-time sensitivity at that latitude rather than ayanamsa boundary wording.
+    const vedicPolarJump = structuredClone(vedic.data) as {
+      rising: { cusp?: boolean } | null;
+      limits: string[];
+    };
+    if (vedicPolarJump.rising) vedicPolarJump.rising.cusp = true;
+    vedicPolarJump.limits = ['At this latitude the rising sign (lagna) jumps abruptly near this birth time, so a small difference in birth time can place it on the opposite side of the zodiac.'];
+    const vedicPolarJumpHtml = render(h(VedicSignsCard, { data: vedicPolarJump as never, links: vedic.links as ToolLink[] }));
+    const vedicPolarJumpBeforeFold = vedicPolarJumpHtml.slice(0, vedicPolarJumpHtml.indexOf('<details class="fold"'));
+    expect(vedicPolarJumpBeforeFold).toContain('highly sensitive to birth time at this latitude');
+    expect(vedicPolarJumpBeforeFold).not.toContain('ayanamsa can move it');
+    expect(vedicPolarJumpBeforeFold).not.toContain('near a boundary');
+
     // Your Day still displays a reading-confidence label even when there are zero contacts that day.
     const emptyDay = structuredClone(dayOff.data) as { contacts: unknown[]; timeKnown: boolean; placed: boolean };
     emptyDay.contacts = [];

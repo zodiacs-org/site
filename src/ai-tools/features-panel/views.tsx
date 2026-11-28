@@ -411,11 +411,11 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
   const summaryParts = [moonLine, nakLine, sunLine, risingLine].filter((line): line is string => !!line);
   const fullSummary = cardWords(anyCusp && summaryParts.length > 0 ? `${summaryParts.join(' ')} ${data.confidenceLabel}.` : data.summary);
   const readingLines = [moonLine, sunLine, risingLine].filter((line): line is string => !!line);
-  const boundaryLabels = [
+  const cuspLabels = [
     data.moon?.cusp ? 'Moon' : null,
     data.moonNakshatra?.cusp ? 'nakshatra' : null,
     data.sun?.cusp ? 'Sun' : null,
-    data.rising?.cusp ? (risingFlip ? 'rising (time-sensitive)' : 'rising') : null,
+    data.rising?.cusp && !risingFlip ? 'rising' : null,
   ].filter((label): label is string => !!label);
   const heroPlacements = [
     data.moon ? `${data.moon.rashi} Moon` : data.moonCandidates.length ? `Moon in ${data.moonCandidates.join(' or ')}` : null,
@@ -434,13 +434,17 @@ export function VedicSignsCard({ data, links = [] }: { data: VedicSignsData; lin
           : !data.timeKnown && !data.placed
             ? '; add birth time and place for rising.'
             : '.';
-  const heroSummary = boundaryLabels.length > 0
-    ? `Provisional near a boundary (${boundaryLabels.join(', ')}): a small shift in birth time or ayanamsa can move it.`
-    : cuspLimits.length > 0
-      ? 'Provisional near a sign boundary: a small shift in birth time or ayanamsa can move it.'
-      : heroPlacements.length > 0
-        ? `${heroPlacements.join(', ')}${missingRisingNote}`
-        : cardWords(data.summary);
+  const heroSummary = cuspLabels.length > 0 && risingFlip
+    ? `Provisional near a boundary (${cuspLabels.join(', ')}) and time-sensitive for rising at this latitude.`
+    : risingFlip
+      ? 'Provisional: the rising sign is highly sensitive to birth time at this latitude.'
+      : cuspLabels.length > 0
+        ? `Provisional near a boundary (${cuspLabels.join(', ')}): a small shift in birth time or ayanamsa can move it.`
+        : cuspLimits.length > 0
+          ? 'Provisional near a sign boundary: a small shift in birth time or ayanamsa can move it.'
+          : heroPlacements.length > 0
+            ? `${heroPlacements.join(', ')}${missingRisingNote}`
+            : cardWords(data.summary);
   const chips = [
     {
       icon: icon(data.moon?.sign),

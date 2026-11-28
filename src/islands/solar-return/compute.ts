@@ -108,9 +108,13 @@ export function computeSolarReturn(input: SolarReturnComputeInput, now = new Dat
   let useSavedAdjustedInstant = false;
   if (input.birthplace) {
     if (!readsOnDate(input.birthDate, resolveLocalToUtc(input.birthDate, '00:00', input.birthplace.tz, { longitude: input.birthplace.lon }))) {
-      throw new SkippedBirthDateError();
-    }
-    if (input.timeKnown && input.birthTime) {
+      if (input.timeKnown && input.savedUtc && Number.isFinite(Date.parse(input.savedUtc))) {
+        useSavedAdjustedInstant = true;
+        clockLimit = 'The birthplace clock skipped this saved birth date for a clock change; this return uses the adjusted moment saved with the chart.';
+      } else {
+        throw new SkippedBirthDateError();
+      }
+    } else if (input.timeKnown && input.birthTime) {
       resolvedBirth = resolveLocalToUtc(input.birthDate, input.birthTime, input.birthplace.tz, { longitude: input.birthplace.lon });
       const onClock = birthTimeOnClock(resolvedBirth.flags, true);
       if (onClock.skipped) {

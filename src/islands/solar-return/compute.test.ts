@@ -143,6 +143,25 @@ describe('the Sun sign of an untimed solar return', () => {
       savedSunLon: null, houseSystem: 'whole', castLocation: null,
       year: 2026,
     })).toThrow(SkippedBirthDateError);
+    expect(() => computeSolarReturn({
+      birthDate: '2011-12-30', birthTime: '12:00', timeKnown: true,
+      birthplace: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      savedSunLon: null, houseSystem: 'whole',
+      castLocation: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      year: 2026,
+    })).toThrow(SkippedBirthDateError);
+    // An existing timed chart saved with an adjusted UTC instant across a skipped date still computes its return and notes the adjustment.
+    const savedSkippedDate = computeSolarReturn({
+      birthDate: '2011-12-30', birthTime: '12:00', timeKnown: true,
+      birthplace: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      savedSunLon: null, savedUtc: '2011-12-30T22:00:00.000Z', houseSystem: 'whole',
+      castLocation: { name: 'Apia', lat: -13.83, lon: -171.76, tz: 'Pacific/Apia' },
+      year: 2026,
+    });
+    expect(savedSkippedDate.returnYear).toBe(2026);
+    expect(savedSkippedDate.chart.angles).not.toBeNull();
+    expect(savedSkippedDate.clockLimit).toContain('skipped this saved birth date');
+    expect(savedSkippedDate.clockLimit).toContain('adjusted moment saved with the chart');
 
     await prepareLocalTime('1990-09-30', 'Europe/Madrid');
     const fold = computeSolarReturn({

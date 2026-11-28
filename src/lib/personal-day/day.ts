@@ -116,6 +116,7 @@ export interface PersonalDayReading {
 export { clockTime, dateOn, dayLabel, nextDate } from './clock';
 
 const round2 = (value: number) => Math.round(value * 100) / 100;
+const signedAngleDiff = (a: number, b: number) => ((((a - b) % 360) + 540) % 360) - 180;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
 
 /**
@@ -241,9 +242,26 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
         let middayApplying = orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
         const exactPass = passes.length > 0;
         if (passes.length > 1) {
-          const nearestDelta = Math.min(...passes.map((at) => Math.abs(at.getTime() - midday.getTime())));
-          const step = Math.max(1, Math.min(1_000, Math.floor(nearestDelta / 4)));
-          middayApplying = orbOf(bodyLongitude(mover, new Date(midday.getTime() + step)), pointLon, aspect) < orb;
+          const middayMs = midday.getTime();
+          if (middayMs < passes[0].getTime()) {
+            middayApplying = true;
+          } else if (middayMs >= passes[passes.length - 1].getTime()) {
+            middayApplying = false;
+          } else {
+            const nextIndex = passes.findIndex((at) => at.getTime() > middayMs);
+            if (nextIndex > 0 && middayMs === passes[nextIndex - 1].getTime()) {
+              middayApplying = false;
+            } else {
+              // Symmetric central difference of mover longitude measures the exact sign of the local velocity at midday
+              // even within a fraction of a second of a station (the quadratic term cancels identically).
+              const VELOCITY_STEP_MS = 30_000;
+              const velocityAt = (ms: number) => signedAngleDiff(
+                bodyLongitude(mover, new Date(ms + VELOCITY_STEP_MS)),
+                bodyLongitude(mover, new Date(ms - VELOCITY_STEP_MS)),
+              );
+              middayApplying = velocityAt(middayMs) * velocityAt(passes[nextIndex].getTime()) > 0;
+            }
+          }
         }
         const applying = passes.length === 1 ? passes[0].getTime() > midday.getTime() : middayApplying;
         const minuteLabels = passes.map((at) => clockTime(at, zone));
