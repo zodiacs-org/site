@@ -15,10 +15,10 @@ function routeExists(path: string): boolean {
 }
 
 describe('tool icon set', () => {
-  it('has thirty-five distinct drawings, each on one of the twelve sign hues', () => {
-    expect(TOOL_ICON_NAMES).toHaveLength(35);
+  it('has thirty-nine distinct drawings, each on one of the twelve sign hues', () => {
+    expect(TOOL_ICON_NAMES).toHaveLength(39);
     const bodies = new Set(TOOL_ICON_NAMES.map((name) => TOOL_ICONS[name].body));
-    expect(bodies.size).toBe(35);
+    expect(bodies.size).toBe(39);
     for (const name of TOOL_ICON_NAMES) expect(SIGN_HUES).toContain(TOOL_ICONS[name].hue);
   });
 
@@ -46,6 +46,10 @@ describe('tool icon set', () => {
     expect(TOOL_ICONS['solar-return'].hue).toBe('leo');
     expect(TOOL_ICONS['saturn-return'].hue).toBe('capricorn');
     expect(TOOL_ICONS.compatibility.hue).toBe('libra');
+    expect(TOOL_ICONS['vedic-signs'].hue).toBe('pisces');
+    expect(TOOL_ICONS['retrogrades-for-you'].hue).toBe('gemini');
+    expect(TOOL_ICONS['your-day'].hue).toBe('leo');
+    expect(TOOL_ICONS['astrocartography'].hue).toBe('sagittarius');
   });
 
   it('maps every listed route to a page that exists, and every icon to one route', () => {
@@ -53,6 +57,10 @@ describe('tool icon set', () => {
     expect(new Set(Object.values(TOOL_ICON_FOR_PATH)).size).toBe(TOOL_ICON_NAMES.length);
     expect(toolIconForPath('/es/moon-sign/')).toBe('moon-sign');
     expect(toolIconForPath('/ru/compatibility/')).toBe('compatibility');
+    expect(toolIconForPath('/retrogrades/')).toBe('retrogrades');
+    expect(toolIconForPath('/retrogrades/for-you/')).toBe('retrogrades-for-you');
+    expect(toolIconForPath('/your-day/')).toBe('your-day');
+    expect(toolIconForPath('/astrocartography/')).toBe('astrocartography');
     expect(toolIconForPath('/estonia/')).toBeUndefined();
   });
 

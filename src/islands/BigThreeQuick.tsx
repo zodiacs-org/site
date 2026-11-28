@@ -4,7 +4,6 @@ import type { City } from '../lib/geo/search';
 import { useEngine } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { createModuleLoader, loadModule } from '../lib/module-load';
-import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { SIGNS, formatLongitude, signForLongitude, signName } from '../lib/signs';
 import {
   followWithHandoff,
@@ -18,6 +17,7 @@ import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import type { ShareChartInput } from '../lib/share';
 import type { Chart } from '../lib/engine/types';
+import type { Engine2NoticeItem } from '../lib/chart-notices';
 import type { PreparedChartCard } from '../lib/share-card';
 import { formatSharingCopy, type SharingCopy, type SharingKey } from '../lib/sharing/copy-en';
 import { localizePath, t, type CatalogLocale } from '../lib/i18n';
@@ -44,6 +44,8 @@ interface SavedBirth {
 type CardModule = typeof import('../lib/share-card');
 const loadReading = createModuleLoader(() => import('../lib/interpretations'));
 const loadResultTrust = createModuleLoader(() => import('./ChartTrust'));
+const loadLocalTime = createModuleLoader(() => import('../lib/time/localToUtc'));
+const loadNotices = createModuleLoader(() => import('../lib/chart-notices'));
 type ResultTrust = typeof import('./ChartTrust');
 
 interface Placement {
@@ -82,9 +84,16 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const [error, setError] = useState('');
   const [readingModule, setReadingModule] = useState<typeof import('../lib/interpretations') | null>(null);
   const [placements, setPlacements] = useState<Placement[] | null>(null);
+  const [resultNotices, setResultNotices] = useState<Engine2NoticeItem[]>([]);
   const [resultTrust, setResultTrust] = useState<ResultTrust | null>(null);
   const [resultUtc, setResultUtc] = useState<Date | null>(null);
-  const [handoff, setHandoff] = useState<ShareChartInput | null>(null);
+  const [handoff, setHandoff] = useState<{
+    input: ShareChartInput;
+    oldStyle?: boolean;
+    fromSavedChart?: true;
+    savedCalendarUnknown?: boolean;
+    calendarUnverified?: true;
+  } | null>(null);
   const [card, setCard] = useState<{ module: CardModule; prepared: PreparedChartCard; run: number } | null>(null);
   const [cardState, setCardState] = useState<'idle' | 'preparing' | 'ready' | 'sharing' | 'shared' | 'downloaded' | 'failed'>('idle');
   const [cardError, setCardError] = useState('');
@@ -92,12 +101,6 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const generation = useRef(0);
   const cardAttempt = useRef(0);
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
-
-  // The cards rise and their sign discs grow in once, as the result first
-  // appears (docs/MOTION.md), through the runtime in src/components/Motion.astro.
-  useEffect(() => {
-    if (placements) (window as { zodiacsMotion?: { scan(root?: ParentNode): void } }).zodiacsMotion?.scan(resultRef.current ?? undefined);
-  }, [placements]);
 
   useEffect(() => {
     // Warm the same index without placing the search module in the form's
@@ -111,6 +114,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   // and its date passes the same birth date policy as the form.
   const profileOriginRef = useRef(false);
   const profileChartIdRef = useRef<string | null>(null);
+  const savedCalendarRef = useRef<{ date: string; tz: string; savedCalendarUnknown?: boolean } | null>(null);
   const profileHandoffIdRef = useRef(0);
   const profileAccessGeneration = useProfileAccessGeneration(() => {
     // Always drop a pending saved-chart load, even if the chart has not been
@@ -119,6 +123,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     if (!profileOriginRef.current) return;
     profileOriginRef.current = false;
     profileChartIdRef.current = null;
+    savedCalendarRef.current = null;
     generation.current += 1;
     cardAttempt.current += 1;
     cardSource.current = null;
@@ -127,6 +132,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     setTime('');
     setCity(null);
     setPlacements(null);
+    setResultNotices([]);
     setHandoff(null);
     setCard(null);
     setCardState('idle');
@@ -172,6 +178,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         profileOriginRef.current = true;
         profileChartIdRef.current = chartId;
         if (!saved) {
+          savedCalendarRef.current = { date: record!.birth.date, tz: '' };
           // A supported saved chart with no birthplace cannot be recomputed
           // until a place is added. Prefill what we have and say so.
           setDate(record!.birth.date);
@@ -179,6 +186,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           setTime(record!.birth.time ?? '');
           setCity(null);
           setPlacements(null);
+          setResultNotices([]);
           setHandoff(null);
           setCard(null);
           setCardState('idle');
@@ -186,12 +194,18 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           return;
         }
         const from: SavedBirth = { date: saved.date, time: saved.time, city: saved.city };
+        savedCalendarRef.current = {
+          date: from.date,
+          tz: from.city.tz,
+          savedCalendarUnknown: saved.savedCalendarUnknown,
+        };
         setDate(from.date);
         setCalendar('gregorian');
         setTime(from.time);
         setCity(from.city);
         if (!saved.timeKnown || !saved.time) {
           setPlacements(null);
+          setResultNotices([]);
           setHandoff(null);
           setCard(null);
           setCardState('idle');
@@ -215,7 +229,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     // but keep profile origin so a revoke still clears inherited fields.
     profileHandoffIdRef.current += 1;
     profileChartIdRef.current = null;
-    setter(value); setBusy(false); setPlacements(null); setHandoff(null);
+    setter(value); setBusy(false); setPlacements(null); setResultNotices([]); setHandoff(null);
     cardSource.current = null; setCard(null); setCardState('idle'); setCardError(''); setError('');
   }
 
@@ -265,6 +279,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     setCardError('');
     try {
       let day = birthDate;
+      let writtenJulianDate: string | undefined;
       if (calendarInPlay(birthDate, birthCalendar)) {
         // A date before 1924 is read in its calendar; the chart and the handoff use the Gregorian date.
         const entry = await birthDateForChart(locale, birthDate, birthCalendar);
@@ -272,24 +287,52 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         if ('error' in entry) {
           setError(entry.error);
           setPlacements(null);
+          setResultNotices([]);
           setHandoff(null);
           return;
         }
         day = entry.date;
+        writtenJulianDate = entry.writtenJulianDate;
       }
       // Under 13 or not yet born: nothing is computed, shared or counted.
       const refusal = birthDateRefusal(day);
       if (refusal) {
         setError(birthDateRefusalText(refusal));
         setPlacements(null);
+        setResultNotices([]);
         setHandoff(null);
         return;
       }
       const time = birthTime;
       const city = place;
+      const savedCal = savedCalendarRef.current;
+      const keepSavedCalendar = Boolean(
+        savedCal && !writtenJulianDate && birthCalendar === 'gregorian'
+        && day === savedCal.date,
+      );
+      const preservedSavedUnknown = keepSavedCalendar
+        && city.tz.toLowerCase() === savedCal!.tz.toLowerCase()
+        ? savedCal!.savedCalendarUnknown
+        : undefined;
+      const { prepareLocalTime, resolveLocalToUtc } = await loadLocalTime();
+      if (run !== generation.current) return;
       await prepareLocalTime(day, city.tz);
-      const resolution = resolveLocalToUtc(day, time, city.tz, { longitude: city.lon });
-      const [engine, trust, reading] = await Promise.all([loadEngine(), loadResultTrust(), locale === 'en' ? loadReading().catch(() => null) : Promise.resolve(null)]);
+      const resolution = resolveLocalToUtc(day, time, city.tz, {
+        longitude: city.lon,
+        writtenJulianDate,
+        reconstructedCalendar: keepSavedCalendar && preservedSavedUnknown === undefined,
+      });
+      const resolvedFlags = preservedSavedUnknown === undefined
+        ? resolution.flags
+        : preservedSavedUnknown && day >= '1582-10-05' && day <= '1918-02-26'
+          ? [...resolution.flags.filter((flag) => flag !== 'calendar-unknown'), 'calendar-unknown' as const]
+          : resolution.flags.filter((flag) => flag !== 'calendar-unknown');
+      const [engine, trust, noticesModule, reading] = await Promise.all([
+        loadEngine(),
+        loadResultTrust(),
+        loadNotices(),
+        locale === 'en' ? loadReading().catch(() => null) : Promise.resolve(null),
+      ]);
       if (run === generation.current) setReadingModule(reading);
       if (run !== generation.current) return;
       if (profileOriginRef.current && accessGeneration !== profileAccessGeneration.current) return;
@@ -299,9 +342,16 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         longitude: city.lon,
         houseSystem: 'whole',
         timeKnown: true,
-        flags: resolution.flags,
+        flags: resolvedFlags,
       });
       if (run !== generation.current) return;
+      const chartFlags = chart.flags ?? [];
+      const notices = noticesModule.resolveEngine2Notices(locale, chartFlags, {
+        convertedFromJulian: Boolean(writtenJulianDate),
+        fromSavedChart: keepSavedCalendar,
+      });
+      if (run !== generation.current) return;
+      if (profileOriginRef.current && accessGeneration !== profileAccessGeneration.current) return;
       const sun = chart.bodies.find((body) => body.body === 'Sun');
       const moon = chart.bodies.find((body) => body.body === 'Moon');
       if (!sun || !moon || !chart.angles) throw new Error('incomplete chart');
@@ -309,20 +359,38 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       requestAllDiscs();
       setResultTrust(trust);
       setResultUtc(chart.input.utc);
+      setResultNotices(notices);
       setPlacements([
         { kind: 'sun', title: t(locale, 'sun'), lon: sun.lon },
         { kind: 'moon', title: t(locale, 'moon'), lon: moon.lon },
         { kind: 'rising', title: t(locale, 'rising'), lon: chart.angles.asc },
       ]);
+      if (!keepSavedCalendar) savedCalendarRef.current = null;
+      const calendarUnknown = preservedSavedUnknown ?? resolution.flags.includes('calendar-unknown');
+      const reconstructed = keepSavedCalendar && preservedSavedUnknown === undefined;
       setHandoff({
-        date: day,
-        time,
-        timeKnown: true,
-        lat: city.lat,
-        lon: city.lon,
-        tz: city.tz,
-        place: city.name,
-        houseSystem: 'whole',
+        input: {
+          date: day,
+          time,
+          timeKnown: true,
+          lat: city.lat,
+          lon: city.lon,
+          tz: city.tz,
+          place: city.name,
+          houseSystem: 'whole',
+        },
+        ...(writtenJulianDate ? { oldStyle: true } : {}),
+        ...(keepSavedCalendar
+          ? {
+              fromSavedChart: true as const,
+              ...(day >= '1582-10-05' && day <= '1918-02-26'
+                ? {
+                    savedCalendarUnknown: calendarUnknown,
+                    ...(reconstructed ? { calendarUnverified: true as const } : {}),
+                  }
+                : {}),
+            }
+          : {}),
       });
       track('chart_computed', { mode: 'rising', source: 'fresh' });
       track('result_rendered', { mode: 'rising' });
@@ -338,6 +406,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       if (cause instanceof RangeError) setError(s(locale, 'required'));
       else setError(calculationError(cause, locale, s(locale, 'computeError')));
       setPlacements(null);
+      setResultNotices([]);
       setHandoff(null);
       cardSource.current = null;
       setCardState('idle');
@@ -395,9 +464,9 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           time={time}
           timeKnown={true}
           city={city}
-          onDateChange={(value) => edit(setDate, value)}
+          onDateChange={(value) => { savedCalendarRef.current = null; edit(setDate, value); }}
           calendar={calendar}
-          onCalendarChange={(value) => edit(setCalendar, value)}
+          onCalendarChange={(value) => { savedCalendarRef.current = null; edit(setCalendar, value); }}
           onTimeChange={(value) => edit(setTime, value)}
           onTimeKnownChange={() => {}}
           onCityChange={(value) => edit(setCity, value)}
@@ -419,15 +488,18 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       {placements && (
         <div class="big-three__result" ref={resultRef} data-big-three-result>
           {resultTrust && <><resultTrust.ResultOpening locale={locale} /><resultTrust.CheckOurMath utc={resultUtc} locale={locale} /></>}
+          {resultNotices.map((notice) => (
+            <p class="calc__note" role="note" key={notice.key} data-big-three-notice={notice.key}>{notice.text}</p>
+          ))}
           <div class="calc__three calc__three--3">
             {placements.map(({ kind, title, lon }) => {
               const sign = signForLongitude(lon);
               return (
-                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind} data-enter="rise">
+                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind}>
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
-                      <picture class="three-card__icon" data-enter="disc">
+                      <picture class="three-card__icon">
                         <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(sign, locale)}
@@ -446,9 +518,10 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
               class="btn btn--primary"
               href={localizePath(locale, '/birth-chart/')}
               onClick={(event) => followWithHandoff(event, () => {
+                const { input, ...opts } = handoff;
                 const fragment = profileChartIdRef.current
                   ? profileChartHandoffFragment(profileChartIdRef.current)
-                  : stashChartHandoff(handoff, { profileOrigin: profileOriginRef.current });
+                  : stashChartHandoff(input, { profileOrigin: profileOriginRef.current, ...opts });
                 return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
               })}
               data-big-three-full

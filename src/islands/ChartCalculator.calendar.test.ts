@@ -5,10 +5,12 @@ import cityIndex from '../../public/data/cities/index.json';
 import shardS from '../../public/data/cities/s.json';
 import * as actualEngine from '../lib/engine/full';
 import * as actualReceipt from '../lib/engine/calculator-receipt';
+import * as actualNotices from '../lib/chart-notices';
 import type { City } from '../lib/geo/search';
 import { moonIsUncertain } from '../lib/moon-certainty';
 import { signForLongitude } from '../lib/signs';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
+import { localDateMoonSigns } from '../lib/moon-day-bounds';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { adoptionNote } from '../lib/time/birth-calendar';
 import { birthDateForChart, calendarInPlay } from './BirthFields';
@@ -27,7 +29,9 @@ const statements = runChart!.body!.statements.find(ts.isTryStatement)!.tryBlock.
 const first = statements.findIndex((node) => node.getText(ast).startsWith('const effectiveTime ='));
 const end = statements.findIndex((node) => node.getText(ast).startsWith('const owner: ChartResultOwner ='));
 if (first < 0 || end <= first) throw Error('Chart calculation block not found');
-const execute = new Function('context', `with(context){${ts.transpile(
+// The block awaits the Moon's date limits, so it runs as an async function.
+const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor as new (...args: string[]) => (context: object) => Promise<object>;
+const execute = new AsyncFunction('context', `with(context){${ts.transpile(
   statements.slice(first, end).map((node) => node.getText(ast)).join('\n'),
   { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
 )}; return {result, portable, resolved};}`);
@@ -41,11 +45,11 @@ function birthplace(name: string): City {
   };
 }
 
-function chartFor(date: string, city: City) {
-  return execute({
+async function chartFor(date: string, city: City) {
+  return await execute({
     input: { date, time: '12:00', timeKnown: true, city, houseSystem: 'placidus' },
-    mode: 'full', engine: actualEngine, receiptModule: actualReceipt,
-    resolveLocalToUtc, assessLocalDateReference, signForLongitude, moonIsUncertain,
+    mode: 'full', locale: 'en', engine: actualEngine, receiptModule: actualReceipt, noticesModule: actualNotices,
+    resolveLocalToUtc, assessLocalDateReference, localDateMoonSigns, signForLongitude, moonIsUncertain,
     runIsCurrent: () => true, localDateReferenceFailure: new Error('unused'),
   }) as {
     result: import('../lib/engine/types').Chart;
@@ -72,8 +76,8 @@ describe('an Old Style birth through the birth chart form', () => {
 
     // runChart(): prepare the birthplace clock for that date, then calculate.
     await prepareLocalTime(oldStyle.date, petrograd.tz);
-    const converted = chartFor(oldStyle.date, petrograd);
-    const typed = chartFor(newStyle.date, petrograd);
+    const converted = await chartFor(oldStyle.date, petrograd);
+    const typed = await chartFor(newStyle.date, petrograd);
     expect(converted.resolved.utc.toISOString()).toBe(typed.resolved.utc.toISOString());
     expect(converted.portable!.envelopeJson).toBe(typed.portable!.envelopeJson);
     expect(converted.result.bodies).toEqual(typed.result.bodies);
@@ -83,7 +87,7 @@ describe('an Old Style birth through the birth chart form', () => {
 
     // Read as a Gregorian date, the Old Style date is a chart 13 days earlier.
     await prepareLocalTime('1917-10-25', petrograd.tz);
-    const misread = chartFor('1917-10-25', petrograd);
+    const misread = await chartFor('1917-10-25', petrograd);
     expect(converted.resolved.utc.getTime() - misread.resolved.utc.getTime()).toBe(13 * 86_400_000);
   });
 

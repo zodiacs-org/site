@@ -30,7 +30,11 @@ import {
 } from '@zodiacs/engine';
 import { conventionId } from '@zodiacs/engine/conventions';
 import { DE440_EPHEMERIS_NAME } from '@zodiacs/engine/de440';
-import { createNatalEnvelope, type NatalReceipt } from '@zodiacs/engine/receipt';
+import {
+  createNatalEnvelope,
+  NATAL_RECEIPT_CONVENTION_SETS,
+  type NatalReceipt,
+} from '@zodiacs/engine/receipt';
 import {
   COMPUTE_RECEIPT_SCHEMA,
   computeDocsUrl,
@@ -65,24 +69,22 @@ export interface DeltaTSource {
 
 type EngineStatements = Pick<NatalReceipt, 'conventions' | 'coverage'> & { deltaT: readonly [DeltaTSource, DeltaTSource] };
 let statements: EngineStatements | null = null;
+let receiptConventions: NatalReceipt['conventions'] | null = null;
 
 /**
  * The conventions and coverage statement exactly as the engine writes them
  * into a receipt, and the two sources of ΔT its time basis uses: IERS (the
  * leap seconds and UT1 − UTC) from 1972 to the end of its UT1 table, as a chart
- * at 2000-01-01 names it, and the ΔT model otherwise. The engine exports its
- * conventions set and the model's table but not the coverage statement or the
- * UT1 table's, so those are read from a chart and a receipt it writes for a
- * fixed instant.
+ * at 2000-01-01 names it, and the ΔT model otherwise.
  */
 export function engineStatements(): EngineStatements {
   if (!statements) {
-    const chart = natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false });
-    const { receipt } = createNatalEnvelope(chart);
-    const { model, table, tableDigest } = chart.deltaT;
+    const iersChart = natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false });
+    const { model, table, tableDigest } = iersChart.deltaT;
     if (model !== 'iers-utc/1' || table === null || tableDigest === null) {
       throw new Error('The engine\'s chart for 2000-01-01 no longer names the IERS table.');
     }
+    const { receipt } = createNatalEnvelope(iersChart);
     statements = {
       conventions: receipt.conventions,
       coverage: receipt.coverage,
@@ -93,6 +95,33 @@ export function engineStatements(): EngineStatements {
     };
   }
   return statements;
+}
+
+/**
+ * Conventions for compute receipts, selected from `@zodiacs/engine/receipt`'s
+ * exported convention sets to match the active ephemeris with the complete
+ * three-era continuous-UTC `timeScale` rule (before 1972, 1972 through table
+ * end, and continuous UTC after) without depending on a fixed future probe
+ * date or altering hosted capability fixtures.
+ */
+function computeReceiptConventions(): NatalReceipt['conventions'] {
+  if (!receiptConventions) {
+    const base = engineStatements().conventions;
+    const baseKeys = Object.keys(base);
+    const match = NATAL_RECEIPT_CONVENTION_SETS.find((set) => {
+      if (Object.keys(set).length !== baseKeys.length) return false;
+      return baseKeys.every((key) => (
+        key === 'timeScale'
+          ? set.timeScale !== base.timeScale && Boolean(set.timeScale?.includes('tt-utc-plus-69.184s'))
+          : (set as Record<string, string | undefined>)[key] === (base as Record<string, string | undefined>)[key]
+      ));
+    });
+    if (!match) {
+      throw new Error('Missing continuous-UTC receipt convention set.');
+    }
+    receiptConventions = match as NatalReceipt['conventions'];
+  }
+  return receiptConventions;
 }
 
 export interface SearchFacts {
@@ -181,7 +210,8 @@ export function computeReceipt(
   endpoint: ComputeEndpoint,
   extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts; electionSearch?: ElectionSearchFacts } = {},
 ): ComputeReceipt {
-  const { conventions, coverage, deltaT } = engineStatements();
+  const { coverage, deltaT } = engineStatements();
+  const conventions = computeReceiptConventions();
   const receipt: Omit<ComputeReceipt, 'conventionIds'> = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,

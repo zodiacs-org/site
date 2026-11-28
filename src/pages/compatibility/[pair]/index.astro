@@ -1,4 +1,5 @@
 ---
+import PairCardSection from '../../../components/share/PairCardSection.astro';
 import PairComparisonSymbol from '../../../components/PairComparisonSymbol.astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
@@ -8,6 +9,7 @@ import ArtFrame from '../../../components/ArtFrame.astro';
 import Motion from '../../../components/Motion.astro';
 import AskGuideLine from '../../../components/AskGuideLine.astro';
 import PairProse from '../../../components/compat/PairProse.astro';
+import PairAnglePlate from '../../../components/compat/PairAnglePlate.astro';
 import SynastryCalculator from '../../../islands/SynastryCalculator';
 import { SIGNS, ELEMENT_LABEL, MODALITY_LABEL, type Sign } from '../../../lib/signs';
 import { signDateRange } from '../../../lib/sign-display';
@@ -177,6 +179,10 @@ const jsonLd = [
       </div>
     </div>
 
+    {/* The angle between the two signs on the wheel: a story plate under the pattern strip, above the read. */}
+    <div class="kwrap">
+      <PairAnglePlate a={a.slug} b={b.slug} />
+    </div>
 
     <section class="ksection ph-readsec" id="read" aria-label={`The full ${a.name} and ${b.name} read`}>
       <div class="kwrap ph-read">
@@ -275,6 +281,8 @@ const jsonLd = [
         <p class="ph-compare__after">Don’t know their birth details? <a class="textlink" href="/compatibility/invite/">Send them an invite <span class="arr" aria-hidden="true">→</span></a></p>
       </div>
     </section>
+
+    <PairCardSection locale="en" pair={`${a.slug}-${b.slug}`} title={a.slug === b.slug ? a.name : `${a.name} & ${b.name}`} />
 
     <section class="ksection ph-questions" aria-labelledby="questions-title">
       <div class="kwrap qa">

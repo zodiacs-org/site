@@ -8,6 +8,7 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { enabledLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = resolve(repo, 'dist');
@@ -76,7 +77,7 @@ const horoscopePaths = [
 ];
 // Horoscope pages register their mono face late on phones (lateMonoFace).
 const horoscopePathSet = new Set(horoscopePaths);
-// The 390 compatibility pair pages (78 pairings in five locales) open on two
+// The 390 compatibility pair pages (78 pairings in five locales, 468 with Russian) open on two
 // sign paintings, their mobile LCP. Three of their four stylesheets are
 // inlined and the faces only text far down the page uses move to after load
 // (belowFoldFaces). The calculator's stylesheet stays a linked one
@@ -86,7 +87,13 @@ const horoscopePathSet = new Set(horoscopePaths);
 // layout as blocking time.
 const pairSlugs = signs.flatMap((sign, index) => signs.slice(index).map((other) => `${sign}-${other}`));
 const pairPaths = ['', 'es/', 'fr/', 'it/', 'pt/']
-  .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`));
+  .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`))
+  // A Russian pair exists only when the locale expansion builds it (released,
+  // in a partial batch or whole, or held in a preview build): each pair is
+  // checked on its own path.
+  .concat(pairSlugs
+    .filter((slug) => enabledLocalesForPath(`/compatibility/${slug}/`).includes('ru'))
+    .map((slug) => `ru/compatibility/${slug}/index.html`));
 const pairPathSet = new Set(pairPaths);
 const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // Every pair page must inline at least these. Feature flags can add more

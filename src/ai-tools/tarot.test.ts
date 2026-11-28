@@ -137,7 +137,7 @@ describe('the tarot switch on', () => {
     expect(capabilities.privacy).toContain('The tarot draw takes no personal details and no question.');
   });
 
-  it('with every switch on, lists draw_tarot after find_good_days, the last of the other switched tools', async () => {
+  it('with every switch on, lists draw_tarot after find_good_days and get_moment_chart, the last of the other switched tools', async () => {
     const host = await serve({
       ...ON,
       ZODIACS_SKY_EVENTS_ENABLED: '1',
@@ -145,10 +145,11 @@ describe('the tarot switch on', () => {
       ZODIACS_SOLAR_RETURN_ENABLED: '1',
       ZODIACS_NUMEROLOGY_ENABLED: '1',
       ZODIACS_GOOD_DAYS_ENABLED: '1',
+      ZODIACS_MOMENT_CHART_ENABLED: '1',
     });
     const names = (message((await post(host, rpc('tools/list'))).text).result.tools as { name: string }[]).map((tool) => tool.name);
     expect(names).toEqual([...EVERY_TOOL_NAME]);
-    expect(names.slice(-2)).toEqual(['find_good_days', 'draw_tarot']);
+    expect(names.slice(-3)).toEqual(['find_good_days', 'get_moment_chart', 'draw_tarot']);
   });
 
   it('draws each spread at full size, validated against its advertised schema, and counts only the tool name', async () => {

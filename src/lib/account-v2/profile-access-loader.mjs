@@ -94,10 +94,22 @@ export function profileAccessMarkerKeys({ supabaseAuthKey, ownerKey, retainedOwn
 
 /**
  * The inline script a page carries.
- * @param {{ src: string, keys: readonly string[] }} input
+ * @param {{ src: string, keys: readonly string[], notifyHome?: boolean }} input
  * @returns {string}
  */
-export function profileAccessLoaderScript({ src, keys }) {
+export function profileAccessLoaderScript({ src, keys, notifyHome = false }) {
+  // A locked home can paint its public sections as soon as the initial
+  // decision is final, including denial or a failed bootstrap import.
+  const load = notifyHome ? `async function (url) {
+    try {
+      var entry = await import(url);
+      if (document.documentElement.hasAttribute('data-home-access-pending')) {
+        do { await entry.profileAccessDecision(); } while (!entry.profileAccessSettled());
+      }
+    } finally {
+      window.dispatchEvent(new Event('zodiacs:home-access-decided'));
+    }
+  }` : 'function (url) { return import(url); }';
   return `(function (window, document, src, keys, load) {${PROFILE_ACCESS_LOADER_BODY}})`
-    + `(window, document, ${JSON.stringify(src)}, ${JSON.stringify(keys)}, function (url) { return import(url); });`;
+    + `(window, document, ${JSON.stringify(src)}, ${JSON.stringify(keys)}, ${load});`;
 }

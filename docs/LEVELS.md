@@ -8,9 +8,9 @@ HTML, so search engines and readers without JavaScript see every depth.
 
 | Level | Who it is for | What opens |
 | --- | --- | --- |
-| Beginner | "I'm new to it" | The big three and the wheel with signs and planets, each reading under a "What this means for you" line |
+| Beginner | "I'm new to it" | The big three and the wheel with signs and planets, the placements table, each reading under a "What this means for you" line |
 | Intermediate | "I know my big three" | Houses, aspect lines, the chart lenses (sky now, progressed, year ahead), patterns and context |
-| Advanced | "I read charts myself" | The 3D view, the exact positions table, the receipt and data links |
+| Advanced | "I read charts myself" | The 3D view, the full aspect list, the receipt and data links |
 
 Beginner is the default. The choice lives in this browser only
 (`localStorage` key `zodiacs-level`), never in a link and never on a server.
@@ -71,4 +71,4 @@ Beginner is the default. The choice lives in this browser only
   Beginner is covered by the consumer experience drive (a new visitor's
   journey on a phone), the visual baselines and Lighthouse, which never seed
   a level. A new drive that reads houses, aspects, lenses, the 3D view or
-  the details table on /birth-chart/ needs the fixture too.
+  the technical receipt on /birth-chart/ needs the fixture too.

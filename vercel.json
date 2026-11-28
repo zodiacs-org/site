@@ -236,6 +236,16 @@
       "permanent": true
     },
     {
+      "source": "/developers/engine/reference/functions/core.defaultEphemeris.html",
+      "destination": "/developers/engine/reference/functions/engine.defaultEphemeris.html",
+      "permanent": true
+    },
+    {
+      "source": "/developers/engine/reference/functions/core.setDefaultEphemeris.html",
+      "destination": "/developers/engine/reference/functions/engine.setDefaultEphemeris.html",
+      "permanent": true
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true
@@ -413,6 +423,18 @@
       "destination": "/api/compatibility?__zodiacs_share=big-three-story"
     },
     {
+      "source": "/share/vedic-signs/",
+      "destination": "/api/compatibility?__zodiacs_share=vedic-signs-link"
+    },
+    {
+      "source": "/api/og/vedic-signs-image",
+      "destination": "/api/compatibility?__zodiacs_share=vedic-signs-image"
+    },
+    {
+      "source": "/api/og/vedic-signs-story",
+      "destination": "/api/compatibility?__zodiacs_share=vedic-signs-story"
+    },
+    {
       "source": "/share/chinese-zodiac/",
       "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-link"
     },
@@ -437,6 +459,42 @@
       "destination": "/api/compatibility?__zodiacs_share=invite-story"
     },
     {
+      "source": "/share/retrograde-for-you/",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-link"
+    },
+    {
+      "source": "/api/og/retrograde-for-you-image",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-image"
+    },
+    {
+      "source": "/api/og/retrograde-for-you-story",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-story"
+    },
+    {
+      "source": "/share/astrocartography/",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-link"
+    },
+    {
+      "source": "/api/og/astrocartography-image",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-image"
+    },
+    {
+      "source": "/api/og/astrocartography-story",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-story"
+    },
+    {
+      "source": "/share/your-day/",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-link"
+    },
+    {
+      "source": "/api/og/your-day-image",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-image"
+    },
+    {
+      "source": "/api/og/your-day-story",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
@@ -451,6 +509,10 @@
     {
       "source": "/api/email/unsubscribe",
       "destination": "/api/email/subscribe?__zodiacs_email_route=unsubscribe"
+    },
+    {
+      "source": "/api/email/birthday-reminder",
+      "destination": "/api/email/subscribe?__zodiacs_email_route=birthday-reminder"
     },
     {
       "source": "/v1/guide/turn",
@@ -499,6 +561,14 @@
     {
       "source": "/mcp/de440/",
       "destination": "/api/compatibility?__zodiacs_ai=de440"
+    },
+    {
+      "source": "/mcp/de440/health",
+      "destination": "/api/compatibility?__zodiacs_ai=de440-health"
+    },
+    {
+      "source": "/mcp/de440/health/",
+      "destination": "/api/compatibility?__zodiacs_ai=de440-health"
     },
     {
       "source": "/mcp/health",

@@ -1,8 +1,12 @@
 {
   "version": 1,
-  "id": "sign-guide-entrance-motion-2026-11-23",
-  "baseCommit": "49c6b79edc126107a19be7ca6614b8d289908e10",
+  "id": "sun-year-plate-sign-guides-83a032463090",
+  "baseCommit": "83a032463090434fc758dca28d9d20aec7514a2a",
   "protectedPaths": [
-    "src/pages/[sign]/index.astro"
+    "src/pages/[sign]/index.astro",
+    "src/pages/es/[sign]/index.astro",
+    "src/pages/fr/[sign]/index.astro",
+    "src/pages/it/[sign]/index.astro",
+    "src/pages/pt/[sign]/index.astro"
   ]
 }

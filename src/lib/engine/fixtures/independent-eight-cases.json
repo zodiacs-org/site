@@ -9,7 +9,7 @@
   },
   "clock": "Each instant is evaluated at the engine's own UT1 and TT for it, as the engine makes astronomy-engine's time (tools/engine-clock.ts): from 1972-01-01 to 2027-10-02 the instant is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC) (basis iers-utc/1, table 064d98b4a531053a); at any other instant UT1 is the instant and TT = UT1 + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c). A comparison therefore measures positions and angles, not the clock; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
   "engineClock": {
-    "engineVersion": "1.1.0",
+    "engineVersion": "3.0.0",
     "deltaTModel": "zodiacs-deltat/1",
     "deltaTTable": "2026-09-24",
     "deltaTTableDigest": "6371988c510a1c6c",
@@ -22,7 +22,7 @@
     "sources": {
       "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
       "docs/engine-validation/independent-references/tools/build.py": "de1138a4cad5da3644a9674605a9b0857e2fa5e1c08df3426bec2916776cc4f8",
-      "docs/engine-validation/independent-references/tools/engine-clock.ts": "52c4bb296c5a5178a26afb8cd240d2b6d25c80f9ca8d0b9110f761c57c588fdf",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "6fec4ed915940a873d396d7c419257a82db5fce14fbd75f8d372982a2b7ab873",
       "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
       "docs/engine-validation/independent-references/tools/horizons.py": "c734a652b01c8f78efe1ed696d0f1ffb28737e24debe47f9b3e60b1ec0478a85",
       "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"
@@ -32,7 +32,7 @@
   },
   "horizonsManifest": {
     "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
-    "sha256": "9d71b40dc17a4d0254c05ecdb5aacd8c2482ef62da06c771cc10eb5d8ecf5144"
+    "sha256": "85e943d8ac58941a86b162f6fe0a7426373b9c586efdf0db3bc4a574d5451108"
   },
   "noSwiss": "No Swiss Ephemeris code or output is read or reproduced here.",
   "gates": {
@@ -114,34 +114,34 @@
       "id": "E2199",
       "positions": {
         "Sun": {
-          "longitudeDegrees": 279.8176931
+          "longitudeDegrees": 279.8170201
         },
         "Moon": {
-          "longitudeDegrees": 90.5139276
+          "longitudeDegrees": 90.5059884
         },
         "Mercury": {
-          "longitudeDegrees": 299.3107441
+          "longitudeDegrees": 299.3099844
         },
         "Venus": {
-          "longitudeDegrees": 254.1493077
+          "longitudeDegrees": 254.1484841
         },
         "Mars": {
-          "longitudeDegrees": 153.2720161
+          "longitudeDegrees": 153.2719926
         },
         "Jupiter": {
-          "longitudeDegrees": 334.2573874
+          "longitudeDegrees": 334.2572636
         },
         "Saturn": {
-          "longitudeDegrees": 328.0060251
+          "longitudeDegrees": 328.005963
         },
         "Uranus": {
-          "longitudeDegrees": 87.0132941
+          "longitudeDegrees": 87.0133211
         },
         "Neptune": {
-          "longitudeDegrees": 22.2989501
+          "longitudeDegrees": 22.2989506
         },
         "Pluto": {
-          "longitudeDegrees": 144.7593292
+          "longitudeDegrees": 144.7593392
         }
       }
     }
@@ -381,11 +381,11 @@
         "index": 2,
         "crossings": [
           {
-            "expectedMilliseconds": 2494370300147,
+            "expectedMilliseconds": 2494370302330,
             "timeScale": "nominal UT1; Z is product transport only",
             "allowedMilliseconds": [
-              2494297124780,
-              2494443555699
+              2494297126962,
+              2494443557882
             ],
             "retrograde": false
           }
@@ -395,29 +395,29 @@
         "index": 3,
         "crossings": [
           {
-            "expectedMilliseconds": 3412907683917,
+            "expectedMilliseconds": 3412907689458,
             "timeScale": "nominal UT1; Z is product transport only",
             "allowedMilliseconds": [
-              3412815199384,
-              3413001220141
+              3412815204925,
+              3413001225683
             ],
             "retrograde": false
           },
           {
-            "expectedMilliseconds": 3424772562335,
+            "expectedMilliseconds": 3424772567934,
             "timeScale": "nominal UT1; Z is product transport only",
             "allowedMilliseconds": [
-              3424655435746,
-              3424889691674
+              3424655441344,
+              3424889697274
             ],
             "retrograde": true
           },
           {
-            "expectedMilliseconds": 3436484067631,
+            "expectedMilliseconds": 3436484073288,
             "timeScale": "nominal UT1; Z is product transport only",
             "allowedMilliseconds": [
-              3436390272943,
-              3436576812236
+              3436390278600,
+              3436576817894
             ],
             "retrograde": false
           }

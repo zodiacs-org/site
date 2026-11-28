@@ -55,6 +55,7 @@ describe('GitHub Actions trust boundaries', () => {
   it('scopes every Actions secret reference to its exact protected environment', async () => {
     const expected = new Map([
       ['account-deletion-receipt-cleanup.yml', 'account-cleanup-production'],
+      ['birthday-reminders.yml', 'birthday-reminders-production'],
       ['compat-invite-sweep.yml', 'compatibility-invite-production'],
       ['daily-email.yml', 'daily-email-production'],
       ['db-backup.yml', 'database-backup-production'],
@@ -73,6 +74,17 @@ describe('GitHub Actions trust boundaries', () => {
       expect(body, name).toContain(`environment: ${expected.get(name)}`);
       expect(body, name).toContain('permissions:\n  contents: read');
     }
+  });
+
+  it('runs the birthday reminders only behind their variables, and sends only with BIRTHDAY_REMINDERS_SENDING', async () => {
+    const body = await readFile(resolve(workflowsRoot, 'birthday-reminders.yml'), 'utf8');
+    expect(body).toContain("if: vars.BIRTHDAY_REMINDERS_SENDING == '1' || vars.BIRTHDAY_REMINDER_ENABLED == '1'");
+    expect(body).toContain('if [ "$BIRTHDAY_REMINDERS_SENDING" = "1" ]; then');
+    expect(body).toContain('send-birthday-reminders.ts -- --cleanup-only');
+    expect(body).toContain('cron: "7 10 * * *"');
+    expect(body).toContain('DAILY_EMAIL_POSTAL_ADDRESS: ${{ vars.DAILY_EMAIL_POSTAL_ADDRESS }}');
+    expect(body).toContain('PUBLIC_BIRTHDAY_REMINDER_ENABLED: ${{ vars.PUBLIC_BIRTHDAY_REMINDER_ENABLED }}');
+    expect(body).toContain('PUBLIC_YEAR_SCORE_ENABLED: ${{ vars.PUBLIC_YEAR_SCORE_ENABLED }}');
   });
 
   it('keeps Trending on X off, manual runs included, and its X token withheld, unless TRENDING_X_ENABLED is 1', async () => {

@@ -50,7 +50,7 @@ describe('developer candidate documentation', () => {
     expect(lock.packages[`node_modules/${candidate.name}`].integrity)
       .toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     const files = readPackageArchive(archive);
-    const pack = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/npm-pack.json'));
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-3-0-0/npm-pack.json'));
     expect(files.size).toBe(pack.entryCount);
     for (const [path, bytes] of files) {
       // Buffer.equals checks length and every byte without walking a large
@@ -83,7 +83,7 @@ describe('developer candidate documentation', () => {
     // A source checkout is not required: the archive must expose the documented
     // public ESM/type paths, independent of its internal site-only subpaths.
     for (const entry of ['.', './geo', './receipt']) {
-      expect(packed(manifest.exports[entry].import.replace(/^\.\//, ''))).not.toBe('');
+      expect(packed((manifest.exports[entry].import ?? manifest.exports[entry].default).replace(/^\.\//, ''))).not.toBe('');
       expect(packed(manifest.exports[entry].types.replace(/^\.\//, ''))).not.toBe('');
     }
   });
@@ -144,12 +144,22 @@ describe('developer candidate documentation', () => {
     expect(receipt.types).toBe('passed');
   });
 
-  it('records the published npm release and retains the earlier candidate provenance', () => {
-    const pack = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/npm-pack.json'));
-    expect(candidate.releaseStatus).toBe('published');
-    expect(candidate.releaseLabel).toBe('On npm');
-    expect(candidate.registryVersion).toBe(candidate.version);
+  it('records the release state of the vendored archive and retains the earlier candidate provenance', () => {
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-3-0-0/npm-pack.json'));
     expect(pack.version).toBe(candidate.version);
+    if (candidate.releaseStatus === 'published') {
+      expect(candidate.releaseLabel).toBe('On npm');
+      expect(candidate.registryVersion).toBe(candidate.version);
+    } else {
+      // 3.0.0 is vendored and not on npm: the registry read of 2026-11-26 lists 2.1.0 under `latest` and no 3.0.0.
+      expect(candidate.releaseStatus).toBe('vendored-candidate');
+      const view = read('docs/platform/evidence/site-engine-3-0-0/npm-view.txt');
+      const read2026 = JSON.parse(view.slice(view.indexOf('{')));
+      expect(view).toContain(candidate.registryObservedOn);
+      expect(read2026['dist-tags'].latest).toBe(candidate.registryVersion);
+      expect(read2026.versions).toContain(candidate.registryVersion);
+      expect(read2026.versions).not.toContain(candidate.version);
+    }
     expect(pack.integrity).toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     // 1.1.0-rc.2 is vendored and not on npm. npm serves 1.0.0 under `latest`, published by the engine's Release
     // workflow on 2026-10-11 and read again with its attestation verified on the day the site vendored the candidate.

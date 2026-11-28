@@ -12,11 +12,11 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const target = join(root, 'public/developers/engine/reference');
 const base = 'https://zodiacs.org/developers/engine/reference/';
 export const release = Object.freeze({
-  version: '1.1.0',
-  sourceCommit: '2496c28f273e1e99526490e857332fae44473367',
-  sha256: '4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac',
+  version: '3.0.0',
+  sourceCommit: '2e4310ff42d4bc85cb5e33a5a4d9f3295fd36322',
+  sha256: '0addb2f4d39ea4d8e87f54ad82a033a16a94859c78845f055d2208e04259a9a3',
   sourceRepository: 'https://github.com/zodiacs-org/engine',
-  artifactUrl: 'https://raw.githubusercontent.com/zodiacs-org/engine/d82d2410835b18d52eecc8a97d02ee87a5b14012/artifacts/zodiacs-engine-1.1.0.tgz',
+  artifactUrl: 'https://raw.githubusercontent.com/zodiacs-org/engine/b5bfdb473b396a4f8c083e5689cf9560789784dd/artifacts/zodiacs-engine-3.0.0.tgz',
 });
 export const excluded = Object.freeze(['./internal', './internal/math']);
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');

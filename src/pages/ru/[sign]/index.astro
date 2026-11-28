@@ -1,8 +1,11 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
+import Motion from '../../../components/Motion.astro';
 import SignGuideHero from '../../../components/SignGuideHero.astro';
 import SignGuideFacts from '../../../components/SignGuideFacts.astro';
+import SunYearPlate from '../../../components/guide/SunYearPlate.astro';
+import programData from '../../../data/horoscope-program.json';
 import Faq from '../../../components/Faq.astro';
 import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signName } from '../../../lib/signs';
 import { signDateRange } from '../../../lib/sign-display';
@@ -11,6 +14,7 @@ import { planetLabel } from '../../../lib/i18n/astrology';
 import { russianGuideFor } from '../../../data/ru-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { publishedLocalesForPath } from '../../../lib/locale-expansion/policy.mjs';
 
 export function getStaticPaths() {
   return SIGN_SLUGS.map((sign) => ({ params: { sign } }));
@@ -21,6 +25,9 @@ const guide = russianGuideFor(sign);
 const idx = SIGNS.findIndex((s) => s.slug === sign.slug);
 const prev = SIGNS[(idx + 11) % 12];
 const next = SIGNS[(idx + 1) % 12];
+// The Sun's year plate reads the same day as the English guide: the daily
+// edition's date.
+const editionDate = (programData as { anchorDate: string }).anchorDate;
 const metaTitle = `${signName(sign, 'ru')}: даты, характер, совместимость`;
 const metaDescription = `Гид по знаку ${signName(sign, 'ru')}: даты, стихия, управитель, сильные стороны и как знак ведёт себя в отношениях.`;
 const pluralSign = ['gemini', 'libra', 'pisces'].includes(sign.slug);
@@ -92,16 +99,19 @@ const jsonLd = [
   imageAlt={`${signName(sign, 'ru')}, гид по знаку на Zodiacs.org`}
   type="article"
   locale="ru"
-  noindex
+  noindex={!publishedLocalesForPath(`/${sign.slug}/`).includes('ru')}
   jsonLd={jsonLd}
 >
   <article style={`--sign:${sign.hue}`}>
+    <Motion />
     <SignGuideHero sign={sign.slug} locale="ru" title={signName(sign, 'ru')} sub={guide.intro[0]}>
       <a class="btn btn--primary btn--lg" href="/ru/birth-chart/"><span>Постройте бесплатную натальную карту</span><span class="orb" aria-hidden="true">↗</span></a>
       <a class="btn btn--glass btn--lg" href="/ru/compatibility/"><span>Проверить совместимость</span></a>
     </SignGuideHero>
     <div class="kwrap guide-locale-facts">
       <SignGuideFacts facts={heroFacts} />
+
+      <SunYearPlate sign={sign.slug} now={new Date(`${editionDate}T12:00:00Z`)} locale="ru" />
     </div>
 
     <div class="container container--narrow guide-ru-body">

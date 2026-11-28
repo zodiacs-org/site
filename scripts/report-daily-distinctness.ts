@@ -1,4 +1,5 @@
 /** Report worst pairwise similarity over an explicit historical date range. */
+import '../src/lib/engine/server-de440.mjs';
 import {
   DAILY_EDITORIAL_CONSTITUTION,
   buildDailyPublication,

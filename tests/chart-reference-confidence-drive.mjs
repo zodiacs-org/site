@@ -131,7 +131,10 @@ async function data(s){return s.page.evaluate(()=>({events:window.__referenceEve
  profile:localStorage.getItem('zodiacs.profile.v1')}));}
 async function download(s,name){const more=s.page.locator('[data-chart-more]');if(!(await more.evaluate(element=>element.open)))await more.locator(':scope > summary').click();const action=s.page.locator('[data-download-calculation-receipt]');await action.focus();const received=s.page.waitForEvent('download');await action.press('Enter');const value=await received;assert.equal(value.suggestedFilename(),'zodiacs-calculation-receipt.json');const path=resolve(out,name+'.json');await value.saveAs(path);return readFile(path,'utf8');}
 function cleared(value){assert.equal(value.result,false);assert.equal(value.receipt,false);assert.equal(value.share,false);assert.equal(value.save,false);assert.equal(value.registry,null);assert.equal(value.postContext,null);}
-function noMoonAdvice(inspect){assert.equal(inspect.approach.moon,null);assert.equal(inspect.communication.moonSign,null);assert.ok(inspect.communication.aspects.every(row=>row.target!=='Moon'));assert.deepEqual(inspect.receivedCandidates,[]);assert.equal(inspect.context.placements.find(row=>row.body==='Moon').status,'unresolved');}
+function noMoonAdvice(inspect,signs=[]){assert.equal(inspect.approach.moon,null);assert.equal(inspect.communication.moonSign,null);assert.ok(inspect.communication.aspects.every(row=>row.target!=='Moon'));assert.deepEqual(inspect.receivedCandidates,[]);const moon=inspect.context.placements.find(row=>row.body==='Moon');assert.equal(moon.status,'unresolved');assert.deepEqual(moon.conditionalSigns,signs);}
+// One sign the Moon held all date is advice-ready; the positions link still carries no candidates.
+function verifiedMoon(inspect,sign){assert.equal(inspect.approach.moon.sign,sign);assert.equal(inspect.communication.moonSign,sign);assert.deepEqual(inspect.receivedCandidates,[]);const moon=inspect.context.placements.find(row=>row.body==='Moon');assert.equal(moon.status,'established');assert.equal(moon.sign,sign);}
+const completeTransitions=s=>s.page.evaluate(()=>typeof globalThis.Temporal?.ZonedDateTime?.prototype?.getTimeZoneTransition==='function');
 async function group(name,fn){try{const detail=await fn();results.push({name,passed:true,detail});}catch(error){results.push({name,passed:false,error:String(error.stack??error)});}console.log(JSON.stringify({name,passed:results.at(-1).passed,...(results.at(-1).error?{error:results.at(-1).error}:{})}));}
 const controls=[
  ['Toronto','1919-03-31','America/Toronto','1919-03-31T04:30:00Z','pisces'],
@@ -141,6 +144,14 @@ const controls=[
  ['same-date gap','2012-10-07','Australia/Lord_Howe'],
  ['repeated Apia','1892-07-04','Pacific/Apia'],
 ];
+// The Moon's signs over each date with the browser's complete transitions (Temporal), then without them.
+const expectedSigns={
+ Toronto:[['pisces','aries'],[]],Juneau:[[],[]],
+ 'ordinary singleton':[['aries'],['aries']],
+ 'ordinary two signs':[['aquarius','pisces'],['aquarius','pisces']],
+ 'same-date gap':[['gemini','cancer'],['gemini','cancer']],
+ 'repeated Apia':[['libra','scorpio'],[]],
+};
 try{
  await new Promise(done=>server.listen(0,'127.0.0.1',done));origin=`http://127.0.0.1:${server.address().port}`;
  browser=await chromium.launch({executablePath:await findChromium(),headless:true,args:STABLE_CHROMIUM_ARGS});
@@ -150,11 +161,22 @@ try{
     await fill(s,date,zone);await submit(s);const value=await data(s);assert.equal(value.result,true);assert.equal(value.receipt,true);assert.equal(value.share,true);assert.equal(value.save,true);assert.equal(value.profile,null);
     const inspect=await s.page.evaluate(()=>window.fixture.inspect());const bytes=await download(s,label.replaceAll(' ','-')+'-'+variant);assert.equal(bytes,value.outputs.envelopeJson);
     if(variant==='candidate'){
-     assert.deepEqual(JSON.parse(value.outputs.committedChart).moonSignCandidates,[]);assert.equal(value.registry,null);assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,1);
-     assert.equal(value.events.filter(row=>['endpoints','bodies','legacyNatal'].includes(row.kind)).length,0);noMoonAdvice(inspect);
-     const messages=await s.page.evaluate(()=>window.__ZDX_UI__.messages);assert.ok(value.notice.includes(messages.moonUnverifiedNotice));assert.ok(value.notice.includes(messages.unknownTimeSunReference));assert.equal(value.postContext.sunSign,null);assert.ok(!value.notice.includes('Moon also changed signs'));
+     const signs=expectedSigns[label][await completeTransitions(s)?0:1];
+     assert.deepEqual(JSON.parse(value.outputs.committedChart).moonSignCandidates,signs);assert.equal(value.registry,null);assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,1);
+     assert.equal(value.events.filter(row=>['endpoints','bodies','legacyNatal'].includes(row.kind)).length,0);
+     // The date's limits are sampled for the Moon alone.
+     assert.ok(value.events.filter(row=>row.kind==='body').every(row=>row.body==='Moon'));
+     if(signs.length===1)verifiedMoon(inspect,signs[0]);else noMoonAdvice(inspect,signs);
+     // Both signs of a crossing were verified, so they get their own notice; unverified is for no sign at all.
+     const messages=await s.page.evaluate(()=>window.__ZDX_UI__.messages);assert.equal(value.notice.includes(messages.moonUnverifiedNotice),signs.length===0);assert.equal(value.notice.includes(messages.moonAmbiguousNotice),signs.length===2);assert.ok(value.notice.includes(messages.unknownTimeSunReference));assert.equal(value.postContext.sunSign,null);
+     assert.equal(await s.page.locator('.calc__three [data-moon-uncertain]').count(),signs.length===1?0:1);
+     if(signs.length===1)assert.equal(await s.page.locator('[data-moon-uncertain]').count(),0);
+     // A sign verified across the date is the sign alone: the noon degree is not the Moon's at birth.
+     assert.equal(await s.page.locator('.calc__three [data-moon-sign-only]').count(),signs.length===1?1:0);
+     assert.equal(await s.page.locator('.calc__three [data-moon-sign-only] .three-card__deg').count(),0);
      assert.equal(await s.page.locator('[data-moon-uncertain] .three-card__deg').count(),0);
-     if(instant){const witness=await s.page.evaluate(args=>window.fixture.witness(...args),[date,zone,instant]);assert.equal(witness.member,true);assert.equal(witness.sign,sign);value.witness=witness;}
+     // A member instant in another sign: such a date never verifies one sign.
+     if(instant){const witness=await s.page.evaluate(args=>window.fixture.witness(...args),[date,zone,instant]);assert.equal(witness.member,true);assert.equal(witness.sign,sign);assert.notEqual(signs.length,1);value.witness=witness;}
     }
     assert.deepEqual(s.errors,[]);await s.page.screenshot({path:resolve(out,label.replaceAll(' ','-')+'-'+variant+'.png'),fullPage:true});observations[variant]={value,inspect,downloadSha256:hash(bytes)};
    }finally{await s.context.close();}
@@ -170,8 +192,16 @@ try{
   }
   return {sameBrowserExactReferenceParity:!!observations.baseline,observations};
  });
- for(const locale of ['en','es','fr','it','pt','ru'])await group('localized unresolved result '+locale,async()=>{
-  const s=await setup('candidate',locale,'full');try{await fill(s,'1990-01-04','Asia/Bangkok');await submit(s);const value=await data(s);const messages=await s.page.evaluate(()=>window.__ZDX_UI__.messages);assert.ok(value.notice.includes(messages.moonUnverifiedNotice));assert.ok(value.notice.includes(messages.unknownTimeSunReference));assert.equal(value.postContext.sunSign,null);assert.ok(value.hero.includes(messages.needsBirthTime));assert.equal(await s.page.locator('[data-moon-uncertain] .three-card__deg').count(),0);assert.equal(value.registry,null);assert.equal(await download(s,'locale-'+locale),value.outputs.envelopeJson);assert.deepEqual(s.errors,[]);return value;}finally{await s.context.close();}
+ for(const locale of ['en','es','fr','it','pt','ru'])await group('localized Moon result '+locale,async()=>{
+  const outcomes={};
+  for(const [kind,date,zone] of [['verified','1990-01-04','Asia/Bangkok'],['two signs','1990-01-01','Europe/London']]){
+   const s=await setup('candidate',locale,'full');try{await fill(s,date,zone);await submit(s);const value=await data(s);const messages=await s.page.evaluate(()=>window.__ZDX_UI__.messages);const verified=kind==='verified';
+    assert.equal(value.notice.includes(messages.moonUnverifiedNotice),false);assert.equal(value.notice.includes(messages.moonAmbiguousNotice),!verified);assert.ok(value.notice.includes(messages.unknownTimeSunReference));assert.equal(value.postContext.sunSign,null);
+    if(verified)assert.equal(value.hero,null);else assert.ok(value.hero.includes(messages.needsBirthTime));
+    assert.equal(await s.page.locator('.calc__three [data-moon-sign-only]').count(),verified?1:0);assert.equal(await s.page.locator('.calc__three [data-moon-sign-only] .three-card__deg').count(),0);
+    assert.equal(await s.page.locator('[data-moon-uncertain] .three-card__deg').count(),0);assert.equal(value.registry,null);assert.equal(await download(s,'locale-'+locale+'-'+kind.replace(' ','-')),value.outputs.envelopeJson);assert.deepEqual(s.errors,[]);outcomes[kind]=value;}finally{await s.context.close();}
+  }
+  return outcomes;
  });
  for(const mode of ['full','moon','rising'])await group('known-time preserved '+mode,async()=>{
   const observations={};for(const variant of bundles.keys()){
@@ -182,7 +212,7 @@ try{
   const s=await setup();try{await fill(s,'2011-12-29','Pacific/Apia');await submit(s);assert.equal((await data(s)).result,true);await fill(s,'2011-12-30','Pacific/Apia');await s.page.evaluate(()=>window.fixture.reset());await submit(s);await s.page.waitForFunction(()=>document.activeElement===document.querySelector('.calc__error'));const value=await data(s);cleared(value);assert.deepEqual(value.events.map(row=>row.kind),['resolve','contains']);assert.equal(value.error,'We couldn’t establish a calculation time within this local date. Check the date and place.');assert.equal(await s.page.locator('#birth-date').inputValue(),'2011-12-30');await fill(s,'2011-12-31','Pacific/Apia');await submit(s);assert.equal((await data(s)).result,true);assert.deepEqual(s.errors,[]);return {refused:value,recovery:true};}finally{await s.context.close();}
  });
  for(const action of ['edit','replacement','unmount'])await group('pending reference ownership '+action,async()=>{
-  const s=await setup();try{await fill(s,'1919-03-31','America/Toronto');await s.page.evaluate(()=>window.fixture.hold());await s.page.locator('.calc__submit').click();if(action==='unmount')await s.page.evaluate(()=>window.fixture.unmount());else await s.page.locator('#birth-date').fill('1990-01-04');if(action==='replacement')await s.page.locator('.calc__submit').click();await s.page.evaluate(()=>window.fixture.release());if(action==='unmount')await s.page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));else await settle(s);const value=await data(s);if(action==='replacement'){assert.equal(value.result,true);assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,1);assert.ok(value.events.filter(row=>row.kind==='resolve').every(row=>row.date==='1990-01-04'));}else{cleared(value);assert.deepEqual(value.events,[]);}assert.deepEqual(s.errors,[]);return value;}finally{await s.context.close();}
+  const s=await setup();try{await fill(s,'1919-03-31','America/Toronto');await s.page.evaluate(()=>window.fixture.hold());await s.page.locator('.calc__submit').click();if(action==='unmount')await s.page.evaluate(()=>window.fixture.unmount());else await s.page.locator('#birth-date').fill('1990-01-04');if(action==='replacement')await s.page.locator('.calc__submit').click();await s.page.evaluate(()=>window.fixture.release());if(action==='unmount')await s.page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));else await settle(s);const value=await data(s);if(action==='replacement'){assert.equal(value.result,true);assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,1);assert.ok(value.events.filter(row=>row.kind==='resolve').every(row=>['1990-01-04','1990-01-05'].includes(row.date)));}else{cleared(value);assert.deepEqual(value.events,[]);}assert.deepEqual(s.errors,[]);return value;}finally{await s.context.close();}
  });
  await group('positions-only stays unresolved without calculation or receipt',async()=>{
   const token='2.'+Buffer.from(JSON.stringify({b:Array.from({length:12},(_,index)=>index*27),h:'w',v:'0.1.1-rc.6'})).toString('base64url');const s=await setup('candidate','en','full','#p='+token);try{await s.page.locator('[data-positions-only]').waitFor();const value=await data(s);assert.deepEqual(value.events,[]);assert.equal(value.receipt,false);assert.equal(value.registry,null);assert.equal(value.postContext,null);assert.equal(value.profile,null);assert.deepEqual(s.errors,[]);return value;}finally{await s.context.close();}

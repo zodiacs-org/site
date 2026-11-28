@@ -154,8 +154,8 @@ function recordedAnswer(url) {
 }
 
 describe('NASA accuracy receipts', () => {
-  it('keeps the receipt and downloads hidden with engine 1.1.0 and the owner switch off', async () => {
-    expect(vendor.ENGINE_VERSION).toBe('1.1.0');
+  it('keeps the receipt and downloads hidden with engine 3.0.0 and the owner switch off', async () => {
+    expect(vendor.ENGINE_VERSION).toBe('3.0.0');
     expect(accuracyPublished).toBe(false);
     expect(accuracyPagePaths()).toEqual([]);
     expect(await rawPaths()).toEqual([]);

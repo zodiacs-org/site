@@ -36,6 +36,7 @@
 .ys-chooser .btn { align-self: flex-start; }
 .ys-chooser__actions .btn { align-self: auto; }
 
+.ys-pending { min-height: 100svh; }
 .ys-result { margin-top: 40px; scroll-margin-top: 90px; outline: none; }
 .ys-result__title { margin: 0 0 12px; }
 .ys-result__lede { color: var(--text-2); max-width: 65ch; }

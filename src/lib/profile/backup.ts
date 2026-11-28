@@ -17,7 +17,7 @@ const instant = (v: unknown): v is string => text(v, 40) && Number.isFinite(Date
 const longitude = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v < 360;
 const house = (v: unknown): v is Profile['settings']['houseSystem'] => v === 'whole' || v === 'placidus';
 const bodies = new Set(['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','North Node','South Node']);
-const flags = new Set(['dst-gap','dst-fold','lmt','no-time','polar-fallback','outside-reference-span','delta-t-extrapolated','de440-unavailable','outside-de440-span']);
+const flags = new Set(['dst-gap','dst-fold','lmt','no-time','polar-fallback','polar-angles','calendar-unknown','host-zone-data-differs','outside-reference-span','delta-t-extrapolated','de440-unavailable','outside-de440-span']);
 const fail = (): never => { throw new Error('This is not a valid Zodiacs chart backup. Nothing was changed.'); };
 
 function parsePlace(v: unknown): SavedPlace | null {
@@ -39,6 +39,7 @@ function parseChart(v: unknown): SavedChart {
     || (b.timeKnown && b.time === null) || !text(s.engineVersion, 100) || !instant(s.utcISO) || !house(s.houseSystem)
     || !Array.isArray(s.bodies) || s.bodies.length < 1 || s.bodies.length > 12 || !Array.isArray(s.flags) || s.flags.length > flags.size
     || s.flags.some(f => typeof f !== 'string' || !flags.has(f))
+    || (s.calendarChecked !== undefined && typeof s.calendarChecked !== 'boolean')
     || (v.relationship !== undefined && v.relationship !== 'self' && v.relationship !== 'other')) return fail();
   const normalizedBodies = s.bodies.map(item => {
     if (!object(item) || !text(item.body, 20) || !bodies.has(item.body) || !longitude(item.lon) || typeof item.retrograde !== 'boolean') return fail();
@@ -53,7 +54,8 @@ function parseChart(v: unknown): SavedChart {
     birth: { date: b.date, time: b.time as string | null, timeKnown: b.timeKnown, place: parsePlace(b.place) },
     summary: { engineVersion: s.engineVersion, utcISO: s.utcISO, houseSystem: s.houseSystem,
       bodies: normalizedBodies, angles: s.angles === null ? null : { asc: (s.angles as Record<string, number>).asc!, mc: (s.angles as Record<string, number>).mc! },
-      flags: s.flags as SavedChart['summary']['flags'] },
+      flags: s.flags as SavedChart['summary']['flags'],
+      ...(s.calendarChecked === true ? { calendarChecked: true as const } : {}) },
   };
 }
 

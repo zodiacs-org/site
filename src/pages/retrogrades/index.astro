@@ -1,7 +1,9 @@
 ---
 import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
+import { launchFlagOn } from '../../lib/launch-flags';
 import Motion from '../../components/Motion.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
@@ -166,6 +168,8 @@ const jsonLd = [
   sources={sources}
 >
   <section class="section--tight container container--narrow">
+    <Motion />
+    <ToolHeroMark name="retrogrades" />
     <div class="tool-hero reveal">
       <h1 class="display">See every retrograde through {lastYear}.</h1>
       <p>See which planets are retrograde now and when each turns next.</p>
@@ -192,7 +196,6 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     {/* Each planet's card rises once as it scrolls in (docs/MOTION.md). The hero and the
         "right now" answer above stay still. */}
-    <Motion />
     <div class="planets reveal">
       {byPlanet.map((p) => (
         <div class="planet" data-enter="rise">
@@ -246,7 +249,12 @@ const jsonLd = [
         an engine rebuild for drive itself. The yearly outer-planet spans
         pass mostly unremarked, felt only where they cross something exact
         in your own chart, which is what the{' '}
-        <a href="/transits/">transit tracker</a> checks.
+        <a href="/transits/">transit tracker</a> checks.{launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') && (
+          <> For Mercury, Venus
+          and Mars, <a href="/retrogrades/for-you/">retrogrades in your chart</a>{' '}
+          names the house each one falls in for you and the natal planets it
+          loops over.</>
+        )}
       </p>
       <p>
         Born during a retrograde? Common and unalarming: roughly one
@@ -327,4 +335,9 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (max-width: 359px), (min-width: 589px) and (max-width: 679px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>

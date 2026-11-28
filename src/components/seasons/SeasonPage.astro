@@ -10,10 +10,12 @@
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../ArtFrame.astro';
 import SignIcon from '../SignIcon.astro';
+import { READING_CONFIDENCE_NOTE } from '../../lib/reading-confidence-note';
 import Faq from '../Faq.astro';
 import AskGuideAbout from '../AskGuideAbout.astro';
 import SeasonClock from './SeasonClock.astro';
 import SeasonStory from './SeasonStory.astro';
+import Motion from '../Motion.astro';
 import { englishOnlyCue, localizePath, renderableLocalesForPath } from '../../lib/i18n';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { SIGNS, signBySlug, signName } from '../../lib/signs';
@@ -116,6 +118,9 @@ const more = [
   sources={sources}
 >
   <section class="kwrap season-hero" style={`--sign:${sign.hue}`}>
+    {/* English pages only: the translated season pages stay as they are. Inside
+        the hero, so it stays main's first child and keeps its top padding. */}
+    {locale === 'en' && <Motion />}
     <div class="season-hero__copy">
       <p class="kicker">{ui.kicker(name)}</p>
       <h1 class="display season-hero__title">{title}</h1>
@@ -153,7 +158,7 @@ const more = [
       {readers.map(({ reader, name: readerName, text, house, houseName }) => {
         const horoscope = horoscopeLink(`/horoscopes/${reader.slug}/`);
         return (
-          <li class:list={['tile', 'season-ask', { 'season-ask--own': house === 1 }]} style={`--sign:${reader.hue}`} id={`for-${reader.slug}`}>
+          <li class:list={['tile', 'season-ask', { 'season-ask--own': house === 1 }]} style={`--sign:${reader.hue}`} id={`for-${reader.slug}`} data-enter={locale === 'en' ? 'rise' : undefined}>
             <div class="season-ask__head">
               <SignIcon sign={reader.slug} size={40} />
               <div>
@@ -163,7 +168,10 @@ const more = [
             </div>
             <p class="season-ask__text">{text}</p>
             <p class="season-ask__foot">
-              <span class="season-ask__confidence">{confidence}</span>
+              <span>
+                <span class="season-ask__confidence">{confidence}</span>
+                {locale === 'en' && reader.slug === slug && <small class="season-ask__note">{READING_CONFIDENCE_NOTE}</small>}
+              </span>
               <a href={horoscope.href} hreflang={horoscope.english ? 'en' : undefined} title={horoscope.english ? cue?.aria : undefined}>{ui.readHoroscope}{horoscope.english ? cue?.suffix : ''}</a>
             </p>
           </li>
@@ -250,6 +258,7 @@ const more = [
   .season-ask__house { margin: 0; color: var(--sign); font-size: 13px; }
   .season-ask__text { margin: 0; color: var(--text-2); line-height: 1.6; }
   .season-ask__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; margin: 0; font-size: 13px; }
+  .season-ask__note { display: block; font-size: var(--text-sm); color: var(--muted); }
   .season-ask__confidence { color: var(--faint); font-family: var(--font-mono); font-size: 12px; }
   .season-ask__foot a { color: var(--muted); }
   .season-ask__foot a:hover { color: var(--text); }

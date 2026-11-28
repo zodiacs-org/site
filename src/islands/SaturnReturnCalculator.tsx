@@ -22,6 +22,30 @@ import { createModuleLoader } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 const loadReturns = createModuleLoader(() => import('../lib/engine/returns'));
+// The calendar file is built only when asked for; the page loads nothing for it before then.
+const loadCalendar = createModuleLoader(() => Promise.all([
+  import('../lib/saturn-return-ical'), import('../lib/ical-download'),
+]));
+
+/** The button, in the words of the sky calendar's download button in each language. */
+const DOWNLOAD_CALENDAR: Record<Locale, string> = {
+  en: 'Download calendar (.ics)',
+  es: 'Descargar calendario (.ics)',
+  pt: 'Baixar calendário (.ics)',
+  fr: 'Télécharger le calendrier (.ics)',
+  it: 'Scarica calendario (.ics)',
+  ru: 'Скачать календарь (.ics)',
+};
+
+/** Privacy and re-import note beside the Saturn return calendar download, matching My Sky's honesty rule. */
+const CALENDAR_NOTE: Record<Locale, string> = {
+  en: 'Built in your browser; your birth details are not sent to us. Anyone you share this file with, or any online calendar you import it into, can narrow down your birth date from its Saturn return dates. If you later add a birth time or place and download a revised file, remove the earlier events first to avoid duplicates.',
+  es: 'Creado en tu navegador; tus datos de nacimiento no se nos envían. Cualquier persona con quien compartas este archivo, o cualquier calendario en línea donde lo importes, puede deducir tu fecha de nacimiento a partir de las fechas del retorno de Saturno. Si más adelante agregas una hora o lugar de nacimiento y descargas un archivo revisado, elimina antes los eventos anteriores para evitar duplicados.',
+  pt: 'Criado no seu navegador; seus dados de nascimento não são enviados para nós. Quem receber este arquivo, ou qualquer calendário online em que você o importar, pode deduzir sua data de nascimento pelas datas do retorno de Saturno. Se depois você adicionar hora ou local de nascimento e baixar um arquivo revisado, remova primeiro os eventos anteriores para evitar duplicatas.',
+  fr: 'Créé dans ton navigateur ; tes données de naissance ne nous sont pas envoyées. Toute personne avec qui tu partages ce fichier, ou tout calendrier en ligne où tu l’importes, peut en déduire ta date de naissance à partir des dates du retour de Saturne. Si tu ajoutes ensuite une heure ou un lieu de naissance et télécharges un fichier mis à jour, supprime d’abord les anciens événements pour éviter les doublons.',
+  it: 'Creato nel tuo browser; i tuoi dati di nascita non ci vengono inviati. Chiunque riceva questo file, o qualsiasi calendario online in cui lo importi, può risalire alla tua data di nascita dalle date del ritorno di Saturno. Se in seguito aggiungi ora o luogo di nascita e scarichi un file aggiornato, rimuovi prima gli eventi precedenti per evitare duplicati.',
+  ru: 'Файл создаётся в вашем браузере; данные о рождении нам не отправляются. Любой, с кем вы поделитесь этим файлом, или онлайн-календарь, куда вы его импортируете, сможет определить вашу дату рождения по датам возвращения Сатурна. Если позже вы добавите время или место рождения и скачаете обновлённый файл, сначала удалите прежние события, чтобы избежать дубликатов.',
+};
 
 function seasonStatus(season: ReturnSeason, now: Date): 'past' | 'active' | 'upcoming' {
   if (season.last.getTime() < now.getTime()) return 'past';
@@ -44,21 +68,27 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
   const [resultReceipt, setResultReceipt] = useState<{ utc: Date; reference: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [calendarBusy, setCalendarBusy] = useState(false);
+  const [calendarError, setCalendarError] = useState('');
   const resultHeadingRef = useRef<HTMLHeadingElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const focusAfterComputeRef = useRef(false);
   const generation = useRef(0);
+  const calendarPending = useRef(false);
 
   useEffect(() => () => { generation.current += 1; }, []);
 
   const approximate = resultReceipt?.reference ?? true;
 
-  function invalidate() { generation.current++; setBusy(false); setResult(null); setResultReceipt(null); setError(''); focusAfterComputeRef.current = false; }
+  function settleCalendar(failure = '') { calendarPending.current = false; setCalendarBusy(false); setCalendarError(failure); }
+
+  function invalidate() { generation.current++; setBusy(false); setResult(null); setResultReceipt(null); setError(''); settleCalendar(); focusAfterComputeRef.current = false; }
 
   async function compute(e: Event) {
     e.preventDefault();
     if (!date || busy) return;
     const run = ++generation.current;
+    settleCalendar();
     focusAfterComputeRef.current = true;
     setBusy(true);
     setError('');
@@ -97,6 +127,31 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
     } finally {
       if (run === generation.current) setBusy(false);
     }
+  }
+
+  /** Built on this device from the result on screen; nothing is sent anywhere. */
+  async function downloadCalendar() {
+    if (!result || calendarPending.current) return;
+    const run = generation.current;
+    const shown = result;
+    calendarPending.current = true;
+    setCalendarBusy(true);
+    setCalendarError('');
+    let failure = '';
+    try {
+      const [calendar, file] = await loadCalendar();
+      if (run !== generation.current) return;
+      file.downloadCalendarFile(calendar.buildSaturnReturnCalendar(shown, {
+        approximate, generatedAt: new Date(), locale,
+        words: {
+          seasons: shown.seasons.map((_, i) => tf(locale, 'saturnReturnHeading', { ordinal: ordinal[i] ?? String(i + 1) })),
+          retrograde: t(locale, 'retrogradePass'),
+        },
+      }), calendar.saturnReturnCalendarFilename(shown));
+    } catch (cause) {
+      failure = calculationError(cause, locale, t(locale, 'chartReceiptError'));
+    }
+    if (run === generation.current) settleCalendar(failure);
   }
 
   useEffect(() => {
@@ -217,6 +272,18 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
           </div>
 
           <div class="calc__actions">
+            {result.seasons.length > 0 && (
+              <button
+                class="btn btn--ghost"
+                type="button"
+                disabled={calendarBusy}
+                aria-describedby="sr-calendar-note"
+                onClick={() => { void downloadCalendar(); }}
+                data-saturn-calendar
+              >
+                <span>{DOWNLOAD_CALENDAR[locale]}</span><span class="orb">↓</span>
+              </button>
+            )}
             <a class="btn btn--ghost" href={localizePath(locale, '/birth-chart/')}>
               <span>{t(locale, 'seeSaturnChart')}</span><span class="orb">↗</span>
             </a>
@@ -228,6 +295,11 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
               <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
             </a>
           </div>
+          {calendarError && <p class="calc__error" role="alert" data-saturn-calendar-error>{calendarError}</p>}
+          <CalculationReload error={calendarError} locale={locale} />
+          {result.seasons.length > 0 && (
+            <p class="field__help" id="sr-calendar-note" data-saturn-calendar-note>{CALENDAR_NOTE[locale]}</p>
+          )}
         </div>
       )}
     </div>

@@ -31,7 +31,7 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 }
 
 // The engine versions that wrote the natal conventions sets, in package order.
-const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 1.1.0'];
+const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 3.0.0', '2.0.0-rc.3 to 3.0.0', '2.0.0-rc.3 to 3.0.0'];
 
 // The registry cites the vector files in which it first catalogued each level.
 // Suite 0.3.0 reissued L1 to L3 with new file digests.
@@ -227,7 +227,7 @@ describe('the conventions registry', () => {
 
   it('lists exactly the values of the engine\'s closed vocabularies', () => {
     type Exactly<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
-    const FLAGS = ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated'] as const;
+    const FLAGS = ['dst-gap', 'dst-fold', 'lmt', 'calendar-unknown', 'host-zone-data-differs', 'no-time', 'polar-fallback', 'polar-angles', 'outside-reference-span', 'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated'] as const;
     const REFERENCES = ['supplied-instant', 'utc-noon', 'local-noon'] as const;
     const SCALES = ['utc', 'ut1', 'tt'] as const;
     const SEGMENTS = ['long-term', 'reconstructed', 'observed', 'predicted', 'extrapolated', 'pinned', 'fallback'] as const;
@@ -250,9 +250,9 @@ describe('the conventions registry', () => {
     type Basis = TimeScale['basis'];
     type Model = DeltaT['model'];
     type Source = NonNullable<TimeScale['ut1MinusUtc']>['source'];
-    const BASES = ['iers', 'delta-t', 'pinned'] as const;
+    const BASES = ['iers', 'continuous-utc', 'delta-t', 'pinned'] as const;
     const MODELS = ['iers-utc/1', 'zodiacs-deltat/1', 'pinned'] as const;
-    const SOURCES = ['observed', 'predicted', 'fallback'] as const;
+    const SOURCES = ['observed', 'predicted', 'fallback', 'model'] as const;
     const records: [Exactly<typeof BASES[number], Basis>, Exactly<typeof MODELS[number], Model>, Exactly<typeof SOURCES[number], Source>] = [true, true, true];
     expect(records.every(Boolean)).toBe(true);
     expect(values('time-basis')).toEqual([...BASES]);
@@ -265,9 +265,12 @@ describe('the conventions registry', () => {
       const bySite = natalEnvelopeIds(fields(envelope));
       expect(envelope.receipt.conventionIds).toEqual(bySite);
       expect(natalConventionIds(envelope)).toEqual(bySite);
-      expect(envelope.requiredFeatures).toEqual(envelope.receipt.engine.ephemeris?.name === 'jpl-de440'
-        ? ['convention-ids', 'ephemeris-jpl-de440']
-        : ['convention-ids']);
+      // From 2.0.0-rc.3 a chart on continuous UTC needs a reader that knows that basis.
+      expect(envelope.requiredFeatures).toEqual([
+        'convention-ids',
+        ...envelope.receipt.engine.ephemeris?.name === 'jpl-de440' ? ['ephemeris-jpl-de440'] : [],
+        ...envelope.result.timeScale.basis === 'continuous-utc' ? ['time-basis-continuous-utc'] : [],
+      ]);
     }
     // The rule reaches the result: a chart on IERS names its basis only there.
     expect(natalEnvelopes().some((envelope) => envelope.receipt.conventionIds!.includes('time-basis:iers'))).toBe(true);

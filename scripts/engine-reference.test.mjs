@@ -61,7 +61,7 @@ it('rejects broken local links and fragment links', async () => {
   expect(result.errors).toContain('index.html: missing anchor modules/calc.html#missing');
 });
 it('keeps compatibility-only entries outside the public documentation contract', () => {
-  expect(Object.keys(provenance.api)).toEqual(['.','./calc','./conventions','./crossings','./deltat','./geo','./houses','./lite','./receipt','./sky','./techniques','./time','./de440','./de440/pack','./timing','./vedic','./window']);
+  expect(Object.keys(provenance.api)).toEqual(['.','./calc','./conventions','./core','./crossings','./deltat','./geo','./houses','./lite','./receipt','./sky','./techniques','./time','./de440','./de440/pack','./minor-bodies','./timing','./vedic','./window']);
   expect(Object.keys(provenance.excluded)).toEqual(['./internal','./internal/math']);
 });
 it.each([

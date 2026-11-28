@@ -408,7 +408,10 @@ async function resultArrivalMotion(args, reducedMotion) {
     const calls = await page.evaluate(() => globalThis.__recoveryArrivalScrolls);
     const reduced = reducedMotion === 'reduce';
     check(`recovery result arrival: native scroll honors ${reducedMotion}`,
-      calls.every((call) => call.behavior === (reduced ? 'auto' : 'smooth') && call.reduced === reduced), JSON.stringify(calls));
+      // The first full chart is put in view at once so its entrance plays in
+      // place; later arrivals glide unless reduced motion is on.
+      calls.length > 0 && calls.every((call, i) => call.behavior === (i === 0 || reduced ? 'instant' : 'smooth') && call.reduced === reduced),
+      JSON.stringify(calls));
     if (reduced) {
       const { before, after, samples } = calls[0];
       check('recovery reduced motion: actual result-arrival scroll settles without an animated glide',

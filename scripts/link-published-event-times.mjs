@@ -1,3 +1,4 @@
+import '../src/lib/engine/server-de440.mjs';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { ENGINE_VERSION, defaultEphemeris } from '@zodiacs/engine';
 

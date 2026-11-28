@@ -138,6 +138,29 @@ describe('serializeTransitContacts', () => {
     expect(exactAngles).toContain('DTSTART:20190321T160437Z');
   });
 
+  it('omits exact wording and records the timezone caveat when hostZoneDiffers is set', () => {
+    const single = { ...SATURN_PASSES[0], pass: 1, passCount: 1 };
+    const calendar = serializeTransitContacts([single], { ...OPTIONS, hostZoneDiffers: true });
+    const unfolded = calendar.replace(/\r\n[ \t]/g, '');
+    expect(unfolded).toContain(`SUMMARY:Transiting Saturn conjunction natal Saturn${CRLF}`);
+    expect(unfolded).not.toContain('(exact)');
+    expect(unfolded).toContain(
+      `DESCRIPTION:Tropical transit contact. Time: 2019-03-21 16:04 UTC. Calculated using a device whose time-zone data differed from our historical table near the birth date\\; its offset was used\\, and contact times depend on it.${CRLF}`,
+    );
+    for (const line of calendar.slice(0, -CRLF.length).split(CRLF)) {
+      expect(new TextEncoder().encode(line).byteLength).toBeLessThanOrEqual(75);
+    }
+
+    const calendarUnknownNote = 'Some countries switched from the Julian to the Gregorian calendar around this date. Check whether your birth record used the Gregorian (New Style) calendar.';
+    const ambiguous = serializeTransitContacts([single], { ...OPTIONS, notes: [calendarUnknownNote] });
+    const unfoldedAmbiguous = ambiguous.replace(/\r\n[ \t]/g, '');
+    expect(unfoldedAmbiguous).toContain(`SUMMARY:Transiting Saturn conjunction natal Saturn${CRLF}`);
+    expect(unfoldedAmbiguous).not.toContain('(exact)');
+    expect(unfoldedAmbiguous).toContain(
+      `DESCRIPTION:Tropical transit contact. Time: 2019-03-21 16:04 UTC. ${calendarUnknownNote}${CRLF}`,
+    );
+  });
+
   it('omits pass wording for a single-hit contact', () => {
     const single = { ...SATURN_PASSES[0], pass: 1, passCount: 1 };
     const calendar = serializeTransitContacts([single], OPTIONS);

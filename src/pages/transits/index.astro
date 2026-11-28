@@ -1,12 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import TransitTracker from '../../islands/TransitTracker.tsx';
+import { launchFlagOn } from '../../lib/launch-flags';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import { dayLabel, eventList, transitMonthForEdition, monthLabel } from '../../lib/horoscopes';
 import daily from '../../data/daily.json';
-import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 
 // The month's receipts render statically from the committed transit
@@ -64,6 +66,8 @@ const jsonLd = [
   glass
 >
   <section class="section--tight container container--narrow">
+    <Motion />
+    <ToolHeroMark name="transits" />
     <div class="tool-hero reveal">
       <h1 class="display">What is active in your chart?</h1>
       <p>
@@ -72,6 +76,8 @@ const jsonLd = [
         Pick a saved chart or enter your birth details.{launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') && (
           <> For the next twelve months as one number, try the{' '}
           <a href="/year-score/">Year Ahead Score</a>.</>
+        )}{launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') && (
+          <> For one day’s transits ranked by strength, read <a href="/your-day/">your day</a>.</>
         )}
       </p>
     </div>
@@ -153,4 +159,9 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (min-width: 441px) and (max-width: 523px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>

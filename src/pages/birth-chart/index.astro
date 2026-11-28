@@ -26,6 +26,7 @@ import {
   SAMPLE_RISING,
   SAMPLE_WHEEL,
 } from '../../lib/sample-chart';
+import { WHEEL_SIZE, anatomyMarks, storyStyles } from '../../lib/birth-chart-anatomy-story';
 import '../../styles/calculator.css';
 import '../../styles/explorer.css';
 import '../../styles/post-chart-daily.css';
@@ -39,7 +40,7 @@ const faq = [
   },
   {
     q: 'Do I need my exact birth time?',
-    a: 'For your rising sign and houses, yes: the rising sign changes about every two hours. Without a time we use 12:00 local time as a reference, leave out the rising sign and houses, and show both Moon signs if the Moon changed sign that day.',
+    a: 'For your rising sign and houses, yes: the rising sign changes about every two hours. Without a time we use 12:00 local time as a reference and leave out the rising sign and houses. When the birth date’s start and end can be confirmed, we name your Moon sign if the Moon stayed in one sign all day, show both Moon signs if it changed sign that day, and otherwise mark the Moon sign as unverified.',
   },
   {
     q: 'How accurate is this calculator?',
@@ -89,29 +90,12 @@ const moon = SAMPLE_PLACEMENTS.find((p) => p.body === 'Moon')!;
 const rising = SAMPLE_RISING;
 const ordinal = (n: number) => `${n}${n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th'}`;
 
-/* The four numbered parts of the anatomy wheel, placed with the Wheel's own
-   geometry: its viewBox pads the drawing by 5% on every side, and longitude
-   runs counterclockwise from the rising degree at nine o'clock. */
-const WHEEL_SIZE = 430;
-const PAD = WHEEL_SIZE * 0.05;
-const FRAME = WHEEL_SIZE + PAD * 2;
-const at = (lon: number, radius: number) => {
-  const phi = ((180 + (lon - SAMPLE_WHEEL.asc)) * Math.PI) / 180;
-  return {
-    x: ((WHEEL_SIZE / 2 + radius * WHEEL_SIZE * Math.cos(phi) + PAD) / FRAME) * 100,
-    y: ((WHEEL_SIZE / 2 - radius * WHEEL_SIZE * Math.sin(phi) + PAD) / FRAME) * 100,
-  };
-};
-const boundaryNear = (lon: number) => Math.round(lon / 30) * 30;
+/* The anatomy wheel's four numbered marks and its story (docs/MOTION.md) are
+   computed in src/lib/birth-chart-anatomy-story.ts, which its test holds to
+   the wheel Wheel draws. */
 /* Tap-to-explain on the sample wheel: every planet, sign and house number. */
 const explainCopy = wheelExplainCopy('en').copy;
 const sampleSpots = staticWheelSpots({ ...SAMPLE_WHEEL, size: WHEEL_SIZE }, explainCopy);
-const anatomyMarks = [
-  { n: 1, ...at(boundaryNear(SAMPLE_WHEEL.asc - 125), 0.435) },
-  { n: 2, ...at(boundaryNear(SAMPLE_WHEEL.asc + 185), 0.255) },
-  { n: 3, ...at(moon.lon + 9, 0.31) },
-  { n: 4, ...at(sun.lon, 0.02) },
-];
 
 /* Sign pictures on a chart page are only ever asked for as a whole set of
    twelve in zodiac order (audit finding F-18, tests/sign-icon-requests-drive):
@@ -660,6 +644,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
 
     <div class="kpanel bc-anat">
       <div class="bc-anat__wheel bc-wheel">
+        <style is:inline set:html={storyStyles}></style>
+        <span class="bca-go" data-enter="draw" aria-hidden="true"></span>
         <Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel="Sample birth chart wheel, with its four parts numbered" />
         {anatomyMarks.map((mark) => (
           <span class="bc-anat__mark" style={`left:${mark.x.toFixed(2)}%;top:${mark.y.toFixed(2)}%`} aria-hidden="true">{mark.n}</span>

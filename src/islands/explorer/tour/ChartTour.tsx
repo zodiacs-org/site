@@ -27,7 +27,7 @@ import {
 import type { ChartSceneModel, EntityRef, SceneEmphasis } from '../../../lib/scene/types';
 import type { Aspect, AspectType, Chart } from '../../../lib/engine/types';
 import { formatLongitude, signForLongitude, signName } from '../../../lib/signs';
-import { moonCandidates, moonIsUncertain, moonLabel } from '../../../lib/moon-certainty';
+import { moonAspectsUnsettled, moonCandidates, moonDegreeUnsettled, moonIsUncertain, moonLabel } from '../../../lib/moon-certainty';
 import { bigThree } from '../../../lib/interpretations';
 import { aspectLabel, planetLabel } from '../../../lib/i18n/astrology';
 import { englishOnlyCue, localizePath, t, type CatalogLocale as Locale } from '../../../lib/i18n';
@@ -95,11 +95,17 @@ export default function ChartTour({
   onOpenForecast, onSave, shareLabel, shareStatusLabel, shareDisabled, onShare, onExit, returnFocus,
 }: ChartTourProps) {
   const uncertainMoon = moonAmbiguous || moonIsUncertain(chart);
+  // A Moon sign settled across the birth date still leaves its aspects to the birth time.
+  const moonAspectsOut = uncertainMoon || moonAspectsUnsettled(chart);
+  const tourScene = useMemo(
+    () => (moonAspectsOut
+      ? { ...scene, aspects: scene.aspects.filter((aspect) => aspect.a !== 'Moon' && aspect.b !== 'Moon') }
+      : scene),
+    [scene, moonAspectsOut],
+  );
   const chapters = useMemo(
-    () => (variant === 'quick' ? deriveFirstReading(uncertainMoon ? {
-      ...scene, aspects: scene.aspects.filter((aspect) => aspect.a !== 'Moon' && aspect.b !== 'Moon'),
-    } : scene) : deriveChapters(scene)),
-    [scene, variant, uncertainMoon],
+    () => (variant === 'quick' ? deriveFirstReading(tourScene) : deriveChapters(tourScene)),
+    [tourScene, variant],
   );
   const stops = useMemo(() => flattenStops(chapters), [chapters]);
 
@@ -128,8 +134,11 @@ export default function ChartTour({
     chapterIndex: number; sub: number; focus: AspectType | null;
   }): TourVisual {
     const c = chapters[state.chapterIndex];
-    const emphasis: SceneEmphasis = emphasisForChapter(scene, c, state.sub, { aspectFocus: state.focus });
-    const base = state.preview && state.alt ? state.alt : scene;
+    const emphasis: SceneEmphasis = emphasisForChapter(tourScene, c, state.sub, { aspectFocus: state.focus });
+    const altFiltered = state.alt && moonAspectsOut
+      ? { ...state.alt, aspects: state.alt.aspects.filter((aspect) => aspect.a !== 'Moon' && aspect.b !== 'Moon') }
+      : state.alt;
+    const base = state.preview && altFiltered ? altFiltered : tourScene;
     const anchored: ChartSceneModel = state.aries
       ? { ...base, anchor: { lon: 0, mode: 'aries' } }
       : { ...base, anchor: scene.anchor };
@@ -373,10 +382,9 @@ export default function ChartTour({
       break;
     }
     case 'aspect-focus': {
-      const present = [...new Set(scene.aspects.map((a) => a.type))];
+      const present = [...new Set(tourScene.aspects.map((a) => a.type))];
       const loudest = topAspects(
-        scene.aspects.filter((a) => !uncertainMoon || (a.a !== 'Moon' && a.b !== 'Moon'))
-          .map((a) => ({ a: a.a, b: a.b, type: a.type, orb: a.orb, applying: a.applying })),
+        tourScene.aspects.map((a) => ({ a: a.a, b: a.b, type: a.type, orb: a.orb, applying: a.applying })),
         4,
       );
       feature = (
@@ -502,7 +510,7 @@ export default function ChartTour({
     case 'first-aspect': {
       const ref = chapterDef.subs[0]?.entity;
       const aspect = ref?.kind === 'aspect'
-        ? scene.aspects.find((candidate) => (
+        ? tourScene.aspects.find((candidate) => (
           candidate.a === ref.a && candidate.b === ref.b && candidate.type === ref.type
         ))
         : null;
@@ -536,7 +544,7 @@ export default function ChartTour({
         <div class="tour__feature">
           <div class="tour__why">
             <span>{tourText(locale, 'quickWhyLabel')}</span>
-            <p>{tourText(locale, 'quickAspectEmpty')}</p>
+            <p>{tourText(locale, moonAspectsOut ? 'quickAspectEmptyNoTime' : 'quickAspectEmpty')}</p>
           </div>
         </div>
       );
@@ -617,12 +625,15 @@ export default function ChartTour({
         const kind = sub.id === 'asc' ? 'rising' : (sub.id as 'sun' | 'moon');
         const label = sub.entity.kind === 'body' ? planetLabel(locale, sub.entity.body) : 'ASC';
         const uncertain = kind === 'moon' && uncertainMoon;
+        // A Moon sign settled across the birth date, without a birth time, is the sign alone: the noon
+        // reference's degree is not the Moon's degree at birth.
+        const signOnly = kind === 'moon' && !uncertain && moonDegreeUnsettled(chart);
         paragraphs.push(
           <>
             <span class="mono tour__sub-receipt">
               {label} · {uncertain
                 ? `${moonLabel(chart, locale)} · ${t(locale, 'needsBirthTime')}`
-                : `${formatLongitude(lon, locale)} · ${signName(sign, locale)}`}
+                : signOnly ? signName(sign, locale) : `${formatLongitude(lon, locale)} · ${signName(sign, locale)}`}
             </span>
             {/* The reading sentence exists in English only (interpretations.ts
                 has no ES tables — master-plan P10). The receipt above is fully

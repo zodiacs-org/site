@@ -15,7 +15,16 @@ export interface TransitCalendarOptions {
    * given to the minute. Contacts to planets are unchanged.
    */
   natalAngles?: 'exact' | 'whole-degree';
+  /**
+   * When true, the chart used a device time-zone offset that disagrees with our
+   * historical table near the birth date; events omit "(exact)" and carry a note.
+   */
+  hostZoneDiffers?: boolean;
+  /** Optional plain-text caveats appended to each event description. */
+  notes?: readonly string[];
 }
+
+const HOST_ZONE_DIFFERS_NOTE = 'Calculated using a device whose time-zone data differed from our historical table near the birth date; its offset was used, and contact times depend on it.';
 
 /** Escape an RFC 5545 TEXT value. */
 export function escapeIcalText(value: string): string {
@@ -73,36 +82,51 @@ function fnv1a32(bytes: Uint8Array, basis: number): number {
  * of a degree.
  */
 export function transitContactUid(contact: TransitContact): string {
-  const shown = encoder.encode([
+  const hash = icalHash([
     formatIcalUtc(contact.exactUtc),
     contact.transitBody,
     contact.aspect,
     contact.natalPoint,
-  ].join('|'));
-  const hash = [0x811c9dc5, 0x050c5d1f]
-    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
-    .join('');
+  ]);
   return `transit-${hash}@zodiacs.org`;
 }
 
-function contactDescription(contact: TransitContact, exact: boolean): string {
+function contactDescription(
+  contact: TransitContact,
+  wholeDegreeAngle: boolean,
+  hostZoneDiffers: boolean,
+  notes: readonly string[],
+): string {
   const iso = new Date(contact.exactUtc).toISOString();
   const utcMinute = `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
-  const description = exact
-    ? `Exact tropical transit contact. Time: ${utcMinute}.`
-    : `Tropical transit contact. Natal angle to the whole degree. Time: ${utcMinute}.`;
+  const hasCaveats = hostZoneDiffers || notes.length > 0;
+  const parts: string[] = [
+    wholeDegreeAngle
+      ? `Tropical transit contact. Natal angle to the whole degree. Time: ${utcMinute}.`
+      : hasCaveats
+        ? `Tropical transit contact. Time: ${utcMinute}.`
+        : `Exact tropical transit contact. Time: ${utcMinute}.`,
+  ];
   // Multi-hit groups get their window-scoped pass number. The cause is
   // deliberately not asserted: dual-target aspects can produce a second
   // pass for a fast body with no retrograde loop involved.
-  return contact.passCount > 1
-    ? `${description} Pass ${contact.pass} of ${contact.passCount}.`
-    : description;
+  if (contact.passCount > 1) parts.push(`Pass ${contact.pass} of ${contact.passCount}.`);
+  if (hostZoneDiffers) parts.push(HOST_ZONE_DIFFERS_NOTE);
+  for (const note of notes) parts.push(note);
+  return parts.join(' ');
 }
 
-function eventLines(contact: TransitContact, dtstamp: string, exact: boolean): string[] {
+function eventLines(
+  contact: TransitContact,
+  dtstamp: string,
+  wholeDegreeAngle: boolean,
+  hostZoneDiffers: boolean,
+  notes: readonly string[],
+): string[] {
   // Calling formatIcalUtc first keeps invalid input from reaching description.
   const dtstart = formatIcalUtc(contact.exactUtc);
   const summary = `Transiting ${contact.transitBody} ${contact.aspect} natal ${contact.natalPoint}`;
+  const exact = !wholeDegreeAngle && !hostZoneDiffers && notes.length === 0;
   return [
     'BEGIN:VEVENT',
     `UID:${transitContactUid(contact)}`,
@@ -111,7 +135,7 @@ function eventLines(contact: TransitContact, dtstamp: string, exact: boolean): s
     'DURATION:PT1M',
     'TRANSP:TRANSPARENT',
     `SUMMARY:${escapeIcalText(exact ? `${summary} (exact)` : summary)}`,
-    `DESCRIPTION:${escapeIcalText(contactDescription(contact, exact))}`,
+    `DESCRIPTION:${escapeIcalText(contactDescription(contact, wholeDegreeAngle, hostZoneDiffers, notes))}`,
     'END:VEVENT',
   ];
 }
@@ -134,12 +158,14 @@ export function serializeTransitContacts(
 ): string {
   if (contacts.length === 0) throw new RangeError('A transit calendar requires at least one contact.');
   const dtstamp = formatIcalUtc(options.generatedAt);
+  const hostZoneDiffers = options.hostZoneDiffers === true;
+  const notes = (options.notes ?? []).map((note) => note.trim()).filter(Boolean);
   const seen = new Set<string>();
   const prepared = contacts.map((contact) => {
-    const exact = options.natalAngles !== 'whole-degree'
-      || (contact.natalPoint !== 'ASC' && contact.natalPoint !== 'MC');
-    const shown = exact ? contact : { ...contact, exactUtc: truncateToMinute(contact.exactUtc) };
-    return { contact: shown, exact, dtstart: formatIcalUtc(shown.exactUtc), uid: transitContactUid(shown) };
+    const wholeDegreeAngle = options.natalAngles === 'whole-degree'
+      && (contact.natalPoint === 'ASC' || contact.natalPoint === 'MC');
+    const shown = wholeDegreeAngle ? { ...contact, exactUtc: truncateToMinute(contact.exactUtc) } : contact;
+    return { contact: shown, wholeDegreeAngle, dtstart: formatIcalUtc(shown.exactUtc), uid: transitContactUid(shown) };
   }).sort((a, b) =>
     a.dtstart.localeCompare(b.dtstart)
     || a.contact.transitBody.localeCompare(b.contact.transitBody)
@@ -159,7 +185,7 @@ export function serializeTransitContacts(
     'PRODID:-//Zodiacs.org//Transit Contacts 1.0//EN',
     'CALSCALE:GREGORIAN',
     `X-WR-CALNAME:${escapeIcalText(options.calendarName ?? 'Zodiacs.org transit contacts')}`,
-    ...prepared.flatMap(({ contact, exact }) => eventLines(contact, dtstamp, exact)),
+    ...prepared.flatMap(({ contact, wholeDegreeAngle }) => eventLines(contact, dtstamp, wholeDegreeAngle, hostZoneDiffers, notes)),
     'END:VCALENDAR',
   ];
 
@@ -249,17 +275,25 @@ export function alarmLines(alarm: IcalAlarm): string[] {
 }
 
 /**
+ * Two FNV-1a hashes over the parts joined with '|', as 16 hex digits: the
+ * same parts always give the same digits, and they say nothing the parts do
+ * not.
+ */
+export function icalHash(parts: readonly string[]): string {
+  const shown = encoder.encode(parts.join('|'));
+  return [0x811c9dc5, 0x050c5d1f]
+    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
+    .join('');
+}
+
+/**
  * A stable UID from the fields an event shows: two FNV-1a hashes over the
  * joined parts, so the same event keeps its UID from one file to the next
  * and a calendar that imports the file again updates it instead of adding
  * a copy.
  */
 export function stableIcalUid(prefix: string, parts: readonly string[]): string {
-  const shown = encoder.encode(parts.join('|'));
-  const hash = [0x811c9dc5, 0x050c5d1f]
-    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
-    .join('');
-  return `${slug(prefix)}-${hash}@zodiacs.org`;
+  return `${slug(prefix)}-${icalHash(parts)}@zodiacs.org`;
 }
 
 /**
@@ -315,7 +349,11 @@ function personalSortKey(event: PersonalCalendarEvent): string {
  */
 export function serializePersonalEvents(
   events: readonly PersonalCalendarEvent[],
-  options: Pick<TransitCalendarOptions, 'generatedAt' | 'calendarName'>,
+  options: Pick<TransitCalendarOptions, 'generatedAt' | 'calendarName'> & {
+    /** RFC 5546 scheduling method; pass null for a static snapshot without ORGANIZER. */
+    method?: 'PUBLISH' | null;
+    prodId?: string;
+  },
 ): string {
   if (events.length === 0) throw new RangeError('A personal calendar requires at least one event.');
   const dtstamp = formatIcalUtc(options.generatedAt);
@@ -329,12 +367,13 @@ export function serializePersonalEvents(
       return true;
     });
 
+  const method = options.method === undefined ? 'PUBLISH' : options.method;
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Zodiacs.org//Personal Sky 1.0//EN',
+    `PRODID:${options.prodId ?? '-//Zodiacs.org//Personal Sky 1.0//EN'}`,
     'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
+    ...(method ? [`METHOD:${method}`] : []),
     `X-WR-CALNAME:${escapeIcalText(options.calendarName ?? 'Zodiacs.org personal sky')}`,
     ...prepared.flatMap(({ event }) => personalEventLines(event, dtstamp)),
     'END:VCALENDAR',

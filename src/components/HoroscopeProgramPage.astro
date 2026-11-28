@@ -7,12 +7,14 @@ import GuideQuickPrompts from './GuideQuickPrompts.astro';
 import EmailCapture from './EmailCapture.astro';
 import ShareRow from './ShareRow.astro';
 import SignIcon from './SignIcon.astro';
+import Motion from './Motion.astro';
 import UpcomingEventLinks from './events/UpcomingEventLinks.astro';
 import EditionText from './EditionText.astro';
 import dailyData from '../data/daily.json';
 import programData from '../data/horoscope-program.json';
 import { HOUSE_THEME, type Daily } from '../lib/daily';
-import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus } from '../lib/horoscope-wheel';
+import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus, horoscopeWheelStory } from '../lib/horoscope-wheel';
+import HoroscopeWheelStory from './HoroscopeWheelStory.astro';
 import { datedEditionText, editionDateLabel } from '../lib/edition-freshness';
 import { EDITOR_AUTHOR } from '../lib/editorial';
 import { horoscopeArtCard, signArtCard } from '../lib/og-art-cards.mjs';
@@ -275,7 +277,15 @@ const descriptionTail = reading.description.includes(': ')
   ? reading.description.slice(reading.description.indexOf(': ') + 2)
   : reading.description;
 const heroCaption = capitalize(descriptionTail);
+const heroTitle = `${sign.name} ${reading.title}`;
+const heroFacts = [
+  { label: signDateRange(sign), disc: true },
+  { label: capitalize(sign.element) },
+  { label: capitalize(sign.modality) },
+  { label: `Ruled by ${sign.ruler}`, class: 'hz-hero__ruler' },
+];
 const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
+const signRailLabel = 'Switch sign';
 
 // ── The sky behind the reading ──
 const daySpan = surface === 'today' || surface === 'tomorrow' || surface === 'love' || surface === 'career';
@@ -336,6 +346,8 @@ const noteLabel = pageYear ? `${pageYear} for ${sign.name}` : `${meta.label} for
 const signIndex = SIGNS.findIndex((entry) => entry.slug === sign.slug);
 // Monthly rows are the month's dated events, so its wheel lights none.
 const focusBodies = surface === 'monthly' ? [] : horoscopeWheelFocus(reading.sky, daily);
+// The wheel's entrance, laid over the image by the image's own geometry.
+const wheelStory = horoscopeWheelStory({ daily, signSlug: sign.slug, focus: focusBodies });
 const listWords = (items: string[]) => items.length <= 1
   ? items.join('')
   : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
@@ -414,6 +426,12 @@ const ctaLede = edgeMoon && moonHouse
       } catch (error) {}
     </script>
   )}
+  {/* Shared entrance motion (docs/MOTION.md). The hero, the controls and the
+      reading hold still, since they stay put while a period switch crossfades
+      the reading. The rail's sky rows, the further reading and the sign cards
+      rise once; the sign discs grow in once, and the chart wheel tells its
+      story once (HoroscopeWheelStory.astro). */}
+  <Motion />
   <article
     class="program"
     style={`--sign:${sign.hue};--hue:${sign.hue}`}
@@ -437,16 +455,28 @@ const ctaLede = edgeMoon && moonHouse
           </>
         ) : <span aria-current="page">{sign.name}</span>}
       </nav>
-      <div class="hz-hero__body">
-        <span class="kicker hz-hero__kicker">{heroKicker}</span>
-        <h1 class="hz-hero__title">{sign.name} {reading.title}</h1>
-        <p class="program__description hz-hero__cap">{heroCaption}</p>
-        <p class="kfacts hz-hero__facts">
-          <span><SignIcon sign={sign.slug} size={20} webpOnly class="hz-hero__disc" />{signDateRange(sign)}</span>
-          <span>{capitalize(sign.element)}</span>
-          <span>{capitalize(sign.modality)}</span>
-          <span class="hz-hero__ruler">Ruled by {sign.ruler}</span>
-        </p>
+      <div class="hz-hero__body" data-daily-hero={editionDate ? true : undefined}>
+        {editionDate && (
+          <div class="hz-hero__measure" aria-hidden="true">
+            <span class="kicker" data-label={heroKicker}></span>
+            <span class="hz-hero__title" data-label={heroTitle}></span>
+            <p class="kfacts hz-hero__facts">
+              {heroFacts.map((fact) => (
+                <span class={fact.class} data-label={fact.label}>{fact.disc && <i class="hz-hero__measure-disc"></i>}</span>
+              ))}
+            </p>
+          </div>
+        )}
+        <div class="hz-hero__copy">
+          <span class="kicker hz-hero__kicker">{heroKicker}</span>
+          <h1 class="hz-hero__title">{heroTitle}</h1>
+          <p class="program__description hz-hero__cap">{heroCaption}</p>
+          <p class="kfacts hz-hero__facts">
+            {heroFacts.map((fact) => (
+              <span class={fact.class}>{fact.disc && <SignIcon sign={sign.slug} size={20} webpOnly class="hz-hero__disc" />}{fact.label}</span>
+            ))}
+          </p>
+        </div>
       </div>
       <span class="hz-hero__credit" aria-hidden="true">{sign.name}, from the Zodiacs sign art</span>
     </header>
@@ -461,8 +491,8 @@ const ctaLede = edgeMoon && moonHouse
           </a>
         ))}
       </nav>
-      <nav class="hz-signrail" aria-label="Switch sign">
-        <span class="hz-signrail__label">Switch sign</span>
+      <nav class="hz-signrail" aria-label={signRailLabel}>
+        <span class="hz-signrail__label">{signRailLabel}</span>
         {SIGNS.map((other) => (
           <a
             href={surfacePath(other.slug, surface)}
@@ -588,7 +618,7 @@ const ctaLede = edgeMoon && moonHouse
           <p class="hz-sky__sub">{skySub}</p>
           <ul class="program__sky-markers hz-sky__rows">
             {skyRows.map((row) => (
-              <li class="program__sky-marker hz-sky__row" style={`--c:${row.hue}`}>
+              <li class="program__sky-marker hz-sky__row" style={`--c:${row.hue}`} data-enter="rise">
                 <span class="hz-pg" aria-hidden="true">
                   {row.body && PLANET_GLYPH[row.body]
                     ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.body]} />
@@ -624,14 +654,17 @@ const ctaLede = edgeMoon && moonHouse
     <section class="kwrap hz-section" aria-labelledby="chart-cta-heading">
       <div class="hz-cta">
         <figure class="hz-cta__wheel hz-wheel">
-          <img
-            src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
-            width={HOROSCOPE_WHEEL_SIZE}
-            height={HOROSCOPE_WHEEL_SIZE}
-            alt={`The sky at noon UTC on ${editionLabel}, counted from ${sign.name} as the first house${focusNames.length > 0 ? `, with ${listWords(focusNames)} picked out` : ''}`}
-            loading="lazy"
-            decoding="async"
-          />
+          <div class="hz-wheel__box">
+            <img
+              src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
+              width={HOROSCOPE_WHEEL_SIZE}
+              height={HOROSCOPE_WHEEL_SIZE}
+              alt={`The sky at noon UTC on ${editionLabel}, counted from ${sign.name} as the first house${focusNames.length > 0 ? `, with ${listWords(focusNames)} picked out` : ''}`}
+              loading="lazy"
+              decoding="async"
+            />
+            <HoroscopeWheelStory story={wheelStory} />
+          </div>
           <figcaption>{wheelCaption}</figcaption>
         </figure>
         <div class="hz-cta__head">
@@ -662,7 +695,7 @@ const ctaLede = edgeMoon && moonHouse
         </div>
         <nav class="program__more" aria-labelledby="more-heading">
           {moreList.map((row) => (
-            <a href={surfacePath(sign.slug, row.key)} aria-current={row.key === surface ? 'page' : undefined}>
+            <a href={surfacePath(sign.slug, row.key)} aria-current={row.key === surface ? 'page' : undefined} data-enter="rise">
               <div><b class="program__more-label">{row.title}</b><small>{row.key === surface ? 'Reading now' : row.note}</small></div>
               <p>{row.teaser}</p>
               <span class="hz-go" aria-hidden="true">→</span>
@@ -670,7 +703,7 @@ const ctaLede = edgeMoon && moonHouse
           ))}
         </nav>
       </div>
-      <a class="hz-guide" href={`/${sign.slug}/`}>
+      <a class="hz-guide" href={`/${sign.slug}/`} data-enter="rise">
         <ArtFrame sign={sign.slug} alt="" fade focus="34% 40%" spot="40% 42%" sizes="(min-width: 1021px) 420px, calc(100vw - 40px)" class="hz-guide__art" />
         <span class="hz-guide__cap">
           <span class="kicker">The sign guide</span>
@@ -697,8 +730,9 @@ const ctaLede = edgeMoon && moonHouse
                 href={surfacePath(other.slug, surface)}
                 aria-current={other.slug === sign.slug ? 'page' : undefined}
                 style={`--sign:${other.hue}`}
+                data-enter="rise"
               >
-                <SignIcon sign={other.slug} size={44} webpOnly />
+                <span class="hz-signgrid__disc" data-enter="disc"><SignIcon sign={other.slug} size={44} webpOnly /></span>
                 <b>{other.name}</b>
                 <small>{other.slug === sign.slug ? 'Reading now' : signDateRange(other)}</small>
               </a>
@@ -730,6 +764,8 @@ const ctaLede = edgeMoon && moonHouse
     display: block;
     padding-bottom: clamp(48px, 7vw, 96px);
   }
+  /* Holds a sign card's disc so it can grow in without marking the picture. */
+  .hz-signgrid__disc { display: flex; }
 
   /* ── Hero: the sign art in the rounded cinematic frame ─────────── */
   .hz-hero {
@@ -784,6 +820,8 @@ const ctaLede = edgeMoon && moonHouse
     bottom: 50px;
     max-width: 620px;
   }
+  .hz-hero__measure { display: none; }
+  .hz-hero__copy { display: contents; }
   .hz-hero__kicker { color: var(--ink-1); }
   .hz-hero__title {
     margin: 10px 0 0;
@@ -841,13 +879,23 @@ const ctaLede = edgeMoon && moonHouse
     min-width: 0;
     margin-left: auto;
   }
-  .hz-signrail__label {
+  .hz-signrail__label,
+  .hz-signrail::before {
     margin-right: 12px;
     color: var(--muted);
     font-family: var(--font-serif);
     font-size: 1rem;
     font-style: italic;
     white-space: nowrap;
+  }
+  @media (width > 760px) {
+    /* Size the first column from the nav's name while its visible text streams. */
+    .hz-signrail::before {
+      content: attr(aria-label);
+      visibility: hidden;
+    }
+    .hz-signrail::before,
+    .hz-signrail__label { grid-area: 1 / 1; }
   }
   .hz-signrail a {
     display: grid;
@@ -1191,6 +1239,7 @@ const ctaLede = edgeMoon && moonHouse
   }
   .hz-cta__wheel { grid-area: wheel; margin: 0; }
   .hz-cta__wheel img { display: block; width: 100%; height: auto; }
+  .hz-wheel__box { position: relative; }
   .hz-cta__wheel figcaption {
     max-width: 46ch;
     margin: 14px auto 0;
@@ -1299,6 +1348,16 @@ const ctaLede = edgeMoon && moonHouse
     }
     .program__crumbs { top: 80px; left: 20px; }
     .hz-hero__body { left: 20px; right: 20px; bottom: 26px; }
+    /* The body spans the frame. Its bottom-aligned grid measures the complete
+       mobile copy first, then paints incoming text at the top of that cell. */
+    .hz-hero__body[data-daily-hero] { top: 0; display: grid; align-content: end; pointer-events: none; }
+    [data-daily-hero] > .hz-hero__measure,
+    [data-daily-hero] > .hz-hero__copy { grid-area: 1 / 1; display: block; align-self: start; }
+    [data-daily-hero] > .hz-hero__copy { pointer-events: auto; }
+    .hz-hero__measure { visibility: hidden; }
+    .hz-hero__measure [data-label]::after { content: attr(data-label); }
+    .hz-hero__measure .hz-hero__title { display: block; }
+    .hz-hero__measure-disc { width: 20px; height: 20px; margin-right: 8px; }
     .hz-hero__title { font-size: var(--text-2xl); line-height: 1.04; letter-spacing: -0.005em; }
     .hz-hero__cap { display: none; }
     .hz-hero__facts { margin-top: 16px; font-size: 12.5px; gap: 4px 8px; }
@@ -1306,7 +1365,8 @@ const ctaLede = edgeMoon && moonHouse
     .hz-hero__credit { display: none; }
     /* 44px period links in a 4px-padded, bordered pill: a 54px first row. */
     .hz-controls { grid-template-rows: 54px 96px; gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
-    .hz-seg { display: flex; width: 100%; justify-self: stretch; }
+    /* Each period owns its column as soon as the first link arrives. */
+    .hz-seg { display: grid; grid-template-columns: repeat(3, minmax(max-content, 1fr)); width: 100%; justify-self: stretch; }
     .hz-seg > a { flex: 1; justify-content: center; min-height: 44px; padding-inline: 6px; }
     /* All twelve signs at once, six by two, with nothing to scroll. The names
        stay in the accessibility tree; each disc is a 48px-tall tap target. */

@@ -76,17 +76,18 @@ export function birthDateProblemText(locale: CatalogLocale, problem: BirthDatePr
         : copy.gregorianError;
 }
 
-export type ChartBirthDate = { date: string; oldStyle?: string } | { error: string };
+export type ChartBirthDate = { date: string; oldStyle?: string; writtenJulianDate?: string } | { error: string };
 
 /**
  * What a form computes from: the Gregorian date, with the one-line Old Style
- * note when the date was converted, or the message for the date field.
+ * note and the entered Julian YYYY-MM-DD when the date was converted, or the
+ * message for the date field.
  */
 export function readChartBirthDate(locale: CatalogLocale, value: string, calendar: CalendarChoice): ChartBirthDate {
   const reading = readBirthDate(value, calendar);
   if ('problem' in reading) return { error: birthDateProblemText(locale, reading.problem) };
   return reading.oldStyle
-    ? { date: reading.date, oldStyle: oldStyleLine(locale, reading.oldStyle, reading.date) }
+    ? { date: reading.date, oldStyle: oldStyleLine(locale, reading.oldStyle, reading.date), writtenJulianDate: reading.oldStyle }
     : { date: reading.date };
 }
 
@@ -111,8 +112,9 @@ export default function BirthCalendar({ locale, id, date, calendar, country, onC
   const text = julian || (date !== '' && !parseCivilDate(date));
 
   useEffect(() => {
-    // A complete date written in 1924 or later is Gregorian.
-    if (julian && /^\d{4}-\d{2}-\d{2}$/.test(written) && written >= CALENDAR_CHOICE_BEFORE) onCalendarChange('gregorian');
+    // A complete date written in 1924 or later is Gregorian; a day the calendar does not have (1990-02-30) stays
+    // Old Style, where it is refused, so switching calendars never lets it through.
+    if (julian && parseCivilDate(written) && written >= CALENDAR_CHOICE_BEFORE) onCalendarChange('gregorian');
   }, [julian, written]);
   useEffect(() => { onTextEntry(text ? copy.format : null); }, [text, copy.format]);
   useEffect(() => () => onTextEntry(null), []);

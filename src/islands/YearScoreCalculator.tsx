@@ -5,6 +5,7 @@
  * on submit and everything is calculated on this device; the birth details
  * are never sent, stored or put in the address bar.
  */
+import { READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import PlaceSearch from './PlaceSearch';
 import { SIGNS, signForLongitude } from '../lib/signs';
@@ -26,6 +27,42 @@ const underAge = (birthDate: string, today: string, years: number) => birthDate 
 /** Under 18, the one romantic phrase a slow-planet line can carry (Venus as "way of loving") is left out. */
 const softenMinor = (text: string) => text.replace(/\bway of loving\b/gu, 'way of caring');
 const confidenceLabel = (timed: boolean) => `Reading confidence ${timed ? 70 : 55}%`;
+
+/** The birthday reminder offer, shown only where the site build sets PUBLIC_BIRTHDAY_REMINDER_ENABLED=1 (off). */
+const REMINDER_OFFERED = import.meta.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED === '1';
+
+/**
+ * One email a year, on the birthday. Sends only the email and the birthday's month and day, in a POST body,
+ * after two explicit yeses; the birth year, time and place never leave the device.
+ */
+function BirthdayReminderOffer({ month, day }: { month: number; day: number }) {
+  const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [adult, setAdult] = useState(false);
+  const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  async function submit(event: Event) {
+    event.preventDefault();
+    if (!consent || !adult || state === 'sending') return;
+    setState('sending');
+    try {
+      const response = await fetch('/api/email/birthday-reminder', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ email, month, day, consent: true, adult: true }) });
+      setState(response.ok ? 'sent' : 'error');
+    } catch { setState('error'); }
+  }
+  if (state === 'sent') return <p class="ys__remind-done" role="status">Check your inbox: the reminder starts once you confirm it.</p>;
+  return (
+    <form class="ys__remind tile" onSubmit={submit}>
+      <h3>Remind me on my birthday</h3>
+      <p>One email a year, on your birthday, to score the new year. We keep only your email and your birthday’s month and day, never the year, time or place.</p>
+      <label class="field__label" for="ys-remind-email">Email</label>
+      <input id="ys-remind-email" class="field__input" type="email" required autocomplete="email" value={email} onInput={(e) => setEmail((e.target as HTMLInputElement).value)} />
+      <label class="ys__check"><input type="checkbox" checked={consent} onChange={(e) => setConsent((e.target as HTMLInputElement).checked)} /> Email me once a year on my birthday. I can stop at any time.</label>
+      <label class="ys__check"><input type="checkbox" checked={adult} onChange={(e) => setAdult((e.target as HTMLInputElement).checked)} /> I am 13 or older.</label>
+      <button class="btn btn--ghost" type="submit" disabled={!consent || !adult || state === 'sending'}><span>{state === 'sending' ? 'Sending' : 'Send me the confirmation'}</span></button>
+      {state === 'error' && <p class="calc__error" role="alert">That did not go through. Try again in a minute.</p>}
+    </form>
+  );
+}
 
 const TIME_NEEDS_PLACE = 'Add the birthplace to use the birth time, or clear the time.';
 const TIME_INCOMPLETE = 'Enter the full birth time, or clear the time.';
@@ -164,7 +201,8 @@ export default function YearScoreCalculator() {
         </div>
       </form>
 
-      {result && (
+      {busy && !result && <div class="ys__pending" aria-hidden="true" />}
+      {result && !error && !timeNote && (
         <div class="calc__result ys" style={`--sign:${result.hue}`}>
           <div class="ys__score shell tinted" style={`--sign:${result.hue}`}>
             <div class="core tinted ys__score-core">
@@ -182,6 +220,7 @@ export default function YearScoreCalculator() {
                   <p class="ys__meta" data-ys-sun-unsettled>Your Sun is in {result.candidates[0]} or {result.candidates[1]}: a birth time settles it.</p>
                   <p class="ys__meta">{dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
                 </>}
+              <small class="field__help">{READING_CONFIDENCE_NOTE}</small>
             </div>
           </div>
 
@@ -215,6 +254,8 @@ export default function YearScoreCalculator() {
               </ul>
             </div>
           )}
+          {/* Offered only after a score, so only for a birth date that passed the under-13 check above. */}
+          {REMINDER_OFFERED && <BirthdayReminderOffer month={Number(date.slice(5, 7))} day={Number(date.slice(8, 10))} />}
           {!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}
           <div class="calc__actions">
             {(() => {
