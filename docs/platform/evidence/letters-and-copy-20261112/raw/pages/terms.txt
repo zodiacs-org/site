@@ -1,0 +1,77 @@
+Terms of Use | Zodiacs.orgSkip to content <#main>
+Zodiacs·org </>
+ToolsSignsToday </today/>Learn </learn/>Horoscopes </horoscopes/> </profile/>/Astrofolio </astrofolio/>
+Birth chartSee your sun, moon, rising, planets, houses, and what they mean. </birth-chart/>CompatibilityCompare two charts and see where they click, clash, and grow. </compatibility/>TransitsExplore today’s planets and their connections to your chart. </transits/>Moon signHow you feel, and what settles you. </moon-sign/>Rising signFind the sign people meet first. Birth time helps. </rising-sign/>Moon phaseTonight’s moon, and the moon of any date you care about. </moon-phase/>Saturn returnWhen yours hits, exactly, and what it tends to ask. </saturn-return/>BirthdayFind your Sun sign from your birthday, including dates near a sign change. </birthday/>
+More to explore
+- Group charts </group-charts/>
+- Chart twins </chart-twins/>
+- Big three card </big-three/>
+- Invite a friend </compatibility/invite/>
+- Sky calendar </sky-calendar/>
+- Chart of the day </chart-of-the-day/>
+- Your sky, wrapped </your-sky-wrapped/>
+- Chart PDF </astrologer-kit/>All tools → </tools/>
+AriesMar 21 to Apr 19 </aries/>TaurusApr 20 to May 20 </taurus/>GeminiMay 21 to Jun 20 </gemini/>CancerJun 21 to Jul 22 </cancer/>LeoJul 23 to Aug 22 </leo/>VirgoAug 23 to Sep 22 </virgo/>LibraSep 23 to Oct 22 </libra/>ScorpioOct 23 to Nov 21 </scorpio/>SagittariusNov 22 to Dec 21 </sagittarius/>CapricornDec 22 to Jan 19 </capricorn/>AquariusJan 20 to Feb 18 </aquarius/>PiscesFeb 19 to Mar 20 </pisces/>
+The siteBirth chart </birth-chart/>Compatibility </compatibility/>TodayYour daily reading and personal chart highlights </today/>Learn </learn/>HoroscopesDaily readings for your zodiac sign </horoscopes/>Saved chartsYour birth chart and the people you’ve added </profile/>
+Tools
+Transits </transits/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Birthday </birthday/>All tools → </tools/>
+Developers </developers/>AstrofolioOfficial Zodiac token collection </astrofolio/>
+The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+Terms
+# Terms of use.
+These Terms of Use are an agreement between you and Zodiacs LLC, a New Mexico limited liability company (“Zodiacs,” “we,” “us,” or “our”). Zodiacs LLC owns and operates Zodiacs.org. The site is a free astrology reference with a Registry wing whose records, catalogue profiles, SDK, and verification tools are read-only. Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. A lookup does not prove control of an address, legal ownership of an asset, or a person's identity. Purchase links open independent services with their own terms and risks. Using the site means you agree to these terms. We have tried to keep them short and readable.
+## The Cabinet of Twelve and public addresses
+The Cabinet of Twelve is an optional symbolic display that reads a locally saved birth-chart summary, the public record of one wallet address, and dated sky information side by side. It is a Zodiacs.org display convention, not a traditional astrological technique, proof about a person, wallet score, price prediction, or recommendation. The wallet record does not change the birth chart, and no purchase is required.
+Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.
+## What “official” means in the Registry
+On Zodiacs.org, “official,” “official Zodiac,” and similar wording mean only that an address, contract, mint, or representation matches an entry in the Zodiacs.org Registry's published canonical list. This is a Registry classification—not approval by a government, regulator, wallet provider, marketplace, or blockchain; not identity verification; and not a promise of authenticity beyond that list, safety, value, scarcity, liquidity, or future performance. Verify important details independently on-chain.
+## Digital-asset risks and third-party routes
+Digital assets can be highly speculative and volatile. They may have no buyers, become illiquid, fall to zero market value, or result in a total loss. Other risks include counterfeit assets, scams, malicious approvals, software or smart-contract defects, network disruption, inaccurate or delayed market data, provider or venue failure, loss of wallet access, and changes in law or regulation. Past activity, rarity, Registry status, an Aura reading, or displayed market context does not predict value or reduce those risks.
+Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Blockchain transactions are often irreversible. Zodiacs.org operates Astrofolio. Disclosure </disclosure/>.
+A link or Registry entry is provided for reference and is not an endorsement, solicitation, or statement that an asset is suitable for you. The Registry disclosure </disclosure/> labels each statement as verified from public evidence or as a dated operator attestation; an attestation is the operator's own statement and must not be treated as independently verified.
+## What this site is
+Zodiacs.org computes astronomical positions and presents astrological interpretations, guides, and tools. Astrology is offered here for interest, reflection, and entertainment. It is not a substitute for professional advice — medical, psychological, legal, or financial — and nothing on the site should be treated as a prediction of future events or as a basis for important decisions. The astronomy is computed carefully (see the methodology page </methodology/>); the interpretation of it remains a tradition, not a science.
+## Free use
+The calculators, guides, and reading tools are free to use for your own personal, non-commercial purposes. You may share links to pages freely. The embeddable sky widget may be used under the short terms stated on the widgets page </widgets/>.
+## Accounts
+An account is optional. If you create one, you are responsible for the email address you use and for the charts you choose to save and sync. Keep access to your email secure, since sign-in happens through it. You may delete your account at any time by emailing admin@zodiacs.org <mailto:admin@zodiacs.org>. We may suspend accounts used to abuse the service or others.
+Living Chart is optional. You may keep entries only on a device or grant a separate account-sync permission so they follow you across devices. Do not place information in a Living Chart note that you do not want stored with your account. You may edit or delete individual entries, export the timeline, or withdraw Living Chart sync from the profile controls. Living Chart and horoscope material is for reflection and entertainment, not a prediction or professional advice.
+## Acceptable use
+Please do not attempt to break, overload, scrape at scale, or misuse the site or its infrastructure, and do not use it to harass others or to break the law. The registry wing and developer SDK have their own read-only, no-advice character, described within those pages.
+## Accuracy and availability
+We work to compute positions accurately and test them against reference data, but the site is provided as is and as available, without warranties of any kind. We do not guarantee that it will be uninterrupted, error-free, or fit for a particular purpose. Sky data covers a bounded range of years and is refreshed periodically. Registry, holdings, provider, and market data may be delayed, incomplete, or unavailable and should be independently verified before any consequential action.
+## Limitation of liability
+To the fullest extent the law allows, Zodiacs LLC and the people who run Zodiacs.org are not liable for any indirect, incidental, or consequential loss arising from your use of the site, third-party services, wallet software, or decisions made in reliance on site content. This includes loss of digital assets, value, access, data, or opportunity. Because the service is free and interpretive, you use it at your own discretion.
+## Content and intellectual property
+The site's original text, design, and code belong to Zodiacs LLC unless noted otherwise. City data is from GeoNames <https://www.geonames.org/> under CC BY 4.0, and the fonts are used under the SIL Open Font License; both are credited in the footer. The chart calculations carry 32 values of ΔT, rounded to 0.01 seconds, from Table S15 of Stephenson, Morrison and Hohenkerk, "Measurement of the Earth's rotation: 720 BC to AD 2015", Proceedings of the Royal Society A 472, 20160404 <https://doi.org/10.1098/rspa.2016.0404> (2016), published under CC BY 4.0 <https://creativecommons.org/licenses/by/4.0/>. You are welcome to quote and link to pages with attribution.
+## Changes
+We may update these terms as the site evolves. When we do, we will change the date below. Continuing to use the site after a change means you accept the updated terms.
+## Operator and applicable law
+Zodiacs LLC, a limited liability company formed under New Mexico law, is the operator of Zodiacs.org. These terms apply subject to the mandatory laws and non-waivable rights that govern your use of the site, including consumer rights that apply where you live. Nothing in these terms limits rights or remedies that cannot lawfully be waived.
+## Contact
+Questions about these terms may be sent to Zodiacs LLC at admin@zodiacs.org <mailto:admin@zodiacs.org>.
+Last updated: 3 October 2026
+## The daily, by email.
+Your sign’s reading each morning. Free, unsubscribe anytime.
+Leave this field blank
+Email address
+ChangeYour Sun sign
+AriesTaurusGeminiCancerLeoVirgoLibraScorpioSagittariusCapricornAquariusPiscesEmail my daily horoscope
+We store your email and your chosen sign, nothing else. Never your birth details.
+You’re set. If confirmation or a change is needed, check your inbox.Choose your Sun sign so we can send its daily horoscope.That email address doesn’t look complete.Couldn't start the subscription. Please try again.
+Zodiacs·org </>
+Free astrology tools and sign guides, with charts calculated privately in your browser.Guide→
+An AI assistant for astrology questions and help using Zodiacs.
+Tools
+Birth chart </birth-chart/>Today </today/>Compatibility </compatibility/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Transits </transits/>Retrogrades </retrogrades/>Learn
+Learn astrology </learn/>Horoscopes </horoscopes/>The planets </learn/planets/>The houses </learn/houses/>Zodiac dates </learn/zodiac-dates/>Glossary </learn/glossary/>How charts are calculated </methodology/>Saved charts </profile/>Registry
+Astrofolio </astrofolio/>Registry </registry/>SDK </sdk/>Disclosure </disclosure/>Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. Read our disclosure </disclosure/>.The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+LanguageEnglishEspañol </es/>Português (Brasil) </pt/>Français </fr/>Italiano </it/>
+© 2026 Zodiacs.orgLegal
+About </about/>Privacy </privacy/>Terms </terms/>More
+Developers </developers/>Widgets </widgets/>RSS </feeds/horoscopes.xml>
+Data & licenses
+Place data: GeoNames <https://www.geonames.org/> · CC BY 4.0
+Fonts under SIL OFL 1.1 </fonts/OFL-instrument-sans.txt>

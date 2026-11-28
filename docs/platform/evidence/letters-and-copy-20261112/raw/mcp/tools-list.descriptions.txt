@@ -1,0 +1,173 @@
+## get_capabilities (What Zodiacs can do)
+Lists what Zodiacs can do, its limits and how it handles privacy. Use it when the person asks what Zodiacs can do, or when you need those details before choosing another tool. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes, so do not call it to check before turning those requests down. No sign-in or birth details needed.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "What Zodiacs can do"}
+inputs:
+
+## get_sky (Sky right now)
+Shows where the Sun, Moon and planets are right now, or at a moment the person names, with the Moon's phase. Pass the person's time zone if you know it so times read on their clock. Astronomy only; it makes no personal prediction.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Sky right now"}
+inputs:
+  - instant: {"maxLength": 29, "type": "string"} A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.
+  - bodies: {"maxItems": 12, "type": "array"} 
+
+## get_upcoming_events (Sky calendar)
+Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Sky calendar"}
+inputs:
+  - from: {"maxLength": 29, "type": "string"} A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).
+  - to: {"maxLength": 29, "type": "string"} A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.
+  - bodies: {"maxItems": 10, "type": "array"} 
+  - kinds: {"maxItems": 3, "type": "array"} 
+
+## check_sky_fact (Check a sky fact)
+Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "Check a sky fact"}
+inputs:
+  - kind (required): {"enum": ["sign", "retrograde", "ingress", "phase"], "type": "string"} 
+  - body: {"enum": ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"], "type": "string"} 
+  - sign: {"enum": ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"], "type": "string"} 
+  - phase: {"enum": ["new", "first-quarter", "full", "last-quarter"], "type": "string"} 
+  - instant: {"maxLength": 29, "type": "string"} A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).
+  - date: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} 
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.
+
+## get_horoscope (Horoscopes)
+Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes, even when the request mentions a horoscope. Decline those requests without a tool call; do not offer astrology-themed investment suggestions. Use it for a horoscope or reflective reading. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written and keep its dates. If the person gives their birth date (and time and birthplace zone if known), pass them too: the result adds a personal forecast for their week from their own chart. Lead with those personal lines, with their dates. If you can schedule tasks for the person, offer once, briefly, to send them their horoscope every morning; Zodiacs itself sends no notifications. If they want to share the reading, give them the returned shareUrl exactly.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Horoscopes"}
+inputs:
+  - sign: {"enum": ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"], "type": "string"} Sun sign. Leave it out to let the person choose; never guess it.
+  - period: {"enum": ["day", "week"], "type": "string"} day (the default) or week.
+  - focus: {"enum": ["general", "love", "career"], "type": "string"} For a daily reading: general (the default), love or career.
+  - date: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} A date such as 2026-10-08. Leave it out for the person's today.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.
+  - birthDate: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored.
+  - birthTime: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} Optional birth time on the local clock; needs birthZone. Not stored.
+  - birthZone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} Optional: the birthplace's time zone, needed with birthTime. Not stored.
+
+## open_chart_studio (Chart Studio)
+Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "Chart Studio"}
+inputs:
+
+## get_occasion_sky (The sky on a day)
+Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link. If they want to share the rating, give them the returned shareUrl exactly.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "The sky on a day"}
+inputs:
+  - occasion (required): {"enum": ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"], "type": "string"} What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering.
+  - date: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The day, such as 2027-06-12 (years 1800–2199). Needed unless searchFrom and searchTo are given.
+  - searchFrom: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo.
+  - searchTo: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back.
+  - time: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} The local clock time, such as 19:00, if the person gives one. Needs zone.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The place's time zone, such as Europe/Rome. Needed with a time or a place.
+  - latitude: {"minimum": -90, "maximum": 90, "type": "number"} Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored.
+  - longitude: {"minimum": -180, "maximum": 180, "type": "number"} Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored.
+  - place: {"maxLength": 80, "type": "string"} Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored.
+  - names: {"maxLength": 60, "type": "string"} Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.
+
+## get_life_milestones (Life milestones)
+Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it shows the milestone the card leads with, never the birth date.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Life milestones"}
+inputs:
+  - birthDate (required): {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The birth date, such as 1997-03-15.
+  - time: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} The birth time on the local clock, if known. Needs zone.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The birthplace's time zone, such as Europe/London. Needed with a time.
+  - longitude: {"minimum": -180, "maximum": 180, "type": "number"} The birthplace's longitude, if known, for birth times before standard time.
+
+## get_compatibility (Compare two charts)
+Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member, or with a famous person. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. To compare someone with a famous person Zodiacs publishes, give that side as { famous: "<name>" } instead: it uses their published chart for noon on their birth date, without a Moon or rising sign, and links to their page. If Zodiacs has no chart for that name it says so (found: false); never make one up. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out. If they want to share the score, give them the returned shareUrl exactly.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "Compare two charts"}
+inputs:
+  - a (required): {"type": "object"} The first person.
+  - b (required): {"type": "object"} The second person, or { famous: "<name>" } for a famous person Zodiacs publishes.
+
+## find_chart_twins (Chart twins)
+Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart. If they want to share it, give them the returned shareUrl exactly; it carries their signs, never the birth date.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "Chart twins"}
+inputs:
+  - birthDate (required): {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The birth date, such as 1997-03-15.
+  - time: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} The birth time on the local clock, if known. Needs zone. Without it only the Sun is compared.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The birthplace's time zone, such as Europe/London. Needed with a time.
+  - longitude: {"minimum": -180, "maximum": 180, "type": "number"} The birthplace's longitude, if known, for birth times before standard time.
+  - latitude: {"minimum": -90, "maximum": 90, "type": "number"} The birthplace's latitude, if known. Give it with longitude.
+
+## get_famous_chart (A famous birth chart)
+Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "A famous birth chart"}
+inputs:
+  - name (required): {"maxLength": 80, "type": "string"} The person's name, such as Ada Lovelace.
+
+## get_birthday (Your birthday)
+Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Your birthday"}
+inputs:
+  - date: {"pattern": "^\\d{2}-\\d{2}$", "type": "string"} A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday facts. Give this or birthDate.
+  - birthDate: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The full birth date, such as 1997-05-03. Use only for the solar return or to resolve the sign of a cusp date in that birth year.
+  - time: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} The birth time on the local clock, if known. Needs zone.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The birthplace's time zone, such as Europe/London.
+  - longitude: {"minimum": -180, "maximum": 180, "type": "number"} Use only for historical birth dates when the birthplace used local mean time, to convert its clock to UTC. Needs zone. Do not request coordinates for modern birthdays.
+  - year: {"minimum": 1801, "maximum": 2199, "type": "integer"} The year of the solar return. Defaults to the current year. Needs birthDate.
+
+## get_sky_calendar (Sky calendar for your calendar app)
+Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Sky calendar for your calendar app"}
+inputs:
+  - language: {"enum": ["en", "es", "pt", "fr", "it", "ru"], "type": "string"} The language of the event titles: en (the default), es, pt, fr, it or ru.
+
+## get_natal_chart (Birth chart readout)
+Reads one person's birth chart in the conversation when they have already given their birth date. If they have not, or want to explore it themselves, use open_chart_studio. It gives the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. Add the birth time, the birthplace's time zone and its latitude and longitude only as the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. If the birth date is under 18, do not frame the chart as romance or attraction. chartUrl opens the birth chart page and does not carry the birth date, time, place or coordinates; give it as the page to open, not as a link that holds their details.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "Birth chart readout"}
+inputs:
+  - birthDate (required): {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The birth date, such as 1990-05-03 (years 1800 to 2199).
+  - time: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place.
+  - latitude: {"minimum": -90, "maximum": 90, "type": "number"} Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored.
+  - longitude: {"minimum": -180, "maximum": 180, "type": "number"} Optional. The birthplace's longitude, with latitude. Nothing is stored.
+  - place: {"maxLength": 80, "pattern": "^[^\\u0000-\\u001f\\u007f<>{}[\\]\\\\`]+$", "type": "string"} Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.
+
+## get_horoscope_period (Monthly, yearly and weekly horoscopes)
+Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. If the person is under 18, do not use focus love and do not frame the reading as romance or attraction. Share the forecast plainly and confidently, with the reading-confidence label it returns. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Monthly, yearly and weekly horoscopes"}
+inputs:
+  - sign (required): {"enum": ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"], "type": "string"} Sun sign. Never guess it; ask the person if they have not said.
+  - period (required): {"enum": ["month", "year", "week"], "type": "string"} month, year or week.
+  - focus: {"enum": ["general", "love", "career"], "type": "string"} general (the default), love or career. For a week it adds that focus's daily readings; for every period it keeps the sky events that bear on it.
+  - date: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} Any day in the month, year or week wanted, such as 2026-12-01 for December 2026. Leave it out for the person's current month, year or week.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The person's time zone, such as America/New_York, so the period and dates are their own. Without it, UTC.
+
+## get_chinese_zodiac (Chinese zodiac)
+Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own. Without a zone the current year assumes UTC and the answer says so.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Chinese zodiac"}
+inputs:
+  - birthDate: {"pattern": "^(?:19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The birth date, such as 1990-01-20 (1901 to 2100). A date before that year's Lunar New Year belongs to the previous animal. Give this or year.
+  - year: {"minimum": 1901, "maximum": 2100, "type": "integer"} A year, such as 1990, when the person gives only a year. The answer says which animal applies before that year's Lunar New Year.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The person's time zone, such as Asia/Singapore, so the current year is worked out for their own date. Without it, UTC.
+
+## get_personal_transits (Your transits)
+Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Use it for my transits, what's coming up for me, or my year ahead, once the person has given a birth date; for a Sun-sign horoscope use get_horoscope or get_horoscope_period. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Pass currentZone, where they live now, so the dates fall on their own clock. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. If the birth date is under 18, do not frame the lines as romance or attraction. Present each line plainly and confidently as astrology's reading, with its reading-confidence label, never as a guarantee, and never turn a line into health, financial or medical advice.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Your transits"}
+inputs:
+  - birthDate (required): {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} The birth date, such as 1990-05-03 (years 1800 to 2199).
+  - time: {"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$", "type": "string"} The birth time on the local clock, only if the person knows it. Never guess it. Needs zone. Without it the Moon, rising degree and Midheaven are left out.
+  - zone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place.
+  - latitude: {"minimum": -90, "maximum": 90, "type": "number"} Optional. The birthplace's latitude; with a birth time it adds the rising degree and Midheaven. Give it with longitude and zone. Nothing is stored.
+  - longitude: {"minimum": -180, "maximum": 180, "type": "number"} Optional. The birthplace's longitude, with latitude. Nothing is stored.
+  - mode: {"enum": ["window", "year-ahead"], "type": "string"} window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart.
+  - from: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} For window: the first day, such as 2026-11-01. Defaults to today.
+  - to: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} For window: the last day, at most 366 days after from. Defaults to a 30-day window, from included.
+  - currentZone: {"maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$", "type": "string"} Where the person lives now, such as Asia/Bangkok, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which.
+
+## explain_astrology (Astrology explained)
+Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": true, "title": "Astrology explained"}
+inputs:
+  - topic (required): {"maxLength": 80, "type": "string"} What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.
+
+## find_birthplace (Find a birthplace)
+Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.
+annotations: {"readOnlyHint": true, "destructiveHint": false, "openWorldHint": false, "idempotentHint": false, "title": "Find a birthplace"}
+inputs:
+  - place (required): {"maxLength": 80, "type": "string"} A town or city name, such as London or Almaty. Not a street address. Nothing is stored.
+  - country: {"maxLength": 60, "type": "string"} Optional country when several places share the name, such as United Kingdom or Kazakhstan.
+  - date: {"pattern": "^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$", "type": "string"} Optional date, such as 1990-05-03 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.
