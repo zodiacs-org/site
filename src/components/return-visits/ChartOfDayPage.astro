@@ -14,6 +14,7 @@ import { TOOL_EXPLAINERS, explainerFaqJsonLd } from '../../lib/seo/tool-explaine
 import type { DailyEdition } from '../../lib/return-visits/chart-of-day';
 import '../../styles/sharing-tools.css';
 import '../../styles/return-visits.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 interface Props { locale?: CatalogLocale; edition?: DailyEdition | null }
 const { locale = 'en', edition = null } = Astro.props;
 const path = localizePath(locale, '/chart-of-the-day/');
@@ -25,7 +26,7 @@ const explainer = !edition && locale === 'en' ? TOOL_EXPLAINERS.day : null;
 const pageTitle = explainer?.title ?? `${s(locale, 'dayTitle')}${edition ? ` · ${edition.name}` : ''} | Zodiacs.org`;
 const pageDescription = explainer?.description ?? s(locale, 'dayLede');
 ---
-<Base clientUi locale={locale} path={route} title={pageTitle} description={pageDescription} jsonLd={explainer ? [explainerFaqJsonLd('day')] : undefined} image={locale === 'ru' ? ruOgImageForPath(path) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/chart-of-the-day.png'} imageAlt={s(locale, 'dayTitle')} noindex={!edition && dailyEditions.length === 0} glass>
+<Base clientUi locale={locale} path={route} title={pageTitle} description={pageDescription} jsonLd={explainer ? [explainerFaqJsonLd('day')] : undefined} image={locale === 'ru' ? ruOgImageForPath(path) ?? '/assets/og/v2/ru/share.png' : artPageCard('chart-of-the-day')} imageAlt={locale === 'en' ? artPageCardAlt('chart-of-the-day') : s(locale, 'dayTitle')} noindex={!edition && dailyEditions.length === 0} glass>
   <section class="section--tight container return-page">
     <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, 'dayTitle')}</h1><p>{s(locale, 'dayLede')}</p></header>
     {edition ? <article class="return-panel">

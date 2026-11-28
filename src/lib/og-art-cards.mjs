@@ -440,11 +440,27 @@ export const ART_PAGE_PAINTINGS = Object.freeze({
   // The 2026-11-28 round's art, made for the cards: three generated photographs
   // (Higgsfield, 2528 × 1696, cut to 1200 px webp) and the compatibility hub's
   // two chart wheels, the site's own <Wheel> with two published People charts
-  // (scripts/build-compatibility-wheels-art.ts).
+  // (scripts/build-wheel-art.ts).
   crescent: Object.freeze({ src: 'public/assets/art/moon-crescent-1200.webp', width: 1200, height: 805 }),
   chartWheels: Object.freeze({ src: 'public/assets/art/compatibility-wheels-1200.webp', width: 1200, height: 800 }),
   veniceClock: Object.freeze({ src: 'public/assets/art/venice-clock-1200.webp', width: 1200, height: 805 }),
   numerologyDial: Object.freeze({ src: 'public/assets/art/numerology-dial-1200.webp', width: 1200, height: 805 }),
+  // The third round's art (owner-approved mockups, 2026-11-28): ten generated
+  // photographs (Higgsfield, 2528 × 1696, cut to 1200 px webp) and two
+  // pictures of the site's own chart wheels from published People charts
+  // (scripts/build-wheel-art.ts).
+  moonPhases: Object.freeze({ src: 'public/assets/art/moon-phases-1200.webp', width: 1200, height: 805 }),
+  fullMoon: Object.freeze({ src: 'public/assets/art/full-moon-1200.webp', width: 1200, height: 805 }),
+  retrogradeLoop: Object.freeze({ src: 'public/assets/art/retrograde-loop-1200.webp', width: 1200, height: 805 }),
+  solarEclipse: Object.freeze({ src: 'public/assets/art/solar-eclipse-1200.webp', width: 1200, height: 805 }),
+  sunLimb: Object.freeze({ src: 'public/assets/art/sun-limb-1200.webp', width: 1200, height: 805 }),
+  moonriseSea: Object.freeze({ src: 'public/assets/art/moonrise-sea-1200.webp', width: 1200, height: 805 }),
+  jupiterSaturn: Object.freeze({ src: 'public/assets/art/jupiter-saturn-1200.webp', width: 1200, height: 805 }),
+  starAtlas: Object.freeze({ src: 'public/assets/art/star-atlas-loupe-1200.webp', width: 1200, height: 805 }),
+  duskCrescent: Object.freeze({ src: 'public/assets/art/dusk-crescent-1200.webp', width: 1200, height: 805 }),
+  dayWheel: Object.freeze({ src: 'public/assets/art/chart-of-the-day-wheel-1200.webp', width: 1200, height: 800 }),
+  groupWheels: Object.freeze({ src: 'public/assets/art/group-charts-wheels-1200.webp', width: 1200, height: 800 }),
+  instantPhotos: Object.freeze({ src: 'public/assets/art/people-instant-photos-1200.webp', width: 1200, height: 805 }),
 });
 
 /** The sign art panels' filter, as on the sign cards; the poster is drawn brighter, as the pages' hero crops show it. */
@@ -594,6 +610,80 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
     art: framed('numerologyDial'), accent: null,
     kicker: 'Numerology', title: ['Find your', 'Life Path number'], size: 96, fit: 520, line: 'Discover your Life Path from your birth date, or add your name to explore more numbers.',
     alt: 'Find your Life Path number: discover it from your birth date, or add your name to explore more numbers. Numerology is a separate tradition from astrology. Beside the words, a silver dial with a dark numbered ring, its needle on 7.',
+  },
+  // The third round (owner-approved mockups, 2026-11-28): eleven astrology
+  // pages and the People hub, each with the twelve canonical sign discs above the kicker.
+  {
+    key: 'moon-phase', routes: ['/moon-phase/'],
+    art: framed('moonPhases'), accent: { kind: 'signDiscs' },
+    kicker: 'Free calculator', title: ['The moon,', 'any night'], size: 96, line: 'Tonight’s phase, and the moon of any date that matters to you.',
+    alt: 'The moon, any night: tonight’s phase, and the moon of any date that matters to you. The twelve sign discs in a row beside the Moon in its successive phases along an arc.',
+  },
+  {
+    key: 'full-moon-calendar', routes: ['/full-moon-calendar/', '/full-moon-calendar/2027/'],
+    art: framed('fullMoon'), accent: { kind: 'signDiscs' },
+    kicker: 'The calendar', title: ['Every full', 'moon'], size: 96, line: 'Through 2030, with each moon’s sign, degree, and name.',
+    alt: 'Every full moon through 2030, with each moon’s sign, degree, and name. The twelve sign discs in a row beside a close view of a full Moon.',
+  },
+  {
+    key: 'retrogrades', routes: ['/retrogrades/'],
+    art: framed('retrogradeLoop'), accent: { kind: 'signDiscs' },
+    kicker: 'The calendar', title: ['Every', 'retrograde'], size: 96, line: 'All eight planets, with every station window through 2030.',
+    alt: 'Every retrograde: all eight planets, with every station window through 2030. The twelve sign discs in a row beside a planet’s retrograde loop traced against the stars.',
+  },
+  {
+    key: 'eclipses', routes: ['/eclipses/', '/eclipses/2027/'],
+    art: framed('solarEclipse'), accent: { kind: 'signDiscs' },
+    kicker: 'The calendar', title: ['Eclipses,', 'dated'], size: 96, line: 'Every solar and lunar eclipse through 2030, with peak times and signs.',
+    alt: 'Eclipses, dated: every solar and lunar eclipse through 2030, with peak times and signs. The twelve sign discs in a row beside a total solar eclipse and its corona.',
+  },
+  {
+    key: 'solar-return', routes: ['/solar-return/'],
+    art: framed('sunLimb'), accent: { kind: 'signDiscs' },
+    kicker: 'Free calculator', title: ['Your solar', 'return'], size: 96, line: 'The chart of your next birthday, and the year’s main themes.',
+    alt: 'Your solar return: the chart of your next birthday, and the year’s main themes. The twelve sign discs in a row beside the edge of the Sun in violet light, with a sunspot.',
+  },
+  {
+    key: 'lunar-return', routes: ['/lunar-return/'],
+    art: framed('moonriseSea'), accent: { kind: 'signDiscs' },
+    kicker: 'Free calculator', title: ['Your lunar', 'return'], size: 96, line: 'Find the next time the Moon returns to its place in your birth chart.',
+    alt: 'Your lunar return: find the next time the Moon returns to its place in your birth chart. The twelve sign discs in a row beside a full Moon rising from a dark sea.',
+  },
+  {
+    key: 'your-sky-wrapped', routes: ['/your-sky-wrapped/'],
+    art: framed('jupiterSaturn'), accent: { kind: 'signDiscs' },
+    kicker: 'Your year', title: ['Your sky,', 'wrapped'], size: 96, line: 'The year’s Jupiter and Saturn contacts to your chart, on one card.',
+    alt: 'Your sky, wrapped: the year’s Jupiter and Saturn contacts to your chart, on one card. The twelve sign discs in a row beside Jupiter and Saturn on the dark.',
+  },
+  {
+    key: 'how-to-read-a-birth-chart', routes: ['/learn/how-to-read-a-birth-chart/'],
+    art: framed('starAtlas'), accent: { kind: 'signDiscs' },
+    kicker: 'Learn astrology', title: ['How to read', 'a birth chart'], size: 96, line: 'Big three, planets room by room, the working aspects, then the weather, in order.',
+    alt: 'How to read a birth chart: big three, planets room by room, the working aspects, then the weather, in order. The twelve sign discs in a row beside an old star atlas open under a loupe.',
+  },
+  {
+    key: 'occasions', routes: ['/occasions/'],
+    art: framed('duskCrescent'), accent: { kind: 'signDiscs' },
+    kicker: 'Wedding and birthday sky cards', title: ['The sky on', 'your day'], size: 96, lineCh: 26, line: 'A card of the sky on a wedding day, a birthday, a new home or any day that matters.',
+    alt: 'The sky on your day: a card of the sky on a wedding day, a birthday, a new home or any day that matters. The twelve sign discs in a row beside a crescent Moon and the evening star at dusk.',
+  },
+  {
+    key: 'chart-of-the-day', routes: ['/chart-of-the-day/'],
+    art: framed('dayWheel'), accent: { kind: 'signDiscs' },
+    kicker: 'In the news', title: ['Chart of', 'the day'], size: 96, line: 'A public figure’s chart, with sourced birth data and its limits stated.',
+    alt: 'Chart of the day: a public figure’s chart, with sourced birth data and its limits stated. The twelve sign discs in a row beside one of the site’s chart wheels, running off the edge.',
+  },
+  {
+    key: 'group-charts', routes: ['/group-charts/'],
+    art: framed('groupWheels'), accent: { kind: 'signDiscs' },
+    kicker: 'Free group reading', title: ['Who’s the spark,', 'who’s the glue?'], size: 80, fit: 540, line: 'Three to eight charts, each given a role.',
+    alt: 'Who’s the spark, who’s the glue? Three to eight charts, each given a role. The twelve sign discs in a row beside five of the site’s chart wheels, overlapping.',
+  },
+  {
+    key: 'people', routes: ['/people/'],
+    art: framed('instantPhotos'), accent: { kind: 'signDiscs' },
+    kicker: 'People', title: ['Sourced', 'birth charts'], size: 96, line: 'Charts for people whose birth dates are a matter of public record.',
+    alt: 'Sourced birth charts: charts for people whose birth dates are a matter of public record. The twelve sign discs in a row beside four instant photographs of anonymous people with their faces hidden, scattered with star stickers.',
   },
 ].map((spec) => Object.freeze({ ...spec, card: PAGE_CARD(spec.key), size: spec.size ?? 104, fit: spec.fit ?? 500, lineCh: spec.lineCh ?? 23 })));
 

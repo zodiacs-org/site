@@ -1959,6 +1959,7 @@ export const SHARE_FALLBACK_ART_CARDS = Object.freeze({
   'compatibility-invite': Object.freeze({ path: '/assets/og/v8/tool/compatibility-invite.jpg', alt: "An invitation to a private compatibility reading: their side is entered, yours stays in your browser. Beside it, a painting of a sealed envelope among brass instruments." }),
   'transits': Object.freeze({ path: '/assets/og/v8/tool/transits.jpg', alt: "What is active in your chart? Move the date to watch each transit build, peak, and release, beside a painting of the ring of sign discs." }),  'compatibility': Object.freeze({ path: '/assets/og/v8/tool/compatibility.jpg', alt: "Two charts, compared: whole-chart synastry, plus guides to all 78 sign pairings. The twelve sign discs in a row beside two of the site’s chart wheels, a small one set against a large one." }),
   'horoscopes': Object.freeze({ path: '/assets/og/v8/tool/horoscopes.jpg', alt: "All twelve signs: daily through yearly horoscopes with clear themes and one useful next move. The twelve sign discs in a row beside a clock dial with gilded zodiac figures on blue enamel." }),
+  'retrogrades': Object.freeze({ path: '/assets/og/v8/tool/retrogrades.jpg', alt: "Every retrograde: all eight planets, with every station window through 2030. The twelve sign discs in a row beside a planet’s retrograde loop traced against the stars." }),
 });
 
 /**
@@ -2484,9 +2485,9 @@ function defaultRetrogradeForYouPage(origin: string): SharePage {
     title: 'Retrogrades in your chart on Zodiacs',
     description: 'Mercury, Venus and Mars retrogrades, with the house each one falls in for you.',
     heading: 'Retrogrades in your chart',
-    imageUrl: `${origin}/assets/og/v2/tool/retrogrades.png`,
-    imageType: 'image/png',
-    imageAlt: 'Retrogrades on Zodiacs',
+    imageUrl: `${origin}${SHARE_FALLBACK_ART_CARDS['retrogrades'].path}`,
+    imageType: 'image/jpeg',
+    imageAlt: SHARE_FALLBACK_ART_CARDS['retrogrades'].alt,
     explanation: RETROGRADE_FOR_YOU_ABOUT,
     action: { label: 'See your retrogrades', href: RETROGRADE_FOR_YOU_PAGE_PATH },
     note: RETROGRADE_FOR_YOU_NOTE,
