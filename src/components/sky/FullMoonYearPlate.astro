@@ -1,0 +1,279 @@
+---
+/**
+ * A year of full Moons, on the full moon calendar: one calendar year (UTC)
+ * to scale by date, each full Moon a disc on its date that sits higher and
+ * draws larger the closer the Moon is, a line through them, a ring round
+ * each supermoon under the site's rule, and the year's closest and farthest
+ * labelled with date and km (src/lib/full-moon-year.ts, which reads
+ * src/data/moon-distances.json through src/lib/supermoon.ts).
+ *
+ * A story plate in the /thesis/ manner, after SunYearPlate on the sign
+ * guides, played by the shared entrance runtime (docs/MOTION.md): the line
+ * through the full Moons draws left to right at one speed, each disc grows in
+ * as the line reaches it, and the closing beat draws the supermoon rings and
+ * shows the two labels. The markup is the finished picture; the hidden states
+ * apply only while html[data-entrance="on"] and the plate's one mark (.fm-go,
+ * a 1px line across the middle of the figure) is still waiting. The words
+ * around the figure never move. Opacity, transform and stroke-dashoffset
+ * only; the pass ends at 2.3 s, inside the runtime's 2.6 s.
+ *
+ * Wide screens get the year on one line; phones get two rows of six months,
+ * a second drawing of the same data, so twelve or thirteen discs never crowd.
+ * Everything is inline SVG with no images. The mono face it uses is the one
+ * the calendar's tables already load.
+ */
+import { closenessCurve, fullMoonYear, SUPERMOON_RULE_TEXT, type FullMoonOfYear } from '../../lib/full-moon-year';
+import { signBySlug } from '../../lib/signs';
+import { formatDate } from '../../lib/i18n/dates';
+
+interface Props {
+  year: number;
+  /** The sign slug of each full Moon, by its sky.json instant, from the calendar's table data. */
+  signs: Record<string, string>;
+}
+
+const { year, signs } = Astro.props;
+const view = fullMoonYear(year, (at) => signs[at]);
+
+const LINE_MS = 1500;
+const n = (value: number) => value.toFixed(1);
+const km = (value: number) => value.toLocaleString('en-US');
+const short = (iso: string) => formatDate('en', iso, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const long = (iso: string) => formatDate('en', iso, { month: 'long', day: 'numeric', timeZone: 'UTC' });
+const weekday = (iso: string) => formatDate('en', iso, { weekday: 'short', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const listJoin = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`);
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+interface Row { months: [number, number]; x0: number; x1: number; yNear: number; yFar: number; axisY: number }
+interface Layout { w: number; h: number; rows: Row[]; r: number; gap: number; font: number }
+
+// The two drawings, in viewBox units. yNear is where the nearest full Moon
+// in the data sits, yFar the farthest. r is the farthest one's disc radius;
+// gap is how far outside a disc its supermoon ring runs.
+const WIDE: Layout = {
+  w: 720, h: 250, r: 8.5, gap: 6, font: 12,
+  rows: [{ months: [0, 12], x0: 22, x1: 698, yNear: 62, yFar: 158, axisY: 216 }],
+};
+const NARROW: Layout = {
+  w: 340, h: 428, r: 7, gap: 5, font: 11.5,
+  rows: [
+    { months: [0, 6], x0: 14, x1: 326, yNear: 58, yFar: 126, axisY: 178 },
+    { months: [6, 12], x0: 14, x1: 326, yNear: 272, yFar: 340, axisY: 392 },
+  ],
+};
+
+function draw(layout: Layout) {
+  if (!view) return null;
+  const rows = layout.rows.map((row) => {
+    const from = Date.UTC(year, row.months[0], 1);
+    const to = Date.UTC(year, row.months[1], 1);
+    const X = (t: number) => row.x0 + ((t - from) / (to - from)) * (row.x1 - row.x0);
+    const Y = (v: number) => row.yFar - v * (row.yFar - row.yNear);
+    const dYdt = (m: number) => -m * (row.yFar - row.yNear);
+    const curve = closenessCurve(from, to);
+    let d = `M${n(X(curve[0].t))} ${n(Y(curve[0].v))}`;
+    // Arc length along the line at each knot, for the story's timing.
+    let length = 0;
+    const lengthAt = new Map<number, number>([[curve[0].t, 0]]);
+    for (let i = 1; i < curve.length; i += 1) {
+      const p = curve[i - 1];
+      const q = curve[i];
+      const dt = q.t - p.t;
+      const P0 = [X(p.t), Y(p.v)];
+      const P1 = [X(p.t + dt / 3), Y(p.v) + (dYdt(p.m) * dt) / 3];
+      const P2 = [X(q.t - dt / 3), Y(q.v) - (dYdt(q.m) * dt) / 3];
+      const P3 = [X(q.t), Y(q.v)];
+      d += `C${n(P1[0])} ${n(P1[1])} ${n(P2[0])} ${n(P2[1])} ${n(P3[0])} ${n(P3[1])}`;
+      let prev = P0;
+      for (let s = 1; s <= 24; s += 1) {
+        const u = s / 24;
+        const a = (1 - u) ** 3, b = 3 * (1 - u) ** 2 * u, c = 3 * (1 - u) * u * u, e = u ** 3;
+        const pt = [a * P0[0] + b * P1[0] + c * P2[0] + e * P3[0], a * P0[1] + b * P1[1] + c * P2[1] + e * P3[1]];
+        length += Math.hypot(pt[0] - prev[0], pt[1] - prev[1]);
+        prev = pt;
+      }
+      lengthAt.set(q.t, length);
+    }
+    const moons = view.moons
+      .filter((moon) => { const t = Date.parse(moon.at); return t >= from && t < to; })
+      .map((moon) => ({ moon, cx: X(Date.parse(moon.at)), cy: Y(moon.closeness), r: layout.r * moon.size, along: lengthAt.get(Date.parse(moon.at)) ?? 0 }));
+    const ticks = Array.from({ length: row.months[1] - row.months[0] + 1 }, (_, i) => X(Date.UTC(year, row.months[0] + i, 1)));
+    const months = Array.from({ length: row.months[1] - row.months[0] }, (_, i) => ({
+      label: MONTHS[row.months[0] + i],
+      x: (X(Date.UTC(year, row.months[0] + i, 1)) + X(Date.UTC(year, row.months[0] + i + 1, 1))) / 2,
+    }));
+    return { row, d, length, moons, ticks, months };
+  });
+  const total = rows.reduce((sum, row) => sum + row.length, 0);
+  let before = 0;
+  const timed = rows.map((row) => {
+    const out = {
+      ...row,
+      t: Math.round((before / total) * LINE_MS),
+      dur: Math.round((row.length / total) * LINE_MS),
+      moons: row.moons.map((m) => ({ ...m, t: Math.round(((before + m.along) / total) * LINE_MS) })),
+    };
+    before += row.length;
+    return out;
+  });
+  // The two labels: the closest above its disc (and ring), the farthest below.
+  const labels = timed.flatMap((row) => row.moons.flatMap((m) => {
+    const kind = m.moon === view.closest ? 'closest' : m.moon === view.farthest ? 'farthest' : null;
+    if (!kind) return [];
+    const lines = [`${kind === 'closest' ? 'Closest' : 'Farthest'}, ${short(m.moon.at)}`, `${km(m.moon.distanceKm)} km`];
+    const half = (Math.max(...lines.map((l) => l.length)) * layout.font * 0.6) / 2;
+    const outer = m.r + (m.moon.supermoon ? layout.gap : 0);
+    let anchor = 'middle';
+    let x = m.cx;
+    if (m.cx - half < row.row.x0 - 8) { anchor = 'start'; x = Math.max(4, m.cx - m.r); }
+    else if (m.cx + half > layout.w - 4) { anchor = 'end'; x = Math.min(layout.w - 4, m.cx + m.r); }
+    const step = layout.font + 2.5;
+    const ys = kind === 'closest'
+      ? [m.cy - outer - 8 - step, m.cy - outer - 8]
+      : [m.cy + outer + 8 + layout.font * 0.8, m.cy + outer + 8 + layout.font * 0.8 + step];
+    return [{ kind, lines, x, ys, anchor }];
+  }));
+  return { layout, rows: timed, labels };
+}
+
+const wide = draw(WIDE);
+const narrow = draw(NARROW);
+
+const count = view ? view.moons.length : 0;
+const words = ['None', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'];
+const superCount = view ? view.supermoons.length : 0;
+const superList = view ? listJoin(view.supermoons.map((m) => long(m.at))) : '';
+const lede = view
+  ? `The closest full Moon of ${year} falls on ${long(view.closest.at)}, ${km(view.closest.distanceKm)} km from Earth, and the farthest on ${long(view.farthest.at)}, ${km(view.farthest.distanceKm)} km away. ${superCount > 0
+    ? `${words[superCount] ?? String(superCount)} ${superCount === 1 ? 'is a supermoon' : 'are supermoons'} by the rule we use: ${superList}.`
+    : 'None is a supermoon by the rule we use.'}`
+  : '';
+const key = view
+  ? `Higher and larger means closer, and a ring marks a supermoon. The sizes are exaggerated: seen from Earth, the ${long(view.closest.at)} Moon looks ${view.widerPercent}% wider than the ${long(view.farthest.at)} Moon. Each disc's edge takes the color of the sign the Moon is in.`
+  : '';
+const alt = view
+  ? `The ${count} full Moons of ${year} by date and distance from Earth. Closest: ${long(view.closest.at)}, ${km(view.closest.distanceKm)} km. Farthest: ${long(view.farthest.at)}, ${km(view.farthest.distanceKm)} km. ${superCount > 0 ? `Supermoons: ${superList}.` : 'No supermoons.'}`
+  : '';
+const hue = (moon: FullMoonOfYear) => (moon.sign ? signBySlug(moon.sign).hue : null);
+const titleId = `fullmoons-${year}-title`;
+
+// The plate's styles travel in the body, just before its markup, as one
+// inline block, so they never join the page's head stylesheets (see
+// SunYearPlate). Every class is fm- prefixed; .fullmoons leads the rules
+// that reach the site's .kicker and .h-2.
+const styles = `
+.fm-plate { margin-top: clamp(8px, 2vw, 24px); padding: clamp(24px, 4vw, 44px); border: 1px solid var(--hair-1); border-radius: var(--r-xl); background: rgba(198, 204, 218, 0.02); }
+.fullmoons .fm-plate .kicker { margin: 0 0 10px; color: var(--muted); }
+.fullmoons .fm-plate .h-2 { margin: 0; font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem); line-height: 1.06; color: var(--ink-0); }
+.fm-lede { margin: 16px 0 0; max-width: 60ch; font-size: 1.0625rem; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
+.fm-figure { position: relative; margin: clamp(22px, 3vw, 32px) 0 0; }
+.fm-go { position: absolute; left: 0; top: 50%; width: 100%; height: 1px; pointer-events: none; }
+.fm-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.fm-svg--wide { aspect-ratio: 720 / 250; }
+.fm-svg--narrow { display: none; aspect-ratio: 340 / 428; }
+.fm-axis, .fm-tick { fill: none; stroke: var(--hair-3); stroke-width: 1; }
+.fm-line { fill: none; stroke: var(--ink-2); stroke-width: 1.2; stroke-linecap: round; }
+.fm-disc { fill: var(--ink-1); }
+.fm-edge { fill: none; stroke: var(--hue); stroke-width: 1.6; }
+.fm-ring { fill: none; stroke: var(--ink-0); stroke-width: 1.1; }
+.fm-month { fill: var(--faint); font-family: var(--font-sans); font-size: 12px; text-anchor: middle; }
+.fm-label { fill: var(--text-2); font-family: var(--font-mono); letter-spacing: -0.01em; }
+.fm-label tspan + tspan { fill: var(--muted); }
+.fm-key { margin: 18px 0 0; max-width: 64ch; font-size: 0.9375rem; line-height: 1.55; color: var(--muted); }
+.fm-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 24px; margin: 24px 0 0; border-top: 1px solid var(--hair-2); }
+.fm-facts > div { min-width: 0; padding: 14px 0 16px; border-bottom: 1px solid var(--hair-1); }
+.fm-facts dt { font-size: 13px; font-weight: 500; color: var(--faint); }
+.fm-facts dd { margin: 6px 0 0; font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.2; color: var(--ink-0); }
+.fm-facts dd span { display: block; margin-top: 5px; font-family: var(--font-mono); font-size: 12px; letter-spacing: -0.01em; color: var(--muted); }
+.fm-rule { margin: 18px 0 0; max-width: 64ch; font-size: 0.9375rem; line-height: 1.55; color: var(--muted); }
+.fm-source { margin: 12px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--faint); }
+@media (max-width: 760px) {
+  .fm-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+}
+@media (max-width: 600px) {
+  .fm-plate { margin-inline: -4px; padding: 22px 16px 24px; border-radius: 20px; }
+  .fm-svg--wide { display: none; }
+  .fm-svg--narrow { display: block; }
+  .fm-facts dd { font-size: 1.1rem; }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-entrance='on'] .fm-go ~ .fm-svg :is(.fm-line, .fm-ring) { stroke-dasharray: 1; }
+  html[data-entrance='on'] .fm-go ~ .fm-svg .fm-moon { transform-box: fill-box; transform-origin: center; }
+  html[data-entrance='on'] .fm-go:not(.is-in) ~ .fm-svg :is(.fm-line, .fm-ring) { stroke-dashoffset: 1; }
+  html[data-entrance='on'] .fm-go:not(.is-in) ~ .fm-svg .fm-moon { opacity: 0; transform: scale(0.5); }
+  html[data-entrance='on'] .fm-go:not(.is-in) ~ .fm-svg .fm-label { opacity: 0; }
+  html[data-entrance='on'] .fm-go:not(.is-done) ~ .fm-svg .fm-line { transition: stroke-dashoffset var(--d) linear var(--t); }
+  html[data-entrance='on'] .fm-go:not(.is-done) ~ .fm-svg .fm-moon { transition: opacity 300ms ease var(--t), transform 440ms cubic-bezier(0.23, 1, 0.32, 1) var(--t); }
+  html[data-entrance='on'] .fm-go:not(.is-done) ~ .fm-svg .fm-ring { transition: stroke-dashoffset 520ms ease-out 1600ms; }
+  html[data-entrance='on'] .fm-go:not(.is-done) ~ .fm-svg .fm-label { transition: opacity 400ms ease 1880ms; }
+}
+`;
+---
+{view && wide && narrow && (
+  <Fragment>
+  <style is:inline set:html={styles}></style>
+  <section class="fullmoons container container--narrow" aria-labelledby={titleId}>
+    <div class="fm-plate">
+      <p class="kicker">Distance from Earth, {year}</p>
+      <h2 class="h-2" id={titleId}>How close each full Moon of {year} comes</h2>
+      <p class="fm-lede">{lede}</p>
+      <div class="fm-figure" role="img" aria-label={alt}>
+        <span class="fm-go" data-enter="draw" aria-hidden="true"></span>
+        {[wide, narrow].map((plot) => (
+          <svg
+            class:list={['fm-svg', plot === wide ? 'fm-svg--wide' : 'fm-svg--narrow']}
+            viewBox={`0 0 ${plot.layout.w} ${plot.layout.h}`}
+            aria-hidden="true"
+            focusable="false"
+          >
+            {plot.rows.map((row) => (
+              <Fragment>
+                <path class="fm-axis" d={`M${row.row.x0} ${row.row.axisY}H${row.row.x1}`} />
+                <path class="fm-tick" d={row.ticks.map((x) => `M${n(x)} ${row.row.axisY - 4}v8`).join('')} />
+                {row.months.map((m) => <text class="fm-month" x={n(m.x)} y={row.row.axisY + 20}>{m.label}</text>)}
+                <path class="fm-line" pathLength="1" style={`--t:${row.t}ms;--d:${row.dur}ms`} d={row.d} />
+              </Fragment>
+            ))}
+            {plot.rows.flatMap((row) => row.moons).map((m) => (
+              <g class="fm-moon" style={`--t:${m.t}ms${hue(m.moon) ? `;--hue:${hue(m.moon)}` : ''}`}>
+                <circle class="fm-disc" cx={n(m.cx)} cy={n(m.cy)} r={n(m.r)} />
+                {hue(m.moon) && <circle class="fm-edge" cx={n(m.cx)} cy={n(m.cy)} r={n(m.r + 2.2)} />}
+              </g>
+            ))}
+            {plot.rows.flatMap((row) => row.moons).filter((m) => m.moon.supermoon).map((m) => (
+              <circle class="fm-ring" pathLength="1" cx={n(m.cx)} cy={n(m.cy)} r={n(m.r + plot.layout.gap)} />
+            ))}
+            {plot.labels.map((label) => (
+              <text class="fm-label" x={n(label.x)} y={n(label.ys[0])} text-anchor={label.anchor} font-size={plot.layout.font}>
+                <tspan x={n(label.x)} y={n(label.ys[0])}>{label.lines[0]}</tspan>
+                <tspan x={n(label.x)} y={n(label.ys[1])}>{label.lines[1]}</tspan>
+              </text>
+            ))}
+          </svg>
+        ))}
+      </div>
+      <p class="fm-key">{key}</p>
+      <dl class="fm-facts">
+        <div>
+          <dt>Closest</dt>
+          <dd><time datetime={view.closest.at}>{weekday(view.closest.at)}</time><span>{km(view.closest.distanceKm)} km</span></dd>
+        </div>
+        <div>
+          <dt>Farthest</dt>
+          <dd><time datetime={view.farthest.at}>{weekday(view.farthest.at)}</time><span>{km(view.farthest.distanceKm)} km</span></dd>
+        </div>
+        <div>
+          <dt>Supermoons</dt>
+          <dd>{superCount}<span>{superCount > 0 ? view.supermoons.map((m) => short(m.at)).join(', ') : 'none this year'}</span></dd>
+        </div>
+        <div>
+          <dt>Full Moons</dt>
+          <dd>{count}<span>{short(view.moons[0].at)} to {short(view.moons[count - 1].at)}</span></dd>
+        </div>
+      </dl>
+      <p class="fm-rule">A supermoon here is {SUPERMOON_RULE_TEXT}.</p>
+      <p class="fm-source">Distances: Astronomy Engine, Earth's center to the Moon's center, whole km. Dates in UTC.</p>
+    </div>
+  </section>
+  </Fragment>
+)}

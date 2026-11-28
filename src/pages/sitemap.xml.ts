@@ -32,6 +32,7 @@ import {
 } from '../lib/seo-lastmod';
 import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
+import { pairAngle } from '../lib/pair-angle';
 import birthdayFactsData from '../data/birthdays.json';
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
 import {
@@ -848,6 +849,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
   ['/app/privacy/', '2026-11-22'] as const,
   ['/support/', '2026-11-22'] as const,
+  // The full moon calendar's plate of the year's full Moons by distance (src/components/sky/FullMoonYearPlate.astro),
+  // on the day of the daily edition it was built with, last so it wins. The 2027 page takes the same day through
+  // FULL_MOON_CALENDAR_2027_UPDATED, which it prints.
+  ['/full-moon-calendar/', '2026-11-26'] as const,
+  // The Mercury retrograde page's plate of the year's loops (src/components/sky/MercuryYearPlate.astro), on the day
+  // of the daily edition it was built with, last so it wins.
+  ['/mercury-retrograde/', '2026-11-26'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -1148,6 +1156,15 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
   }
+  // The Sun's year plate on the sign guides (src/components/guide/SunYearPlate.astro), in English, Spanish, French,
+  // Italian and Portuguese (the Russian guides are not listed), on the day of the daily edition it was built with.
+  // Dated here, after making localized copies, so the guides' own dates (and the English guides' dateModified) stay.
+  const SUN_YEAR_PLATE_PAGES = new Set(['', '/es', '/fr', '/it', '/pt'].flatMap((prefix) => (
+    SIGNS.map((sign) => `${prefix}/${sign.slug}/`)
+  )));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (SUN_YEAR_PLATE_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-26');
+  }
   // The natal planet-pair release links each geometry guide to the same
   // angle on the three pair pages.
   if (natalAspectsPublished) {
@@ -1224,6 +1241,32 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   ]));
   for (const url of [...urls, ...localizedUrls]) {
     if (SHARE_CARD_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-10');
+  }
+  // The plate drawing the angle between the two signs on the wheel (src/components/compat/PairAnglePlate.astro):
+  // every pair page, in English and translated (the Russian pairs are not listed), on the day of the daily edition it
+  // was built with.
+  const PAIR_ANGLE_PLATE_PAGES = new Set(['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => (
+    pairs.map((pair) => `${prefix}/compatibility/${pair.id}/`)
+  )));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (PAIR_ANGLE_PLATE_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-26');
+  }
+  // The two plates' wording fixes (2026-11-27): the Sun's year plate in French, Italian and Portuguese (the Russian
+  // guides are not listed), and on the pair plate the Italian same-sign heading and signs-one-apart lede and the
+  // Portuguese one-twelfth of the wheel (signs one apart).
+  const PLATE_WORDING_PAGES = new Set([
+    ...['/fr', '/it', '/pt'].flatMap((prefix) => SIGNS.map((sign) => `${prefix}/${sign.slug}/`)),
+    ...pairs.flatMap((pair) => {
+      const [a, b] = pair.data.signs;
+      const { steps } = pairAngle(a, b);
+      return [
+        ...(steps <= 1 ? [`/it/compatibility/${pair.id}/`] : []),
+        ...(steps === 1 ? [`/pt/compatibility/${pair.id}/`] : []),
+      ];
+    }),
+  ]);
+  for (const url of [...urls, ...localizedUrls]) {
+    if (PLATE_WORDING_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-27');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
