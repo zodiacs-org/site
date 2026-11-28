@@ -1,0 +1,150 @@
+## Positions at noon UTC
+### 2026-11-09 12:00 UTC
+Sun: 17.10° (17°05′) Scorpio
+Moon: 19.45° (19°27′) Scorpio
+Mercury: 6.70° (6°41′) Scorpio retrograde
+Venus: 23.28° (23°16′) Libra retrograde
+Mars: 22.78° (22°46′) Leo
+Jupiter: 25.27° (25°16′) Leo
+Saturn: 8.79° (8°47′) Aries retrograde
+Uranus: 4.35° (4°21′) Gemini retrograde
+Neptune: 1.92° (1°55′) Aries retrograde
+Pluto: 3.21° (3°12′) Aquarius
+Moon elongation 2.4°, illuminated 0.0%
+### 2026-11-11 12:00 UTC
+Sun: 19.11° (19°06′) Scorpio
+Moon: 13.85° (13°50′) Sagittarius
+Mercury: 5.48° (5°28′) Scorpio retrograde
+Venus: 22.99° (22°59′) Libra retrograde
+Mars: 23.72° (23°43′) Leo
+Jupiter: 25.46° (25°27′) Leo
+Saturn: 8.69° (8°41′) Aries retrograde
+Uranus: 4.27° (4°16′) Gemini retrograde
+Neptune: 1.89° (1°53′) Aries retrograde
+Pluto: 3.23° (3°13′) Aquarius
+Moon elongation 24.7°, illuminated 4.6%
+### 2026-11-12 12:00 UTC
+Sun: 20.11° (20°06′) Scorpio
+Moon: 25.81° (25°48′) Sagittarius
+Mercury: 5.16° (5°09′) Scorpio retrograde
+Venus: 22.91° (22°54′) Libra retrograde
+Mars: 24.18° (24°10′) Leo
+Jupiter: 25.56° (25°33′) Leo
+Saturn: 8.64° (8°38′) Aries retrograde
+Uranus: 4.23° (4°13′) Gemini retrograde
+Neptune: 1.87° (1°52′) Aries retrograde
+Pluto: 3.25° (3°14′) Aquarius
+Moon elongation 35.7°, illuminated 9.4%
+### 2026-11-15 12:00 UTC
+Sun: 23.13° (23°08′) Scorpio
+Moon: 1.28° (1°16′) Aquarius
+Mercury: 5.34° (5°20′) Scorpio
+Venus: 22.90° (22°54′) Libra
+Mars: 25.55° (25°32′) Leo
+Jupiter: 25.82° (25°49′) Leo
+Saturn: 8.50° (8°30′) Aries retrograde
+Uranus: 4.11° (4°06′) Gemini retrograde
+Neptune: 1.83° (1°49′) Aries retrograde
+Pluto: 3.29° (3°17′) Aquarius
+Moon elongation 68.1°, illuminated 31.4%
+## Moon phases
+Last quarter: 2026-11-01T20:28Z Moon 9.44° (9°26′) Leo
+New: 2026-11-09T07:02Z Moon 16.90° (16°53′) Scorpio
+First quarter: 2026-11-17T11:48Z Moon 25.15° (25°08′) Aquarius
+Full: 2026-11-24T14:54Z Moon 2.34° (2°20′) Gemini
+Last quarter: 2026-12-01T06:09Z Moon 9.06° (9°03′) Virgo
+New: 2026-12-09T00:52Z Moon 16.95° (16°57′) Sagittarius
+First quarter: 2026-12-17T05:43Z Moon 25.29° (25°17′) Pisces
+Full: 2026-12-24T01:28Z Moon 2.24° (2°14′) Cancer
+## Stations (speed changes sign), 2026-10-01 to 2027-12-31
+Mercury retrograde: 2026-10-24T07:15Z at 20.98° (20°58′) Scorpio
+Mercury direct: 2026-11-13T15:52Z at 5.03° (5°02′) Scorpio
+Mercury retrograde: 2027-02-09T17:35Z at 5.98° (5°58′) Pisces
+Mercury direct: 2027-03-03T12:34Z at 20.92° (20°55′) Aquarius
+Mercury retrograde: 2027-06-10T18:18Z at 6.36° (6°21′) Cancer
+Mercury direct: 2027-07-04T19:40Z at 27.47° (27°28′) Gemini
+Mercury retrograde: 2027-10-07T14:40Z at 4.93° (4°55′) Scorpio
+Mercury direct: 2027-10-28T14:10Z at 19.31° (19°18′) Libra
+Venus retrograde: 2026-10-03T07:10Z at 8.49° (8°29′) Scorpio
+Venus direct: 2026-11-14T00:20Z at 22.86° (22°51′) Libra
+Mars retrograde: 2027-01-10T13:01Z at 10.43° (10°25′) Virgo
+Mars direct: 2027-04-01T14:10Z at 20.93° (20°55′) Leo
+Jupiter retrograde: 2026-12-13T00:58Z at 27.02° (27°01′) Leo
+Jupiter direct: 2027-04-13T02:13Z at 17.00° (16°59′) Leo
+Saturn direct: 2026-12-10T23:23Z at 7.93° (7°55′) Aries
+Saturn retrograde: 2027-08-09T17:52Z at 27.88° (27°52′) Aries
+Saturn direct: 2027-12-24T02:49Z at 21.02° (21°01′) Aries
+Uranus direct: 2027-02-08T12:23Z at 1.68° (1°40′) Gemini
+Uranus retrograde: 2027-09-15T09:14Z at 9.96° (9°57′) Gemini
+Neptune direct: 2026-12-12T22:13Z at 1.62° (1°36′) Aries
+Neptune retrograde: 2027-07-09T22:49Z at 6.66° (6°39′) Aries
+Neptune direct: 2027-12-15T09:42Z at 3.86° (3°51′) Aries
+Pluto direct: 2026-10-16T02:23Z at 3.07° (3°04′) Aquarius
+Pluto retrograde: 2027-05-08T12:14Z at 7.18° (7°10′) Aquarius
+Pluto direct: 2027-10-18T03:51Z at 4.75° (4°44′) Aquarius
+## Ingresses, 2026-11-01 to 2027-12-31 (Sun, Mercury, Venus, Mars, Jupiter)
+Sun crosses 0° Sagittarius: 2026-11-22T07:23Z
+Sun crosses 0° Capricorn: 2026-12-21T20:50Z
+Mercury crosses 0° Sagittarius: 2026-12-06T08:33Z
+Mercury crosses 0° Capricorn: 2026-12-25T18:22Z
+Venus crosses 0° Scorpio: 2026-12-04T08:14Z
+Mars crosses 0° Virgo: 2026-11-25T23:37Z
+Mars crosses 0° Virgo: 2027-02-21T14:15Z
+Mars crosses 0° Virgo: 2027-05-14T14:47Z
+Mars crosses 0° Libra: 2027-07-15T05:40Z
+Mars crosses 0° Scorpio: 2027-09-02T01:51Z
+Mars crosses 0° Sagittarius: 2027-10-15T23:13Z
+Mars crosses 0° Capricorn: 2027-11-25T18:37Z
+Jupiter crosses 0° Virgo: 2027-07-26T04:45Z
+## Exact aspects, November 2026
+Venus 60° Jupiter: 2026-11-04T10:20Z Venus 24.73° (24°43′) Libra, Jupiter 24.73° (24°43′) Leo
+Venus 60° Jupiter: 2026-11-28T12:06Z Venus 26.68° (26°40′) Libra, Jupiter 26.68° (26°40′) Leo
+Mars 0° Jupiter: 2026-11-16T06:21Z Mars 25.89° (25°53′) Leo, Jupiter 25.89° (25°53′) Leo
+Sun 90° Jupiter: 2026-11-18T09:38Z Sun 26.06° (26°03′) Scorpio, Jupiter 26.06° (26°03′) Leo
+Sun 120° Neptune: 2026-11-24T00:12Z Sun 1.72° (1°43′) Sagittarius, Neptune 1.72° (1°43′) Aries
+Sun 60° Pluto: 2026-11-25T17:26Z Sun 3.45° (3°27′) Sagittarius, Pluto 3.45° (3°27′) Aquarius
+Sun 180° Uranus: 2026-11-25T22:41Z Sun 3.68° (3°40′) Sagittarius, Uranus 3.68° (3°40′) Gemini
+Uranus 120° Pluto: 2026-11-29T11:27Z Uranus 3.53° (3°31′) Gemini, Pluto 3.53° (3°31′) Aquarius
+Sun 120° Saturn: 2026-11-30T06:01Z Sun 8.03° (8°01′) Sagittarius, Saturn 8.03° (8°01′) Aries
+Venus 60° Mars: 2026-11-10T06:39Z Venus 23.14° (23°08′) Libra, Mars 23.14° (23°08′) Leo
+## Aspect separations at 2026-11-11 12:00 UTC
+Venus-Mars: separation 59.27°, 0.73° from 60°
+Uranus-Pluto: separation 121.04°, 1.04° from 120°
+Neptune-Pluto: separation 58.66°, 1.34° from 60°
+Mars-Jupiter: separation 1.75°, 1.75° from 0°
+## Eclipses 2027
+Solar annular: 2027-02-06T15:59Z Sun 17.63° (17°37′) Aquarius
+Solar total: 2027-08-02T10:06Z Sun 9.92° (9°55′) Leo
+Lunar penumbral: 2027-02-20T23:12Z Moon 1.98° (1°58′) Virgo
+Lunar penumbral: 2027-07-18T16:02Z Moon 25.96° (25°57′) Capricorn
+Lunar penumbral: 2027-08-17T07:13Z Moon 24.07° (24°04′) Aquarius
+## Sun at noon UTC on 12 November, 1940 to 2030
+min 19.23° (19°13′) Scorpio (1943), max 20.63° (20°37′) Scorpio (2028)
+## Synthetic chart 1990-05-03 12:00 UTC and transits used by the connector sample
+natal Sun: 12.80° (12°47′) Taurus
+natal Mercury: 13.58° (13°35′) Taurus
+natal Venus: 29.26° (29°15′) Pisces
+natal Mars: 9.40° (9°23′) Pisces
+natal Jupiter: 7.37° (7°22′) Cancer
+natal Saturn: 25.34° (25°20′) Capricorn
+natal Uranus: 9.43° (9°25′) Capricorn
+natal Neptune: 14.50° (14°29′) Capricorn
+natal Pluto: 16.50° (16°30′) Scorpio
+transit Sun 60° natal Saturn: 2026-11-17T16:28Z
+transit Mercury 120° natal Jupiter: 2026-11-18T23:55Z
+transit Mercury 120° natal Mars: 2026-11-21T04:49Z
+transit Mercury 60° natal Uranus: 2026-11-21T05:29Z
+transit Sun 120° natal Venus: 2026-11-21T13:49Z
+transit Saturn to natal Uranus at 2026-11-11 12:00 UTC: 0.74° from 90°
+transit Saturn to natal Jupiter at 2026-11-11 12:00 UTC: 1.32° from 90°
+transit Venus to natal Saturn at 2026-11-11 12:00 UTC: 2.35° from 90°
+## Synthetic pair 1988-02-14 and 1991-09-30, noon UTC
+A Sun 25.01° (25°00′) Aquarius; B Sun 6.83° (6°49′) Libra
+A Jupiter to B Venus: orb 0.5° from 120°
+A Mercury to B Pluto: orb 0.8° from 90°
+A Venus to B Sun: orb 1.0° from 180°
+A Sun to B Venus: orb 1.1° from 180°
+A Mercury to B Mars: orb 1.2° from 120°
+A Mars to B Venus: orb 1.4° from 120°
+A Venus to B Mercury: orb 1.6° from 180°
+A Neptune to B Sun: orb 2.5° from 90°
