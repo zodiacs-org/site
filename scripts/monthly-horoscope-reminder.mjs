@@ -41,8 +41,8 @@ export function decideMonthlyReminder({ month, label, monthlyEntries, listOpenIs
   return { action: 'created', message: `Created reminder issue: ${title}` };
 }
 
-function runGh(args) {
-  const result = spawnSync('gh', args, { encoding: 'utf8' });
+export function runGh(args, spawn = spawnSync) {
+  const result = spawn('gh', args, { encoding: 'utf8' });
   if (result.error) throw result.error;
   if (result.status !== 0) {
     throw new Error(`gh ${args.join(' ')} failed (${result.status}): ${(result.stderr || result.stdout || '').trim()}`);
@@ -54,13 +54,15 @@ export async function runMonthlyHoroscopeReminder({
   month = process.env.MONTH,
   issueBody = process.env.ISSUE_BODY ?? '',
   horoscopesDir = resolve(root, 'src/content/horoscopes'),
+  monthlyEntries,
+  spawn = spawnSync,
 } = {}) {
   const label = formatMonthLabel(month);
-  const monthlyEntries = await loadMonthlyEntries(horoscopesDir);
+  const entries = monthlyEntries ?? (await loadMonthlyEntries(horoscopesDir));
   const outcome = decideMonthlyReminder({
     month,
     label,
-    monthlyEntries,
+    monthlyEntries: entries,
     issueBody,
     listOpenIssues: (monthLabel) => {
       const out = runGh([
@@ -68,7 +70,7 @@ export async function runMonthlyHoroscopeReminder({
         '--search', `in:title "Write the ${monthLabel} horoscopes"`,
         '--json', 'number',
         '--jq', 'length',
-      ]);
+      ], spawn);
       const parsed = Number.parseInt(out, 10);
       if (!/^\d+$/u.test(out) || Number.isNaN(parsed)) {
         throw new Error(`unexpected gh issue list output: ${JSON.stringify(out)}`);
@@ -76,7 +78,7 @@ export async function runMonthlyHoroscopeReminder({
       return parsed;
     },
     createIssue: ({ title, body }) => {
-      runGh(['issue', 'create', '--title', title, '--body', body]);
+      runGh(['issue', 'create', '--title', title, '--body', body], spawn);
     },
   });
   console.log(outcome.message);

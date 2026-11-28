@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { HOROSCOPE_SIGNS } from './horoscope-freshness-lib.mjs';
-import { decideMonthlyReminder } from './monthly-horoscope-reminder.mjs';
+import { decideMonthlyReminder, runMonthlyHoroscopeReminder } from './monthly-horoscope-reminder.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFile(resolve(root, path), 'utf8');
@@ -79,14 +79,26 @@ describe('daily publication operations', () => {
     expect(decideMonthlyReminder({ ...base, monthlyEntries: [], listOpenIssues: () => 1 }).action).toBe('skip-open');
     expect(created).toHaveLength(2);
 
-    // A failed issue lookup throws rather than silently treating the failure as an existing issue.
-    expect(() =>
-      decideMonthlyReminder({
-        ...base,
-        monthlyEntries: [],
-        listOpenIssues: () => { throw new Error('gh issue list failed (1)'); },
+    // Eleven live entries (one sign missing) still open the reminder.
+    expect(decideMonthlyReminder({ ...base, monthlyEntries: allTwelve.slice(0, 11), listOpenIssues: () => 0 }).action).toBe('created');
+    expect(created).toHaveLength(3);
+
+    // Production CLI adapter: a non-zero gh exit with '0' on stdout fails instead of skipping or creating.
+    const calls = [];
+    await expect(
+      runMonthlyHoroscopeReminder({
+        month: '2026-12',
+        issueBody: base.issueBody,
+        monthlyEntries: allTwelve.slice(0, 11),
+        spawn: (cmd, args) => {
+          calls.push([cmd, args]);
+          return { status: 1, stdout: '0\n', stderr: 'auth failed', error: undefined };
+        },
       }),
-    ).toThrow('gh issue list failed');
+    ).rejects.toThrow(/gh issue list .* failed \(1\)/);
+    expect(calls).toHaveLength(1);
+    expect(calls[0][1][0]).toBe('issue');
+    expect(calls[0][1][1]).toBe('list');
   });
 
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {
