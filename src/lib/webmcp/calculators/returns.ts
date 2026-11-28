@@ -61,6 +61,8 @@ export async function saturnReturnResult(date: string, time: string | null, plac
   };
 }
 
+const POLAR_SOLAR_RETURN_LIMIT = 'The rising sign and houses are undefined at a geographic pole, so this return is shown planets-only.';
+
 /**
  * /solar-return/ (SolarReturnCalculator from a typed birth): the return for a year, or the one in force now, cast at
  * the birthplace or at another place. Without a birth time the natal Sun is read at noon UTC on the birth date and
@@ -90,6 +92,7 @@ export async function solarReturnResult(
     returnYear: data.returnYear,
     timeKnown: !data.noTime,
     ...(data.clockLimit ? { clockLimit: data.clockLimit } : {}),
+    ...(data.atPole ? { atPole: true, polarLimit: POLAR_SOLAR_RETURN_LIMIT } : {}),
     ...returnChart(data.chart),
     engine: ENGINE,
     page: pageUrl('/solar-return/'),

@@ -564,6 +564,18 @@ describe('applying, separating and exact times on the /your-day/ page and get_pe
     const justAfterContact = justAfterStation.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
     expect(justAfterContact?.exactPasses?.length).toBe(2);
     expect(justAfterContact?.applying).toBe(true);
+
+    // When a slow planet is within 1e-8 deg of exact at local midnight and crosses 0.6s later without reversing,
+    // drop the scanner's synthetic midnight hit and report only the single real crossing.
+    const saturnCrossMs = Date.parse('2026-07-26T00:00:00.601Z');
+    const saturnTarget = bodyLongitude('Saturn', new Date(saturnCrossMs));
+    const saturnNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: saturnTarget } : row)) };
+    const saturnDay = await readPersonalDay(saturnNatal, { birthDate: '1990-11-13', date: '2026-07-26', zone: 'UTC', now: new Date('2026-07-26T12:00:00Z') }, site);
+    const saturnContact = saturnDay.contacts.find((entry) => entry.planet === 'Saturn' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(saturnContact?.exactPasses).toBeUndefined();
+    expect(saturnContact?.exactAt).not.toBe('2026-07-26T00:00:00.000Z');
+    expect(Math.abs(Date.parse(saturnContact!.exactAt!) - saturnCrossMs)).toBeLessThan(50);
+    expect(saturnContact?.exactLocal).toBe('00:00');
   });
 
   it('still computes Your Day when an unrelated historical zone shard fails, and fails without retrying when the needed shard fails', async () => {

@@ -237,7 +237,22 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
       const pointLon = natalLon.get(point)!;
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect);
-        const passes = exact.get(`${mover}|${point}|${aspect}`) ?? [];
+        const VELOCITY_STEP_MS = 30_000;
+        const velocityAt = (ms: number) => signedAngleDiff(
+          bodyLongitude(mover, new Date(ms + VELOCITY_STEP_MS)),
+          bodyLongitude(mover, new Date(ms - VELOCITY_STEP_MS)),
+        );
+        let passes = exact.get(`${mover}|${point}|${aspect}`) ?? [];
+        // transit-scan-core prepends a synthetic `from` (dayStart) hit when a slow planet is within 1e-8 deg of exact
+        // right before a real crossing. If the planet did not reverse between dayStart and the next pass (same velocity
+        // sign), they are one crossing: keep the tighter instant and drop the synthetic duplicate.
+        if (passes.length > 1 && passes[0].getTime() === dayStart.getTime()) {
+          if (velocityAt(passes[0].getTime()) * velocityAt(passes[1].getTime()) > 0) {
+            const firstOrb = orbOf(bodyLongitude(mover, passes[0]), pointLon, aspect);
+            const secondOrb = orbOf(bodyLongitude(mover, passes[1]), pointLon, aspect);
+            passes = secondOrb <= firstOrb ? passes.slice(1) : [passes[0], ...passes.slice(2)];
+          }
+        }
         if (passes.length === 0 && orb > maxOrb(mover, aspect)) continue;
         let middayApplying = orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
         const exactPass = passes.length > 0;
@@ -254,11 +269,6 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
             } else {
               // Symmetric central difference of mover longitude measures the exact sign of the local velocity at midday
               // even within a fraction of a second of a station (the quadratic term cancels identically).
-              const VELOCITY_STEP_MS = 30_000;
-              const velocityAt = (ms: number) => signedAngleDiff(
-                bodyLongitude(mover, new Date(ms + VELOCITY_STEP_MS)),
-                bodyLongitude(mover, new Date(ms - VELOCITY_STEP_MS)),
-              );
               middayApplying = velocityAt(middayMs) * velocityAt(passes[nextIndex].getTime()) > 0;
             }
           }

@@ -146,6 +146,28 @@ describe('SolarReturnCalculator (/solar-return/)', () => {
     if (envelope.ok) expect((envelope.data as { clockLimit?: string }).clockLimit).toBe(REPEATED_BIRTH_TIME);
     const ordinary = await solarReturnResult({ date: '1990-05-03', time: '08:30', place: LONDON }, 2030, null, 'whole', new Date('2026-10-15T12:00:00Z'));
     expect(ordinary.clockLimit).toBeUndefined();
+    expect(ordinary.atPole).toBeUndefined();
+    expect(ordinary.polarLimit).toBeUndefined();
+  });
+
+  it('exposes atPole and polarLimit when a timed solar return is cast at a geographic pole', async () => {
+    const northPole = { latitude: 90, longitude: 0, timeZone: 'UTC' };
+    const birth = { date: '1990-05-03', time: '08:30', place: northPole };
+    const result = await solarReturnResult(birth, 2030, null, 'whole', new Date('2026-10-15T12:00:00Z'));
+    expect(result.timeKnown).toBe(true);
+    expect(result.angles).toBeNull();
+    expect(result.houseSystem).toBeNull();
+    expect(result.atPole).toBe(true);
+    expect(result.polarLimit).toContain('undefined at a geographic pole');
+    const envelope = await runCalculatorTool('zodiacs.solar_return', { birth, year: 2030 });
+    expect(envelope.ok).toBe(true);
+    if (envelope.ok) {
+      const payload = envelope.data as { atPole?: boolean; polarLimit?: string; angles: unknown; houseSystem: unknown };
+      expect(payload.atPole).toBe(true);
+      expect(payload.polarLimit).toContain('undefined at a geographic pole');
+      expect(payload.angles).toBeNull();
+      expect(payload.houseSystem).toBeNull();
+    }
   });
 });
 
