@@ -161,33 +161,33 @@ export const OG_EN = Object.freeze({
     },
   },
   tools: Object.freeze([
-    { key: 'birth-chart', path: '/birth-chart/', kicker: 'Free calculator', title: 'Your birth chart', sub: 'See your Sun, Moon, rising sign, houses, and the patterns that connect them.' },
-    { key: 'moon-sign', path: '/moon-sign/', kicker: 'Free calculator', title: 'Your moon sign', sub: 'How you feel and what soothes you — from your date, time, and place of birth.' },
-    { key: 'rising-sign', path: '/rising-sign/', kicker: 'Free calculator', title: 'Your rising sign', sub: 'How people first read you — from your birth time and place.' },
+    { key: 'birth-chart', path: '/birth-chart/', kicker: 'Free calculator', title: 'Your birth chart', sub: 'See your Sun, Moon, rising sign, houses, and the patterns that connect them.' , artCard: '/assets/og/v8/tool/birth-chart.jpg' },
+    { key: 'moon-sign', path: '/moon-sign/', kicker: 'Free calculator', title: 'Your moon sign', sub: 'How you feel and what soothes you — from your date, time, and place of birth.' , artCard: '/assets/og/v8/tool/moon-sign.jpg' },
+    { key: 'rising-sign', path: '/rising-sign/', kicker: 'Free calculator', title: 'Your rising sign', sub: 'How people first read you — from your birth time and place.' , artCard: '/assets/og/v8/tool/rising-sign.jpg' },
     { key: 'moon-phase', path: '/moon-phase/', kicker: 'Free calculator', title: 'The moon, any night', sub: 'Tonight’s phase, and the moon of any date that matters to you.' },
-    { key: 'saturn-return', path: '/saturn-return/', kicker: 'Free calculator', title: 'Your Saturn return', sub: 'The exact dates, every pass and retrograde loop included.' },
+    { key: 'saturn-return', path: '/saturn-return/', kicker: 'Free calculator', title: 'Your Saturn return', sub: 'The exact dates, every pass and retrograde loop included.' , artCard: '/assets/og/v8/tool/saturn-return.jpg' },
     { key: 'solar-return', englishOnly: true, path: '/solar-return/', kicker: 'Free calculator', title: 'Your solar return', sub: 'The chart of your next birthday, and the year’s main themes.' },
     { key: 'year-score', englishOnly: true, path: '/year-score/', kicker: 'Free calculator', title: 'Your year ahead, scored', sub: 'The next twelve months from 0 to 10, with your best and hardest months.' },
     { key: 'birthday-report', englishOnly: true, path: '/birthday-report/', kicker: 'For your birthday', title: 'Your birthday report', sub: 'Solar return, Year Ahead Score, numerology and a tarot card, on one page.' },
-    { key: 'mercury-retrograde', path: '/mercury-retrograde/', kicker: 'The calendar', title: 'Mercury retrograde', sub: 'Every window through 2030, with station dates and the themes to watch.' },
-    { key: 'compatibility', path: '/compatibility/', kicker: 'Compatibility', title: 'Two charts, compared', sub: 'Whole-chart synastry — plus guides to all 78 sign pairings.' },
-    { key: 'horoscopes', path: '/horoscopes/', kicker: 'Horoscopes', title: 'All twelve signs', sub: 'Daily through yearly readings with clear themes and one useful next move.' },
-    { key: 'learn', path: '/learn/', kicker: 'Learn astrology', title: 'Read your chart', sub: 'The signs, the planets, the houses, and the aspects — and how they fit together.' },
+    { key: 'mercury-retrograde', path: '/mercury-retrograde/', kicker: 'The calendar', title: 'Mercury retrograde', sub: 'Every window through 2030, with station dates and the themes to watch.' , artCard: '/assets/og/v8/tool/mercury-retrograde.jpg' },
+    { key: 'compatibility', path: '/compatibility/', kicker: 'Compatibility', title: 'Two charts, compared', sub: 'Whole-chart synastry — plus guides to all 78 sign pairings.' , artCard: '/assets/og/v8/tool/compatibility.jpg' },
+    { key: 'horoscopes', path: '/horoscopes/', kicker: 'Horoscopes', title: 'All twelve signs', sub: 'Daily through yearly readings with clear themes and one useful next move.' , artCard: '/assets/og/v8/tool/horoscopes.jpg' },
+    { key: 'learn', path: '/learn/', kicker: 'Learn astrology', title: 'Read your chart', sub: 'The signs, the planets, the houses, and the aspects — and how they fit together.' , artCard: '/assets/og/v8/tool/learn.jpg' },
     { key: 'how-to-read-a-birth-chart', path: '/learn/how-to-read-a-birth-chart/', kicker: 'Learn astrology', title: 'How to read a birth chart', sub: 'Big three, planets room by room, the working aspects, then the weather — in order.' },
-    { key: 'tools', path: '/tools/', kicker: 'Free astrology tools', title: 'Calculators, no signup', sub: 'Birth chart, compatibility, moon sign, rising sign, and more — free to use.' },
-    { key: 'transits', path: '/transits/', kicker: 'Free tracker', title: 'Your transits, today', sub: 'The current sky aspected to your birth chart, within 3° of exact.' },
+    { key: 'tools', path: '/tools/', kicker: 'Free astrology tools', title: 'Calculators, no signup', sub: 'Birth chart, compatibility, moon sign, rising sign, and more — free to use.' , artCard: '/assets/og/v8/tool/tools.jpg' },
+    { key: 'transits', path: '/transits/', kicker: 'Free tracker', title: 'Your transits, today', sub: 'The current sky aspected to your birth chart, within 3° of exact.' , artCard: '/assets/og/v8/tool/transits.jpg' },
     { key: 'eclipses', path: '/eclipses/', kicker: 'The calendar', title: 'Eclipses, dated', sub: 'Every solar and lunar eclipse through 2030, with exact peak times and signs.' },
     { key: 'full-moon-calendar', path: '/full-moon-calendar/', kicker: 'The calendar', title: 'Every full moon', sub: 'Exact instants through 2030, with each moon’s sign, degree, and name.' },
     { key: 'retrogrades', path: '/retrogrades/', kicker: 'The calendar', title: 'Every retrograde', sub: 'All eight planets, with every station window through 2030.' },
-    { key: 'baby-zodiac', path: '/baby-zodiac/', kicker: 'Free calculator', title: 'What sign will the baby be?', sub: 'The due date’s near-certain Sun, the week’s possible Moons, and what waits for the clock.' },
-    { key: 'birthday', path: '/birthday/', kicker: 'Birthday astrology', title: 'Your birthday, read closely', sub: 'Character, love, work, growth, and an exact cusp answer when the year matters.' },
+    { key: 'baby-zodiac', path: '/baby-zodiac/', kicker: 'Free calculator', title: 'What sign will the baby be?', sub: 'The due date’s near-certain Sun, the week’s possible Moons, and what waits for the clock.' , artCard: '/assets/og/v8/tool/baby-zodiac.jpg' },
+    { key: 'birthday', path: '/birthday/', kicker: 'Birthday astrology', title: 'Your birthday, read closely', sub: 'Character, love, work, growth, and an exact cusp answer when the year matters.' , artCard: '/assets/og/v8/tool/birthday.jpg' },
     { key: 'ask', path: '/ask/', kicker: 'Astrology guide', title: 'Guide', sub: 'Ask about this site, astrology, or your own chart.' },
-    { key: 'today', path: '/today/', kicker: 'Your daily brief', title: 'Today, against your chart', sub: 'A personal daily focus drawn from the latest chart saved on this device.' },
+    { key: 'today', path: '/today/', kicker: 'Your daily brief', title: 'Today, against your chart', sub: 'A personal daily focus drawn from the latest chart saved on this device.' , artCard: '/assets/og/v8/tool/today.jpg' },
     { key: 'group-charts', path: '/group-charts/', kicker: 'Free group reading', title: 'Who’s the spark, who’s the glue?', sub: 'Three to eight charts, each given a role: the spark, the anchor, the connector, or the glue.' },
     { key: 'chart-twins', path: '/chart-twins/', kicker: 'Sourced directory', title: 'Your chart twins', sub: 'Public figures who share your verified Sun and Moon signs.' },
-    { key: 'big-three', path: '/big-three/', kicker: 'Sun · Moon · Rising', title: 'Your big three', sub: 'Three signs in seconds, with a portrait card made in your browser.' },
+    { key: 'big-three', path: '/big-three/', kicker: 'Sun · Moon · Rising', title: 'Your big three', sub: 'Three signs in seconds, with a portrait card made in your browser.' , artCard: '/assets/og/v8/tool/big-three.jpg' },
     { key: 'compatibility-private-invite', path: '/compatibility/invite/', kicker: 'Compatibility', title: 'Invite a friend to compare', sub: 'Send a link. They add their chart, and you both see how the two connect.' },
-    { key: 'sky-calendar', path: '/sky-calendar/', kicker: 'The calendar', title: 'The sky, in your calendar', sub: 'New and full moons, eclipse peaks, and retrograde windows, 2026–2030.' },
+    { key: 'sky-calendar', path: '/sky-calendar/', kicker: 'The calendar', title: 'The sky, in your calendar', sub: 'New and full moons, eclipse peaks, and retrograde windows, 2026–2030.' , artCard: '/assets/og/v8/tool/sky-calendar.jpg' },
     { key: 'chart-of-the-day', path: '/chart-of-the-day/', kicker: 'In the news', title: 'Chart of the day', sub: 'A public figure’s chart, with sourced birth data and its limits stated.' },
     { key: 'your-sky-wrapped', path: '/your-sky-wrapped/', kicker: 'Your year', title: 'Your sky, wrapped', sub: 'The year’s Jupiter and Saturn contacts to your chart, on one card.' },
     { key: 'astrologer-kit', path: '/astrologer-kit/', kicker: 'For astrologers', title: 'A client-ready chart', sub: 'Chart wheel, placements, aspects, and the calculation receipt as a PDF.' },
@@ -299,7 +299,9 @@ export function ogSpecialForPath(path) {
 export function ogImageForPath(path) {
   const normalized = normalizedPath(path);
   const tool = OG_EN.tools.find((entry) => entry.path === normalized);
-  if (tool) return `/assets/og/v2/tool/${tool.key}.png`;
+  // The pages with an art card of their own (2026-11-27, src/lib/og-art-cards.mjs,
+  // which og-art-cards.test.ts holds equal) show it; the v2 cards stay published.
+  if (tool) return tool.artCard ?? `/assets/og/v2/tool/${tool.key}.png`;
   return ogSpecialForPath(normalized)?.value.image ?? null;
 }
 

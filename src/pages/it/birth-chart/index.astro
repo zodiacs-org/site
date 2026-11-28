@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
 import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -66,7 +67,7 @@ const jsonLd = [
   description="Calcola gratis il tuo tema natale: Sole, Luna, ascendente, pianeti e case, con il loro significato. Tutto resta nel tuo browser."
   path="/it/birth-chart/"
   locale="it"
-  image="/assets/og/v2/tool/birth-chart.png"
+  image={artPageCard('birth-chart')}
   imageAlt="Calcolatore gratuito del tema natale, Zodiacs.org"
   jsonLd={jsonLd}
 >

@@ -14,6 +14,7 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program';
 import { SIGNS, signBySlug } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 import { currentSunSeason } from '../../lib/seasons/windows';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const program = programData as HoroscopeProgram;
 const dateLabel = new Intl.DateTimeFormat('en-US', {
@@ -59,8 +60,8 @@ const jsonLd = [
   description={`Daily horoscopes for all twelve signs on ${dateLabel}, with a clear theme and one useful move for each sign.`}
   path="/horoscopes/"
   editionDate={program.anchorDate}
-  image="/assets/og/v2/tool/horoscopes.png"
-  imageAlt="Daily horoscopes for all twelve signs, Zodiacs.org"
+  image={artPageCard('horoscopes')}
+  imageAlt={artPageCardAlt('horoscopes')}
   jsonLd={jsonLd}
 >
   {/* A personal week saved from an assistant links here by its digest (#week=…&saved=…): it opens on the profile's saved list. */}

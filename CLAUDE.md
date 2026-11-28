@@ -367,6 +367,55 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   og:image, twitter:image and the Article's image with one alt text. The v2
   `og/v2/thesis.png` stays published, in the v2 family, for links already
   shared)
+- `public/assets/og/v8/tool/{key}.jpg` (17 single page cards) ← `npm run
+  data:og -- --only-art-page-cards` (owner-delegated decisions, 2026-11-27:
+  /birth-chart/ with its someone-else and three-dimensions pages, /today/,
+  /rising-sign/, /big-three/, the /birthday/ hub, /tools/, the /learn/ hub
+  only, /sky-calendar/, /saturn-return/, /c/ (`compatibility-invite`),
+  /baby-zodiac/, /mercury-retrograde/ with its 2027 page, and /transits/;
+  owner-chosen from mockups 2026-11-28: /moon-sign/, the /compatibility/ hub,
+  the /horoscopes/ hub (the es and pt hubs too) and /numerology/, the three
+  astrology cards with the thesis card's row of the twelve canonical sign
+  discs above the kicker and the numerology card without it (numerology is a
+  separate tradition).
+  Their art: three generated photographs (Higgsfield; a crescent Moon, the
+  Venice clocktower's zodiac dial, a silver dial with a dark numbered ring) cut to 1200px
+  WebP in `public/assets/art/`, and the compatibility hub's two chart wheels,
+  `public/assets/art/compatibility-wheels-1200.webp` ← `npx vite-node --script
+  scripts/build-compatibility-wheels-art.ts` (the real `Wheel.tsx` with the
+  published People charts of Charles and Ray Eames, Chromium output,
+  so not in the drift job; rerun it when the wheel or those charts change,
+  then redraw the cards). One
+  template, `artPageLayout` in `build-og-void.mjs`: the page's own painting on
+  the right, a small accent in the sign hues or the canonical discs, kicker,
+  two-line headline and line; every card's art, accent, words and alt text
+  live in `src/lib/og-art-cards.mjs`, and `og-art-cards.test.ts` holds the
+  words to the pages and their v2 cards. Counted in the English cards' 12
+  MiB. The es/fr/it/pt pages that showed the English v2 card show the
+  English art card; Russian keeps `og/v2/ru/`. `ogImageForPath` reads each
+  tool's `artCard` in `seo.en.mjs`; the share fallbacks in
+  `src/server/result-preview.ts` copy the paths and alts as literals
+  (`SHARE_FALLBACK_ART_CARDS`), held equal by its test)
+- `public/assets/og/v8/pair/{a}-{b}.jpg` (78 sign pairs, same-sign included)
+  ← `npm run data:og -- --only-pair-art-cards` (2026-11-27: the two sign
+  paintings facing each other, the first mirrored, the two discs, "Compatibility,
+  {element} with {element}", "{A} and {B}"; its own 10 MiB ceiling)
+- `public/assets/og/v8/birthday/{month-day}.jpg` (the 29 cusp dates of
+  `birthdays.json`) ← `npm run data:og -- --only-birthday-art-cards`
+  (2026-11-27: the birthday hub's sundial, both signs' discs, "{A} or {B}, by
+  year", "Born on {date}"; its own 4 MiB ceiling)
+- `public/assets/og/v8/learn/chinese-zodiac/{animal}.jpg` (12) ← `npm run
+  data:og -- --only-chinese-zodiac-art-cards` (2026-11-27: each animal's own
+  painting with the guide's kicker, headline and line from
+  `src/data/chinese-zodiac.ts`; its own 2 MiB ceiling; the localized animal
+  pages keep their home cards). All four families: JPEGs under the art
+  cards' 300 KB budget at the qualities in `ART_PAGE_CARD_QUALITY`, drawn
+  with the rest by `--only-art-cards`; not in the drift job (Chromium
+  output); `verify-og-cards` checks each family, its folder and its ceiling.
+  The v2 `og/v2/tool/*.png` and `og/v2/pair/*.png` cards stay published and
+  verified, byte for byte, for links already shared, and the pages not in
+  this round (moon sign, eclipses, the learn guides that borrow its card and
+  the rest) keep their current cards
 - `public/assets/og/year-sky/v1/2027.jpg` ← `npm run data:og -- --only-year-sky-card`
   (the share card for /your-2027-sky/; words in `OG_EN.yearSky`. Not in the
   drift job (Chromium output); `verify-og-cards` checks it)

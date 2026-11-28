@@ -29,6 +29,16 @@ import {
   HOME_ART_CARD,
   LOCALIZED_ART_CARDS,
   LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES,
+  ART_PAGE_CARDS,
+  BIRTHDAY_ART_CARD_DIR,
+  BIRTHDAY_ART_CARDS,
+  BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES,
+  CHINESE_ZODIAC_ART_CARD_DIR,
+  CHINESE_ZODIAC_ART_CARDS,
+  CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES,
+  PAIR_ART_CARD_DIR,
+  PAIR_ART_CARDS,
+  PAIR_ART_CARDS_MAX_TOTAL_BYTES,
 } from '../src/lib/og-art-cards.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
 
@@ -238,9 +248,19 @@ await validatePng(wingCard, { unique: false, base: wingOut, label: `historical v
 // the chart twins card in those four and in Russian (ru/, since 2026-11-26; a
 // painting, so not in the 16-colour v2 Russian family) are held to the same
 // picture budget and to a ceiling of their own.
+// Since 2026-11-27 the single page art cards (tool, hub and guide pages) count
+// with the English cards; the 78 sign pair cards, the 29 cusp birthday cards
+// and the 12 Chinese zodiac animal cards sit in folders of their own, each
+// under its own ceiling.
+const ART_FAMILIES = [
+  { label: 'sign pair', dir: PAIR_ART_CARD_DIR, cards: PAIR_ART_CARDS, ceiling: PAIR_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
+  { label: 'cusp birthday', dir: BIRTHDAY_ART_CARD_DIR, cards: BIRTHDAY_ART_CARDS, ceiling: BIRTHDAY_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
+  { label: 'Chinese zodiac animal', dir: CHINESE_ZODIAC_ART_CARD_DIR, cards: CHINESE_ZODIAC_ART_CARDS, ceiling: CHINESE_ZODIAC_ART_CARDS_MAX_TOTAL_BYTES, bytes: 0 },
+];
+const familyCards = ART_FAMILIES.flatMap((family) => family.cards);
 let artBytes = 0;
 let localizedArtBytes = 0;
-for (const path of [...ART_CARDS, ...LOCALIZED_ART_CARDS]) {
+for (const path of [...ART_CARDS, ...LOCALIZED_ART_CARDS, ...familyCards]) {
   try {
     const bytes = await readFile(resolve(root, `public${path}`));
     const metadata = await sharp(bytes).metadata();
@@ -248,7 +268,9 @@ for (const path of [...ART_CARDS, ...LOCALIZED_ART_CARDS]) {
       failures.push(`${path}: expected 1200x630 JPEG, received ${metadata.width ?? '?'}x${metadata.height ?? '?'} ${metadata.format ?? 'unknown'}`);
     }
     if (bytes.length > ART_CARD_MAX_BYTES) failures.push(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
-    if (LOCALIZED_ART_CARDS.includes(path)) localizedArtBytes += bytes.length;
+    const family = ART_FAMILIES.find((entry) => entry.cards.includes(path));
+    if (family) family.bytes += bytes.length;
+    else if (LOCALIZED_ART_CARDS.includes(path)) localizedArtBytes += bytes.length;
     else artBytes += bytes.length;
     const hash = createHash('sha256').update(bytes).digest('hex');
     const duplicate = hashes.get(hash);
@@ -267,12 +289,18 @@ try {
     }
   };
   await walk(resolve(root, `public${ART_CARD_DIR}`), ART_CARD_DIR);
-  const expectedArt = [...ART_CARDS, ...LOCALIZED_ART_CARDS];
+  const expectedArt = [...ART_CARDS, ...LOCALIZED_ART_CARDS, ...familyCards];
   if (JSON.stringify(artFiles.sort()) !== JSON.stringify(expectedArt.sort())) {
     failures.push(`${ART_CARD_DIR}: expected exactly the ${expectedArt.length} art cards; found ${artFiles.length} files`);
   }
   if (artBytes > ART_CARDS_MAX_TOTAL_BYTES) {
     failures.push(`${ART_CARD_DIR}: ${(artBytes / 1024 / 1024).toFixed(2)}MiB, over the ${ART_CARDS_MAX_TOTAL_BYTES / 1024 / 1024}MiB ceiling`);
+  }
+  for (const family of ART_FAMILIES) {
+    if (!family.cards.every((path) => path.startsWith(`${family.dir}/`))) failures.push(`${family.dir}: a ${family.label} card sits outside its folder`);
+    if (family.bytes > family.ceiling) {
+      failures.push(`${family.dir}: the ${family.label} cards are ${(family.bytes / 1024 / 1024).toFixed(2)}MiB, over the ${family.ceiling / 1024 / 1024}MiB ceiling`);
+    }
   }
   if (localizedArtBytes > LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES) {
     failures.push(`${ART_CARD_DIR}: the localized cards are ${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB, over the ${LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES / 1024 / 1024}MiB ceiling`);
@@ -381,7 +409,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide, 84 horoscope, chart twins and thesis art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links) and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian, Portuguese and Russian cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
+console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide, 84 horoscope, chart twins and thesis art cards and the ${ART_PAGE_CARDS.length} single page art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links), ${ART_FAMILIES.map((family) => `${family.cards.length} ${family.label} art cards (${(family.bytes / 1024 / 1024).toFixed(2)}MiB of ${family.ceiling / 1024 / 1024}MiB)`).join(', ')} and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian, Portuguese and Russian cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
 
 // Registry catalogue cards live outside the frozen v2 bundle. Keep their
 // source, geometry, manifest, route metadata, and size contracts in the same

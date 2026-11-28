@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
 import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -66,7 +67,7 @@ const jsonLd = [
   description="Calcule seu mapa astral grátis: Sol, Lua, ascendente, planetas, casas e o que cada um significa. Calculado com privacidade no seu navegador."
   path="/pt/birth-chart/"
   locale="pt"
-  image="/assets/og/v2/tool/birth-chart.png"
+  image={artPageCard('birth-chart')}
   imageAlt="Calculadora gratuita de mapa astral, Zodiacs.org"
   jsonLd={jsonLd}
 >

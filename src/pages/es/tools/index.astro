@@ -9,6 +9,7 @@ import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
 import { ENGLISH_ONLY_COPY, localizePath, t } from '../../../lib/i18n';
 import { toolIconForPath } from '../../../lib/tool-icons';
 import '../../../styles/tools-hub.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const englishOnly = ENGLISH_ONLY_COPY.es;
 const tools = [
@@ -41,7 +42,7 @@ const jsonLd = [
   description="Calculadoras gratis de astrología: carta natal, compatibilidad, signo lunar, ascendente, fase lunar, retorno de Saturno y tránsitos, en tu navegador."
   path="/es/tools/"
   locale="es"
-  image="/assets/og/v2/tool/tools.png"
+  image={artPageCard('tools')}
   imageAlt="Herramientas gratis de astrología, Zodiacs.org"
   jsonLd={jsonLd}
 >

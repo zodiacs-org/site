@@ -7,6 +7,7 @@ import SynastryCalculator from '../../../islands/SynastryCalculator';
 import { SIGNS, signName } from '../../../lib/signs';
 import { pairSlug } from '../../../lib/compat';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -52,7 +53,7 @@ const jsonLd = [
   description="Compare gratuitement deux thèmes astraux dans ton navigateur, avec les aspects qui les relient et des guides pour les 78 combinaisons de signes."
   path="/fr/compatibility/"
   locale="fr"
-  image="/assets/og/v2/tool/compatibility.png"
+  image={artPageCard('compatibility')}
   imageAlt="Calculateur de compatibilité, Zodiacs.org"
   jsonLd={jsonLd}
   glass
