@@ -7,6 +7,9 @@
  *
  *   node tests/feature-page-evidence-drive.mjs numerology
  *   node tests/feature-page-evidence-drive.mjs tarot
+ *
+ * A page may also check a choice made before its island hydrates (`delayed`): the tarot draw holds its module back
+ * while the visitor picks a spread.
  */
 import { createServer } from 'node:http';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -37,6 +40,63 @@ const PAGES = {
     async fill(page) {
       await page.click('button.calc__submit');
       await page.waitForSelector('.tarot__card');
+    },
+    /**
+     * Hydration held back: the island's module is held until the visitor has picked the Celtic Cross and turned
+     * reversals off in the server-rendered form. The draw must still deal ten cards, all upright, and the button
+     * stays disabled (nothing can be sent) until the island runs.
+     */
+    async delayed(browser, viewport, origin, failures, label) {
+      /**
+       * A page whose island module is held until `release()`, with every layout shift recorded and the instant
+       * hydration was released marked, so a shift hydration causes after the input grace period counts as CLS.
+       */
+      async function heldPage() {
+        // A fresh context with no service worker: one already installed would serve the held module from its cache.
+        const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
+        await context.addInitScript(() => {
+          window.__heldShifts = [];
+          new PerformanceObserver((list) => { for (const entry of list.getEntries()) window.__heldShifts.push({ at: entry.startTime, value: entry.value, recent: entry.hadRecentInput }); })
+            .observe({ type: 'layout-shift', buffered: true });
+        });
+        const page = await context.newPage();
+        let release;
+        const held = new Promise((done) => { release = done; });
+        await page.route(/\/_astro\/TarotDraw\.[^/]+\.js$/u, async (route) => { await held; await route.continue(); });
+        await page.goto(`${origin}/tarot/`, { waitUntil: 'domcontentloaded' });
+        return { context, page, release };
+      }
+      // A spread chosen before hydration, then a wait past the 500 ms an input excuses: taking the choice over when the
+      // island runs must move nothing (the description of each spread wraps to a different number of lines at 390 px).
+      const hydrationShift = {};
+      for (const spread of ['one-card', 'three-card', 'celtic-cross']) {
+        const { context, page, release } = await heldPage();
+        await page.locator(`input[name="tarot-spread"][value="${spread}"]`).check();
+        await page.waitForTimeout(1_000);
+        const released = await page.evaluate(() => performance.now());
+        release();
+        await page.locator('button.calc__submit:not([disabled])').waitFor({ timeout: 30_000 });
+        await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(done, 300)))));
+        const shift = await page.evaluate((since) => window.__heldShifts.filter((entry) => entry.at >= since && !entry.recent).reduce((sum, entry) => sum + entry.value, 0), released);
+        hydrationShift[spread] = Number(shift.toFixed(4));
+        if (shift > 0) failures.push(`${label}: hydrating with ${spread} chosen beforehand shifted the layout by ${shift}`);
+        await context.close();
+      }
+      const { context, page, release } = await heldPage();
+      await page.locator('input[name="tarot-spread"][value="celtic-cross"]').check();
+      await page.locator('input[name="tarot-reversals"]').uncheck();
+      if (!(await page.locator('button.calc__submit').isDisabled())) failures.push(`${label}: the draw button is enabled before the island runs`);
+      release();
+      await page.locator('button.calc__submit:not([disabled])').waitFor({ timeout: 30_000 });
+      await page.click('button.calc__submit');
+      await page.waitForSelector('.tarot__card');
+      const cards = await page.locator('.tarot__card').count();
+      const reversed = await page.locator('.tarot__orientation', { hasText: 'Reversed' }).count();
+      if (cards !== 10) failures.push(`${label}: a Celtic Cross chosen before hydration dealt ${cards} cards`);
+      if (reversed !== 0) failures.push(`${label}: reversals turned off before hydration still dealt ${reversed} reversed cards`);
+      if (!page.url().endsWith('/tarot/')) failures.push(`${label}: the address changed to ${page.url()}`);
+      await context.close();
+      return { cards, reversed, hydrationShift };
     },
   },
 };
@@ -126,6 +186,7 @@ for (const [label, viewport] of [['mobile', { width: 390, height: 844 }], ['desk
   if (scrollWidth > viewport.width) failures.push(`${label}: horizontal scroll (${scrollWidth}px)`);
   if (errors.length) failures.push(`${label}: console errors ${errors.join(' | ')}`);
   for (const secret of spec.secrets) if (address.includes(secret)) failures.push(`${label}: the address carries ${secret}`);
+  if (spec.delayed) report[label].delayedHydration = await spec.delayed(browser, viewport, origin, failures, label);
   await context.close();
 }
 await browser.close();

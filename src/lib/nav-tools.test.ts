@@ -118,6 +118,17 @@ describe('NAV_TOOLS', () => {
     for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/numerology/')).toBe('/numerology/');
   });
 
+  it('publishes tarot in the English tools hub and NAV_MORE only while PUBLIC_TAROT_ENABLED is on', () => {
+    expect(TOOLS_HUB.some((tool) => tool.href === '/tarot/')).toBe(launchFlagOn('PUBLIC_TAROT_ENABLED'));
+    expect(NAV_MORE.some((entry) => entry.href === '/tarot/')).toBe(launchFlagOn('PUBLIC_TAROT_ENABLED'));
+    expect(ALL_TOOL_CATALOG.find((tool) => tool.href === '/tarot/')?.hub).toMatchObject({ group: 'you' });
+    expect(ALL_NAV_MORE.find((entry) => entry.href === '/tarot/')?.flag).toBe('PUBLIC_TAROT_ENABLED');
+    expect(visibleNavMore(() => true).some((entry) => entry.href === '/tarot/')).toBe(true);
+    expect(visibleNavMore(() => false).some((entry) => entry.href === '/tarot/')).toBe(false);
+    expect([...NAV_TOOLS, ...FOOTER_TOOLS].some((tool) => tool.href === '/tarot/')).toBe(false);
+    for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/tarot/')).toBe('/tarot/');
+  });
+
   it('links Today to released daily editions and preserves unreleased-language cues', () => {
     const today = FOOTER_TOOLS.find((tool) => tool.href === '/today/');
     expect(today?.localized).toBe(true);
@@ -175,9 +186,10 @@ describe('tools behind a launch switch', () => {
       if (entry.flag) expect(NAV_MORE.some((item) => item.href === entry.href)).toBe(launchFlagOn(entry.flag));
     }
     const hrefs = (on: boolean) => visibleTools(() => on).map((tool) => tool.href);
-    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
+    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/', '/tarot/']));
     expect(hrefs(false)).not.toContain('/year-score/');
     expect(hrefs(false)).not.toContain('/birthday-report/');
+    expect(hrefs(false)).not.toContain('/tarot/');
     expect(visibleTools(() => true).some((tool) => tool.href === '/good-days/')).toBe(true);
     expect(visibleTools(() => false).some((tool) => tool.href === '/good-days/')).toBe(false);
     expect(TOOLS_HUB.some((tool) => tool.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
