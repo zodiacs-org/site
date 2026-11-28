@@ -284,7 +284,12 @@
   color-scheme: dark;
 }
 
-:root[data-stable-typography] {
+/* The optional faces are the Latin files. Russian keeps its Cyrillic stack
+   below even when a page asks for stable typography: without the :lang
+   guard this rule (0,2,0) would outrank html:lang(ru) (0,1,1) and leave
+   Cyrillic text in the fallback. :where() keeps the specificity at 0,2,0,
+   so data-local-typography still wins when both are set. */
+:root[data-stable-typography]:where(:not(:lang(ru))) {
   --font-serif: 'EB Garamond Phase1', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif;
   --font-sans: 'Instrument Sans Phase1', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono Phase1', ui-monospace, Menlo, Consolas, monospace;

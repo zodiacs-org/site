@@ -481,7 +481,11 @@ const jsonLd = [
   imageAlt={c.imageAlt}
   jsonLd={jsonLd}
   sources={sources}
+  stableTypography
 >
+  {/* Optional faces (stableTypography), as on the English page: a face that
+      misses the first paint stays in the fallback for the visit instead of
+      rewrapping the hero and moving the content below it. */}
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
       <h1 class="display">{c.h1}</h1>

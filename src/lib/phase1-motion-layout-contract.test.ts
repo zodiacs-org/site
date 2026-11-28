@@ -252,7 +252,7 @@ describe('Phase 1 layout and motion contract', () => {
       source('layouts/Base.astro'),
     ]);
     const routeTypography = [...tokens.matchAll(
-      /:root\[data-(?:stable|local)-typography\]\s*\{([^}]*)\}/gu,
+      /:root\[data-(?:stable|local)-typography\](?::where\(:not\(:lang\(ru\)\)\))?\s*\{([^}]*)\}/gu,
     )].map((match) => match[1]).join('\n');
 
     expect(tokens).toContain("--font-nav-serif: 'EB Garamond'");
