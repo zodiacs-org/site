@@ -1,20 +1,13 @@
 {
   "version": 1,
-  "id": "legal-pages-locale-privacy-00f8f05fe533",
-  "baseCommit": "00f8f05fe533bc30046f0dbd92f0bb6b253e8382",
+  "id": "inline-link-spacing-024193669a6a",
+  "baseCommit": "024193669a6ae62c793e72c99d4df3301538dcc3",
   "protectedPaths": [
-    "public/assets/app.js",
-    "scripts/registry-risk.test.mjs",
-    "src/app.jsx",
-    "src/components/LocalizedDisclosurePage.astro",
-    "src/islands/RegistryAura.tsx",
     "src/pages/es/privacy/index.astro",
     "src/pages/fr/privacy/index.astro",
     "src/pages/it/privacy/index.astro",
-    "src/pages/pt/privacy/index.astro",
-    "src/strings/additions.es.mjs",
-    "src/strings/additions.fr.mjs",
-    "src/strings/additions.it.mjs",
-    "src/strings/additions.pt.mjs"
+    "src/pages/learn/how-to-read-a-birth-chart.astro",
+    "src/pages/learn/placements/index.astro",
+    "src/pages/pt/privacy/index.astro"
   ]
 }
