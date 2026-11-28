@@ -193,7 +193,7 @@ Archived rc.1 typed API reference (earlier candidate), superseded by the 3.0.0 r
 
 Licensing chain: the engine uses MIT-licensed Astronomy Engine and explicitly excludes Swiss Ephemeris code. `@zodiacs/engine/geo` contains adapters, not a bundled place database. The package's licence expression is MIT AND CC-BY-4.0: its code is MIT, and the 32 ΔT values from Stephenson, Morrison and Hohenkerk's Table S15 in its ΔT module are CC BY 4.0. It also carries the IANA time zone history before 1970 and the IERS leap-second list, both public domain, a UT1 − UTC table derived from IERS series, and catalogue values for the stars of the Vedic ayanamsas; the package `NOTICE` names each source, and `LICENSING.md` gives their terms and three questions about them that are still open. GeoNames-derived place data is CC BY 4.0; downstream users must retain the package `NOTICE`. Before 1970 `@zodiacs/engine/geo` resolves local time on the zone history it ships, which `prepareLocalTime` loads first; from 1970 on the host's IANA/ICU data.
 
-Release status: this revision vendors `@zodiacs/engine@3.0.0`, a candidate that npm does not carry; the digest-checked carrier install is at https://zodiacs.org/developers/engine/. The registry read of 2026-11-26 records 2.1.0 under `latest`. `npm install @zodiacs/engine@2.1.0` installs 2.1.0, which reads the candidate's records and computes on its DE440 pack by default, where 3.0.0 does so after `useDe440()`. Verified SLSA provenance binds 2.1.0 to `release.yml`, engine commit `566f858dde594439d5f78724f1d2e2df595da2c6` and release run `45205449248`; `npm audit signatures` verified its attestation on 2026-11-26. This establishes distribution and provenance, not numerical accuracy or deployed site/MCP adoption.
+Release status: this revision vendors `@zodiacs/engine@3.0.0`; the digest-checked carrier install is at https://zodiacs.org/developers/engine/. The registry read of 2026-11-28 records 3.0.0 under `latest`, published on 27 November 2026 from the engine repository's `release.yml` with SLSA provenance, and npm's 3.0.0 tarball has the same SHA-512 as the archive the site vendors. `npm install @zodiacs/engine` installs 3.0.0, which computes on Astronomy Engine until `useDe440()` switches on its DE440 pack; 2.1.0, the previous `latest`, computes on DE440 by default. Verified SLSA provenance binds 2.1.0 to `release.yml`, engine commit `566f858dde594439d5f78724f1d2e2df595da2c6` and release run `45205449248`; `npm audit signatures` verified its attestation on 2026-11-26. This establishes distribution and provenance, not numerical accuracy or deployed site/MCP adoption.
 
 Natal chart:
 
@@ -316,7 +316,7 @@ The required sandbox is `allow-scripts allow-forms allow-same-origin allow-popup
 
 ## Developer quickstarts and recipes
 
-These guides describe the version named on the engine page, `@zodiacs/engine` 3.0.0, a candidate that npm does not carry; npm carries 2.1.0 under `latest` since 23 November 2026. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.
+These guides describe the version named on the engine page, `@zodiacs/engine` 3.0.0, which npm carries under `latest` since 27 November 2026. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.
 
 - Guide index: https://zodiacs.org/developers/docs/
 - Guide index as Markdown: https://zodiacs.org/developers/docs/index.md
