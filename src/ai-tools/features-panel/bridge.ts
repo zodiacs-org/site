@@ -61,9 +61,11 @@ export class FeaturesBridge {
     }).then((result) => {
       this.applyTheme(result?.hostContext?.theme);
       window.parent.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/initialized' }, this.targetOrigin);
+      if (result?.hostCapabilities?.openLinks) {
+        this.stopLinks = openLinksThroughHost((url) => this.request('ui/open-link', { url }));
+      }
       if (!openai()) {
         this.stopSizing = reportSizeChanges((message) => window.parent.postMessage(message, this.targetOrigin));
-        if (result?.hostCapabilities?.openLinks) this.stopLinks = openLinksThroughHost((url) => this.request('ui/open-link', { url }));
       }
     }).catch(() => {});
   }

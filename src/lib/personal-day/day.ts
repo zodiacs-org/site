@@ -121,6 +121,7 @@ const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.n
 
 const BOUNDARY_REFINE_MS = 250;
 const BOUNDARY_PROBE_RADII_MS = [10, 50, 250, 500] as const;
+const MAX_REFINE_SHIFT_MS = 50;
 const ASPECT_OFFSETS: Record<AspectType, readonly number[]> = {
   conjunction: [0],
   sextile: [60, 300],
@@ -129,12 +130,78 @@ const ASPECT_OFFSETS: Record<AspectType, readonly number[]> = {
   opposition: [180],
 };
 
+function bisectBoundaryRoot(
+  errorAt: (ms: number) => number,
+  loStart: number,
+  hiStart: number,
+  floStart: number,
+  fhiStart: number,
+  boundaryMs: number,
+  onLeft: boolean,
+): number {
+  let lo = loStart;
+  let hi = hiStart;
+  let flo = floStart;
+  let fhi = fhiStart;
+  if (flo === 0) return lo;
+  if (fhi === 0) return hi;
+  while (hi - lo > 1) {
+    const mid = Math.floor((lo + hi) / 2);
+    const fm = errorAt(mid);
+    if (fm === 0) return mid;
+    if ((flo < 0) !== (fm < 0)) {
+      hi = mid;
+      fhi = fm;
+    } else {
+      lo = mid;
+      flo = fm;
+    }
+  }
+  if (onLeft && hi === boundaryMs) return lo;
+  if (!onLeft && lo === boundaryMs) return hi;
+  return Math.abs(flo) <= Math.abs(fhi) ? lo : hi;
+}
+
 /**
- * Refines a transit crossing that lands within `BOUNDARY_REFINE_MS` of a local day boundary (`dayStart` or `dayEnd`)
- * using a symmetric bracket centered strictly on `boundaryMs`. Because adjacent days share the exact same boundary
- * instant (earlier day's exclusive end === later day's inclusive start), both days evaluate the identical bracket and
- * assign every near-midnight crossing to exactly one day.
+ * Refines a crossing estimate `approxMs` near `boundaryMs` using symmetric probes centered strictly on `boundaryMs`.
+ * Both sides of `boundaryMs` are searched independently and the root nearest `approxMs` (within solver tolerance) is
+ * chosen so asymmetric multi-pass crossings straddling midnight (e.g. -30 ms and +170 ms) each preserve their own
+ * pass while single near-midnight crossings are assigned to the same day on both adjacent day scans.
  */
+export function refineCrossingTimeNearBoundary(
+  errorAt: (ms: number) => number,
+  approxMs: number,
+  boundaryMs: number,
+): number {
+  const fBoundary = errorAt(boundaryMs);
+  if (fBoundary === 0) return Math.abs(boundaryMs - approxMs) <= MAX_REFINE_SHIFT_MS ? boundaryMs : approxMs;
+
+  let leftRoot: number | null = null;
+  let rightRoot: number | null = null;
+  for (const radius of BOUNDARY_PROBE_RADII_MS) {
+    if (leftRoot === null) {
+      const fLeft = errorAt(boundaryMs - radius);
+      if (fLeft === 0 || (fLeft < 0) !== (fBoundary < 0)) {
+        leftRoot = bisectBoundaryRoot(errorAt, boundaryMs - radius, boundaryMs, fLeft, fBoundary, boundaryMs, true);
+      }
+    }
+    if (rightRoot === null) {
+      const fRight = errorAt(boundaryMs + radius);
+      if (fRight === 0 || (fRight < 0) !== (fBoundary < 0)) {
+        rightRoot = bisectBoundaryRoot(errorAt, boundaryMs, boundaryMs + radius, fBoundary, fRight, boundaryMs, false);
+      }
+    }
+    if (leftRoot !== null && rightRoot !== null) break;
+  }
+
+  const candidates = [leftRoot, rightRoot].filter(
+    (root): root is number => root !== null && Math.abs(root - approxMs) <= MAX_REFINE_SHIFT_MS,
+  );
+  if (candidates.length === 0) return approxMs;
+  if (candidates.length === 1) return candidates[0];
+  return Math.abs(candidates[0] - approxMs) <= Math.abs(candidates[1] - approxMs) ? candidates[0] : candidates[1];
+}
+
 function refineCrossingNearBoundary(
   mover: TransitBody,
   pointLon: number,
@@ -155,39 +222,7 @@ function refineCrossingNearBoundary(
     }
   }
   const errorAt = (ms: number) => signedAngleDiff(bodyLongitude(mover, new Date(ms)), targetLon);
-  const fBoundary = errorAt(boundaryMs);
-  if (fBoundary === 0) return boundaryMs;
-
-  for (const radius of BOUNDARY_PROBE_RADII_MS) {
-    const fLeft = errorAt(boundaryMs - radius);
-    const fRight = errorAt(boundaryMs + radius);
-    const crossesLeft = fLeft === 0 || (fLeft < 0) !== (fBoundary < 0);
-    const crossesRight = fRight === 0 || (fRight < 0) !== (fBoundary < 0);
-    if (!crossesLeft && !crossesRight) continue;
-    const onLeft = crossesLeft && (!crossesRight || approxMs < boundaryMs);
-    let lo = onLeft ? boundaryMs - radius : boundaryMs;
-    let hi = onLeft ? boundaryMs : boundaryMs + radius;
-    let flo = onLeft ? fLeft : fBoundary;
-    let fhi = onLeft ? fBoundary : fRight;
-    if (flo === 0) return lo;
-    if (fhi === 0) return hi;
-    while (hi - lo > 1) {
-      const mid = Math.floor((lo + hi) / 2);
-      const fm = errorAt(mid);
-      if (fm === 0) return mid;
-      if ((flo < 0) !== (fm < 0)) {
-        hi = mid;
-        fhi = fm;
-      } else {
-        lo = mid;
-        flo = fm;
-      }
-    }
-    if (onLeft && hi === boundaryMs) return lo;
-    if (!onLeft && lo === boundaryMs) return hi;
-    return Math.abs(flo) <= Math.abs(fhi) ? lo : hi;
-  }
-  return approxMs;
+  return refineCrossingTimeNearBoundary(errorAt, approxMs, boundaryMs);
 }
 
 /**

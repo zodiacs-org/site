@@ -5,7 +5,7 @@ import { personalDay } from '../../ai-tools/personal/personal-day';
 import { birthDayEnds, forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, castDayNatal, localDayBounds, minorLeftOut, readPersonalDay, settledSunSign, type DayClock } from './day';
+import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, castDayNatal, localDayBounds, minorLeftOut, readPersonalDay, refineCrossingTimeNearBoundary, settledSunSign, type DayClock } from './day';
 import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
@@ -633,6 +633,17 @@ describe('applying, separating and exact times on the /your-day/ page and get_pe
     const nov9SubMs = await readPersonalDay(subMsNatal, { birthDate: '1990-11-13', date: '2026-11-09', zone: 'UTC', now: new Date('2026-11-09T12:00:00Z') }, site);
     expect(nov8SubMs.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun')?.exactAt).toBe('2026-11-08T23:59:59.999Z');
     expect(nov9SubMs.contacts.find((entry) => entry.planet === 'Sun' && entry.aspect === 'conjunction' && entry.point === 'Sun')?.exactAt ?? null).toBeNull();
+
+    // Asymmetric multi-pass crossings straddling midnight (e.g. -30 ms and +170 ms) and same-side pairs (+10 ms and +170 ms)
+    // must each refine to their own root instead of collapsing both passes onto the closer one.
+    const boundary = exactMidnightMs;
+    const straddlingError = (ms: number) => (ms - (boundary - 30)) * (ms - (boundary + 170));
+    expect(refineCrossingTimeNearBoundary(straddlingError, boundary - 27, boundary)).toBe(boundary - 30);
+    expect(refineCrossingTimeNearBoundary(straddlingError, boundary + 173, boundary)).toBe(boundary + 170);
+
+    const sameSideError = (ms: number) => (ms - (boundary + 10)) * (ms - (boundary + 170));
+    expect(refineCrossingTimeNearBoundary(sameSideError, boundary + 13, boundary)).toBe(boundary + 10);
+    expect(refineCrossingTimeNearBoundary(sameSideError, boundary + 172, boundary)).toBe(boundary + 172);
   });
 
   it('still computes Your Day when an unrelated historical zone shard fails, and fails without retrying when the needed shard fails', async () => {

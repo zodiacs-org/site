@@ -310,7 +310,7 @@ window.addEventListener('message', (event) => {
 }
 
 /** Loads one widget in the host page, hands it a tool result (or none) and measures what a person would see. */
-async function render(widget: Widget, mode: Mode, result: unknown, options: { openai?: boolean; screenshot?: string } = {}): Promise<Rendered> {
+async function render(widget: Widget, mode: Mode, result: unknown, options: { openai?: boolean; screenshot?: string; clickLink?: boolean } = {}): Promise<Rendered> {
   const context = await browser!.newContext({
     viewport: { width: mode.width, height: 900 }, colorScheme: mode.theme, deviceScaleFactor: 2,
     isMobile: mode.mobile, hasTouch: mode.mobile, reducedMotion: 'reduce', timezoneId: 'Europe/Madrid', locale: 'en-GB',
@@ -409,6 +409,11 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
     await frame.evaluate(() => { for (const details of document.querySelectorAll('details')) details.open = true; });
     const openHeight = await fit();
     const open = await measure();
+    if (options.clickLink) {
+      const actionLink = frame.locator('a[href]').first();
+      await actionLink.click();
+      await page.waitForTimeout(50);
+    }
     const messages = await page.evaluate(() => (window as any).__gate.messages);
     const unique = <T,>(items: T[]) => [...new Map(items.map(item => [JSON.stringify(item), item])).values()];
     return {
@@ -1258,9 +1263,19 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         }
       }
       if (firstRendered) {
-        const openaiDrawn = await render(featuresWidget, MODES[1], firstRendered.result, { openai: true });
+        const mcpLinkDrawn = await render(featuresWidget, MODES[1], firstRendered.result, { clickLink: true });
+        expectClean(mcpLinkDrawn, featuresWidget, MODES[1], 'candidate-feature/mcp-open-link', firstRendered.secrets);
+        expect(
+          mcpLinkDrawn.messages.some((message: any) => message?.method === 'ui/open-link' && typeof message?.params?.url === 'string' && message.params.url.startsWith('https://zodiacs.org/')),
+          'clicking a feature card action sends ui/open-link in an MCP Apps host',
+        ).toBe(true);
+        const openaiDrawn = await render(featuresWidget, MODES[1], firstRendered.result, { openai: true, clickLink: true });
         expectClean(openaiDrawn, featuresWidget, MODES[1], 'candidate-feature/window.openai', firstRendered.secrets);
         for (const pattern of firstRendered.patterns) expect(openaiDrawn.text).toMatch(pattern);
+        expect(
+          openaiDrawn.messages.some((message: any) => message?.method === 'ui/open-link' && typeof message?.params?.url === 'string' && message.params.url.startsWith('https://zodiacs.org/')),
+          'clicking a feature card action sends ui/open-link when window.openai and hostCapabilities.openLinks are both present',
+        ).toBe(true);
       }
     }, 240_000);
 
