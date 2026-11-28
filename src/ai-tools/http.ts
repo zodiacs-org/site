@@ -270,7 +270,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
       // A notification (a method and no id) gets no JSON-RPC reply: 202 with no body, as the SDK accepts one.
-      if (message.jsonrpc === '2.0' && typeof message.method === 'string' && !('id' in message)) { res.statusCode = 202; res.end(); return; }
+      const validNotifParams = message.params === undefined || (typeof message.params === 'object' && message.params !== null && !Array.isArray(message.params));
+      if (message.jsonrpc === '2.0' && typeof message.method === 'string' && !('id' in message) && validNotifParams) { res.statusCode = 202; res.end(); return; }
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }

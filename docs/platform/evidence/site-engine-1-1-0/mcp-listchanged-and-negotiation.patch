@@ -1,8 +1,8 @@
 diff --git a/src/ai-tools/http.ts b/src/ai-tools/http.ts
-index 9904a541d..5de84f21b 100644
+index 6fb8e6d..5f2d156 100644
 --- a/src/ai-tools/http.ts
 +++ b/src/ai-tools/http.ts
-@@ -223,6 +223,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
+@@ -213,6 +213,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
      }
      if (!body || typeof body !== 'object' || Array.isArray(body)) return send(res, 400, 'invalid-json-rpc');
      const message = body as Record<string, unknown>;
@@ -11,17 +11,18 @@ index 9904a541d..5de84f21b 100644
      // Compared as the method allowlist below compares it, so no spelling of a tool call escapes the budget.
      if (String(message.method) === 'tools/call') { verdict = await countRequest(); if (verdict !== 'allowed') return refuse(verdict); }
      // The sky events switch is read as the coverage and occasion switches are, and counts only with both of them on.
-@@ -267,6 +269,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
+@@ -250,6 +252,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
      const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
      if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
      if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
-+      // A notification (a method and no id) gets no JSON-RPC reply: 202 with no body, as the SDK accepts one.
-+      if (message.jsonrpc === '2.0' && typeof message.method === 'string' && !('id' in message)) { res.statusCode = 202; res.end(); return; }
++      // A valid JSON-RPC 2.0 notification (a method, no id, and omitted or object params) gets 202 with no body.
++      const validNotifParams = message.params === undefined || (typeof message.params === 'object' && message.params !== null && !Array.isArray(message.params));
++      if (message.jsonrpc === '2.0' && typeof message.method === 'string' && !('id' in message) && validNotifParams) { res.statusCode = 202; res.end(); return; }
        res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
        res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
      }
 diff --git a/src/ai-tools/sanitize.ts b/src/ai-tools/sanitize.ts
-index ec99cd758..218ec2df2 100644
+index ec99cd7..218ec2d 100644
 --- a/src/ai-tools/sanitize.ts
 +++ b/src/ai-tools/sanitize.ts
 @@ -1,7 +1,19 @@
@@ -46,13 +47,13 @@ index ec99cd758..218ec2df2 100644
      && message.result.content?.some((item: any) => item.type === 'text' && item.text.startsWith('Input validation error:'))) {
      // A named refusal holds only schema words; without one the fixed sentence stays.
 diff --git a/src/ai-tools/server.ts b/src/ai-tools/server.ts
-index 715f45f6e..8c245b790 100644
+index c44025a..61c0600 100644
 --- a/src/ai-tools/server.ts
 +++ b/src/ai-tools/server.ts
-@@ -105,7 +105,9 @@ export interface AiServerRoute { de440?: boolean }
+@@ -100,7 +100,9 @@ export interface AccountContext { service: AccountsService; principal: AccountPr
  /** A fresh SDK server per HTTP request or local stdio connection. */
- export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext, route: AiServerRoute = {}) {
-   const server = new McpServer(route.de440 ? de440ServerInfo() : { name: 'zodiacs', version: AI_VERSION }, {
+ export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
+   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
 -    capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
 +    // listChanged stays false: a stateless server sends no list-changed notification and refuses subscriptions/listen,
 +    // which 2026-07-28 clients open whenever it is advertised (the SDK's default is true).
