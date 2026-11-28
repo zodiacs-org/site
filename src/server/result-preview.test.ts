@@ -533,8 +533,8 @@ describe('share link pages', () => {
     const response = await handleCompatibilityLinkRequest(new Request('https://zodiacs.org/share/compatibility/?as=%3Cscript%3E&score=78'));
     const html = await response.text();
     expect(response.status).toBe(200);
-    expect(html).toContain('content="https://zodiacs.org/assets/og/v2/tool/compatibility.png"');
-    expect(html).toContain('<meta property="og:image:type" content="image/png">');
+    expect(html).toContain('content="https://zodiacs.org/assets/og/v8/tool/compatibility.jpg"');
+    expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(html).not.toContain('script%3E');
     expect(html).not.toContain('<script');
     const occasion = await (await handleOccasionLinkRequest(new Request('https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&lat=1'))).text();
@@ -571,8 +571,8 @@ describe('share link pages', () => {
     // A link that does not match the site's data opens the plain page.
     expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/birthday.jpg"');
     expect(await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-10-27'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/sky-calendar.jpg"');
-    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&text=Win'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
-    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2199-01-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&text=Win'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
+    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2199-01-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
     // A reading that has left the window keeps its sign and day.
     const gone = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2026-09-01'))).text();
     expect(gone).toContain('<h1>Leo horoscope for Tuesday 1 September</h1>');
@@ -612,7 +612,7 @@ describe('share link pages', () => {
       expect(card.path, key).toBe(artPageCard(key));
       expect(card.alt, key).toBe(artPageCardAlt(key));
     }
-    expect(Object.keys(SHARE_FALLBACK_ART_CARDS)).toEqual(['birthday', 'sky-calendar', 'saturn-return', 'big-three', 'compatibility-invite', 'transits']);
+    expect(Object.keys(SHARE_FALLBACK_ART_CARDS)).toEqual(['birthday', 'sky-calendar', 'saturn-return', 'big-three', 'compatibility-invite', 'transits', 'compatibility', 'horoscopes']);
     const yourDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/'))).text();
     expect(yourDay).toContain('content="https://zodiacs.org/assets/og/v8/tool/transits.jpg"');
     expect(yourDay).toContain('<meta property="og:image:type" content="image/jpeg">');
@@ -700,7 +700,7 @@ describe('share link pages', () => {
       const year = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2027'))).text();
       expect(year).toContain('<h1>Leo horoscope for 2027</h1>');
       expect(year).toContain('<a class="more" href="/horoscopes/leo/2027/">Leo’s 2027 horoscope</a>');
-      expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2031'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+      expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2031'))).text()).toContain('content="https://zodiacs.org/assets/og/v8/tool/horoscopes.jpg"');
     } finally { vi.useRealTimers(); }
   });
 

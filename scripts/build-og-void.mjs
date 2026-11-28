@@ -861,7 +861,7 @@ function accentMark(accent) {
     case 'bigThree': return ACCENT_MARKS.sun() + ACCENT_MARKS.moon() + ACCENT_MARKS.rising();
     case 'phases': return phaseRow(accent.size, accent.gap);
     case 'retrograde': return retroLoop(HUE[accent.sign]);
-    case 'signDiscs': return signDiscRow(SIGNS.map((s) => s.slug), 32, 7);
+    case 'signDiscs': return signDiscRow(SIGNS.map((s) => s.slug), THESIS_ART_CARD_DISCS.size, THESIS_ART_CARD_DISCS.gap);
     case 'pair': return signDiscRow(accent.signs, ART_PAGE_CARD_ACCENT, 14);
     default: throw new Error(`accentMark: unknown accent ${accent.kind}`);
   }

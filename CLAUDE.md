@@ -367,12 +367,23 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   og:image, twitter:image and the Article's image with one alt text. The v2
   `og/v2/thesis.png` stays published, in the v2 family, for links already
   shared)
-- `public/assets/og/v8/tool/{key}.jpg` (13 single page cards) ← `npm run
+- `public/assets/og/v8/tool/{key}.jpg` (17 single page cards) ← `npm run
   data:og -- --only-art-page-cards` (owner-delegated decisions, 2026-11-27:
   /birth-chart/ with its someone-else and three-dimensions pages, /today/,
   /rising-sign/, /big-three/, the /birthday/ hub, /tools/, the /learn/ hub
   only, /sky-calendar/, /saturn-return/, /c/ (`compatibility-invite`),
-  /baby-zodiac/, /mercury-retrograde/ with its 2027 page, and /transits/. One
+  /baby-zodiac/, /mercury-retrograde/ with its 2027 page, and /transits/;
+  owner-chosen from mockups 2026-11-28: /moon-sign/, the /compatibility/ hub,
+  the /horoscopes/ hub (the es and pt hubs too) and /numerology/, each with
+  the thesis card's row of the twelve canonical sign discs above the kicker.
+  Their art: three generated photographs (Higgsfield; a crescent Moon, the
+  Venice clocktower's zodiac dial, a silver dial with a dark numbered ring) cut to 1200px
+  WebP in `public/assets/art/`, and the compatibility hub's two chart wheels,
+  `public/assets/art/compatibility-wheels-1200.webp` ← `npx vite-node --script
+  scripts/build-compatibility-wheels-art.ts` (the real `Wheel.tsx` with the
+  published People charts of Alan Turing and Ada Lovelace, Chromium output,
+  so not in the drift job; rerun it when the wheel or those charts change,
+  then redraw the cards). One
   template, `artPageLayout` in `build-og-void.mjs`: the page's own painting on
   the right, a small accent in the sign hues or the canonical discs, kicker,
   two-line headline and line; every card's art, accent, words and alt text

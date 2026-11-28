@@ -161,7 +161,7 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       '/assets/og/v8/thesis.jpg',
       ...ART_PAGE_CARD_KEYS.map((key) => `/assets/og/v8/tool/${key}.jpg`),
     ]);
-    expect(ART_CARDS).toHaveLength(99 + 13);
+    expect(ART_CARDS).toHaveLength(99 + 17);
     // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
     expect(ART_CARD_DISC).toBeGreaterThanOrEqual(128);
     expect(read('scripts/build-og-void.mjs')).toContain('public/assets/zodiac-icons/400/${s.slug}.webp');
@@ -407,8 +407,8 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
   };
   const deDash = (value: string) => value.replace(' — ', ', ');
 
-  it('draws the thirteen single page cards in the English folder, each from its page\'s own painting', () => {
-    expect([...ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits']);
+  it('draws the seventeen single page cards in the English folder, each from its page\'s own painting', () => {
+    expect([...ART_PAGE_CARD_KEYS]).toEqual(['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits', 'moon-sign', 'compatibility', 'horoscopes', 'numerology']);
     expect([...ART_PAGE_CARDS]).toEqual(ART_PAGE_CARD_KEYS.map((key) => `${ART_CARD_DIR}/tool/${key}.jpg`));
     for (const card of ART_PAGE_CARDS) expect(ART_CARDS).toContain(card);
     for (const painting of Object.values(ART_PAGE_PAINTINGS)) expect(readFileSync(new URL(`../../${painting.src}`, import.meta.url)).length, painting.src).toBeGreaterThan(0);
@@ -420,7 +420,7 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
       expect(artPageCardAlt(key)).toBe(spec.alt);
       for (const route of spec.routes) expect(route, key).toMatch(/^\/[a-z0-9/-]*\/$/u);
     }
-    expect(() => artPageCard('moon-sign')).toThrow(/no art page card/u);
+    expect(() => artPageCard('eclipses')).toThrow(/no art page card/u);
     expect(ART_CARDS_MAX_TOTAL_BYTES).toBe(12 * 1024 * 1024);
     expect(ART_CARD_MAX_BYTES).toBe(300 * 1024);
   });
@@ -482,6 +482,34 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     // Transits: the v2 kicker and the hero's headline.
     expect(spec('transits').kicker).toBe(tool('transits').kicker);
     expect(page('src/pages/transits/index.astro')).toContain(`<h1 class="display">${spec('transits').title.join(' ')}</h1>`);
+    // The moon sign: the v2 card's kicker and title, the line from the page's description.
+    expect(spec('moon-sign').kicker).toBe(tool('moon-sign').kicker);
+    expect(spec('moon-sign').title.join(' ')).toBe(tool('moon-sign').title);
+    expect(page('src/pages/moon-sign/index.astro')).toContain(`description="Find your moon sign free, in seconds: ${spec('moon-sign').line.charAt(0).toLowerCase()}${spec('moon-sign').line.slice(1)} No signup."`);
+    // The compatibility hub and the horoscopes hub: the v2 card's words, the dash written as a comma.
+    for (const key of ['compatibility', 'horoscopes']) {
+      expect(spec(key).kicker, key).toBe(tool(key).kicker);
+      expect(spec(key).title.join(' '), key).toBe(tool(key).title);
+      expect(spec(key).line, key).toBe(tool(key).sub.replace(' — ', ', '));
+    }
+    // Numerology (no v2 card): the hero's kicker, headline and first sentence.
+    const numerology = page('src/pages/numerology/index.astro');
+    expect(numerology).toContain(`<em class="kicker">${spec('numerology').kicker}</em>`);
+    expect(numerology).toContain(`<h1 class="display">${spec('numerology').title.join(' ')}.</h1>`);
+    expect(numerology).toContain(`${spec('numerology').line} Nothing you type leaves the browser.`);
+    // Numerology is not astrology: its card's alt text says so (AGENTS.md, product rules).
+    expect(spec('numerology').alt).toContain('Numerology is a separate tradition from astrology.');
+  });
+
+  it('carries the thesis card\'s row of the twelve sign discs on the 2026-11-28 cards, over their own art', () => {
+    for (const key of ['moon-sign', 'compatibility', 'horoscopes', 'numerology']) {
+      expect(artPageCardSpec(key).accent, key).toEqual({ kind: 'signDiscs' });
+      expect(artPageCardSpec(key).art.filter, key).toBe('none');
+    }
+    const generator = read('scripts/build-og-void.mjs');
+    expect(generator).toContain("case 'signDiscs': return signDiscRow(SIGNS.map((s) => s.slug), THESIS_ART_CARD_DISCS.size, THESIS_ART_CARD_DISCS.gap);");
+    expect(artPageCardSpec('compatibility').art.src).toBe('public/assets/art/compatibility-wheels-1200.webp');
+    expect(read('scripts/build-compatibility-wheels-art.ts')).toContain("import Wheel from '../src/lib/wheel/Wheel';");
   });
 
   it('is what each of those pages links, and the English catalogue for the pages that read it', () => {
@@ -511,6 +539,10 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
       ['src/pages/mercury-retrograde/index.astro', 'mercury-retrograde'],
       ['src/pages/mercury-retrograde/2027/index.astro', 'mercury-retrograde'],
       ['src/pages/transits/index.astro', 'transits'],
+      ['src/pages/moon-sign/index.astro', 'moon-sign'],
+      ['src/pages/compatibility/index.astro', 'compatibility'],
+      ['src/pages/horoscopes/index.astro', 'horoscopes'],
+      ['src/pages/numerology/index.astro', 'numerology'],
     ] as const) {
       const source = read(file);
       expect(source, file).toContain(`image={artPageCard('${key}')}`);
@@ -518,11 +550,14 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
     }
     // The Spanish, French, Italian and Portuguese pages that showed the English v2 card show the English art card.
     for (const locale of ['es', 'fr', 'it', 'pt']) {
-      for (const key of ['birth-chart', 'tools', 'baby-zodiac', 'saturn-return', 'transits', 'rising-sign']) {
+      for (const key of ['birth-chart', 'tools', 'baby-zodiac', 'saturn-return', 'transits', 'rising-sign', 'moon-sign', 'compatibility']) {
         expect(read(`src/pages/${locale}/${key}/index.astro`), `${locale} ${key}`).toContain(`image={artPageCard('${key}')}`);
       }
     }
     expect(read('src/components/sky/LocalizedMercuryRetrogradePage.astro')).toContain("image={artPageCard('mercury-retrograde')}");
+    expect(read('src/components/localized/LocalizedHoroscopeHub.astro')).toContain("image={artPageCard('horoscopes')}");
+    // The Russian pages keep their own cards.
+    for (const key of ['moon-sign', 'compatibility']) expect(read(`src/pages/ru/${key}/index.astro`), key).not.toContain('artPageCard');
     expect(read('src/components/sharing/SharingToolPage.astro')).toContain("big: artPageCard('big-three')");
     expect(read('src/components/return-visits/ReturnToolPage.astro')).toContain("const cardImage = kind === 'calendar' ? artPageCard('sky-calendar')");
     // The pages that borrowed the learn and transits cards keep them for now.
@@ -530,7 +565,7 @@ describe('the art page cards (owner-delegated decisions, 2026-11-27)', () => {
       expect(read(kept), kept).toMatch(/image="\/assets\/og\/v2\/tool\/(?:learn|transits)\.png"/u);
     }
     // The v2 cards stay published for links already shared.
-    for (const key of ['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits']) {
+    for (const key of ['birth-chart', 'today', 'rising-sign', 'big-three', 'birthday', 'tools', 'learn', 'sky-calendar', 'saturn-return', 'compatibility-invite', 'baby-zodiac', 'mercury-retrograde', 'transits', 'moon-sign', 'compatibility', 'horoscopes']) {
       expect(readFileSync(new URL(`../../public/assets/og/v2/tool/${key}.png`, import.meta.url)).subarray(1, 4).toString('ascii'), key).toBe('PNG');
     }
   });

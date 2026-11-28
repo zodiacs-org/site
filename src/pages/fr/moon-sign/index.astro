@@ -4,6 +4,7 @@ import Faq from '../../../components/Faq.astro';
 import HeroCrop from '../../../components/HeroCrop.astro';
 import ChartCalculator from '../../../islands/ChartCalculator';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -53,7 +54,7 @@ const jsonLd = [
   description="Découvre gratuitement ton signe lunaire : ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin. Calculé sur ton appareil, sans compte."
   path="/fr/moon-sign/"
   locale="fr"
-  image="/assets/og/v2/tool/moon-sign.png"
+  image={artPageCard('moon-sign')}
   imageAlt="Calculateur de signe lunaire, Zodiacs.org"
   jsonLd={jsonLd}
 >

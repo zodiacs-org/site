@@ -437,6 +437,14 @@ export const ART_PAGE_PAINTINGS = Object.freeze({
   skyDial: Object.freeze({ src: 'public/assets/card-art/sky-calendar-hero-1200.webp', width: 1200, height: 800 }),
   invitation: Object.freeze({ src: 'public/assets/art/profile-invitation-1200.webp', width: 1200, height: 800 }),
   poster: Object.freeze({ src: 'public/assets/hero/zodiacs-hero-poster.jpg', width: 1600, height: 900 }),
+  // The 2026-11-28 round's art, made for the cards: three generated photographs
+  // (Higgsfield, 2528 × 1696, cut to 1200 px webp) and the compatibility hub's
+  // two chart wheels, the site's own <Wheel> with two published People charts
+  // (scripts/build-compatibility-wheels-art.ts).
+  crescent: Object.freeze({ src: 'public/assets/art/moon-crescent-1200.webp', width: 1200, height: 805 }),
+  chartWheels: Object.freeze({ src: 'public/assets/art/compatibility-wheels-1200.webp', width: 1200, height: 800 }),
+  veniceClock: Object.freeze({ src: 'public/assets/art/venice-clock-1200.webp', width: 1200, height: 805 }),
+  numerologyDial: Object.freeze({ src: 'public/assets/art/numerology-dial-1200.webp', width: 1200, height: 805 }),
 });
 
 /** The sign art panels' filter, as on the sign cards; the poster is drawn brighter, as the pages' hero crops show it. */
@@ -453,6 +461,17 @@ function placed(name, fx, fy, scale, more = {}) {
   return Object.freeze({ painting: name, ...ART_PAGE_PAINTINGS[name], fx, fy, scale, cx: 890, cy: 290, fade: [500, 740], filter: PAINTING_FILTER, ...more });
 }
 
+/**
+ * A whole picture laid as the 2026-11-28 cards' mockups lay it: 820 px wide
+ * across the right of the card, its centre at (790, 273), fading in from the
+ * left between 400 and 660 px. Generated photographs keep their own colour.
+ * @param {keyof typeof ART_PAGE_PAINTINGS} name
+ */
+function framed(name, more = {}) {
+  const { width, height } = ART_PAGE_PAINTINGS[name];
+  return placed(name, width / 2, height / 2, 820 / width, { cx: 790, cy: 273, fade: [400, 660], filter: 'none', ...more });
+}
+
 /** A region of the hero film's poster, as the pages' hero crops cut it (x, y and width in the poster's pixels). */
 function posterRegion(x, y, width, more = {}) {
   const height = (width * 350) / 560;
@@ -466,7 +485,8 @@ const PAGE_CARD = (name) => `${ART_CARD_DIR}/tool/${name}.jpg`;
  * size in px and `fit` the widest its longest line may run before it steps
  * down. `accent` names the mark above the kicker: a wheel of the twelve sign
  * hues, two wheels, the Moon's phases, a Sun, Moon, rising or Saturn disc, a
- * planet's retrograde loop, or the twelve canonical sign discs.
+ * planet's retrograde loop, or the twelve canonical sign discs (the thesis
+ * card's row, THESIS_ART_CARD_DISCS).
  */
 const ART_PAGE_CARD_SPECS = Object.freeze([
   {
@@ -546,6 +566,32 @@ const ART_PAGE_CARD_SPECS = Object.freeze([
     art: posterRegion(640, 304, 700, { cx: 990, cy: 300 }), accent: null,
     kicker: 'Free tracker', title: ['What is active', 'in your chart?'], size: 90, fit: 470, line: 'Move the date to watch each transit build, peak, and release.',
     alt: 'What is active in your chart? Move the date to watch each transit build, peak, and release, beside a painting of the ring of sign discs.',
+  },
+  // The 2026-11-28 round (owner-chosen from mockups): each card carries the
+  // twelve canonical sign discs in a row above the kicker, as the thesis card does.
+  {
+    key: 'moon-sign', routes: ['/moon-sign/'],
+    art: framed('crescent'), accent: { kind: 'signDiscs' },
+    kicker: 'Free calculator', title: ['Your moon', 'sign'], size: 96, line: 'How you feel, what soothes you, and what you need to feel safe.',
+    alt: 'Your moon sign: how you feel, what soothes you, and what you need to feel safe. The twelve sign discs in a row beside a close view of a crescent Moon.',
+  },
+  {
+    key: 'compatibility', routes: ['/compatibility/'],
+    art: framed('chartWheels'), accent: { kind: 'signDiscs' },
+    kicker: 'Compatibility', title: ['Two charts,', 'compared'], size: 96, line: 'Whole-chart synastry, plus guides to all 78 sign pairings.',
+    alt: 'Two charts, compared: whole-chart synastry, plus guides to all 78 sign pairings. The twelve sign discs in a row beside two of the site’s chart wheels, a small one set against a large one.',
+  },
+  {
+    key: 'horoscopes', routes: ['/horoscopes/'],
+    art: framed('veniceClock'), accent: { kind: 'signDiscs' },
+    kicker: 'Horoscopes', title: ['All twelve', 'signs'], size: 96, line: 'Daily through yearly readings with clear themes and one useful next move.',
+    alt: 'All twelve signs: daily through yearly horoscopes with clear themes and one useful next move. The twelve sign discs in a row beside a clock dial with gilded zodiac figures on blue enamel.',
+  },
+  {
+    key: 'numerology', routes: ['/numerology/'],
+    art: framed('numerologyDial'), accent: { kind: 'signDiscs' },
+    kicker: 'Numerology', title: ['Find your', 'Life Path number'], size: 96, fit: 520, line: 'Discover your Life Path from your birth date, or add your name to explore more numbers.',
+    alt: 'Find your Life Path number: discover it from your birth date, or add your name to explore more numbers. Numerology is a separate tradition from astrology. The twelve sign discs in a row beside a silver dial with a dark numbered ring, its needle on 7.',
   },
 ].map((spec) => Object.freeze({ ...spec, card: PAGE_CARD(spec.key), size: spec.size ?? 104, fit: spec.fit ?? 500, lineCh: spec.lineCh ?? 23 })));
 

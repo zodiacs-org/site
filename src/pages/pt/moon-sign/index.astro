@@ -4,6 +4,7 @@ import Faq from '../../../components/Faq.astro';
 import HeroCrop from '../../../components/HeroCrop.astro';
 import ChartCalculator from '../../../islands/ChartCalculator';
 import '../../../styles/calculator.css';
+import { artPageCard } from '../../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -53,7 +54,7 @@ const jsonLd = [
   description="Descubra seu signo lunar grátis: como você vive as emoções, o que traz calma e do que precisa. Calculado no seu dispositivo, sem conta."
   path="/pt/moon-sign/"
   locale="pt"
-  image="/assets/og/v2/tool/moon-sign.png"
+  image={artPageCard('moon-sign')}
   imageAlt="Calculadora de signo lunar, Zodiacs.org"
   jsonLd={jsonLd}
 >

@@ -8,6 +8,7 @@ import ChartCalculator from '../../islands/ChartCalculator';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
+import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
 
 const faq = [
   {
@@ -53,8 +54,8 @@ const jsonLd = [
   title="Moon Sign Calculator: What Is My Moon Sign? | Zodiacs.org"
   description="Find your moon sign free, in seconds: how you feel, what soothes you, and what you need to feel safe. No signup."
   path="/moon-sign/"
-  image="/assets/og/v2/tool/moon-sign.png"
-  imageAlt="Free moon sign calculator, Zodiacs.org"
+  image={artPageCard('moon-sign')}
+  imageAlt={artPageCardAlt('moon-sign')}
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
