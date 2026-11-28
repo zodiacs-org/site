@@ -35,7 +35,7 @@ export function parseSolarReturnShare(params: URLSearchParams): SolarReturnShare
     fields.set(key, value);
   }
   const [sun, year, rising, jupiter, ref] = ['s', 'y', 'r', 'j', 'ref'].map((key) => fields.get(key));
-  if (!isSign(sun) || !isSign(jupiter) || (rising !== undefined && !isSign(rising)) || !year || !/^(?:18|19|20|21)\d{2}$/u.test(year)) return null;
+  if (!isSign(sun) || !isSign(jupiter) || (rising !== undefined && !isSign(rising)) || !year || !/^(?:(?:18|19|20|21)\d{2}|2200)$/u.test(year)) return null;
   const shareRef = readShareRef(ref);
   if (shareRef === undefined) return null;
   return { sun, year: Number(year), rising: rising ?? null, jupiter, ref: shareRef };

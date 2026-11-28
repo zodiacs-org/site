@@ -292,7 +292,7 @@ describe('get_retrograde_for_me privacy and refusals', () => {
         const links = pageLinks(staged);
         expect(links.length, path).toBeGreaterThan(0);
         expect(links.every((url) => url.startsWith(`https://${STAGING}/`)), links.join(' ')).toBe(true);
-        expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/retrogrades/for-you/`);
+        expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/retrogrades/for-you/?ref=assistant`);
         expect(JSON.stringify(staged)).not.toMatch(/https:\/\/zodiacs\.org\/(?:retrogrades\/for-you|share)\//u);
       }
       // On zodiacs.org the same deployment links zodiacs.org.
@@ -312,7 +312,7 @@ describe('get_retrograde_for_me privacy and refusals', () => {
       const port = (server.address() as { port: number }).port;
       const staged = await call(port, CUSTOM, '/mcp/de440');
       expect(staged.structuredContent?.ok).toBe(true);
-      expect(staged.structuredContent.data.pageUrl).toBe(`https://${CUSTOM}/retrogrades/for-you/`);
+      expect(staged.structuredContent.data.pageUrl).toBe(`https://${CUSTOM}/retrogrades/for-you/?ref=assistant`);
       const shareUrl = new URL(staged.structuredContent.data.periods.find((period: { shareUrl: string | null }) => period.shareUrl).shareUrl);
       expect(shareUrl.origin).toBe(`https://${CUSTOM}`);
 

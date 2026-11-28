@@ -306,12 +306,13 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
         {busy && !result && <p class="good-days__busy">Reading every day in the window…</p>}
         {result && (
           <div class="calc__result good-days__result" ref={resultRef} tabIndex={-1} aria-label={`Good days: ${result.goalLabel}`}>
-            <h2 class="good-days__title">{result.goalLabel}: the best days</h2>
+            <h2 class="good-days__title">{result.best.length > 0 ? `${result.goalLabel}: the best days` : `${result.goalLabel}: no qualifying days`}</h2>
             <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.
               {result.personal && (
                 <small class="good-days__confidence-note">{READING_CONFIDENCE_NOTE}</small>
               )}
             </p>
+            {result.best.length > 0 && (
             <ol class="good-days__list">
               {result.best.map((day, index) => (
                 <li class="tile good-days__day" key={day.date}>
@@ -341,6 +342,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
                 </li>
               ))}
             </ol>
+            )}
             <p class="field__help good-days__zone">Days are counted in {result.zone}.</p>
 
             {result.avoid.length > 0 && (
@@ -362,22 +364,24 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
             {result.messages.map((line) => <p class="field__help" key={line}>{line}</p>)}
             <p class="good-days__care">{result.care}</p>
 
-            <h3 class="good-days__head">Share these days</h3>
-            <figure class="good-days-card" aria-label={CARD_TITLE[result.goal]}>
-              <p class="kicker good-days-card__kicker">{shortDay(result.from)} to {shortDay(result.to)}</p>
-              <p class="good-days-card__title">{CARD_TITLE[result.goal]}</p>
-              <ol class="good-days-card__days">
-                {result.best.slice(0, 3).map((day) => (
-                  <li key={day.date}><span>{day.label}</span><span class="good-days-card__score">{day.score}</span></li>
-                ))}
-              </ol>
-              <p class="good-days-card__note">Read by the traditional rules of electional astrology. {CONFIDENCE_LABEL}.</p>
-              <figcaption class="good-days-card__foot">zodiacs.org/good-days</figcaption>
-            </figure>
+            <h3 class="good-days__head">{result.best.length > 0 ? 'Share these days' : 'Share this search'}</h3>
+            {result.best.length > 0 && (
+              <figure class="good-days-card" aria-label={CARD_TITLE[result.goal]}>
+                <p class="kicker good-days-card__kicker">{shortDay(result.from)} to {shortDay(result.to)}</p>
+                <p class="good-days-card__title">{CARD_TITLE[result.goal]}</p>
+                <ol class="good-days-card__days">
+                  {result.best.slice(0, 3).map((day) => (
+                    <li key={day.date}><span>{day.label}</span><span class="good-days-card__score">{day.score}</span></li>
+                  ))}
+                </ol>
+                <p class="good-days-card__note">Read by the traditional rules of electional astrology. {CONFIDENCE_LABEL}.</p>
+                <figcaption class="good-days-card__foot">zodiacs.org/good-days</figcaption>
+              </figure>
+            )}
             <div class="calc__actions good-days__actions">
               <button type="button" class="btn" onClick={copyLink}>{copied ? 'Link copied' : 'Copy the link'}</button>
               {canShare && <button type="button" class="btn" onClick={shareLink}>Share</button>}
-              <button type="button" class="btn" onClick={() => window.print()}>Print the card</button>
+              {result.best.length > 0 && <button type="button" class="btn" onClick={() => window.print()}>Print the card</button>}
             </div>
             <p class="field__help">The link opens this page with the same goal, dates and time zone, worked out from the sky alone. {result.personal ? 'Your birth date is not in it.' : 'It carries nothing else.'}</p>
             <p class="good-days__link"><code>{link}</code></p>

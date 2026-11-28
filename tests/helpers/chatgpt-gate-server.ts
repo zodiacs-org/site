@@ -22,7 +22,7 @@ import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
-const AI_DESTINATION = /^\/api\/compatibility\?__zodiacs_ai=([a-z0-9]+)$/;
+const AI_DESTINATION = /^\/api\/compatibility\?__zodiacs_ai=([a-z0-9-]+)$/;
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8', '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -62,13 +62,16 @@ export async function startGateServer(port = 0): Promise<GateServer> {
   const servesPages = existsSync(join(dist, 'index.html'));
   const routes = await import('../../api/_ai/handler');
   let handle: Awaited<ReturnType<typeof routes.publishedConnector>> | undefined;
+  let candidateHandle: Awaited<ReturnType<typeof routes.de440Connector>> | undefined;
   const received = new Set<string>();
 
   const server: Server = createServer((req: IncomingMessage, res: ServerResponse) => {
     void (async () => {
       const url = new URL(req.url ?? '/', 'http://localhost');
       const route = aiRoutes.get(url.pathname);
-      if (route && route !== 'de440' && handle) {
+      const isCandidate = route === 'de440' || route === 'de440-health';
+      const target = isCandidate ? candidateHandle : handle;
+      if (route && target) {
         for (const name of Object.keys(req.headers)) received.add(name.toLowerCase());
         // As after Vercel's rewrite: the destination's query first, then the request's own.
         const query = new URLSearchParams(`__zodiacs_ai=${route}`);
@@ -76,7 +79,7 @@ export async function startGateServer(port = 0): Promise<GateServer> {
         const rewritten = req as IncomingMessage & { query?: Record<string, string> };
         rewritten.url = `/api/compatibility?${query}`;
         rewritten.query = Object.fromEntries(query);
-        await handle(rewritten, res);
+        await target(rewritten, res);
         return;
       }
       if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405, { Allow: 'GET, HEAD' }); res.end(); return; }
@@ -97,6 +100,23 @@ export async function startGateServer(port = 0): Promise<GateServer> {
   handle = await routes.publishedConnector({
     // Production's switches for the tools it lists today (19): the server, the occasion tools and the 0.6.0 tools.
     env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' },
+    allowedHosts: [host],
+    rateLimit: allowed,
+    atomicQuota: allowed,
+    countUsage: async () => undefined,
+  });
+  candidateHandle = await routes.de440Connector({
+    // Candidate connector with the 7 feature funnels (8 tools, Tarot off) enabled so the gate exercises features-v1.html.
+    env: {
+      ZODIACS_MCP_ENABLED: '1',
+      ZODIACS_OCCASIONS_ENABLED: '1',
+      ZODIACS_COVERAGE_ENABLED: '1',
+      ZODIACS_YEAR_SCORE_ENABLED: '1',
+      ZODIACS_SOLAR_RETURN_ENABLED: '1',
+      ZODIACS_NUMEROLOGY_ENABLED: '1',
+      ZODIACS_GOOD_DAYS_ENABLED: '1',
+      ZODIACS_PERSONAL_TOOLS_ENABLED: '1',
+    },
     allowedHosts: [host],
     rateLimit: allowed,
     atomicQuota: allowed,

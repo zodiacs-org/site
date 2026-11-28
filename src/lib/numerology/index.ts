@@ -236,13 +236,20 @@ interface RawPart {
   letters: string;
 }
 
-function normalizeNameParts(input: string): RawPart[] {
+export interface NormalizeNameOptions {
+  /** Keep tokens that match titles or suffixes (Sir, Miss, Dr, Jr, ...) when they are genuinely part of the birth name. */
+  keepTitles?: boolean;
+}
+
+function normalizeNameParts(input: string, options: NormalizeNameOptions = {}): RawPart[] {
   if (typeof input !== 'string') throw new NumerologyInputError('empty-name');
+  const keepTitles = options.keepTitles === true;
   const parts: RawPart[] = [];
   for (const raw of input.split(/\s+/)) {
     if (!raw) continue;
     const letters = foldToken(raw);
-    if (!letters || SUFFIXES.has(letters) || TITLES.has(letters)) continue;
+    if (!letters) continue;
+    if (!keepTitles && (SUFFIXES.has(letters) || TITLES.has(letters))) continue;
     parts.push({ raw, letters });
   }
   if (parts.length === 0) throw new NumerologyInputError('empty-name');
@@ -250,14 +257,75 @@ function normalizeNameParts(input: string): RawPart[] {
 }
 
 /**
+ * Tokens that default name normalisation drops because they match a title or
+ * generational suffix (Dr, Mr, Sir, Miss, Jr, III, ...), in the order written.
+ * Used to tell a reader when a genuine given name or surname was excluded.
+ */
+export function droppedNameParts(input: string): string[] {
+  if (typeof input !== 'string') return [];
+  const dropped: string[] = [];
+  for (const raw of input.split(/\s+/)) {
+    if (!raw) continue;
+    const letters = foldToken(raw);
+    if (letters && (SUFFIXES.has(letters) || TITLES.has(letters))) dropped.push(raw);
+  }
+  return dropped;
+}
+
+/**
+ * Remaps Y overrides when switching name normalisation options (such as
+ * toggling `keepTitles`) so overrides on parts that stay in the name keep
+ * pointing to the same part and letter index.
+ */
+export function remapYOverrides(
+  input: string,
+  from: NormalizeNameOptions,
+  to: NormalizeNameOptions,
+  overrides: readonly YOverride[],
+): YOverride[] {
+  if (overrides.length === 0 || typeof input !== 'string') return [];
+  const fromKeep = from.keepTitles === true;
+  const toKeep = to.keepTitles === true;
+  if (fromKeep === toKeep) return [...overrides];
+
+  const fromTokenIndex: number[] = [];
+  const toPartByToken = new Map<number, number>();
+  let tokenIndex = 0;
+  let toPart = 0;
+  for (const raw of input.split(/\s+/)) {
+    if (!raw) continue;
+    const letters = foldToken(raw);
+    if (!letters) continue;
+    const isTitleOrSuffix = SUFFIXES.has(letters) || TITLES.has(letters);
+    if (fromKeep || !isTitleOrSuffix) fromTokenIndex.push(tokenIndex);
+    if (toKeep || !isTitleOrSuffix) {
+      toPartByToken.set(tokenIndex, toPart);
+      toPart += 1;
+    }
+    tokenIndex += 1;
+  }
+
+  const mapped: YOverride[] = [];
+  for (const override of overrides) {
+    const token = fromTokenIndex[override.part];
+    if (token === undefined) continue;
+    const nextPart = toPartByToken.get(token);
+    if (nextPart === undefined) continue;
+    mapped.push({ part: nextPart, index: override.index, as: override.as });
+  }
+  return mapped;
+}
+
+/**
  * Ordered A-Z name parts. Accents are folded (é -> E, ñ -> N, ß -> SS),
  * parts are split on whitespace only, punctuation inside a part is removed
  * without splitting (Dubois-Charpentier is one part), and generational
- * suffixes and titles (JR, SR, II, III, IV, Dr, Mr, ...) are dropped.
+ * suffixes and titles (JR, SR, II, III, IV, Dr, Mr, ...) are dropped unless
+ * `keepTitles` is true.
  * Letters that do not fold to A-Z are an error, never a silent drop.
  */
-export function normalizeName(input: string): string[] {
-  return normalizeNameParts(input).map((p) => p.letters);
+export function normalizeName(input: string, options?: NormalizeNameOptions): string[] {
+  return normalizeNameParts(input, options).map((p) => p.letters);
 }
 
 // ---------------------------------------------------------------------------
@@ -304,8 +372,8 @@ function partNumbers(part: RawPart, cells: LetterCell[]): NamePartNumbers {
  * Each part is reduced on its own with masters kept; the reduced parts are
  * added and the sum reduced again. A one-part name keeps the part's own chain.
  */
-export function nameNumbers(fullName: string, overrides: readonly YOverride[] = []): NameNumbers {
-  const parts = normalizeNameParts(fullName).map((part, i) =>
+export function nameNumbers(fullName: string, overrides: readonly YOverride[] = [], options?: NormalizeNameOptions): NameNumbers {
+  const parts = normalizeNameParts(fullName, options).map((part, i) =>
     partNumbers(part, classifyPart(part.letters, overrides.filter((o) => o.part === i))),
   );
   const only = parts.length === 1 ? parts[0] : undefined;
@@ -470,12 +538,14 @@ export interface NumerologyProfileInput {
   fullName?: string;
   today: string;
   yOverrides?: readonly YOverride[];
+  /** Keep tokens that match a title or suffix (e.g. "Sir", "Miss") as part of the birth name. */
+  keepTitles?: boolean;
 }
 
 export function numerologyProfile(input: NumerologyProfileInput): NumerologyProfile {
   const date = dateNumbers(input.birthDate);
   const fullName = typeof input.fullName === 'string' ? input.fullName.trim() : '';
-  const name = fullName ? nameNumbers(fullName, input.yOverrides ?? []) : null;
+  const name = fullName ? nameNumbers(fullName, input.yOverrides ?? [], { keepTitles: input.keepTitles }) : null;
   const maturity = name ? reduceKeepingMasters(date.lifePath.value + name.expression.value) : null;
   const cycles = personalCycles(input.birthDate, input.today);
 

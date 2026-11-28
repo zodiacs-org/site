@@ -9,6 +9,9 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect(refUrl('https://zodiacs.org/methodology/', 'chatgpt')).toBe('https://zodiacs.org/methodology/?ref=chatgpt');
     expect(refUrl('https://zodiacs.org/occasions/#o=wedding&d=2027-06-12', 'assistant')).toBe('https://zodiacs.org/occasions/?ref=assistant#o=wedding&d=2027-06-12');
     expect(refUrl('https://zodiacs.org/a/?x=1', 'chatgpt')).toBe('https://zodiacs.org/a/?x=1&ref=chatgpt');
+    expect(refUrl('https://staging.example.org/year-score/', 'chatgpt', 'https://staging.example.org')).toBe('https://staging.example.org/year-score/?ref=chatgpt');
+    expect(refUrl('https://staging.example.org.evil.test/year-score/', 'chatgpt', 'https://staging.example.org')).toBe('https://staging.example.org.evil.test/year-score/');
+    expect(refUrl('https://example.com/', 'chatgpt', 'https://staging.example.org')).toBe('https://example.com/');
     expect(refUrl('https://example.com/', 'chatgpt')).toBe('https://example.com/');
   });
 

@@ -28,8 +28,8 @@ const PAGES = {
     // Details typed into the form; none may reach the address, the card or the share link.
     secrets: ['Philippa', 'Quennell', 'PHILIPPA', '1979-08-17', '1979', '08-17'],
     async fill(page) {
-      await page.fill('#num-name', 'Philippa Quennell');
       await page.fill('#num-date', '1979-08-17');
+      await page.fill('#num-name', 'Philippa Quennell');
       await page.click('button.calc__submit');
       await page.waitForSelector('.num__lead');
     },

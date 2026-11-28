@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { NAKSHATRAS } from '@zodiacs/engine/vedic';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
-import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData, vedicSignsTool } from './vedic-signs';
+import { vedicSigns, vedicSignsData, vedicSignsTool, NAKSHATRA_LORE, RASHI_LINE } from './vedic-signs';
+import { MINOR_NOTE } from '../features/reading-guards';
 import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../../lib/vedic-signs/clock';
 import { birthDayEnds, forbiddenClaim } from './shared';
 import { localDaySpan } from '../../lib/time/local-day';
@@ -333,5 +334,38 @@ describe('get_vedic_signs casts each chart once', () => {
     charts.mockClear();
     await run({ birthDate: '1990-05-03', zone: 'Asia/Kolkata' });
     expect(charts).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('get_vedic_signs boundary uncertainty, independent Lahiri table, and under-18 softening', () => {
+  it('warns when a timed Moon sits right on a nakshatra boundary and names both adjacent nakshatras', async () => {
+    // 1990-01-19 01:03 UTC: sidereal Moon sits within 0.02° of 186°40' (the Chitra / Swati boundary).
+    const data = await run({ birthDate: '1990-01-19', time: '01:03', zone: 'UTC' });
+    const limitsText = data.limits.join(' ');
+    expect(limitsText).toContain('boundary');
+    expect(limitsText).toContain('Chitra');
+    expect(limitsText).toContain('Swati');
+  });
+
+  it('tracks the published Lahiri (Chitrapaksha) ayanamsa table across J1950, J2000, and J2025', async () => {
+    // Published Indian Astronomical Ephemeris values: J1950 23°09'32" (23.159°), J2000 23°51'25" (23.857°), J2025 24°12'23" (24.206°).
+    const j1950 = await run({ birthDate: '1950-01-01', time: '12:00', zone: 'UTC' });
+    const j2000 = await run({ birthDate: '2000-01-01', time: '12:00', zone: 'UTC' });
+    const j2025 = await vedicSigns({ birthDate: '2025-01-01', time: '12:00', zone: 'UTC' }, clock, 'https://zodiacs.org', true, new Date('2040-01-01T00:00:00Z'));
+    expect(Math.abs(j1950.ayanamsa.degrees - (23 + 9 / 60 + 32 / 3600))).toBeLessThan(0.02);
+    expect(Math.abs(j2000.ayanamsa.degrees - (23 + 51 / 60 + 25 / 3600))).toBeLessThan(0.02);
+    expect(Math.abs(j2025.data.ayanamsa.degrees - (24 + 12 / 60 + 23 / 3600))).toBeLessThan(0.02);
+  });
+
+  it('softens Rohini and Purva Phalguni wording and adds MINOR_NOTE for a birth date under 18', async () => {
+    // 2011-05-03 12:00 UTC is under 18 on 2026-11-09; check the MCP tool passes minor through.
+    const minorResult = await vedicSigns({ birthDate: '2011-05-03', time: '12:00', zone: 'UTC' }, clock, 'https://zodiacs.org', true, new Date('2026-11-09T09:00:00Z'));
+    expect(minorResult.data.limits).toContain(MINOR_NOTE);
+    // 2011-06-09 06:00 UTC: Moon in Purva Phalguni (133°20' to 146°40' sidereal).
+    const purva = await vedicSigns({ birthDate: '2011-06-09', time: '06:00', zone: 'UTC' }, clock, 'https://zodiacs.org', true, new Date('2026-11-09T09:00:00Z'));
+    expect(purva.data.moonNakshatra!.name).toBe('Purva Phalguni');
+    expect(purva.data.moonNakshatra!.line).not.toMatch(/pleasure loving|affection/iu);
+    expect(purva.data.summary).not.toMatch(/pleasure loving|affection/iu);
+    expect(purva.data.limits).toContain(MINOR_NOTE);
   });
 });

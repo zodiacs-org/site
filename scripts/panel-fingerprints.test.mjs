@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, it } from 'vitest';
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
+import { FEATURES_HTML } from '../integrations/generated/features.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
 import { READINGS_HTML } from '../integrations/generated/readings.mjs';
@@ -16,6 +17,7 @@ const entries = await panelFingerprintEntries({
   occasions: OCCASIONS_HTML,
   readings: READINGS_HTML,
   'readings-sky-events': READINGS_SKY_EVENTS_HTML,
+  features: FEATURES_HTML,
 });
 
 it('keeps each current panel URI tied to its HTML', () => {

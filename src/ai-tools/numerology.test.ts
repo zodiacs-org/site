@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_SWITCHED_TOOL, NUMEROLOGY_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES, UNDER_13_REFUSAL } from './contracts';
+import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_SWITCHED_TOOL, FEATURES_URI, NUMEROLOGY_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES, UNDER_13_REFUSAL } from './contracts';
 import { NUMEROLOGY_POINTER } from './features/explain';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
@@ -114,7 +114,12 @@ describe('the numerology switch on', () => {
     const tool = tools.at(-1)!;
     expect(tool).toMatchObject({ name: 'get_numerology', title: TOOL_TITLES.get_numerology, description: TOOL_DESCRIPTIONS.get_numerology,
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true, title: 'Numerology numbers' } });
-    expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
+    expect(tool._meta).toEqual({
+      securitySchemes: [{ type: 'noauth' }],
+      ui: { resourceUri: FEATURES_URI, visibility: ['model', 'app'] },
+      'openai/outputTemplate': FEATURES_URI,
+      'openai/ui': { entrypoints: [{ type: 'thread' }] },
+    });
     expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
     // Labelled as separate from astrology; work and wellbeing allowed as the tradition reads them, no money forecasts (ZOD-30), with the lines it may not cross.
@@ -125,9 +130,14 @@ describe('the numerology switch on', () => {
     expect(tool.description).not.toMatch(/reflection/u);
     expect(tool.description).toContain('not returned, stored or put in a link');
     expect(`${tool.title} ${tool.description} ${JSON.stringify(tool.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market/iu);
-    // initialize and resources/list are as main answers them.
+    // initialize is as main answers it; resources/list appends only the inline features panel.
     expect((await post(host, REQUESTS.initialize[0])).text).toBe(FIXTURE.coverage.initialize.text);
-    expect((await post(host, REQUESTS.resourcesList[0])).text).toBe(FIXTURE.coverage.resourcesList.text);
+    const resources = message((await post(host, REQUESTS.resourcesList[0])).text).result.resources as { uri: string }[];
+    const beforeResources = message(FIXTURE.coverage.resourcesList.text).result.resources as { uri: string }[];
+    expect(resources.map((entry) => entry.uri)).toEqual([...beforeResources.map((entry) => entry.uri), FEATURES_URI]);
+    const readPanel = message((await post(host, rpc('resources/read', { uri: FEATURES_URI }))).text);
+    expect(readPanel.result.contents[0].uri).toBe(FEATURES_URI);
+    expect(readPanel.result.contents[0].text).toContain('<!doctype html>');
     // get_capabilities says what it is and that it is not astrology.
     const capabilities = (await call(host, 'get_capabilities', {})).structuredContent.data;
     expect(capabilities.limitations).toContain('For a numerology reading, use get_numerology, not explain_astrology.');

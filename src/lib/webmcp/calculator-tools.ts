@@ -189,7 +189,7 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
       + 'has no houses or angles. ' + CALCULATED,
     inputSchema: object({
       birth: BIRTH,
-      year: { type: 'integer', minimum: 1800, maximum: 2199, description: 'The return\'s year; omit for the return in force now.' },
+      year: { type: 'integer', minimum: 1800, maximum: 2199, description: 'The return\'s year (must be after the birth year); omit for the return in force now.' },
       castPlace: { ...PLACE, description: 'Where to cast the return, if not the birthplace.' },
       houseSystem: HOUSE_SYSTEM,
     }, ['birth']),

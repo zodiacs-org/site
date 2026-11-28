@@ -6,7 +6,7 @@ import { houseOf } from '../../lib/engine/houses';
 import { SIGNS, formatLongitude, signForLongitude } from '../../lib/signs';
 import type { SolarReturnResultData } from './compute';
 import { SR_COPY } from './copy';
-import { solarReturnExportModel } from './export-model';
+import { guardSolarReturnCopy, solarReturnExportModel } from './export-model';
 import SolarReturnActions from './SolarReturnActions';
 import EvidenceDisclosure from '../EvidenceDisclosure';
 import { solarReturnThemes } from '../../lib/solar-return/themes';
@@ -37,7 +37,9 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
   const themes = useMemo(() => solarReturnThemes({
     bodies: chart.bodies, aspects: chart.aspects,
     asc: wheel.angles?.asc ?? null, cusps: wheel.houses?.cusps ?? null, timeKnown: !result.noTime,
-  }).filter((theme) => theme.kind !== 'rising' && theme.kind !== 'sun-house' && !(planetsOnly && theme.kind === 'aspect')), [chart, wheel, result.noTime, planetsOnly]);
+  })
+    .filter((theme) => theme.kind !== 'rising' && theme.kind !== 'sun-house' && !(planetsOnly && theme.kind === 'aspect'))
+    .map((theme) => ({ ...theme, line: guardSolarReturnCopy(theme.line, result.under18) })), [chart, wheel, result.noTime, result.under18, planetsOnly]);
   // The share link carries the Sun sign, the year and the rising and Jupiter signs only, never a birth detail.
   // Without a birth time, only when the birth day settles the Sun sign (result.sunSign); no sign is guessed.
   const sunSlug = result.noTime ? (typeof result.sunSign === 'number' ? SIGNS[result.sunSign].slug : null) : signForLongitude(sun.lon).slug;
@@ -70,6 +72,8 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
 
       {result.noTime && <p class="notice" data-noon-notice>{SR_COPY.noon}</p>}
       {result.noPlace && <p class="notice">{SR_COPY.noPlace}</p>}
+      {result.atPole && <p class="notice" data-pole-notice>{SR_COPY.atPole}</p>}
+      {result.clockLimit && <p class="notice" data-clock-notice>{result.clockLimit}</p>}
 
       <section class="calc__wheel shell">
         <div class="core calc__wheel-core">
@@ -89,7 +93,10 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
       {themesOn && themes.length > 0 && (
         <section class="sr-themes" aria-labelledby="solar-return-themes-title">
           {/* Without house cusps the themes read the planets by sign, the same for everyone with a birthday near this one. */}
-          {wheel.houses?.cusps ? <h2 id="solar-return-themes-title">The year’s main themes</h2> : <>
+          {wheel.houses?.cusps ? <h2 id="solar-return-themes-title">The year’s main themes</h2> : result.atPole ? <>
+            <h2 id="solar-return-themes-title">The year’s main themes</h2>
+            <p data-sr-themes-shared>Planet placements are cast for your exact solar return instant; the rising sign and houses are undefined at a geographic pole.</p>
+          </> : <>
             <h2 id="solar-return-themes-title">This birthday season's sky</h2>
             <p data-sr-themes-shared>Shared by everyone with a birthday near yours. A birth time and place make it yours.</p>
           </>}

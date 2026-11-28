@@ -18,6 +18,9 @@
  *   GATE_MCP=local with BASE_URL: check the pages on BASE_URL and run the MCP
  *                  half against the local published connector (for a preview
  *                  whose hostname /mcp does not accept).
+ *   GATE_CHECK_CANDIDATE=1 with BASE_URL: also require and exercise the
+ *                  candidate /mcp/de440 connector and features-v1.html panel
+ *                  on an external deployment (always on for the local fixture).
  *   GATE_SCREENSHOT_DIR, GATE_REPORT  where the carousel PNGs and the JSON
  *                  measurements go (defaults under the system temp directory).
  *
@@ -40,9 +43,10 @@ import '../scripts/lib/deltat-install.mjs';
 import { Body, Ecliptic, GeoVector } from 'astronomy-engine';
 import { chromium, type Browser } from 'playwright-core';
 import {
-  COVERAGE_TOOL_NAMES, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS,
+  COVERAGE_TOOL_NAMES, FEATURES_URI, GOOD_DAYS_TOOL_NAMES, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS,
   LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS,
-  OCCASION_TOOL_NAMES, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, STUDIO_URI, WIDGET_URI,
+  NUMEROLOGY_TOOL_NAMES, OCCASION_TOOL_NAMES, OCCASIONS_URI, PERSONAL_TOOL_NAMES, READINGS_SKY_EVENTS_URI,
+  READINGS_URI, SOLAR_RETURN_TOOL_NAMES, STUDIO_URI, WIDGET_URI, YEAR_SCORE_TOOL_NAMES,
 } from '../src/ai-tools/contracts';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { startGateServer, type GateServer } from './helpers/chatgpt-gate-server';
@@ -84,10 +88,10 @@ function edgeHeaders(): Record<string, string> {
   return BYPASS ? { 'x-vercel-protection-bypass': BYPASS } : {};
 }
 
-async function post(body: unknown, extra: Record<string, string> = {}): Promise<Reply> {
+async function postTo(path: string, body: unknown, extra: Record<string, string> = {}): Promise<Reply> {
   await paced();
   const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': PROTOCOL, ...extra };
-  const response = await fetch(`${mcpBase}/mcp`, { method: 'POST', headers: { ...headers, ...edgeHeaders() }, body: JSON.stringify(body), redirect: 'manual' });
+  const response = await fetch(`${mcpBase}${path}`, { method: 'POST', headers: { ...headers, ...edgeHeaders() }, body: JSON.stringify(body), redirect: 'manual' });
   const text = await response.text();
   let message: any = null;
   try {
@@ -98,6 +102,8 @@ async function post(body: unknown, extra: Record<string, string> = {}): Promise<
   } catch { message = null; }
   return { status: response.status, headers: response.headers, message, text };
 }
+
+const post = (body: unknown, extra: Record<string, string> = {}) => postTo('/mcp', body, extra);
 
 let serial = 0;
 const rpc = (method: string, params: unknown = {}) => post({ jsonrpc: '2.0', id: ++serial, method, params });
@@ -1173,6 +1179,87 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
           expect(drawn.text, `${tool} refusal`).toContain(message);
           expect(drawn.text, `${tool} refusal shows no answer`).not.toMatch(/Reading confidence|Rising|New Moon/);
         }
+      }
+    }, 180_000);
+
+    it('serves and renders features-v1.html on the candidate /mcp/de440 connector across desktop, dark, and phone viewports', async () => {
+      if (!local && process.env.GATE_CHECK_CANDIDATE !== '1') return;
+      const candidateHealth = await get(mcpBase, '/mcp/de440/health');
+      expect(candidateHealth.status, 'GET /mcp/de440/health status').toBe(200);
+      expect(JSON.parse(candidateHealth.text), 'GET /mcp/de440/health payload').toMatchObject({ ready: true });
+      expect(candidateHealth.text, 'GET /mcp/de440/health identifies DE440').toMatch(/de440/iu);
+
+      const candidateRpc = (method: string, params: unknown = {}) => postTo('/mcp/de440', { jsonrpc: '2.0', id: ++serial, method, params });
+      const listedTools = await candidateRpc('tools/list');
+      expect(listedTools.status).toBe(200);
+      const candidateTools = (listedTools.message.result?.tools ?? []) as { name: string; _meta?: any }[];
+      const featureToolNames: readonly string[] = [
+        ...YEAR_SCORE_TOOL_NAMES,
+        ...SOLAR_RETURN_TOOL_NAMES,
+        ...NUMEROLOGY_TOOL_NAMES,
+        ...GOOD_DAYS_TOOL_NAMES,
+        ...PERSONAL_TOOL_NAMES,
+      ];
+      const enabledFeatures = candidateTools.filter((tool) => featureToolNames.includes(tool.name));
+      if (local) {
+        for (const name of featureToolNames) {
+          expect(enabledFeatures.some((tool) => tool.name === name), `local candidate tool ${name}`).toBe(true);
+        }
+        expect(candidateTools.some((tool) => tool.name === 'draw_tarot'), 'draw_tarot stays off in local fixture').toBe(false);
+      }
+      const tarot = candidateTools.find((tool) => tool.name === 'draw_tarot');
+      if (tarot) {
+        expect(tarot._meta?.['openai/outputTemplate'], 'draw_tarot must not use features panel').not.toBe(FEATURES_URI);
+        expect(tarot._meta?.ui?.resourceUri, 'draw_tarot must not use features panel').not.toBe(FEATURES_URI);
+      }
+      for (const entry of enabledFeatures) {
+        expect(entry._meta?.['openai/outputTemplate'], `${entry.name} template`).toBe(FEATURES_URI);
+        expect(entry._meta?.ui?.resourceUri, `${entry.name} resourceUri`).toBe(FEATURES_URI);
+      }
+
+      const listedResources = await candidateRpc('resources/list');
+      expect(listedResources.status).toBe(200);
+      const candidateResources = (listedResources.message.result?.resources ?? []) as { uri: string; mimeType: string; _meta?: any }[];
+      const featuresRes = candidateResources.find((item) => item.uri === FEATURES_URI);
+      if (enabledFeatures.length === 0) {
+        expect(featuresRes, 'features-v1.html stays omitted when no feature tool is enabled').toBeUndefined();
+        return;
+      }
+      expect(featuresRes, 'features-v1.html listed on candidate connector').toBeDefined();
+      expect(featuresRes?.mimeType).toBe('text/html;profile=mcp-app');
+
+      const read = await candidateRpc('resources/read', { uri: FEATURES_URI });
+      expect(read.status).toBe(200);
+      const content = read.message.result.contents[0];
+      expect(content._meta?.['openai/ui']).toEqual({ availableDisplayModes: ['inline'], preferredDisplayMode: 'inline' });
+      expect(content._meta?.ui?.permissions).toEqual({ clipboardWrite: {} });
+      const featuresWidget: Widget = { uri: FEATURES_URI, html: content.text, csp: content._meta.ui.csp };
+
+      const enabledNames = new Set(enabledFeatures.map((tool) => tool.name));
+      const candidateCases: { tool: string; label: string; args: Record<string, unknown>; patterns: RegExp[]; secrets: RegExp }[] = [
+        { tool: 'get_numerology', label: 'candidate-numerology', args: { birthDate: '1979-08-17', name: 'Philippa Quennell' }, patterns: [/Numerology, separate from astrology/, /Life Path/], secrets: /1979|08-17|Philippa|Quennell/i },
+        { tool: 'get_vedic_signs', label: 'candidate-vedic', args: PERSON_A, patterns: [/Vedic signs/, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
+        { tool: 'get_year_score', label: 'candidate-year-score', args: PERSON_A, patterns: [/Year Ahead Score/, /out of 10/], secrets: BIRTH_DETAILS_IN_LINK },
+        { tool: 'get_solar_return', label: 'candidate-solar-return', args: PERSON_A, patterns: [/solar return/i, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
+        { tool: 'find_good_days', label: 'candidate-good-days', args: { goal: 'contract', from: '2027-01-15', to: '2027-02-15', zone: 'Europe/London' }, patterns: [/Find good days/i, /Reading confidence/], secrets: BIRTH_DETAILS_IN_LINK },
+      ];
+      const toRender = candidateCases.filter((item) => enabledNames.has(item.tool)).slice(0, 2);
+      expect(toRender.length, 'at least one enabled feature tool rendered').toBeGreaterThan(0);
+      let firstRendered: { result: any; patterns: RegExp[]; secrets: RegExp } | null = null;
+      for (const item of toRender) {
+        const result = answered(await candidateRpc('tools/call', { name: item.tool, arguments: item.args }), item.tool);
+        firstRendered ??= { result, patterns: item.patterns, secrets: item.secrets };
+        for (const mode of MODES) {
+          const drawn = await render(featuresWidget, mode, result);
+          expectClean(drawn, featuresWidget, mode, `${item.label}/${mode.name}`, item.secrets);
+          const seen = [drawn.text, ...drawn.labels].join('\n');
+          for (const pattern of item.patterns) expect(seen, `${item.label}/${mode.name} shows ${pattern}`).toMatch(pattern);
+        }
+      }
+      if (firstRendered) {
+        const openaiDrawn = await render(featuresWidget, MODES[1], firstRendered.result, { openai: true });
+        expectClean(openaiDrawn, featuresWidget, MODES[1], 'candidate-feature/window.openai', firstRendered.secrets);
+        for (const pattern of firstRendered.patterns) expect(openaiDrawn.text).toMatch(pattern);
       }
     }, 180_000);
 

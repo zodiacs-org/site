@@ -13,14 +13,23 @@ import type { VedicAyanamsa } from './wording';
 
 const sidereal = (moment: TropicalMoment, ayanamsa: VedicAyanamsa) =>
   siderealMoment(moment.utc, { sun: moment.sun, moon: moment.moon, asc: moment.asc }, ayanamsa);
+const norm360 = (deg: number) => ((deg % 360) + 360) % 360;
 
-export function vedicFromTropical(moments: TropicalMoments, ayanamsa: VedicAyanamsa): VedicReading {
+export function vedicFromTropical(moments: TropicalMoments, ayanamsa: VedicAyanamsa, minor = false): VedicReading {
+  const at = sidereal(moments.at, ayanamsa);
   return vedicReading({
     timeKnown: moments.timeKnown,
     placed: moments.placed,
     atGeographicPole: moments.atGeographicPole,
     ayanamsa,
-    at: sidereal(moments.at, ayanamsa),
+    minor,
+    at,
+    risingBracket: moments.risingBracket
+      ? {
+          samples: moments.risingBracket.samples.map((asc) => norm360(asc - at.ayanamsa)),
+          polarCircle: moments.risingBracket.polarCircle,
+        }
+      : null,
     ends: moments.ends ? moments.ends.map((end) => sidereal(end, ayanamsa)) : null,
   });
 }

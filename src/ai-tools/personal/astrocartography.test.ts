@@ -942,7 +942,7 @@ describe('get_astrocartography on the hosted server', () => {
     for (const path of ['/mcp', '/mcp/de440']) {
       const staged = await callOn(STAGING, path);
       expect(staged.structuredContent?.ok, path).toBe(true);
-      expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/astrocartography/`);
+      expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/astrocartography/?ref=assistant`);
       const links = pageLinks(staged);
       expect(links.some((url) => url.includes('/share/astrocartography/')), path).toBe(true);
       expect(links.every((url) => url.startsWith(`https://${STAGING}/`)), links.join(' ')).toBe(true);
@@ -990,7 +990,9 @@ describe('get_astrocartography on the hosted server', () => {
     try {
       const page = await open(shareUrl.host, query);
       expect(page.status).toBe(200);
-      expect(page.html).toContain(`<meta property="og:image" content="https://${STAGING}/api/og/astrocartography-image?${shareUrl.search.slice(1).replace(/&/gu, '&amp;')}"`);
+      const imageParams = new URLSearchParams(shareUrl.searchParams);
+      imageParams.delete('ref');
+      expect(page.html).toContain(`<meta property="og:image" content="https://${STAGING}/api/og/astrocartography-image?${imageParams.toString().replace(/&/gu, '&amp;')}"`);
       expect(page.html).not.toContain('https://zodiacs.org/');
       // A key the share does not use is cleared by a redirect to the same host.
       const cleared = await open(shareUrl.host, { ...query, utm_source: 'chat' });

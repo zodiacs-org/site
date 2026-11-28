@@ -37,9 +37,10 @@ export function vedicSignsQuery(share: VedicSignsShare, withRef = false): string
   return params.toString();
 }
 
-/** The share query for a reading, or null when the Sun's sign is not settled. Nothing but the sidereal Sun sign and the ayanamsa. */
-export function vedicSignsShareQuery(reading: { sun: { sign: string } | null; ayanamsa: { name: VedicAyanamsa } }): string | null {
-  const sun = reading.sun?.sign;
+/** The share query for a reading, or null when the Sun's sign is not settled (including right on a sign boundary). Nothing but the sidereal Sun sign and the ayanamsa. */
+export function vedicSignsShareQuery(reading: { sun: { sign: string; cusp?: boolean } | null; ayanamsa: { name: VedicAyanamsa } }): string | null {
+  if (!reading.sun || reading.sun.cusp) return null;
+  const sun = reading.sun.sign;
   if (!isSign(sun) || !isAyanamsa(reading.ayanamsa.name)) return null;
   return vedicSignsQuery({ sun, ayanamsa: reading.ayanamsa.name, ref: null });
 }

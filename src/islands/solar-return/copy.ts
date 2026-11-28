@@ -75,6 +75,7 @@ export function planetsOnlyReturnReading(
 export const SR_COPY = {
   noon: 'Computed from the sky at 12:00 UTC on your birth date. The return instant can shift by up to about a day with your exact birth time, and houses need it.',
   noPlace: 'This saved chart has no stored birthplace, so the return is shown planets-only.',
+  atPole: 'The rising sign and houses are undefined at a geographic pole, so this return is shown planets-only.',
   asc: {
     aries: "The year leads with ignition. You'll be handed situations that reward starting before you feel ready. Momentum is this year's currency.",
     taurus: 'The year leads with consolidation: building, furnishing, and letting good things get boring in the best way. Slow is the strategy, not the setback.',

@@ -3,6 +3,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { scoreBirth } from './browser';
 import { type NatalPoints, type SlowPlanet } from './core';
 import { birthDayEnds, birthDayEnvelope, birthDayRange, birthDaySamples, cachedLongitude, rangeWorthShowing, scoreRange, untimedScoreNote } from './range';
+import { SkippedBirthDateError, SkippedBirthTimeError, resolveYearScoreBirth } from './birth-clock';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
+import { REPEATED_BIRTH_TIME } from '../vedic-signs/clock';
 
 const START = new Date('2026-01-01T00:00:00Z');
 // Pluto held at 100 degrees all year; the other slow planets at 245, clear of every natal point below.
@@ -139,5 +142,16 @@ describe('the untimed note', () => {
     expect(island).toContain('{!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}');
     expect(island).toContain('birthDateRefusal(date)');
     expect(island).toContain('birthDateRefusalText(refusal)');
+    expect(island).toContain('resolveYearScoreBirth(');
+    const tool = readFileSync(new URL('../../ai-tools/features/year-score.ts', import.meta.url), 'utf8');
+    expect(tool).toContain('resolveYearScoreBirth(');
+  });
+
+  it('refuses skipped birth dates and DST-gap birth times and notes repeated DST-fold times for both Year Ahead paths', async () => {
+    const clock = { prepareLocalTime, resolveLocalToUtc };
+    await expect(resolveYearScoreBirth('1990-03-25', '02:30', 'Europe/Madrid', clock, -3.7)).rejects.toThrow(SkippedBirthTimeError);
+    await expect(resolveYearScoreBirth('2011-12-30', null, 'Pacific/Apia', clock, -171.76)).rejects.toThrow(SkippedBirthDateError);
+    const fold = await resolveYearScoreBirth('1990-09-30', '02:30', 'Europe/Madrid', clock, -3.7);
+    expect(fold.clockLimit).toBe(REPEATED_BIRTH_TIME);
   });
 });

@@ -100,12 +100,12 @@ export interface AiDependencies {
    */
   personal?: boolean;
   /**
-   * Whether a website page's own switch (its PUBLIC_*_ENABLED variable, exactly '1') is on. A personal tool whose
-   * definition names a pageFlag links to its page and share card only then; unset, it links to neither.
+   * Whether a website page or share route's own switch (its PUBLIC_*_ENABLED variable, exactly '1') is on.
+   * Feature and personal tools link to gated pages and share cards only then; unset, they omit disabled destinations.
    */
   sitePageOn?: (flag: string) => boolean;
   /**
-   * The site a personal tool's links, and the tarot page links, go to when it is not zodiacs.org: the staging host the
+   * The site a gated tool's links go to when it is not zodiacs.org: the staging host the
    * call came in on, whose page switches sitePageOn and tarotPage read. Unset, ORIGIN.
    */
   siteOrigin?: string;
@@ -418,19 +418,20 @@ function milestoneRow(milestone: Milestone) {
 }
 const occasionsLink = { title: 'Occasion cards on Zodiacs', url: `${ORIGIN}/occasions/` };
 
-/** A zodiacs.org page address with ?ref= added before any #, which the page reads and then removes. */
-export function refUrl(url: string, ref: 'chatgpt' | 'assistant'): string {
-  if (!url.startsWith(`${ORIGIN}/`)) return url;
+/** A Zodiacs page address (production or validated staging origin) with ?ref= added before any #, which the page reads and then removes. */
+export function refUrl(url: string, ref: 'chatgpt' | 'assistant', siteOrigin?: string): string {
+  const extra = siteOrigin ? siteOrigin.replace(/\/$/u, '') : undefined;
+  if (!url.startsWith(`${ORIGIN}/`) && !(extra && url.startsWith(`${extra}/`))) return url;
   const hash = url.indexOf('#');
   const [base, fragment] = hash === -1 ? [url, ''] : [url.slice(0, hash), url.slice(hash)];
   return `${base}${base.includes('?') ? '&' : '?'}ref=${ref}${fragment}`;
 }
 /** Every page address in a result (fields named url or ending in Url, except feeds) with its ?ref= added. */
-function withRef(value: unknown, ref: 'chatgpt' | 'assistant', key = ''): unknown {
+function withRef(value: unknown, ref: 'chatgpt' | 'assistant', siteOrigin?: string, key = ''): unknown {
   // A calendar feed is fetched by calendar apps, not visited, so its address stays as published.
-  if (typeof value === 'string') return /(^url|Url)$/u.test(key) && key !== 'feedUrl' ? refUrl(value, ref) : value;
-  if (Array.isArray(value)) return value.map((item) => withRef(item, ref));
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withRef(item, ref, name)]));
+  if (typeof value === 'string') return /(^url|Url)$/u.test(key) && key !== 'feedUrl' ? refUrl(value, ref, siteOrigin) : value;
+  if (Array.isArray(value)) return value.map((item) => withRef(item, ref, siteOrigin));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withRef(item, ref, siteOrigin, name)]));
   return value;
 }
 
@@ -937,7 +938,9 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
-        const result = await feature(() => getYearScore({ ...args, ...(zone ? { zone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN));
+        const yearPageOn = dependencies.sitePageOn?.('PUBLIC_YEAR_SCORE_ENABLED') === true;
+        const yearPeoplePageOn = yearPageOn && dependencies.sitePageOn?.('PUBLIC_YEAR_PEOPLE_ENABLED') === true;
+        const result = await feature(() => getYearScore({ ...args, ...(zone ? { zone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), dependencies.siteOrigin ?? ORIGIN, { pageOn: yearPageOn, peoplePageOn: yearPeoplePageOn }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
@@ -948,7 +951,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let currentZone = args.currentZone ? await zoneAt(args.currentZone, '/currentZone', resolveZone) : undefined;
         // A zone the assistant shares is where the person is now, so it sets the clock the return is told on.
         if (!currentZone && context.hostZone) { try { currentZone = await zoneAt(context.hostZone, '/currentZone', resolveZone); } catch { /* the answer says which clock it used */ } }
-        const result = await feature(() => getSolarReturn({ ...args, ...(zone ? { zone } : {}), ...(currentZone ? { currentZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN, !!dependencies.birthdayReportPage));
+        const sharePageOn = dependencies.sitePageOn?.('PUBLIC_SOLAR_RETURN_SHARE_ENABLED') === true;
+        const result = await feature(() => getSolarReturn({ ...args, ...(zone ? { zone } : {}), ...(currentZone ? { currentZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), dependencies.siteOrigin ?? ORIGIN, { birthdayReportPage: !!dependencies.birthdayReportPage, sharePage: sharePageOn }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
@@ -985,8 +989,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           try { birthZone = await zoneAt(args.birthZone, '/birthZone', resolveZone); }
           catch { return failure(tool, 'invalid-timezone', "birthZone: Zodiacs doesn't recognise that birthplace time zone. Use a name such as America/New_York."); }
         }
+        const now = dependencies.now?.() ?? new Date();
+        const goodDaysPageOn = dependencies.sitePageOn?.('PUBLIC_GOOD_DAYS_ENABLED') === true;
         const result = await feature(() => getGoodDays({ ...args, ...(birthZone ? { birthZone } : {}) }, localTime(), {
-          zone, zoneSource, today: dateInZone(dependencies.now?.() ?? new Date(), zone), origin: ORIGIN,
+          zone, zoneSource, today: dateInZone(now, zone), ageToday: earliestToday(now), origin: dependencies.siteOrigin ?? ORIGIN, pageOn: goodDaysPageOn,
           ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
         }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
@@ -1008,8 +1014,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       }
     }
     if (context.ref) {
-      data = withRef(data, context.ref);
-      links = links.map((link) => ({ ...link, url: refUrl(link.url, context.ref!) }));
+      data = withRef(data, context.ref, dependencies.siteOrigin);
+      links = links.map((link) => ({ ...link, url: refUrl(link.url, context.ref!, dependencies.siteOrigin) }));
     }
     const result = { schema: AI_RESULT_SCHEMA, ok: true as const, tool, data, links };
     // Validate our own output so callers never receive a success outside its contract, then clear dashes from the text.

@@ -3,6 +3,7 @@ import {
   NumerologyInputError,
   classifyPart,
   dateNumbers,
+  droppedNameParts,
   formatChain,
   letterValue,
   lifePathDistribution,
@@ -14,6 +15,7 @@ import {
   personalCycles,
   reduceFully,
   reduceKeepingMasters,
+  remapYOverrides,
   totalsReducingTo,
   type CoreNumber,
   type KarmicDebt,
@@ -644,6 +646,39 @@ describe('normalizeName', () => {
     expect(normalizeName('Henry Ford II')).toEqual(['HENRY', 'FORD']);
     expect(normalizeName('Thomas Vance IV')).toEqual(['THOMAS', 'VANCE']);
     expect(normalizeName('Mr Thomas Vance Sr')).toEqual(['THOMAS', 'VANCE']);
+  });
+
+  it('reports dropped titles/suffixes and allows keeping them when genuinely part of a birth name', () => {
+    expect(droppedNameParts('Sir John Smith Jr.')).toEqual(['Sir', 'Jr.']);
+    expect(droppedNameParts('Ada Lovelace')).toEqual([]);
+    expect(normalizeName('Sir John', { keepTitles: true })).toEqual(['SIR', 'JOHN']);
+    expect(normalizeName('Sir', { keepTitles: true })).toEqual(['SIR']);
+    const kept = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir John', today: '2026-11-28', keepTitles: true });
+    expect(kept.name!.parts.map((part) => part.letters)).toEqual(['SIR', 'JOHN']);
+  });
+
+  it('remaps Y overrides onto retained parts when toggling keepTitles', () => {
+    const initial = [
+      { part: 0, index: 3, as: 'consonant' as const },
+      { part: 1, index: 3, as: 'consonant' as const },
+    ];
+    const withTitles = remapYOverrides('Sir Tanya Kenyon Jr.', { keepTitles: false }, { keepTitles: true }, initial);
+    expect(withTitles).toEqual([
+      { part: 1, index: 3, as: 'consonant' },
+      { part: 2, index: 3, as: 'consonant' },
+    ]);
+    const backWithout = remapYOverrides('Sir Tanya Kenyon Jr.', { keepTitles: true }, { keepTitles: false }, withTitles);
+    expect(backWithout).toEqual(initial);
+    // Applying the remapped overrides keeps Tanya and Kenyon's Y overrides intact after including "Sir" and "Jr.".
+    const profile = numerologyProfile({
+      birthDate: '1990-05-03',
+      fullName: 'Sir Tanya Kenyon Jr.',
+      today: '2026-11-28',
+      keepTitles: true,
+      yOverrides: withTitles,
+    });
+    expect(profile.name?.parts[1]?.cells[3]?.vowel).toBe(false);
+    expect(profile.name?.parts[2]?.cells[3]?.vowel).toBe(false);
   });
 
   it('rejects letters that do not fold to A-Z', () => {

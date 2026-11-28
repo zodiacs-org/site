@@ -80,7 +80,9 @@ describe('known answers', { timeout: TIMEOUT }, () => {
       expect(week.avoid.map((day) => day.date)).toContain(date);
       expect(week.best.map((day) => day.date)).not.toContain(date);
     }
-    for (const date of ['2027-07-31', '2027-08-04']) expect(week.best.map((day) => day.date)).toContain(date);
+    for (const date of ['2027-07-30', '2027-08-04', '2027-08-05']) expect(week.best.map((day) => day.date)).toContain(date);
+    // 2027-07-31 scores below 48 overall (dark Moon + eclipse proximity) so it stays in avoid rather than best with an avoid verdict.
+    expect(week.avoid.find((day) => day.date === '2027-07-31')!.score).toBeLessThan(48);
   });
 
   it('lists an eclipse period only when its days touch the window', async () => {
@@ -109,9 +111,9 @@ describe('known answers', { timeout: TIMEOUT }, () => {
 
 describe('the electional rules', { timeout: TIMEOUT }, () => {
   it('never praises the new Moon as a supportive contact', async () => {
-    // A new Moon that is not an eclipse, from the committed sky data: 2027-03-08 at 09:29 UTC.
-    const newMoon = (sky.moons as { type: string; at: string }[]).find((moon) => moon.type === 'new' && moon.at.startsWith('2027-03'))!;
-    const date = newMoon.at.slice(0, 10);
+    // Non-eclipse new Moons from the committed sky data: 2027-05-06 (Mars direct -> in best) and 2027-03-08 (Mars retrograde -> in avoid).
+    const mayNewMoon = (sky.moons as { type: string; at: string }[]).find((moon) => moon.type === 'new' && moon.at.startsWith('2027-05'))!;
+    const date = mayNewMoon.at.slice(0, 10);
     expect((eclipseTable.eclipses as { peak: string }[]).some((row) => row.peak.startsWith(date))).toBe(false);
     // The engine has the Moon meeting the Sun that day, and the Sun is one of the launch's helpers.
     expect(moonAspects(new Date(`${date}T00:00:00Z`), new Date(`${date}T23:59:59Z`)).some((row) => row.body === 'Sun' && row.aspect === 'conjunction')).toBe(true);
@@ -121,6 +123,11 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     expect(result.best[0].factors.some((line) => /meets the Sun/u.test(line))).toBe(false);
     expect(JSON.stringify(result)).not.toMatch(/meets the Sun/u);
     expect(result.best[0].factors).toContain('The Moon is dark, around the new Moon: tradition waits for the first crescent before a beginning.');
+    // On 2027-03-08 (new Moon during Mars retrograde), the day stays in avoid and still never praises meeting the Sun.
+    const march = await findGoodDays({ goal: 'launch', from: '2027-03-08', to: '2027-03-08', zone: 'UTC', count: 1, today: TODAY }, clock);
+    expect(march.best).toEqual([]);
+    expect(march.avoid.map((day) => day.date)).toEqual(['2027-03-08']);
+    expect(JSON.stringify(march)).not.toMatch(/meets the Sun/u);
   });
 
   it('reads a day the Moon changes sign in the waking hours by both signs, weighed by their hours', async () => {
@@ -157,13 +164,13 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
   });
 
   it('reads both signs on a day the Moon changes sign in the waking hours, however near their edge', async () => {
-    // The Moon enters Libra at 08:01 UTC on 22 March 2027 and Sagittarius at 19:43 UTC on 26 March 2027.
+    // The Moon enters Libra at 08:01 UTC on 22 March 2027 and Virgo at 19:33 UTC on 29 March 2026.
     const ingresses = ingressTable.ingresses as { sign: string; at: string }[];
     expect(ingresses.find((row) => row.at.startsWith('2027-03-22'))!.at.slice(11, 16)).toBe('08:01');
-    expect(ingresses.find((row) => row.at.startsWith('2027-03-26'))!.at.slice(11, 16)).toBe('19:43');
+    expect(ingresses.find((row) => row.at.startsWith('2026-03-29'))!.at.slice(11, 16)).toBe('19:33');
     for (const [date, line] of [
       ['2027-03-22', 'The Moon is in Virgo until 08:01, then in Libra, a sign tradition reads as tender and celebratory.'],
-      ['2027-03-26', 'The Moon is in Scorpio until 19:43, then in Sagittarius: Scorpio is a sign tradition sets aside for a wedding.'],
+      ['2026-03-29', 'The Moon is in Leo until 19:33, then in Virgo: Leo is a sign tradition reads as tender and celebratory.'],
     ]) {
       const result = await findGoodDays({ goal: 'wedding', from: date, to: date, zone: 'UTC', count: 1, today: TODAY }, clock);
       expect(result.best[0].date).toBe(date);
@@ -279,6 +286,14 @@ describe('the answer', { timeout: TIMEOUT }, () => {
     for (const day of result.avoid) expect(result.best.map((best) => best.date)).not.toContain(day.date);
     expect(result.note).toBe(GOOD_DAYS_NOTE);
     expect(result.care).toBe(GOAL_RULES.move.care);
+  });
+
+  it('uses neutral guidance in care instead of positive window wording when no days qualify', async () => {
+    const result = await findGoodDays({ goal: 'contract', from: '2026-11-04', to: '2026-11-04', zone: 'UTC', today: TODAY }, clock);
+    expect(result.best).toHaveLength(0);
+    expect(result.avoid).toHaveLength(1);
+    expect(result.care).not.toContain('good windows to sign contracts');
+    expect(result.care).toContain('No day in this window');
   });
 
   it('gives the same answer twice', async () => {
@@ -399,5 +414,25 @@ describe('birth details', { timeout: TIMEOUT }, () => {
     // Other goals still read for a 13 to 17 year old.
     const job = await findGoodDays({ goal: 'job', from: '2027-01-01', to: '2027-01-31', zone: 'UTC', birth: { date: '2010-01-01' }, today: TODAY }, clock);
     expect(job.personal?.sun).toBe('capricorn');
+  });
+
+  it('refuses impossible non-leap birth dates and applies the non-rolling Feb 29 under-18 cutoff', async () => {
+    await expect(findGoodDays({ goal: 'launch', from: '2028-03-01', to: '2028-03-15', zone: 'UTC', birth: { date: '2015-02-29' }, today: '2028-02-29' }, clock)).rejects.toThrow(/real date/u);
+    await expect(findGoodDays({ goal: 'wedding', from: '2028-03-01', to: '2028-03-15', zone: 'UTC', birth: { date: '2010-03-01' }, today: '2028-02-29' }, clock)).rejects.toThrow(UNDER_18_PARTNERSHIP_SENTENCE);
+  });
+
+  it('keeps best and avoid strictly disjoint even during a heavy retrograde window, leaving low-scoring days in avoid', async () => {
+    const result = await findGoodDays({ goal: 'contract', from: '2026-10-24', to: '2026-11-13', zone: 'UTC', today: '2026-10-27' }, clock);
+    const bestDates = new Set(result.best.map((day) => day.date));
+    for (const day of result.avoid) expect(bestDates.has(day.date), day.date).toBe(false);
+    // Single-day low-scoring retrograde window (4 Nov 2026, score < 48): stays in avoid, best is empty.
+    const lowOnly = await findGoodDays({ goal: 'contract', from: '2026-11-04', to: '2026-11-04', zone: 'UTC', today: '2026-10-27' }, clock);
+    expect(lowOnly.best).toEqual([]);
+    expect(lowOnly.avoid.map((day) => day.date)).toEqual(['2026-11-04']);
+    // Score 47 (2027-01-03 launch, below goodDayVerdict's 48 cutoff): stays in avoid and never lands in best with an avoid verdict.
+    const borderLow = await findGoodDays({ goal: 'launch', from: '2027-01-03', to: '2027-01-03', zone: 'UTC', today: TODAY }, clock);
+    expect(borderLow.best).toEqual([]);
+    expect(borderLow.avoid.map((day) => day.date)).toEqual(['2027-01-03']);
+    expect(borderLow.avoid[0].score).toBeLessThan(48);
   });
 });

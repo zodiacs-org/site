@@ -13,6 +13,7 @@ import type { SolarReturnResultData } from './solar-return/compute';
 import type { SolarReturnResultProps } from './solar-return/SolarReturnResult';
 import type { WheelProps } from '../lib/wheel/Wheel';
 import { loadModule } from '../lib/module-load';
+import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 type ResultComponent = ComponentType<SolarReturnResultProps>;
@@ -122,6 +123,9 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
   }, [profileReady, profile]);
 
   const saved = profile.charts.find((chart) => chart.id === savedId) ?? null;
+  const activeBirthDate = source === 'saved' ? (saved?.birth.date ?? '') : date;
+  const parsedBirthYear = /^(\d{4})-/u.exec(activeBirthDate)?.[1];
+  const minCustomYear = parsedBirthYear ? Math.max(1801, Number(parsedBirthYear) + 1) : 1801;
   const manualReady = date !== '' && city !== null && (!timeKnown || time !== '');
   const ready = source === 'saved' ? saved !== null : manualReady;
   const effectiveTimeKnown = saved ? saved.birth.timeKnown && Boolean(saved.birth.time) : timeKnown;
@@ -143,7 +147,7 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
       savedSunLon: selected && !birthplace
         ? selected.summary.bodies.find((body) => body.body === 'Sun')?.lon ?? null
         : null,
-      savedUtc: selected && !birthplace ? selected.summary.utcISO : null,
+      savedUtc: selected ? selected.summary.utcISO : null,
       houseSystem: selected?.summary.houseSystem ?? profile.settings.houseSystem,
       castLocation: selected && !birthplace ? null : (differentPlace ? castCity : birthplace),
       year: yearMode === 'current' ? 'current' as const : Number(customYear),
@@ -188,6 +192,11 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
           setError(birthDateRefusalText(refusal));
           return;
         }
+        const convertedBirthYear = Number(input.birthDate.slice(0, 4));
+        if (input.year !== 'current' && (!Number.isInteger(input.year) || input.year <= convertedBirthYear)) {
+          setError(`Choose a return year after ${convertedBirthYear}.`);
+          return;
+        }
       }
       await prepareLocalTime(input.birthDate, input.birthplace?.tz ?? 'UTC');
       if (!isCurrent()) return;
@@ -199,7 +208,12 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
     } catch (cause) {
       if (!isCurrent()) return;
       console.error(cause);
-      setError(calculationError(cause, 'en', 'The solar return could not be computed. Check the details and try again.'));
+      setError(
+        cause instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME
+          : cause instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE
+            : cause instanceof Error && cause.name === 'ReturnYearNotAfterBirthError' ? cause.message
+              : calculationError(cause, 'en', 'The solar return could not be computed. Check the details and try again.'),
+      );
     } finally {
       if (isCurrent()) {
         inFlight.current = false;
@@ -256,7 +270,7 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
                 <option value="current">Current return</option>
                 <option value="custom">Choose a year</option>
               </select>
-              {yearMode === 'custom' && <input aria-label="Custom return year" class="field__input" type="number" min="1800" max="2199" required value={customYear} onInput={(event) => { invalidateResult(); setCustomYear((event.target as HTMLInputElement).value); }} />}
+              {yearMode === 'custom' && <input aria-label="Custom return year" class="field__input" type="number" min={String(minCustomYear)} max="2199" required value={customYear} onInput={(event) => { invalidateResult(); setCustomYear((event.target as HTMLInputElement).value); }} />}
             </div>
 
             {effectiveTimeKnown && !(saved && !saved.birth.place) && (

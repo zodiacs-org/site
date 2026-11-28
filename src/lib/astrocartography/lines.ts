@@ -48,8 +48,8 @@ export function mcLongitude(body: Pick<EquatorialBody, 'ra'>, gast: number): num
  */
 export function horizonLongitude(body: Pick<EquatorialBody, 'ra' | 'dec'>, gast: number, latitude: number, angle: 'ASC' | 'DSC'): number | null {
   const x = -Math.tan(latitude * DEG) * Math.tan(body.dec * DEG);
-  if (!Number.isFinite(x) || Math.abs(x) > 1) return null;
-  const h0 = Math.acos(x) / DEG;
+  if (!Number.isFinite(x) || Math.abs(x) > 1 + 1e-12) return null;
+  const h0 = Math.acos(Math.max(-1, Math.min(1, x))) / DEG;
   return wrapLongitude(body.ra + (angle === 'ASC' ? -h0 : h0) - gast);
 }
 
@@ -74,11 +74,15 @@ export function horizonLine(body: Pick<EquatorialBody, 'ra' | 'dec'>, gast: numb
     for (let lat = -maxLatitude; lat <= maxLatitude + 1e-9; lat += stepDegrees) points.push({ lat, lon });
     return points;
   }
-  for (let h = stepDegrees / 2; h < 180; h += stepDegrees) {
+  // Include the grazing endpoints (h = 0 and h = 180) where the rising and setting lines meet at |lat| = 90 - |dec|.
+  const pushAtHourAngle = (h: number) => {
     const lat = Math.atan(-Math.cos(h * DEG) / Math.tan(body.dec * DEG)) / DEG;
-    if (Math.abs(lat) > maxLatitude) continue;
+    if (Math.abs(lat) > maxLatitude) return;
     points.push({ lat, lon: wrapLongitude(body.ra + (angle === 'ASC' ? -h : h) - gast) });
-  }
+  };
+  pushAtHourAngle(0);
+  for (let h = stepDegrees / 2; h < 180; h += stepDegrees) pushAtHourAngle(h);
+  pushAtHourAngle(180);
   points.sort((a, b) => a.lat - b.lat);
   // The latitude is monotonic in the hour angle, so the line runs in order of latitude; fill the wide gaps.
   const filled: GeoPoint[] = [];

@@ -89,6 +89,7 @@ export async function solarReturnResult(
   return {
     returnYear: data.returnYear,
     timeKnown: !data.noTime,
+    ...(data.clockLimit ? { clockLimit: data.clockLimit } : {}),
     ...returnChart(data.chart),
     engine: ENGINE,
     page: pageUrl('/solar-return/'),

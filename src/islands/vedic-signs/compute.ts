@@ -15,6 +15,8 @@ import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import { roundPlace } from '../../lib/vedic-signs/place';
 import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
 import { untimedInstant } from '../../lib/vedic-signs/untimed';
+import { earliestToday } from '../../lib/birth-date-policy';
+import { isUnderAge } from '../../lib/reading-guards';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 export { prepareEveryZoneHistory } from '../../lib/time/every-zone-history';
@@ -65,7 +67,8 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   return import('../../lib/vedic-signs/tropical').then(({ tropicalMoments }) => {
     const moments = tropicalMoments({ birthUtc, timeKnown, latitude: rounded.lat, longitude: rounded.lon, dayEnds });
     const wire = (moment: TropicalMoment) => ({ ...moment, utc: moment.utc.toISOString() });
-    return inWorker({ ...moments, at: wire(moments.at), ends: moments.ends ? moments.ends.map(wire) : null, ayanamsa: input.ayanamsa });
+    const minor = isUnderAge(input.birthDate, earliestToday(new Date()), 18);
+    return inWorker({ ...moments, at: wire(moments.at), ends: moments.ends ? moments.ends.map(wire) : null, ayanamsa: input.ayanamsa, minor });
   }).then((reading) => withClockLimit(reading, onClock.limit));
 }
 

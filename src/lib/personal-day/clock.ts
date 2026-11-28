@@ -58,9 +58,11 @@ function shownTwice(at: Date, format: Intl.DateTimeFormat, own: number): boolean
   return false;
 }
 
-/** HH:MM on a zone's clock, with the offset after it when the clock showed that time twice: "01:03 (UTC-4)". */
-export function clockTime(at: Date, timeZone: string): string {
-  const time = new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
+/** HH:MM (or HH:MM:SS when seconds disambiguate colliding passes) on a zone's clock, with the offset when the clock showed that time twice. */
+export function clockTime(at: Date, timeZone: string, includeSeconds = false): string {
+  const time = new Intl.DateTimeFormat('en-GB', {
+    timeZone, hour: '2-digit', minute: '2-digit', ...(includeSeconds ? { second: '2-digit' } : {}), hourCycle: 'h23',
+  }).format(at);
   const offsets = new Intl.DateTimeFormat('en-GB', { timeZone, timeZoneName: 'longOffset' });
   const own = offsetSeconds(at, offsets);
   return shownTwice(at, offsets, own) ? `${time} (${offsetLabel(own)})` : time;

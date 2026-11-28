@@ -21,6 +21,8 @@ import { scanTransitContacts } from '../../lib/engine/transit-scan';
 import { SIGNS } from '../../lib/signs';
 import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { resolveYearScoreBirth } from '../../lib/year-score/birth-clock';
+import { earliestToday } from '../../lib/birth-date-policy';
 import { scoreYear, type LongitudeAt, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
 import { FIGURE_NOTE, YEAR_PEOPLE, figureDriverTitle, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
 import { figureTierSummary } from '../../lib/year-score/tier';
@@ -29,7 +31,7 @@ import { dayName, yearReading } from '../../lib/year-score/reading';
 import { figureYearScoreShareUrl, yearScoreShareUrl } from '../../lib/year-score/share';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
-import { MINOR_NOTE, isUnder18, softenMinor } from './reading-guards';
+import { MINOR_NOTE, isUnderAge, softenMinor } from './reading-guards';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -118,8 +120,9 @@ export const yearScoreData = z.object({
   sources: z.array(z.object({ title: z.string(), url: z.url() })),
   limits: z.array(z.string()),
   under18: z.boolean(),
-  pageUrl: z.url(),
-  /** The share page with its picture: the Sun sign and score only for a person's own score, the slug for a figure. Null when the Sun sign is not settled. */
+  /** The /year-score/ or /year/[slug]/ page; null while the website's page is switched off (PUBLIC_YEAR_SCORE_ENABLED / PUBLIC_YEAR_PEOPLE_ENABLED). */
+  pageUrl: z.url().nullable(),
+  /** The share page with its picture: the Sun sign and score only for a person's own score, the slug for a figure. Null when the Sun sign is not settled or the share route is switched off. */
   shareUrl: z.url().nullable(),
 });
 export type YearScoreData = z.infer<typeof yearScoreData>;
@@ -135,10 +138,7 @@ export function natalPointsAt(utc: Date, timeKnown: boolean): { natal: NatalPoin
 
 /** The instant of a birth: the given clock time, or noon, on the birthplace clock; noon UTC without a zone. */
 export async function birthInstant(birthDate: string, time: string | null, timeZone: string | null, clock: YearScoreClock, longitude?: number): Promise<Date> {
-  if (!timeZone) return new Date(`${birthDate}T12:00:00Z`);
-  await clock.prepareLocalTime(birthDate, timeZone);
-  const local = time ?? '12:00';
-  return (longitude !== undefined ? clock.resolveLocalToUtc(birthDate, local, timeZone, { longitude }) : clock.resolveLocalToUtc(birthDate, local, timeZone)).utc;
+  return (await resolveYearScoreBirth(birthDate, time, timeZone, clock, longitude)).utc;
 }
 
 /** The Sun's longitude from a chart cast at `at`, as the score reads it. */
@@ -194,9 +194,21 @@ function today(now: Date): string {
 
 const EMPTY = { subject: null, from: null, to: null, score: null, label: null, summary: null, best: null, hardest: null, drivers: [], months: [], scoreRange: null, alternates: [], confidence: null, confidenceLabel: null, sources: [] };
 
-export async function getYearScore(args: YearScoreInput, now: Date, clock: YearScoreClock, origin: string): Promise<{ data: YearScoreData; links: { title: string; url: string }[] }> {
-  const pageUrl = `${origin}/year-score/`;
-  const links = [{ title: 'Year Ahead Score on Zodiacs', url: pageUrl }, { title: 'Your transits on Zodiacs', url: `${origin}/transits/` }];
+export interface YearScorePages {
+  /** Whether /year-score/ and /share/year-score/ are switched on (PUBLIC_YEAR_SCORE_ENABLED=1). */
+  pageOn?: boolean;
+  /** Whether /year/[slug]/ and figure share cards are switched on (PUBLIC_YEAR_PEOPLE_ENABLED=1 with PUBLIC_YEAR_SCORE_ENABLED=1). */
+  peoplePageOn?: boolean;
+}
+
+export async function getYearScore(args: YearScoreInput, now: Date, clock: YearScoreClock, origin: string, pages: YearScorePages = { pageOn: true, peoplePageOn: true }): Promise<{ data: YearScoreData; links: { title: string; url: string }[] }> {
+  const pageOn = pages.pageOn !== false;
+  const peoplePageOn = pageOn && pages.peoplePageOn !== false;
+  const calcUrl = pageOn ? `${origin}/year-score/` : null;
+  const links = [
+    ...(calcUrl ? [{ title: 'Year Ahead Score on Zodiacs', url: calcUrl }] : []),
+    { title: 'Your transits on Zodiacs', url: `${origin}/transits/` },
+  ];
   // A figure is scored from the first day of the month by default, as its page and share card are, so all three agree.
   const start = args.from ?? (args.person !== undefined ? yearPageStart(now) : today(now));
   if (!parseCivilDate(start) || start < YEAR_SCORE_START_MIN || start > YEAR_SCORE_START_MAX) throw new RangeError(`from must be a real date from ${YEAR_SCORE_START_MIN} to ${YEAR_SCORE_START_MAX}.`);
@@ -212,7 +224,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
     figure = findYearPerson(args.person);
     if (!figure) {
       return {
-        data: { status: 'not-in-directory', ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person’s own consent, their birth date gives a score instead.`], under18: false, pageUrl, shareUrl: null },
+        data: { status: 'not-in-directory', ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person’s own consent, their birth date gives a score instead.`], under18: false, pageUrl: calcUrl, shareUrl: null },
         links,
       };
     }
@@ -229,10 +241,11 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   }
   if (start < birthDate) throw new RangeError('from is before the birth date; there is no chart to meet yet.');
   const timeKnown = time !== null;
-  const under18 = isUnder18(birthDate, today(now));
+  const under18 = isUnderAge(birthDate, earliestToday(now), 18);
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
+  const { utc, clockLimit } = await resolveYearScoreBirth(birthDate, time, timeZone, clock, longitude);
+  if (clockLimit) limits.push(clockLimit);
   if (under18) limits.push(MINOR_NOTE);
-  const utc = await birthInstant(birthDate, time, timeZone, clock, longitude);
   const { natal } = natalPointsAt(utc, timeKnown);
   const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock, longitude);
   const longitudeAt = cachedLongitude((body: SlowPlanet, date: Date) => bodyLongitude(body, date));
@@ -282,11 +295,13 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
       sources: figure?.sources ?? [],
       limits,
       under18,
-      // A directory figure's own page; a person's own details have no page, so the calculator.
-      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
+      // A directory figure's own page when PUBLIC_YEAR_PEOPLE_ENABLED is on; else the calculator when PUBLIC_YEAR_SCORE_ENABLED is on, else null.
+      pageUrl: figure && peoplePageOn ? `${origin}${yearPersonPath(figure.slug)}` : calcUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug, start.slice(0, 7)) : null) : yearScoreShareUrl(origin, { sun, score: year.score }),
+      shareUrl: figure
+        ? (peoplePageOn && start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug, start.slice(0, 7)) : null)
+        : (pageOn ? yearScoreShareUrl(origin, { sun, score: year.score }) : null),
     },
-    links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
+    links: figure && peoplePageOn ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
   };
 }

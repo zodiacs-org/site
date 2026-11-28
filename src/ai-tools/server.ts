@@ -1,8 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_VERSION, FEATURES_URI, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
 import { SAVED_PAGE_EXCEPTION, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { de440ServerInfo } from './de440-contract';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
+import { FEATURES_HTML } from '../../integrations/generated/features.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
 import { READINGS_HTML } from '../../integrations/generated/readings.mjs';
@@ -66,13 +67,35 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_chinese_zodiac: { uri: READINGS_URI, icon: 'readings' },
   get_personal_transits: { uri: READINGS_URI, icon: 'readings' },
   explain_astrology: { uri: READINGS_URI, icon: 'readings' },
+  get_year_score: { uri: FEATURES_URI, icon: 'readings' },
+  get_solar_return: { uri: FEATURES_URI, icon: 'readings' },
+  get_numerology: { uri: FEATURES_URI, icon: 'readings' },
+  find_good_days: { uri: FEATURES_URI, icon: 'readings' },
+  get_astrocartography: { uri: FEATURES_URI, icon: 'readings' },
+  get_vedic_signs: { uri: FEATURES_URI, icon: 'readings' },
+  get_retrograde_for_me: { uri: FEATURES_URI, icon: 'readings' },
+  get_personal_day: { uri: FEATURES_URI, icon: 'readings' },
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), or is drawn afresh each time (draw_tarot), so a repeat call can differ. */
 const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set<AiToolName>([MOMENT_CHART_TOOL, 'get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'find_good_days', 'draw_tarot', ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 
 const artResourceDomains = ['https://zodiacs.org'];
-const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
+const panelMeta = (
+  preferredDisplayMode: 'inline' | 'fullscreen',
+  art = false,
+  availableDisplayModes: ('inline' | 'fullscreen')[] = ['inline', 'fullscreen'],
+  clipboardWrite = false,
+) => ({
+  ui: {
+    csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] },
+    prefersBorder: true,
+    ...(clipboardWrite ? { permissions: { clipboardWrite: {} } } : {}),
+  },
+  'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] },
+  'openai/widgetPrefersBorder': true,
+  'openai/ui': { availableDisplayModes, preferredDisplayMode },
+});
 
 // ChatGPT sends openai/userLocation.timezone on a tool call. Claude's MCP connector does not: its tool-call
 // metadata has no documented user location, and an MCP Apps host time zone is delivered to the panel, not this
@@ -125,7 +148,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
   const skyEvents = skyEventsOn(dependencies);
   // With it on, the natal chart's panel is the one that lists the lunar nodes; the other readings keep theirs.
   const panelFor = (tool: AiToolName) => (skyEvents && tool === 'get_natal_chart' ? { uri: READINGS_SKY_EVENTS_URI, icon: 'readings' } : PANELS[tool]);
-  const readingsPanel = (uri: string) => uri === READINGS_URI || uri === READINGS_SKY_EVENTS_URI;
+  const readingsPanel = (uri: string) => uri === READINGS_URI || uri === READINGS_SKY_EVENTS_URI || uri === FEATURES_URI;
   if (tools.includes('get_horoscope')) for (const { uri, name } of versions('horoscopes', [HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
@@ -143,6 +166,11 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     title: 'Zodiacs occasions', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar.' },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: OCCASIONS_HTML, _meta: panelMeta('inline', true) }] }));
+  // Appended last so every existing resource keeps its exact position in resources/list.
+  if (tools.some((tool) => panelFor(tool)?.uri === FEATURES_URI)) server.registerResource('features', FEATURES_URI, {
+    title: 'Zodiacs feature cards', mimeType: 'text/html;profile=mcp-app',
+    _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true, permissions: { clipboardWrite: {} } }, 'openai/widgetDescription': 'A branded Zodiacs card for astrocartography, Vedic signs, Year Ahead Score, solar return, good days, retrogrades, Your Day, or numerology. Inline only.' },
+  }, () => ({ contents: [{ uri: FEATURES_URI, mimeType: 'text/html;profile=mcp-app', text: FEATURES_HTML, _meta: panelMeta('inline', true, ['inline'], true) }] }));
   for (const tool of tools) {
     const panel = panelFor(tool);
     server.registerTool(tool, {

@@ -79,10 +79,12 @@ export interface DayContact {
   /** Degrees from exact at midday, to two decimals. */
   orb: number;
   applying: boolean;
-  /** The exact moment, when it falls inside the local day. */
+  /** The exact moment (or first exact pass when a stationing planet crosses twice that day), when it falls inside the local day. */
   exactAt: string | null;
-  /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
+  /** The same moment(s) on the person's clock, HH:MM, with the UTC offset when repeated; multiple passes are joined with " and ". */
   exactLocal: string | null;
+  /** All exact passes when a stationing planet hits the same natal point more than once on this local day. */
+  exactPasses?: { at: string; local: string }[];
   score: number;
   title: string;
   line: string;
@@ -203,15 +205,17 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // the clock showed at its exact moment. From 1971 that is read from Intl, as the resolver reads it; up to 1970 the
   // resolver reads the engine's zone history, and the span alone decides.
   const onDate = (at: Date) => Number(date.slice(0, 4)) <= 1970 || dateOn(at, zone) === date;
-  const exact = new Map<string, Date>();
+  const exact = new Map<string, Date[]>();
   if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
     if (!onDate(at)) continue;
-    const held = exact.get(key);
-    // Two passes in one day cannot happen for these bodies, but keep the one nearest midday if it ever did.
-    if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key, at);
+    // A stationing planet can cross the same natal point twice in one local day; preserve every exact pass in order.
+    const passes = exact.get(key) ?? [];
+    passes.push(at);
+    exact.set(key, passes);
   }
+  for (const passes of exact.values()) passes.sort((a, b) => a.getTime() - b.getTime());
 
   // Age is taken on today, not on the day read, which can be up to a year ahead, and today is the calendar date at
   // UTC-12 (earliestToday), as the shared under-13 policy reads it: the clock the day is read on (the device's, the
@@ -232,18 +236,33 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
       const pointLon = natalLon.get(point)!;
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect);
-        const at = exact.get(`${mover}|${point}|${aspect}`) ?? null;
-        if (orb > maxOrb(mover, aspect) && !at) continue;
-        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
+        const passes = exact.get(`${mover}|${point}|${aspect}`) ?? [];
+        if (passes.length === 0 && orb > maxOrb(mover, aspect)) continue;
+        let middayApplying = orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
+        const exactPass = passes.length > 0;
+        if (passes.length > 1) {
+          const nearestDelta = Math.min(...passes.map((at) => Math.abs(at.getTime() - midday.getTime())));
+          const step = Math.max(1, Math.min(1_000, Math.floor(nearestDelta / 4)));
+          middayApplying = orbOf(bodyLongitude(mover, new Date(midday.getTime() + step)), pointLon, aspect) < orb;
+        }
+        const applying = passes.length === 1 ? passes[0].getTime() > midday.getTime() : middayApplying;
+        const minuteLabels = passes.map((at) => clockTime(at, zone));
+        const includeSeconds = passes.length > 1 && new Set(minuteLabels).size < minuteLabels.length;
+        const passEntries = passes.map((at, index) => ({
+          at: at.toISOString(),
+          local: includeSeconds ? clockTime(at, zone, true) : minuteLabels[index],
+        }));
+        const exactLocal = formatExactLocal(passEntries);
         // A date-only chart is never tight: its contacts carry the plain date-only confidence.
-        const tight = natal.timeKnown && (orb < 1 || at !== null);
+        const tight = natal.timeKnown && (orb < 1 || exactPass);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
         found.push({
-          group: at === null && slowMovers.has(mover) ? 'background' : 'today',
+          group: !exactPass && slowMovers.has(mover) ? 'background' : 'today',
           planet: mover, aspect, point, orb: round2(orb), applying,
-          exactAt: at ? at.toISOString() : null,
-          exactLocal: at ? clockTime(at, zone) : null,
-          score: dayScore(mover, point, aspect, orb, at !== null),
+          exactAt: passEntries[0]?.at ?? null,
+          exactLocal,
+          ...(passEntries.length > 1 ? { exactPasses: passEntries } : {}),
+          score: dayScore(mover, point, aspect, orb, exactPass),
           title: `${mover} ${aspect} your ${pointName(point)}`,
           line: `${guard(transitLine(mover, aspect, pointName(point)))} ${confidenceLabel}.`,
           confidence: readingConfidence(natal.detail, tight),
@@ -303,6 +322,20 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (found.length > contacts.length) limits.push(`Of ${found.length} contacts, ${contacts.length} are listed by score, with up to ${BACKGROUND_LIMIT} in the background.`);
 
   return { date, dayLabel: label, zone, middayUtc: midday.toISOString(), points, theme, moon: { sign: moonSign, entersSign, house, line: moonLine }, contacts, found: found.length, under18, limits };
+}
+
+function formatExactLocal(passEntries: readonly { at: string; local: string }[]): string | null {
+  if (passEntries.length === 0) return null;
+  if (passEntries.length === 1) return passEntries[0].local;
+  const groups: { local: string; count: number }[] = [];
+  for (const entry of passEntries) {
+    const prev = groups[groups.length - 1];
+    if (prev && prev.local === entry.local) prev.count += 1;
+    else groups.push({ local: entry.local, count: 1 });
+  }
+  return groups
+    .map(({ local, count }) => (count === 1 ? local : `${local} (${count === 2 ? 'twice' : `${count} passes`} within the same second)`))
+    .join(' and ');
 }
 
 /**

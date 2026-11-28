@@ -10,15 +10,18 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
+import { parseCivilDate } from '../lib/time/civil-date';
 import { NUMEROLOGY_SEPARATE } from '../lib/numerology/reading';
 import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
 import StoryCardShare from '../components/StoryCardShare';
 import { numerologyStoryContent, prepareNumerologyStoryCard } from '../lib/numerology/story-card';
 import {
+  droppedNameParts,
   formatChain,
   lifePathExample,
   numerologyProfile,
   NumerologyInputError,
+  remapYOverrides,
   type CoreNumber,
   type KarmicDebt,
   type NamePartNumbers,
@@ -58,6 +61,7 @@ interface Submitted {
   name: string;
   date: string;
   today: string;
+  keepTitles: boolean;
 }
 
 /** Local calendar date as YYYY-MM-DD; personal cycles run on the reader's own calendar. */
@@ -112,22 +116,35 @@ interface Computed {
   example: string;
   /** Set when a non-blank name normalised to nothing and the date numbers were computed alone. */
   nameEmptied: boolean;
+  /** Tokens matching the title/suffix list (e.g. "Sir", "Miss") so the reader can include them if part of their birth name. */
+  droppedParts: string[];
 }
 
 function compute(input: Submitted, overrides: readonly YOverride[]): Computed {
   const example = lifePathExample(input.date);
   try {
+    const profile = numerologyProfile({
+      birthDate: input.date,
+      fullName: input.name,
+      today: input.today,
+      yOverrides: overrides,
+      keepTitles: input.keepTitles,
+    });
+    const droppedParts = input.name.trim() ? droppedNameParts(input.name) : [];
     return {
-      profile: numerologyProfile({ birthDate: input.date, fullName: input.name, today: input.today, yOverrides: overrides }),
+      profile,
       example,
       nameEmptied: false,
+      droppedParts,
     };
   } catch (err) {
     if (err instanceof NumerologyInputError && err.code === 'empty-name') {
+      const droppedParts = input.name.trim() ? droppedNameParts(input.name) : [];
       return {
         profile: numerologyProfile({ birthDate: input.date, today: input.today }),
         example,
         nameEmptied: input.name.trim() !== '',
+        droppedParts,
       };
     }
     throw err;
@@ -252,27 +269,77 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
   const errorRef = useRef<HTMLParagraphElement>(null);
   const focusAfterComputeRef = useRef(false);
 
+  // The optional birth name stays locked until a valid 13+ birth date is entered, so a child's name is never collected.
+  const validDate = parseCivilDate(date) !== null;
+  const liveRefusal = validDate ? birthDateRefusal(date) : null;
+  const nameUnlocked = validDate && liveRefusal === null;
+
+  function onDateChange(nextDate: string) {
+    setDate(nextDate);
+    if (parseCivilDate(nextDate)) {
+      const refusal = birthDateRefusal(nextDate);
+      if (refusal) {
+        setName('');
+        setResult(null);
+        setSubmitted(null);
+        setOverrides([]);
+        setError(birthDateRefusalText(refusal));
+        return;
+      }
+      if (error && birthDateRefusalLang(error) === 'en') setError('');
+    }
+  }
+
   function submit(e: Event) {
     e.preventDefault();
     if (!date) return;
     focusAfterComputeRef.current = true;
     setError('');
     setAttempt((n) => n + 1);
-    // Refused before anything is worked out or kept: the typed name and date stay in the form.
+    if (!parseCivilDate(date)) {
+      setResult(null);
+      setSubmitted(null);
+      setOverrides([]);
+      setError(INVALID_DATE_MESSAGE);
+      return;
+    }
+    // Refused before anything is worked out or kept: clear any name immediately so nothing from a child is held.
     const refusal = birthDateRefusal(date);
     if (refusal) {
+      setName('');
       setResult(null);
       setSubmitted(null);
       setOverrides([]);
       setError(birthDateRefusalText(refusal));
       return;
     }
-    // Y overrides index into one specific name; a different name starts clean.
-    const nextOverrides = submitted && submitted.name === name ? overrides : [];
-    const input: Submitted = { name, date, today: localIsoDate(new Date()) };
+    // Y overrides and keepTitles index into one specific name; a different name starts clean.
+    const sameName = submitted !== null && submitted.name === name;
+    const nextOverrides = sameName ? overrides : [];
+    const nextKeepTitles = sameName ? submitted.keepTitles : false;
+    const input: Submitted = { name, date, today: localIsoDate(new Date()), keepTitles: nextKeepTitles };
     try {
       setResult(compute(input, nextOverrides));
       setSubmitted(input);
+      setOverrides(nextOverrides);
+    } catch (err) {
+      setError(errorMessage(err));
+    }
+  }
+
+  function toggleKeepTitles() {
+    if (!submitted) return;
+    const nextInput: Submitted = { ...submitted, keepTitles: !submitted.keepTitles };
+    try {
+      const nextOverrides = remapYOverrides(
+        submitted.name,
+        { keepTitles: submitted.keepTitles },
+        { keepTitles: nextInput.keepTitles },
+        overrides,
+      );
+      setError('');
+      setResult(compute(nextInput, nextOverrides));
+      setSubmitted(nextInput);
       setOverrides(nextOverrides);
     } catch (err) {
       setError(errorMessage(err));
@@ -331,26 +398,29 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
         <div class="core calc__core">
           <div class="calc__fields">
             <div class="field">
+              <label class="field__label" for="num-date">Birth date</label>
+              <input
+                id="num-date" class="field__input" type="date" required
+                min="1800-01-01" max="2199-12-31" value={date} aria-describedby="num-date-help"
+                onInput={(e) => onDateChange((e.target as HTMLInputElement).value)}
+              />
+              <p class="field__help" id="num-date-help">Month, day, and year. No time or place needed.</p>
+            </div>
+            <div class="field">
               <label class="field__label" for="num-name">
                 Full name at birth <span class="field__optional">optional</span>
               </label>
               <input
                 id="num-name" class="field__input" type="text" autocomplete="name"
-                value={name} aria-describedby="num-name-help"
+                disabled={!nameUnlocked}
+                value={nameUnlocked ? name : ''} aria-describedby="num-name-help"
                 onInput={(e) => setName((e.target as HTMLInputElement).value)}
               />
               <p class="field__help" id="num-name-help">
-                As written on your birth certificate, with middle names. Leave blank for the date numbers only.
+                {nameUnlocked
+                  ? 'As written on your birth certificate, with middle names. Leave blank for the date numbers only.'
+                  : 'Enter a birth date (13 or older) first to add your optional birth name.'}
               </p>
-            </div>
-            <div class="field">
-              <label class="field__label" for="num-date">Birth date</label>
-              <input
-                id="num-date" class="field__input" type="date" required
-                min="1800-01-01" max="2199-12-31" value={date} aria-describedby="num-date-help"
-                onInput={(e) => setDate((e.target as HTMLInputElement).value)}
-              />
-              <p class="field__help" id="num-date-help">Month, day, and year. No time or place needed.</p>
             </div>
           </div>
 
@@ -368,7 +438,20 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>Your numbers</h2>
           <p class="field__help">{NUMEROLOGY_SEPARATE}</p>
 
-          {result?.nameEmptied && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
+          {result?.nameEmptied && result.droppedParts.length === 0 && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
+
+          {result && result.droppedParts.length > 0 && (
+            <div class="notice" role="status">
+              <p>
+                {submitted?.keepTitles
+                  ? `Including ${listJoin(result.droppedParts.map((part) => `"${part}"`))} as part of your birth name.`
+                  : `Ignored ${listJoin(result.droppedParts.map((part) => `"${part}"`))} as a title or suffix. If it is part of your birth name, include it.`}
+              </p>
+              <button type="button" class="btn btn--ghost" onClick={toggleKeepTitles}>
+                {submitted?.keepTitles ? 'Ignore titles and suffixes' : 'Include in birth name'}
+              </button>
+            </div>
+          )}
 
           <div class="num__lead shell tinted" style={`--sign:${hueFor(lifePath.value)}`}>
             <div class="core tinted num__lead-core">

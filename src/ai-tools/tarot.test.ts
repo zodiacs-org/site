@@ -277,11 +277,11 @@ describe('the tarot page links on the staging host', () => {
     const port = await serveStaging('1');
     const drawn = await callAt(port, STAGING, 'draw_tarot', { spread: 'three-card' });
     expect(drawn.structuredContent.ok).toBe(true);
-    expect(drawn.structuredContent.links.map((link: { url: string }) => link.url)).toEqual([`https://${STAGING}/tarot/`]);
+    expect(drawn.structuredContent.links.map((link: { url: string }) => link.url)).toEqual([`https://${STAGING}/tarot/?ref=assistant`]);
     expect(JSON.stringify(drawn)).not.toContain('https://zodiacs.org/tarot/');
     const pointer = await callAt(port, STAGING, 'explain_astrology', { topic: 'tarot' });
     expect(pointer.structuredContent.data.message).toBe(TAROT_POINTER);
-    expect(pointer.structuredContent.links.map((link: { url: string }) => link.url)).toEqual([`https://${STAGING}/tarot/`]);
+    expect(pointer.structuredContent.links.map((link: { url: string }) => link.url)).toEqual([`https://${STAGING}/tarot/?ref=assistant`]);
     expect(JSON.stringify(pointer)).not.toContain('https://zodiacs.org/tarot/');
     // The same deployment, called on zodiacs.org, links zodiacs.org.
     const live = await callAt(port, 'zodiacs.org', 'draw_tarot', { spread: 'one-card' });

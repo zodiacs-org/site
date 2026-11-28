@@ -17,6 +17,7 @@
 import { computeChart } from '../engine/full.js';
 import { scanTransitContacts, type NatalPoint, type TransitBody, type TransitContact } from '../engine/transit-scan';
 import { SIGNS } from '../signs';
+import { parseCivilDate, parseCivilTime } from '../time/civil-date';
 import type { Factor, GoodDaysClock } from './find';
 
 export interface BirthDetails {
@@ -72,8 +73,8 @@ async function instant(date: string, time: string, zone: string | undefined, clo
 }
 
 export async function preparePersonal(birth: BirthDetails, clock: GoodDaysClock): Promise<PersonalChart> {
-  if (!/^\d{4}-\d{2}-\d{2}$/u.test(birth.date) || Number.isNaN(Date.parse(`${birth.date}T00:00:00Z`))) throw new RangeError('birthDate must be a real date, such as 1994-05-14.');
-  if (birth.time !== undefined && !/^(?:[01]\d|2[0-3]):[0-5]\d$/u.test(birth.time)) throw new RangeError('birthTime must be HH:MM, such as 09:15.');
+  if (!parseCivilDate(birth.date)) throw new RangeError('birthDate must be a real date, such as 1994-05-14.');
+  if (birth.time !== undefined && !parseCivilTime(birth.time)) throw new RangeError('birthTime must be HH:MM, such as 09:15.');
   if (birth.time !== undefined && !birth.zone) throw new RangeError('A birth time needs the birthplace time zone.');
   const timeKnown = birth.time !== undefined;
   const utc = await instant(birth.date, birth.time ?? '12:00', birth.zone, clock);

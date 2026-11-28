@@ -118,7 +118,7 @@ describe('the good days switch on', () => {
 
   it('answers with ranked days, days to avoid, a confidence label and the care line, inside its advertised schema', async () => {
     const counted: string[] = [];
-    const host = await serve(ON, counted);
+    const host = await serve({ ...ON, PUBLIC_GOOD_DAYS_ENABLED: '1' }, counted);
     const result = await call(host, 'find_good_days', { goal: 'contract', from: '2027-01-15', to: '2027-03-31', zone: 'Europe/London', count: 4 }, { 'User-Agent': 'Claude-User/1.0' });
     expect(result.isError).toBe(false);
     const content = result.structuredContent;
@@ -140,6 +140,16 @@ describe('the good days switch on', () => {
     expect(JSON.stringify(content)).not.toMatch(/[–—]/u);
     // The anonymous counter gets the tool name and the assistant family, nothing from the call.
     expect(counted).toEqual(['find_good_days|claude']);
+  });
+
+  it('omits the /good-days/ link when PUBLIC_GOOD_DAYS_ENABLED is off', async () => {
+    const host = await serve(ON);
+    const result = await call(host, 'find_good_days', { goal: 'contract', from: '2027-01-15', to: '2027-02-15', zone: 'Europe/London', count: 2 });
+    expect(result.isError).toBe(false);
+    expect(result.structuredContent.data.pageUrl).toBeNull();
+    const urls = (result.structuredContent.links as { url: string }[]).map((l) => l.url);
+    expect(urls.some((url) => url.includes('/good-days/'))).toBe(false);
+    expect(urls[0]).toBe('https://zodiacs.org/void-of-course-moon/?ref=assistant');
   });
 
   it('gives no medical timing: a medical goal gets its own sentence, not the list of goals', async () => {
@@ -197,6 +207,14 @@ describe('privacy', () => {
       expect(result.isError).toBe(true);
       expect(result.structuredContent.error.message).toBe(UNDER_18_PARTNERSHIP_SENTENCE);
     }
+    // Uses the shared UTC-12 age cutoff (2026-11-08 at 2026-11-09T09:00Z), even when the display zone is already on 2026-11-09.
+    const kiritimatiRefused = await call(host, 'find_good_days', { goal: 'relationship', from: '2027-01-01', to: '2027-01-31', zone: 'Pacific/Kiritimati', birthDate: '2008-11-09' });
+    expect(kiritimatiRefused.isError).toBe(true);
+    expect(kiritimatiRefused.structuredContent.error.message).toBe(UNDER_18_PARTNERSHIP_SENTENCE);
+    // Display-zone date still sets the default search window when from is omitted (2026-11-09T09:00Z is 2026-11-09T23:00+14 in Pacific/Kiritimati).
+    const kiritimatiWindow = await call(host, 'find_good_days', { goal: 'travel', zone: 'Pacific/Kiritimati', count: 1 });
+    expect(kiritimatiWindow.isError).toBe(false);
+    expect(kiritimatiWindow.structuredContent.data.from).toBe('2026-11-09');
   });
 
   it('takes no names or places, and names the field it refuses without repeating a value', async () => {

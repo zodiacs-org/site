@@ -12,6 +12,8 @@ const PANELS = [
   ['readings', 'src/ai-tools/contracts.ts', 'READINGS_URI'],
   // The readings panel offered while ZODIACS_SKY_EVENTS_ENABLED=1, whose birth chart lists the lunar nodes and Chiron.
   ['readings-sky-events', 'src/ai-tools/contracts.ts', 'READINGS_SKY_EVENTS_URI'],
+  // The branded inline cards for the seven feature funnels (eight tools, excluding tarot).
+  ['features', 'src/ai-tools/contracts.ts', 'FEATURES_URI'],
 ];
 
 async function currentUri(path, symbol) {

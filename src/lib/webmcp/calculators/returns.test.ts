@@ -6,6 +6,8 @@ import * as returnsModule from '../../engine/returns';
 import type { ReturnSeason, SaturnReturnResult } from '../../engine/returns';
 import type { Chart } from '../../engine/types';
 import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../../vedic-signs/clock';
+import { runCalculatorTool } from '../calculator-runtime';
 import { position } from './format';
 import { BIRTHS, city, LONDON, SYDNEY } from '../../../../tests/webmcp/calculator-fixtures';
 import type { Birth, Place } from './input';
@@ -67,6 +69,7 @@ describe('SolarReturnCalculator (/solar-return/)', () => {
       __import: async (specifier: string) => (specifier === './solar-return/compute' ? solarCompute : {}),
       setResult: (value: { data: solarCompute.SolarReturnResultData } | null) => { state.data = value?.data ?? null; },
       setError: (value: string) => { state.error = value; }, calculationError: fallback, console: { error() {} },
+      SkippedBirthTimeError, SkippedBirthDateError, SKIPPED_BIRTH_TIME, SKIPPED_BIRTH_DATE,
     }, { preventDefault() {} });
     return state;
   }
@@ -80,8 +83,16 @@ describe('SolarReturnCalculator (/solar-return/)', () => {
 
   it.each(cases)('%s', async (_label, birth, year, cast, houseSystem) => {
     const shown = await page(birth, year, cast, houseSystem);
+    let result;
+    try {
+      result = await solarReturnResult(birth, year, cast, houseSystem, new Date());
+    } catch (error) {
+      // The page refuses a birth time or date the birthplace clock skipped, with the same error.
+      expect(shown.data).toBeNull();
+      expect(shown.error).toBe((error as Error).message);
+      return;
+    }
     expect(shown.error).toBe('');
-    const result = await solarReturnResult(birth, year, cast, houseSystem, new Date());
     const chart: Chart = shown.data!.chart;
     expect(result.returnYear).toBe(shown.data!.returnYear);
     expect(result.instant).toBe(chart.input.utc.toISOString());
@@ -90,6 +101,51 @@ describe('SolarReturnCalculator (/solar-return/)', () => {
     expect(result.angles?.ascendant ?? null).toEqual(chart.angles ? position(chart.angles.asc) : null);
     expect(result.houseSystem).toBe(chart.houses?.system ?? null);
     expect(result.timeKnown).toBe(!shown.data!.noTime);
+  });
+
+  it('refuses a birth time a clock change skipped with CLOCK_CHANGE, even for boundary years', async () => {
+    const gap = BIRTHS.find(([label]) => label === 'a clock-change gap')![1];
+    await expect(solarReturnResult(gap, 2030, null, 'whole', new Date())).rejects.toThrow(SkippedBirthTimeError);
+    expect((await page(gap, 2030, null, 'whole')).error).toBe(SKIPPED_BIRTH_TIME);
+    for (const year of [2030, 2199]) {
+      const envelope = await runCalculatorTool('zodiacs.solar_return', { birth: gap, year });
+      expect(envelope.ok).toBe(false);
+      if (!envelope.ok) expect(envelope.error.code).toBe('CLOCK_CHANGE');
+    }
+  });
+
+  it('refuses a solar return year on or before the birth year with RETURN_YEAR_BEFORE_BIRTH', async () => {
+    const birth = { date: '1990-05-03', time: '08:30', place: LONDON };
+    for (const year of [1990, 1989, 1800]) {
+      const envelope = await runCalculatorTool('zodiacs.solar_return', { birth, year });
+      expect(envelope.ok).toBe(false);
+      if (!envelope.ok) {
+        expect(envelope.error.code).toBe('RETURN_YEAR_BEFORE_BIRTH');
+        expect(envelope.error.message).toMatch(/after the birth year/i);
+      }
+    }
+  });
+
+  it('refuses a whole skipped birth date with SKIPPED_BIRTH_DATE instead of blaming a birth time', async () => {
+    const skippedDate = { date: '2011-12-30', place: { latitude: -13.83, longitude: -171.76, timeZone: 'Pacific/Apia' } };
+    const envelope = await runCalculatorTool('zodiacs.solar_return', { birth: skippedDate, year: 2026 });
+    expect(envelope.ok).toBe(false);
+    if (!envelope.ok) {
+      expect(envelope.error.code).toBe('SKIPPED_BIRTH_DATE');
+      expect(envelope.error.message).toContain('birth date');
+      expect(envelope.error.message).not.toContain('birth time');
+    }
+  });
+
+  it('forwards the repeated-birth-time clockLimit notice on DST fold births', async () => {
+    const foldBirth = { date: '1990-09-30', time: '02:10', place: { latitude: 40.42, longitude: -3.7, timeZone: 'Europe/Madrid' } };
+    const result = await solarReturnResult(foldBirth, 2030, null, 'whole', new Date('2026-10-15T12:00:00Z'));
+    expect(result.clockLimit).toBe(REPEATED_BIRTH_TIME);
+    const envelope = await runCalculatorTool('zodiacs.solar_return', { birth: foldBirth, year: 2030 });
+    expect(envelope.ok).toBe(true);
+    if (envelope.ok) expect((envelope.data as { clockLimit?: string }).clockLimit).toBe(REPEATED_BIRTH_TIME);
+    const ordinary = await solarReturnResult({ date: '1990-05-03', time: '08:30', place: LONDON }, 2030, null, 'whole', new Date('2026-10-15T12:00:00Z'));
+    expect(ordinary.clockLimit).toBeUndefined();
   });
 });
 

@@ -74,10 +74,12 @@ export const personalDayData = z.object({
     /** Degrees from exact at midday, to two decimals. */
     orb: z.number().min(0),
     applying: z.boolean(),
-    /** The exact moment, when it falls inside the local day. */
+    /** The exact moment (or first exact pass when a stationing planet crosses twice that day), when it falls inside the local day. */
     exactAt: z.string().nullable(),
-    /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
+    /** The same moment(s) on the person's clock, HH:MM, with the UTC offset after it when repeated; multiple passes are joined with " and ". */
     exactLocal: z.string().nullable(),
+    /** Present when a stationing planet hits the same natal point more than once on this local day. */
+    exactPasses: z.array(z.object({ at: z.string(), local: z.string() })).optional(),
     score: z.number().min(0),
     title: z.string(),
     line: z.string(),

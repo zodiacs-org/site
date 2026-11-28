@@ -15,12 +15,14 @@
  * through is listed. Pure: no network, storage or logging.
  */
 import { z } from 'zod';
+import { earliestToday } from '../../lib/birth-date-policy';
 import { SIGNS } from '../../lib/signs';
 import { computeVedicSigns } from '../../lib/vedic-signs/compute';
 import { vedicSignsShareUrl } from '../../lib/vedic-signs/share';
 import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
 import { untimedInstant } from '../../lib/vedic-signs/untimed';
 import { RASHIS, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
+import { isUnderAge } from '../features/reading-guards';
 import { birthDayEnds, birthFields, definePersonalTool, refineBirth, resolveBirth, withCheckedZone, type BirthArgs } from './shared';
 
 export { NAKSHATRA_LORE, RASHIS, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
@@ -42,6 +44,8 @@ const sign = z.object({
   tropicalSign: z.string().nullable(),
   /** The Western signs an untimed birth day passed through, when it changed sign that day; otherwise empty. */
   tropicalCandidates: z.array(z.string()),
+  /** True when a timed placement sits close enough to a sign boundary that birth-time precision or ayanamsa convention can flip it. */
+  cusp: z.boolean().optional(),
   line: z.string(),
 });
 const nakshatra = z.object({
@@ -54,6 +58,8 @@ const nakshatra = z.object({
   lord: z.string(),
   deity: z.string(),
   symbol: z.string(),
+  /** True when a timed Moon sits close enough to a nakshatra boundary that birth-time precision or ayanamsa convention can flip it. */
+  cusp: z.boolean().optional(),
   line: z.string(),
 });
 /** No birth detail is repeated back: the assistant already has what the person gave it. */
@@ -86,7 +92,7 @@ export const vedicSignsData = z.object({
 export type VedicSignsData = z.infer<typeof vedicSignsData>;
 
 /** The sidereal signs and Moon nakshatra for one birth. Throws RangeError for details it cannot use. */
-export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | undefined }, clock: Parameters<typeof resolveBirth>[1], origin: string, pageOn = false): Promise<{ data: VedicSignsData; links: { title: string; url: string }[] }> {
+export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | undefined }, clock: Parameters<typeof resolveBirth>[1], origin: string, pageOn = false, now: Date = new Date()): Promise<{ data: VedicSignsData; links: { title: string; url: string }[] }> {
   const ayanamsa = args.ayanamsa ?? 'lahiri';
   // The instant only: computeVedicSigns casts the one chart at it (and at the day's ends untimed).
   const birth = await resolveBirth(args, clock);
@@ -99,8 +105,9 @@ export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | 
   // else the middle of the date,
   // as the page reads it (src/lib/vedic-signs/untimed.ts).
   const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds, birth.flags) : birth.birthUtc;
+  const minor = isUnderAge(args.birthDate, earliestToday(now), 18);
   const reading = withClockLimit(computeVedicSigns({
-    birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa, dayEnds,
+    birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa, dayEnds, minor,
   }), onClock.limit);
   return {
     // The page and its share card are linked only while the website's page is on: with it off they would be a 404.
@@ -121,8 +128,8 @@ export const vedicSignsTool = definePersonalTool({
   description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada when a birth time is given, its ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, no degree and no pada, and the Moon's sign and nakshatra come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
   input: vedicSignsInput,
   data: vedicSignsData,
-  clockDependent: false,
+  clockDependent: true,
   pageFlag: 'PUBLIC_VEDIC_SIGNS_ENABLED',
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 },
-  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin, context.pageOn === true),
+  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin, context.pageOn === true, context.now),
 });

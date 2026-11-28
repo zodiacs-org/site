@@ -8,6 +8,8 @@ import * as engine from '../engine/full';
 import { LUNAR_RETURN_MAX_UTC, LUNAR_RETURN_MIN_UTC } from '../engine/lunar-return';
 import { birthDateRefusal, birthDateRefusalText } from '../birth-date-policy';
 import { NumerologyInputError } from '../numerology';
+import { SkippedBirthDateError, SkippedBirthTimeError } from '../vedic-signs/clock';
+import { ReturnYearNotAfterBirthError } from '../../islands/solar-return/compute';
 import type { TwinPerson } from '../sharing/twins';
 import { babyZodiacResult } from './calculators/baby-zodiac';
 import {
@@ -26,9 +28,9 @@ import { chartPdfResult, OutsideReferenceSpanError, yearWrappedResult } from './
 import { lunarReturnResult, saturnReturnResult, solarReturnResult } from './calculators/returns';
 
 export type CalculatorErrorCode =
-  | 'INVALID_INPUT' | 'TIME_NEEDS_PLACE' | 'LOCAL_DATE_REFERENCE' | 'CLOCK_CHANGE' | 'UNSUPPORTED_NAME'
-  | 'DUPLICATE_PERSON' | 'OUTSIDE_REFERENCE_SPAN' | 'REFERENCE_BEFORE_BIRTH' | 'DIRECTORY_UNAVAILABLE' | 'CALCULATION_FAILED'
-  | 'UNKNOWN_TOOL' | 'BIRTH_DATE_UNDER_13' | 'FUTURE_BIRTH_DATE';
+  | 'INVALID_INPUT' | 'TIME_NEEDS_PLACE' | 'LOCAL_DATE_REFERENCE' | 'CLOCK_CHANGE' | 'SKIPPED_BIRTH_DATE' | 'UNSUPPORTED_NAME'
+  | 'DUPLICATE_PERSON' | 'OUTSIDE_REFERENCE_SPAN' | 'REFERENCE_BEFORE_BIRTH' | 'RETURN_YEAR_BEFORE_BIRTH'
+  | 'DIRECTORY_UNAVAILABLE' | 'CALCULATION_FAILED' | 'UNKNOWN_TOOL' | 'BIRTH_DATE_UNDER_13' | 'FUTURE_BIRTH_DATE';
 
 export type CalculatorEnvelope =
   | { ok: true; data: Record<string, unknown> }
@@ -41,12 +43,14 @@ const MESSAGES: Record<CalculatorErrorCode, string> = {
   TIME_NEEDS_PLACE: 'A time is read at a place: give the place too, or leave the time out.',
   LOCAL_DATE_REFERENCE: 'Local noon could not be placed within that local date; give a time.',
   CLOCK_CHANGE: 'That local birth time was skipped or repeated by a clock change; check the birth record.',
+  SKIPPED_BIRTH_DATE: 'That birth date never showed on the birthplace clock: the clocks jumped past the whole day. Check the birth date.',
   UNSUPPORTED_NAME: 'The name uses letters outside A to Z once accents are removed; the Pythagorean table covers only '
     + 'the Latin alphabet.',
   DUPLICATE_PERSON: 'The same person is entered twice.',
   OUTSIDE_REFERENCE_SPAN: 'This calculation covers 1800 through 2199 in Universal Time (a lunar return from 2 January '
     + '1800), and the birth, or the dates it needs, fall outside that span.',
   REFERENCE_BEFORE_BIRTH: 'A lunar return is found after an instant from the birth on; give an instant after the birth.',
+  RETURN_YEAR_BEFORE_BIRTH: 'A solar return is found for a year after the birth year; choose a later year.',
   DIRECTORY_UNAVAILABLE: 'The public directory could not be read from this site; try again.',
   CALCULATION_FAILED: 'The calculation could not be completed for that input.',
   UNKNOWN_TOOL: 'This page has no calculator tool of that name.',
@@ -169,6 +173,9 @@ async function solarReturn(input: unknown) {
       birth(natal), requested, need(readPlace(castPlace)), need(readHouseSystem(houseSystem)), new Date(),
     );
   } catch (error) {
+    if (error instanceof SkippedBirthTimeError) throw new Refusal('CLOCK_CHANGE');
+    if (error instanceof SkippedBirthDateError) throw new Refusal('SKIPPED_BIRTH_DATE');
+    if (error instanceof ReturnYearNotAfterBirthError) throw new Refusal('RETURN_YEAR_BEFORE_BIRTH');
     // A return is found every year; only the span's edge, which clips the scan in 1800 or 2199, can hide it.
     if (error instanceof RangeError && (requested === 1800 || requested === 2199)) throw new Refusal('OUTSIDE_REFERENCE_SPAN');
     throw error;

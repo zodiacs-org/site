@@ -362,4 +362,21 @@ describe('get_personal_day privacy and refusals', () => {
   it('refuses a time without a zone with the field rule', async () => {
     expect(await executeAiTool('get_personal_day', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false, error: { message: 'A birth time or a place needs its time zone.' } });
   });
+
+  it('ranks a double-pass contact once and preserves both exact times when a stationing planet hits the same natal point twice in one day', async () => {
+    // 1990-11-13 15:08 UTC: on 2026-10-24, Mercury stations retrograde right on the natal Sun, making two exact conjunction passes.
+    const data = await run({ birthDate: '1990-11-13', time: '15:08', zone: 'UTC', currentZone: 'UTC', date: '2026-10-24' }, new Date('2026-10-24T12:00:00Z'));
+    const hits = data.contacts.filter((c) => c.planet === 'Mercury' && c.aspect === 'conjunction' && c.point === 'Sun' && c.exactAt !== null);
+    expect(hits).toHaveLength(1);
+    expect(hits[0].exactPasses).toHaveLength(2);
+    expect(Date.parse(hits[0].exactPasses![0].at)).toBeLessThan(Date.parse(hits[0].exactPasses![1].at));
+    expect(hits[0].exactLocal).toBe(`${hits[0].exactPasses![0].local} and ${hits[0].exactPasses![1].local}`);
+
+    // In Asia/Bangkok the two passes straddle local midday: ranked once with both exact times preserved.
+    const bangkok = await run({ birthDate: '1990-11-13', time: '15:08', zone: 'UTC', currentZone: 'Asia/Bangkok', date: '2026-10-24' }, new Date('2026-10-24T12:00:00Z'));
+    const bkkHits = bangkok.contacts.filter((c) => c.planet === 'Mercury' && c.aspect === 'conjunction' && c.point === 'Sun' && c.exactAt !== null);
+    expect(bkkHits).toHaveLength(1);
+    expect(bkkHits[0].exactPasses).toHaveLength(2);
+    expect(bkkHits[0].exactLocal).toBe(`${bkkHits[0].exactPasses![0].local} and ${bkkHits[0].exactPasses![1].local}`);
+  });
 });

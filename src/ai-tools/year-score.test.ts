@@ -8,6 +8,8 @@ import { getYearScore } from './features/year-score';
 import { rangeWorthShowing } from '../lib/year-score/range';
 import { FIGURE_NOTE } from '../lib/year-score/people';
 import { figureTierSummary, scoreTier } from '../lib/year-score/tier';
+import { MINOR_NOTE } from './features/reading-guards';
+import { REPEATED_BIRTH_TIME } from '../lib/vedic-signs/clock';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
@@ -110,7 +112,7 @@ describe('the Year Ahead Score switch on', () => {
 
   it('scores a directory figure by name and counts the call, with the people switch on', async () => {
     const counted: string[] = [];
-    const host = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1' }, counted);
+    const host = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_YEAR_PEOPLE_ENABLED: '1' }, counted);
     const result = message((await post(host, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang', from: '2026-07-17' } }))).text).result;
     expect(result.isError).toBe(false);
     const data = result.structuredContent.data;
@@ -122,6 +124,26 @@ describe('the Year Ahead Score switch on', () => {
     expect(data.sources[0].url).toMatch(/^https:\/\//u);
     expect(data.pageUrl).toBe('https://zodiacs.org/year/jensen-huang/?ref=assistant');
     expect(counted).toEqual(['get_year_score']);
+  });
+
+  it('omits disabled year-score and figure links when their public switches are off', async () => {
+    const offHost = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1' });
+    const selfOff = message((await post(offHost, rpc('tools/call', { name: 'get_year_score', arguments: { birthDate: '1990-05-03' } }))).text).result.structuredContent;
+    expect(selfOff.data.pageUrl).toBeNull();
+    expect(selfOff.data.shareUrl).toBeNull();
+    expect((selfOff.links as { url: string }[]).map((l) => l.url)).toEqual(['https://zodiacs.org/transits/?ref=assistant']);
+
+    const figOff = message((await post(offHost, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang' } }))).text).result.structuredContent;
+    expect(figOff.data.pageUrl).toBeNull();
+    expect(figOff.data.shareUrl).toBeNull();
+    expect((figOff.links as { url: string }[]).some((l) => l.url.includes('/year'))).toBe(false);
+
+    // Calculator on, people pages off: figure falls back to /year-score/ and omits disabled figure shareUrl.
+    const calcOnlyHost = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1' });
+    const figCalcOnly = message((await post(calcOnlyHost, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang' } }))).text).result.structuredContent;
+    expect(figCalcOnly.data.pageUrl).toBe('https://zodiacs.org/year-score/?ref=assistant');
+    expect(figCalcOnly.data.shareUrl).toBeNull();
+    expect((figCalcOnly.links as { url: string }[]).some((l) => l.url.includes('/year/jensen-huang'))).toBe(false);
   });
 
   it('refuses a child’s birth date before working anything out', async () => {
@@ -206,6 +228,21 @@ describe('getYearScore', () => {
 
   it('refuses a start before the birth date', async () => {
     await expect(getYearScore({ birthDate: '2005-05-03', from: '2004-01-01' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+  });
+
+  it('refuses skipped birth dates and DST gap times, and notes repeated DST fold times', async () => {
+    await expect(getYearScore({ birthDate: '2011-12-30', zone: 'Pacific/Apia' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+    await expect(getYearScore({ birthDate: '2011-12-30', time: '12:00', zone: 'Pacific/Apia' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+    await expect(getYearScore({ birthDate: '1990-03-25', time: '02:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+    const fold = await getYearScore({ birthDate: '1990-09-30', time: '02:10', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(fold.data.limits).toContain(REPEATED_BIRTH_TIME);
+  });
+
+  it('keeps a 17-year-old born on 1 March under 18 on 29 February of a leap year', async () => {
+    const leapDay = new Date('2028-02-29T12:00:00Z');
+    const { data } = await getYearScore({ birthDate: '2010-03-01', from: '2028-02-29' }, leapDay, clock, 'https://zodiacs.org');
+    expect(data.under18).toBe(true);
+    expect(data.limits).toContain(MINOR_NOTE);
   });
 });
 

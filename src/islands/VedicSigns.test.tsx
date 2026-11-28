@@ -50,6 +50,20 @@ describe('the /vedic-signs/ result (ZOD-18)', () => {
     expect(at).toEqual([...at].sort((a, b) => a - b));
     expect(markup).toContain('The Moon changed nakshatra that day: Revati, Ashwini or Bharani. A birth time settles it.');
   });
+
+  it('marks cusp placements provisional right where each sign or nakshatra is named, and omits definite pada on a boundary nakshatra', () => {
+    const nakCusp = computeVedicSigns({ birthUtc: new Date('1990-01-19T01:03:00Z'), timeKnown: true, latitude: 28.61, longitude: 77.21, ayanamsa: 'lahiri' });
+    expect(nakCusp.moonNakshatra?.cusp).toBe(true);
+    expect(nakCusp.summary).toContain('Provisional, on the Chitra or Swati boundary');
+    expect(nakCusp.summary).not.toContain('Your Moon was in Chitra');
+    const nakMarkup = render(h(VedicPlacements, { result: nakCusp }));
+    expect(nakMarkup).toContain('nakshatra 14 of 27 (provisional, on boundary)');
+    expect(nakMarkup).not.toContain('<dt>Pada</dt>');
+
+    const polarFlip = computeVedicSigns({ birthUtc: new Date('1990-05-03T02:29:00Z'), timeKnown: true, latitude: 67, longitude: 0, ayanamsa: 'lahiri' });
+    const polarMarkup = render(h(VedicPlacements, { result: polarFlip }));
+    expect(polarMarkup).toContain('(provisional, time-sensitive)');
+  });
 });
 
 describe('the /vedic-signs/ form', () => {

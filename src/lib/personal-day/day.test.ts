@@ -491,6 +491,110 @@ describe('applying, separating and exact times on the /your-day/ page and get_pe
     expect((await exactLocal('2026-11-01T06:03:30Z')).local).toBe('01:03 (UTC-5)');
     expect((await exactLocal('2026-11-01T17:03:30Z')).local).toBe('12:03');
   });
+
+  it('include seconds when a stationing planet crosses the same natal point twice inside one minute', async () => {
+    await prepareLocalTime('1990-11-13', 'UTC');
+    const base = castDayNatal({ birthDate: '1990-11-13', time: '15:08', zone: 'UTC' }, site);
+    // Find Mercury's retrograde station peak on 2026-10-24 in the active ephemeris, then step 5 seconds off peak so both passes land inside one minute.
+    let lo = Date.parse('2026-10-24T06:00:00Z');
+    let hi = Date.parse('2026-10-24T08:00:00Z');
+    for (let step = 0; step < 56; step += 1) {
+      const m1 = lo + (hi - lo) / 3;
+      const m2 = hi - (hi - lo) / 3;
+      if (bodyLongitude('Mercury', new Date(m1)) < bodyLongitude('Mercury', new Date(m2))) lo = m1;
+      else hi = m2;
+    }
+    const peakMs = (lo + hi) / 2;
+    const target = bodyLongitude('Mercury', new Date(peakMs + 5_000));
+    const natal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: target } : row)) };
+    const day = await readPersonalDay(natal, { birthDate: '1990-11-13', date: '2026-10-24', zone: 'UTC', now: new Date('2026-10-24T12:00:00Z') }, site);
+    const contact = day.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(contact?.exactPasses?.length).toBe(2);
+    const [first, second] = contact!.exactPasses!;
+    expect(first.local).toMatch(/^\d{2}:\d{2}:\d{2}$/u);
+    expect(second.local).toMatch(/^\d{2}:\d{2}:\d{2}$/u);
+    expect(first.local.slice(0, 5)).toBe(second.local.slice(0, 5));
+    expect(first.local).not.toBe(second.local);
+    expect(contact?.exactLocal).toBe(`${first.local} and ${second.local}`);
+
+    // If two passes near a station land inside the exact same second, preserve both instants and avoid repeating the same timestamp.
+    const sameSecondTarget = bodyLongitude('Mercury', new Date(peakMs + 350));
+    const sameSecondNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: sameSecondTarget } : row)) };
+    const sameSecondDay = await readPersonalDay(sameSecondNatal, { birthDate: '1990-11-13', date: '2026-10-24', zone: 'UTC', now: new Date('2026-10-24T12:00:00Z') }, site);
+    const sameSecondContact = sameSecondDay.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(sameSecondContact?.exactPasses?.length).toBe(2);
+    const [passA, passB] = sameSecondContact!.exactPasses!;
+    expect(passA.at).not.toBe(passB.at);
+    expect(passA.local).toMatch(/^\d{2}:\d{2}:\d{2}$/u);
+    expect(passB.local).toBe(passA.local);
+    expect(sameSecondContact?.exactLocal).toBe(`${passA.local} (twice within the same second)`);
+
+    // When local noon falls between two close station passes (within a minute), applying follows the local slope at noon instead of stepping across both passes.
+    const wideTarget = bodyLongitude('Mercury', new Date(peakMs + 20_000));
+    const wideNatal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Sun' ? { ...row, lon: wideTarget } : row)) };
+    const clockWithMidday = (middayMs: number): DayClock => {
+      const dayStartMs = middayMs - 12 * HOUR_MS;
+      const offsetMinutes = (Date.parse('2026-10-24T00:00:00Z') - dayStartMs) / 60_000;
+      return {
+        prepareLocalTime: async () => {},
+        resolveLocalToUtc: (dayDate) => ({
+          utc: new Date(Date.parse(`${dayDate}T00:00:00Z`) - offsetMinutes * 60_000),
+          offsetMinutes,
+          flags: [],
+        }),
+      };
+    };
+    const afterStation = await readPersonalDay(wideNatal, { birthDate: '1990-11-13', date: '2026-10-24', zone: 'UTC', now: new Date('2026-10-24T12:00:00Z') }, clockWithMidday(peakMs + 5_000));
+    const applyingContact = afterStation.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(applyingContact?.exactPasses?.length).toBe(2);
+    expect(applyingContact?.applying).toBe(true);
+
+    const beforeStation = await readPersonalDay(wideNatal, { birthDate: '1990-11-13', date: '2026-10-24', zone: 'UTC', now: new Date('2026-10-24T12:00:00Z') }, clockWithMidday(peakMs - 5_000));
+    const separatingContact = beforeStation.contacts.find((entry) => entry.planet === 'Mercury' && entry.aspect === 'conjunction' && entry.point === 'Sun');
+    expect(separatingContact?.exactPasses?.length).toBe(2);
+    expect(separatingContact?.applying).toBe(false);
+  });
+
+  it('still computes Your Day when an unrelated historical zone shard fails, and fails without retrying when the needed shard fails', async () => {
+    const requested: string[] = [];
+    const preload = async (date: string, zone: string) => {
+      requested.push(`${date}:${zone}`);
+      if (zone === 'Asia/Taipei') throw new Error('simulated shard outage');
+      await prepareLocalTime(date, zone);
+    };
+    const modern = await computeYourDay({
+      birthDate: '1990-05-03', time: '08:30', birthZone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7,
+      date: '2026-11-09', zone: 'Europe/Madrid', today: '2026-11-09', now: NOW,
+    }, preload);
+    expect(modern.date).toBe('2026-11-09');
+    expect(requested).toHaveLength(17);
+    expect(requested.some((entry) => entry.startsWith('1990-05-03:'))).toBe(false);
+    expect(requested.some((entry) => entry.includes('Europe/Madrid'))).toBe(false);
+
+    // Pre-1970 birth in a fixed-offset zone (UTC) still succeeds even when every historical shard fails (including Europe/Rome).
+    requested.length = 0;
+    const allShardsDown = async (date: string, zone: string) => {
+      requested.push(`${date}:${zone}`);
+      if (date === '1900-01-01') throw new Error('simulated shard outage');
+      await prepareLocalTime(date, zone);
+    };
+    const historicalUtc = await computeYourDay({
+      birthDate: '1965-05-03', time: '08:30', birthZone: 'UTC', latitude: 51.5, longitude: 0,
+      date: '2026-11-09', zone: 'UTC', today: '2026-11-09', now: NOW,
+    }, allShardsDown);
+    expect(historicalUtc.date).toBe('2026-11-09');
+    expect(requested).toHaveLength(17);
+    expect(requested.some((entry) => entry.startsWith('1965-05-03:'))).toBe(false);
+
+    // Pre-1970 birth whose own shard (Asia/Taipei, bucket 0) failed rejects with that error without retrying.
+    requested.length = 0;
+    await expect(computeYourDay({
+      birthDate: '1965-05-03', time: '08:30', birthZone: 'Asia/Taipei', latitude: 25.03, longitude: 121.56,
+      date: '2026-11-09', zone: 'UTC', today: '2026-11-09', now: NOW,
+    }, preload)).rejects.toThrow('simulated shard outage');
+    expect(requested).toHaveLength(17);
+    expect(requested.some((entry) => entry.startsWith('1965-05-03:'))).toBe(false);
+  });
 });
 
 describe('the your-day share link', () => {

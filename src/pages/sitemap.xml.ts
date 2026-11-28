@@ -858,6 +858,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The Mercury retrograde page's plate of the year's loops (src/components/sky/MercuryYearPlate.astro), on the day
   // of the daily edition it was built with, last so it wins.
   ['/mercury-retrograde/', '2026-11-26'] as const,
+  // Numerology calculator birth-name field gating (under-13 gate before entering an optional name) on /numerology/
+  // and the Life Path pages, on the day of the daily edition it was built with, last so this date wins.
+  ['/numerology/', '2026-11-28'] as const,
+  ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-28'] as const),
 ]);
 
 function getLastmod(loc: string): string {
