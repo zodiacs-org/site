@@ -465,6 +465,31 @@ export function buildUpcoming(
 
 // ---- year files ------------------------------------------------------------------
 
+/** The per-year families, as their directory names under /api/v1/. */
+export const YEAR_FAMILIES = Object.freeze(['retrogrades', 'stations', 'ingresses', 'moon-phases', 'eclipses', 'aspects'] as const);
+export type YearFamily = typeof YEAR_FAMILIES[number];
+
+const camel = (name: string) => name.replace(/-([a-z])/gu, (_, letter: string) => letter.toUpperCase());
+
+/**
+ * The related files for one yearly payload: the index, the same family's
+ * previous and next year, and the other families' files for the same year.
+ * A link is present only when the API writes that file, so every link
+ * resolves; `coverage` is the list of years each family is written for.
+ */
+export function yearLinks(family: YearFamily, year: number, coverage: Readonly<Record<YearFamily, readonly number[]>>): Payload {
+  const fileUrl = (name: string, value: number) => `${API_BASE}/${name}/${value}.json`;
+  const own = coverage[family];
+  return {
+    index: `${API_BASE}/index.json`,
+    ...(own.includes(year - 1) ? { previousYear: fileUrl(family, year - 1) } : {}),
+    ...(own.includes(year + 1) ? { nextYear: fileUrl(family, year + 1) } : {}),
+    sameYear: Object.fromEntries(YEAR_FAMILIES
+      .filter((name) => name !== family && coverage[name].includes(year))
+      .map((name) => [camel(name), fileUrl(name, year)])),
+  };
+}
+
 function yearEnvelope(name: string, year: number, generatedAt: string, note: string): Payload {
   return {
     ...envelope(name, generatedAt),
@@ -719,7 +744,8 @@ export function buildIndex(
     ...schemaNames.map((name) => ({
       path: `/api/v1/schema/${name}.v1.json`,
       description: `JSON Schema (draft 2020-12) for zodiacs.sky-api.${name}.v1 payloads`,
-      contentType: 'application/schema+json',
+      // What the host actually sends for a .json file; scripts/sky-api-headers.test.mjs holds the two together.
+      contentType: 'application/json',
     })),
   ];
   return {
@@ -735,5 +761,11 @@ export function buildIndex(
     endpoints,
     documents,
     about: CONVENTIONS,
+    links: {
+      guide: `${API_BASE}/llms.txt`,
+      openapi: `${API_BASE}/openapi.json`,
+      today: `${API_BASE}/sky/today.json`,
+      upcoming: `${API_BASE}/sky/upcoming.json`,
+    },
   };
 }

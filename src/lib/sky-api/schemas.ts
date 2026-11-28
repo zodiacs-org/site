@@ -165,10 +165,11 @@ const yearProperties = {
   coverage: { type: 'object', required: ['from', 'to'], properties: { from: iso, to: iso } },
   summary: str,
   about,
+  links,
 };
 
 export const SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
-  index: payload('index', 'Sky data API index', 'Every endpoint and document the API publishes, with coverage.', {
+  index: payload('index', 'Sky data API index', 'Every static sky data file and document the API publishes, with coverage. The compute endpoints are described in the OpenAPI document under the compute tag.', {
     api: url,
     summary: str,
     versioning: str,
@@ -186,6 +187,7 @@ export const SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       items: { type: 'object', required: ['path', 'description', 'contentType'], properties: { path: str, description: str, contentType: str } },
     },
     about,
+    links,
   }, ['api', 'summary', 'coverage', 'endpoints', 'documents']),
 
   today: payload('today', "Today's sky", 'Positions, moon phase, active retrogrades, next lunations, and exact events for one UTC date.', {
@@ -337,17 +339,39 @@ function componentSchema(schema: Schema): Schema {
 }
 
 /**
+ * The Cache-Control each static file is sent with, as vercel.json sets it:
+ * five minutes for today's sky, an hour for the index, a day for every other
+ * file, daily ones included. scripts/sky-api-headers.test.mjs holds this to
+ * vercel.json for every operation.
+ */
+export function cacheControlFor(example: string): string {
+  if (example === 'sky/today.json') return 'public, max-age=300, must-revalidate';
+  if (example === 'index.json') return 'public, max-age=3600, must-revalidate';
+  return 'public, max-age=86400, must-revalidate';
+}
+
+const CACHE_LIFETIME: Readonly<Record<string, string>> = Object.freeze({
+  'public, max-age=300, must-revalidate': 'five minutes',
+  'public, max-age=3600, must-revalidate': 'an hour',
+  'public, max-age=86400, must-revalidate': 'a day',
+});
+
+/**
  * A file's response. Its example is the file the site serves at `example`
  * (under /api/v1/), which scripts/sky-api.test.mjs validates against this
  * response's schema in every build.
  */
 function jsonResponse(ref: string, description: string, example: string) {
+  const cacheControl = cacheControlFor(example);
   return {
     200: {
       description,
       headers: {
         'Access-Control-Allow-Origin': { schema: { const: '*' }, description: 'Every endpoint is open to any origin.' },
-        'Cache-Control': { schema: str, description: 'Short on daily files, a day on yearly files.' },
+        'Cache-Control': {
+          schema: { const: cacheControl },
+          description: `${cacheControl}: a cached copy is fresh for ${CACHE_LIFETIME[cacheControl]}, then revalidated. Check the payload's own edition date before treating it as current.`,
+        },
       },
       content: {
         'application/json': {
@@ -356,7 +380,7 @@ function jsonResponse(ref: string, description: string, example: string) {
         },
       },
     },
-    404: { description: 'No such file: a year or body outside coverage.' },
+    404: { description: 'No such file: a year or body outside coverage. Sent with max-age=0, so a client checks again rather than keeping the miss.' },
   };
 }
 
@@ -390,7 +414,7 @@ export function buildOpenApi(
     info: {
       title: 'Zodiacs.org API',
       version,
-      summary: "Free sky data as static files: today's sky, upcoming events, planets, signs, and per-year retrogrades, stations, ingresses, moon phases, eclipses, and aspects. And six calculation endpoints that take a POST body.",
+      summary: "Free sky data as static files: today's sky, upcoming events, planets, signs, and per-year retrogrades, stations, ingresses, moon phases, eclipses, and aspects. And calculation endpoints that take a POST body (tag compute).",
       description: `The sky data (tags daily and yearly) is static JSON files served from the CDN with open CORS and no authentication. Positions are apparent geocentric tropical ecliptic longitudes computed at 12:00 UTC daily. Data as of ${dailyDate}. Guide for AI agents: ${API_BASE}/llms.txt. Documentation: ${API_ORIGIN}/developers/. The compute endpoints (tag compute) calculate from the body of a POST request, with open CORS and no authentication; their documentation is ${COMPUTE_DOCS_URL}.`,
       // OpenAPI 3.1 takes an SPDX identifier or a URL, not both; every payload carries licenseUrl.
       license: { name: 'CC BY 4.0', identifier: 'CC-BY-4.0' },
@@ -403,7 +427,7 @@ export function buildOpenApi(
       { ...COMPUTE_TAG },
     ],
     paths: {
-      '/api/v1/index.json': { get: { operationId: 'getIndex', summary: 'Every endpoint and document', tags: ['daily'], responses: jsonResponse('index', 'The endpoint manifest.', 'index.json') } },
+      '/api/v1/index.json': { get: { operationId: 'getIndex', summary: 'Every static file and document', tags: ['daily'], responses: jsonResponse('index', 'The manifest of static files and documents.', 'index.json') } },
       '/api/v1/sky/today.json': { get: { operationId: 'getToday', summary: "Today's sky", tags: ['daily'], responses: jsonResponse('today', "Today's positions, moon, retrogrades, and events.", 'sky/today.json') } },
       '/api/v1/sky/upcoming.json': { get: { operationId: 'getUpcoming', summary: 'Upcoming events', tags: ['daily'], responses: jsonResponse('upcoming', 'The next weeks of sky events.', 'sky/upcoming.json') } },
       '/api/v1/signs.json': { get: { operationId: 'getSigns', summary: 'The twelve signs', tags: ['daily'], responses: jsonResponse('signs', 'Sign metadata, Sun seasons, and occupants.', 'signs.json') } },
