@@ -167,6 +167,23 @@ describe('features-panel cards for the seven feature funnels (eight tools)', () 
     expect(numHtml.match(/<dt>Expression \d+<\/dt>/gu)?.length).toBe(1);
     expect(numHtml.match(/<dt>Soul Urge \d+<\/dt>/gu)?.length).toBe(1);
     expect(numHtml.match(/<dt>Personality \d+<\/dt>/gu)?.length).toBe(1);
+
+    // NumerologyCard omits the `birthday` karmic-debt carrier so birth days 13/14/16/19 are never revealed on the card.
+    const numDay13 = await executeAiTool('get_numerology', { birthDate: '1990-05-13' }, ALL_ON, { ref: 'chatgpt' });
+    expect(numDay13.ok).toBe(true);
+    if (!numDay13.ok) throw new Error('numDay13 failed');
+    const numDay13Data = numDay13.data as { karmicDebts: { number: number; carriedBy: string[] }[] };
+    expect(numDay13Data.karmicDebts.some((debt) => debt.number === 13 && debt.carriedBy.includes('birthday'))).toBe(true);
+    const numDay13Html = render(h(NumerologyCard, { data: numDay13.data as never, links: numDay13.links as ToolLink[] }));
+    assertBrandedCard(numDay13Html, 'NumerologyCard (day 13)', ['1990-05-13', '1990']);
+    expect(numDay13Html).not.toContain('Karmic debt 13');
+    expect(numDay13Html).not.toContain('(birthday)');
+    // When a karmic debt is carried by both `birthday` and another position, only the non-birthday position is displayed.
+    const numSharedDebt = structuredClone(numDay13.data) as { karmicDebts: { number: number; carriedBy: string[]; reading: string }[] };
+    numSharedDebt.karmicDebts = [{ number: 13, carriedBy: ['birthday', 'lifePath'], reading: 'Work patiently.' }];
+    const numSharedDebtHtml = render(h(NumerologyCard, { data: numSharedDebt as never, links: numDay13.links as ToolLink[] }));
+    expect(numSharedDebtHtml).toContain('Karmic debt 13</strong> (Life Path)');
+    expect(numSharedDebtHtml).not.toContain('birthday');
   }, 60_000);
 
   it('keeps draw_tarot excluded from the features panel and advertises inline-only display mode', async () => {

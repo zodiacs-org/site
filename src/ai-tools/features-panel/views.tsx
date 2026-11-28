@@ -876,6 +876,13 @@ export function PersonalDayCard({ data, links = [] }: { data: PersonalDayData; l
 
 // ── 8. Numerology (Separate from Astrology) ──────────────────────────
 
+const KARMIC_CARRIER_LABELS: Record<Exclude<NumerologyData['karmicDebts'][number]['carriedBy'][number], 'birthday'>, string> = {
+  lifePath: 'Life Path',
+  expression: 'Expression',
+  soulUrge: 'Soul Urge',
+  personality: 'Personality',
+};
+
 export function NumerologyCard({ data, links = [] }: { data: NumerologyData; links?: readonly ToolLink[] }) {
   const tiles: [string, string | number][] = [
     ['Life Path', data.lifePath.chain],
@@ -886,6 +893,16 @@ export function NumerologyCard({ data, links = [] }: { data: NumerologyData; lin
   if (data.expression) nameRows.push([`Expression ${data.expression.number}`, <><Data>{data.expression.chain}</Data>. {data.expression.title}. {cardWords(data.expression.reading)}</>]);
   if (data.soulUrge) nameRows.push([`Soul Urge ${data.soulUrge.number}`, <><Data>{data.soulUrge.chain}</Data>. {data.soulUrge.title}. {cardWords(data.soulUrge.reading)}</>]);
   if (data.personality) nameRows.push([`Personality ${data.personality.number}`, <><Data>{data.personality.chain}</Data>. {data.personality.title}. {cardWords(data.personality.reading)}</>]);
+
+  // Omit the `birthday` carrier because a 13/14/16/19 birthday debt equals the exact birth day of the month.
+  const safeKarmicDebts = data.karmicDebts
+    .map((debt) => ({
+      ...debt,
+      carriedBy: debt.carriedBy
+        .filter((carrier): carrier is keyof typeof KARMIC_CARRIER_LABELS => carrier !== 'birthday')
+        .map((carrier) => KARMIC_CARRIER_LABELS[carrier]),
+    }))
+    .filter((debt) => debt.carriedBy.length > 0);
 
   const calcLink = linkMatching(links, '/numerology/') ?? links[0];
   const lifePathLink = linkMatching(links, '/numerology/life-path/');
@@ -910,7 +927,7 @@ export function NumerologyCard({ data, links = [] }: { data: NumerologyData; lin
       meta={<>{data.lifePath.title}{data.lifePath.master ? ', Master number' : ''}</>}
     />
     <Hero figure={<NumberRing value={data.lifePath.number} caption="Life Path"/>} verdict={data.lifePath.title} summary={cardWords(data.lifePath.reading)}/>
-    <Fold hint={holds(['your numbers', `Personal Year ${data.personalYear.year}`, nameRows.length > 0 && 'name numbers', data.karmicDebts.length > 0 && 'karmic debt', 'a copy of the card'])}>
+    <Fold hint={holds(['your numbers', `Personal Year ${data.personalYear.year}`, nameRows.length > 0 && 'name numbers', safeKarmicDebts.length > 0 && 'karmic debt', 'a copy of the card'])}>
       <Tiles label="Core numbers" tiles={tiles}/>
       <Section title={`Personal Year ${data.personalYear.year}`}>
         <p class="insight"><strong>Personal Year {data.personalYear.number}</strong> (<Data>{data.personalYear.chain}</Data>). {cardWords(data.personalYear.reading)}</p>
@@ -918,9 +935,9 @@ export function NumerologyCard({ data, links = [] }: { data: NumerologyData; lin
       {nameRows.length > 0 && <Section title="Name numbers">
         <Facts rows={nameRows} stacked/>
       </Section>}
-      {data.karmicDebts.length > 0 && <Section title="Karmic debt">
+      {safeKarmicDebts.length > 0 && <Section title="Karmic debt">
         <ul class="reading-list">
-          {data.karmicDebts.map((debt) => <li key={debt.number}>
+          {safeKarmicDebts.map((debt) => <li key={debt.number}>
             <strong>Karmic debt {debt.number}</strong> ({debt.carriedBy.join(', ')})
             <span class="reading-sub">{cardWords(debt.reading)}</span>
           </li>)}
