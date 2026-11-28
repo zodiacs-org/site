@@ -17,7 +17,9 @@
  * The Spanish, French, Italian and Portuguese homepages, sign guides and
  * (Spanish and Portuguese) daily horoscopes have the same cards in their own
  * words, which og-art-cards.locales.mjs carries for the generator
- * (`npm run data:og -- --only-localized-art-cards`).
+ * (`npm run data:og -- --only-localized-art-cards`), as do the chart twins
+ * pages in those four languages and in Russian
+ * (`--only-localized-chart-twins-cards` draws those alone).
  *
  * The art runs across the whole picture, so the cards are JPEGs: as PNGs
  * they would pass WhatsApp's 600 KB limit for a link preview. They are never
@@ -26,7 +28,7 @@
  */
 import { HOROSCOPE_OG_SURFACES } from '../strings/seo.en.mjs';
 import { OG_SIGNS } from '../strings/seo.signs.mjs';
-import { LOCALIZED_ART_CARD_COPY } from './og-art-cards.locales.mjs';
+import { LOCALIZED_ART_CARD_COPY, LOCALIZED_CHART_TWINS_ART_CARD_COPY } from './og-art-cards.locales.mjs';
 
 export const ART_CARD_DIR = '/assets/og/v8';
 
@@ -103,19 +105,105 @@ export function horoscopeArtCard(slug, surfaceKey) {
   return `${ART_CARD_DIR}/horoscope/${knownSign(slug, 'horoscopeArtCard')}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`;
 }
 
-/** Every art card's public path: the homepage, the signs in zodiac order, then each sign's horoscopes. */
+/**
+ * The English chart twins page's card (owner-chosen 2026-11-26): the page's
+ * own painting, the twin cameos (public/assets/card-art/twins-hero-1200.webp),
+ * on the right, and on the left a small Sun and Moon disc, the kicker, the
+ * headline and a line. `npm run data:og -- --only-chart-twins-card` draws it
+ * alone. The Spanish, French, Italian, Portuguese and Russian chart twins
+ * pages have the same card in their own words (chartTwinsArtCard), and the v2
+ * cards (/assets/og/v2/tool/chart-twins.png and its Russian twin,
+ * /assets/og/v2/ru/tool/chart-twins.png) stay published for links already shared.
+ */
+export const CHART_TWINS_ART_CARD = `${ART_CARD_DIR}/tool/chart-twins.jpg`;
+
+/**
+ * The locales whose chart twins page has the card in its own words
+ * (2026-11-26): the four art card locales and Russian, whose other cards are
+ * the 16-colour v2 family; a painting cannot go through that palette, so its
+ * chart twins card sits here with the other art cards, in `ru/`.
+ */
+export const CHART_TWINS_ART_CARD_LOCALES = Object.freeze([...ART_CARD_LOCALES, 'ru']);
+
+/** @param {string} locale @param {string} caller */
+function chartTwinsLocale(locale, caller) {
+  if (locale !== 'en' && !CHART_TWINS_ART_CARD_LOCALES.includes(locale)) throw new Error(`${caller}: no chart twins card in ${locale}`);
+  return locale;
+}
+
+/**
+ * A chart twins page's card: CHART_TWINS_ART_CARD in English, `es/tool/chart-twins.jpg` in Spanish.
+ * @param {string} [locale]
+ */
+export function chartTwinsArtCard(locale = 'en') {
+  return chartTwinsLocale(locale, 'chartTwinsArtCard') === 'en' ? CHART_TWINS_ART_CARD : `${ART_CARD_DIR}/${locale}/tool/chart-twins.jpg`;
+}
+
+/** The words on the chart twins card. */
+export const CHART_TWINS_ART_CARD_COPY = Object.freeze({
+  kicker: 'Matched by Sun and Moon',
+  title: 'Your chart twins',
+  line: 'Public figures who share your Sun and Moon signs.',
+});
+
+export const CHART_TWINS_ART_CARD_ALT = 'Your chart twins: public figures who share your Sun and Moon signs, beside a painting of two cameo portraits facing each other.';
+
+/**
+ * A chart twins card's words and alt text, in English or in the page's own
+ * language (og-art-cards.locales.mjs, from src/lib/og-art-cards-copy.ts).
+ * @param {string} [locale]
+ * @returns {{ kicker: string, title: string, line: string, alt: string }}
+ */
+export function chartTwinsArtCardCopy(locale = 'en') {
+  if (chartTwinsLocale(locale, 'chartTwinsArtCardCopy') === 'en') return Object.freeze({ ...CHART_TWINS_ART_CARD_COPY, alt: CHART_TWINS_ART_CARD_ALT });
+  const copy = LOCALIZED_CHART_TWINS_ART_CARD_COPY[locale];
+  if (!copy) throw new Error(`chartTwinsArtCardCopy: no words for ${locale}`);
+  return Object.freeze({ ...copy });
+}
+
+/**
+ * The thesis's card (owner-chosen 2026-11-27): the page's own painting, the
+ * old astronomical clock (public/assets/art/zodiac-clock-1280.jpg), on the
+ * right, and on the left the twelve sign discs in a row, the kicker, the
+ * headline and a line. The kicker and the line are the first scene of the
+ * thesis film, word for word (filmScript() in scripts/build-thesis-film.mjs,
+ * which checks each sentence against its data), and og-art-cards.test.ts holds
+ * them to it. `npm run data:og -- --only-thesis-art-card` draws it alone. The
+ * v2 card (/assets/og/v2/thesis.png) stays published for links already shared.
+ */
+export const THESIS_ART_CARD = `${ART_CARD_DIR}/thesis.jpg`;
+
+/** The words on the thesis card: the page's headline between the film's first two sentences. */
+export const THESIS_ART_CARD_COPY = Object.freeze({
+  kicker: 'The twelve signs are about 2,400 years old.',
+  title: 'Why Zodiacs Matter',
+  line: 'They outlived every medium that carried them.',
+});
+
+export const THESIS_ART_CARD_ALT = 'Why Zodiacs Matter: the twelve signs are about 2,400 years old and outlived every medium that carried them. The twelve sign discs in a row beside a painting of an old astronomical clock with the zodiac on its dial.';
+
+/** Every art card's public path: the homepage, the signs in zodiac order, each sign's horoscopes, the chart twins card, then the thesis card. */
 export const ART_CARDS = Object.freeze([
   HOME_ART_CARD,
   ...OG_SIGNS.map((sign) => signArtCard(sign.slug)),
   ...OG_SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => horoscopeArtCard(sign.slug, surface.key))),
+  CHART_TWINS_ART_CARD,
+  THESIS_ART_CARD,
 ]);
 
-/** Every localized card: each locale's homepage, its twelve sign guides, then its daily horoscopes. */
-export const LOCALIZED_ART_CARDS = Object.freeze(ART_CARD_LOCALES.flatMap((locale) => [
-  homeArtCard(locale),
-  ...OG_SIGNS.map((sign) => signArtCard(sign.slug, locale)),
-  ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? OG_SIGNS.map((sign) => localizedHoroscopeArtCard(sign.slug, locale)) : []),
-]));
+/**
+ * Every localized card: each locale's homepage, its twelve sign guides, its
+ * daily horoscopes and its chart twins card, then the Russian chart twins card.
+ */
+export const LOCALIZED_ART_CARDS = Object.freeze([
+  ...ART_CARD_LOCALES.flatMap((locale) => [
+    homeArtCard(locale),
+    ...OG_SIGNS.map((sign) => signArtCard(sign.slug, locale)),
+    ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? OG_SIGNS.map((sign) => localizedHoroscopeArtCard(sign.slug, locale)) : []),
+    chartTwinsArtCard(locale),
+  ]),
+  ...CHART_TWINS_ART_CARD_LOCALES.filter((locale) => !ART_CARD_LOCALES.includes(locale)).map((locale) => chartTwinsArtCard(locale)),
+]);
 
 /**
  * Each card stays well under WhatsApp's 600 KB link-preview limit, the
@@ -163,6 +251,67 @@ export const SIGN_ART_CARD_SHADE = Object.freeze([
   'linear-gradient(0deg, rgba(6, 7, 9, 0.7) 0%, rgba(6, 7, 9, 0) 34%)',
   'linear-gradient(180deg, rgba(6, 7, 9, 0.55) 0%, rgba(6, 7, 9, 0) 22%)',
 ]);
+
+/**
+ * The chart twins card's painting (1200 × 800, drawn at 810 × 540 from 480 px
+ * in, 8 px above the top) in the sign cards' filter, fading in from the left
+ * and up from the bottom, and the shade over it, in the sign cards' manner.
+ */
+export const CHART_TWINS_ART_CARD_ART = Object.freeze({
+  src: 'public/assets/card-art/twins-hero-1200.webp',
+  left: 480,
+  top: -8,
+  width: 810,
+  height: 540,
+  filter: SIGN_ART_CARD_ART.filter,
+  mask: 'linear-gradient(90deg, transparent 0, #000 9%), linear-gradient(0deg, transparent 0, #000 14%)',
+});
+export const CHART_TWINS_ART_CARD_SHADE = Object.freeze([
+  'linear-gradient(90deg, rgba(6, 7, 9, 0.92) 0%, rgba(6, 7, 9, 0.7) 36%, rgba(6, 7, 9, 0) 50%)',
+  'linear-gradient(0deg, rgba(6, 7, 9, 0.78) 0%, rgba(6, 7, 9, 0) 30%)',
+  'linear-gradient(180deg, rgba(6, 7, 9, 0.5) 0%, rgba(6, 7, 9, 0) 20%)',
+]);
+
+/** @param {string} slug */
+function signHue(slug) {
+  const sign = OG_SIGNS.find((entry) => entry.slug === slug);
+  if (!sign) throw new Error(`signHue: unknown sign ${slug}`);
+  return sign.hue;
+}
+
+/** The Sun's and the Moon's discs on the chart twins card: their size in px and the sign hues they take. */
+export const CHART_TWINS_ART_CARD_DISCS = Object.freeze({
+  size: 64,
+  sun: signHue('leo'),
+  moon: signHue('cancer'),
+});
+
+/**
+ * The thesis card's painting (1280 × 720, drawn at 1260 × 709 from 500 px in,
+ * 40 px above the top, so the clock's dial fills the right of the card),
+ * fading in from the left, and the shade over it.
+ */
+export const THESIS_ART_CARD_ART = Object.freeze({
+  src: 'public/assets/art/zodiac-clock-1280.jpg',
+  left: 500,
+  top: -40,
+  width: 1260,
+  height: 709,
+  filter: 'saturate(0.9) brightness(0.95)',
+  mask: 'linear-gradient(90deg, transparent 0, #000 22%)',
+});
+export const THESIS_ART_CARD_SHADE = Object.freeze([
+  'linear-gradient(90deg, rgba(6, 7, 9, 0.94) 0%, rgba(6, 7, 9, 0.72) 38%, rgba(6, 7, 9, 0) 56%)',
+  'linear-gradient(0deg, rgba(6, 7, 9, 0.85) 0%, rgba(6, 7, 9, 0) 28%)',
+  'linear-gradient(180deg, rgba(6, 7, 9, 0.45) 0%, rgba(6, 7, 9, 0) 18%)',
+]);
+
+/**
+ * The twelve sign discs above the thesis card's kicker, Aries to Pisces in one
+ * row (the canonical icons' 128px tier): each disc's size and the gap between
+ * them, in px.
+ */
+export const THESIS_ART_CARD_DISCS = Object.freeze({ size: 32, gap: 7 });
 
 const ORDINALS = Object.freeze(['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth']);
 

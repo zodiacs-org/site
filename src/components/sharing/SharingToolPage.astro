@@ -20,6 +20,7 @@ import { signBySlug, signName } from '../../lib/signs';
 import { englishOnlyCue } from '../../lib/i18n/english-only';
 import ToolExplainer from '../ToolExplainer.astro';
 import { TOOL_EXPLAINERS, explainerFaqJsonLd } from '../../lib/seo/tool-explainers';
+import { chartTwinsArtCard, chartTwinsArtCardCopy } from '../../lib/og-art-cards.mjs';
 import '../../styles/calculator.css';
 import '../../styles/sharing-tools.css';
 interface Props { kind: 'big' | 'invite' | 'group' | 'twins'; locale?: CatalogLocale }
@@ -41,7 +42,11 @@ const twinSample = kind === 'twins' ? sampleTwins(directory) : null;
 const pair = kind === 'invite' ? SAMPLE_PAIR_SLUGS.map((slug) => DIRECTORY_PEOPLE.find((person) => person.slug === slug)) : [];
 const pairContacts = pair.length === 2 && pair[0] && pair[1] ? sampleContacts(pair[0], pair[1]) : [];
 const personHref = (slug: string) => `/people/${slug}/`;
-const cardImage = ({ big: '/assets/og/v2/tool/big-three.png', invite: '/assets/og/v2/tool/compatibility-private-invite.png', group: '/assets/og/v2/tool/group-charts.png', twins: '/assets/og/v2/tool/chart-twins.png' })[kind];
+// Every chart twins page shows its art card in its own language (owner-chosen
+// 2026-11-26; the Russian one through ruOgImageForPath); the v2 cards stay
+// published for links already shared.
+const cardImage = kind === 'twins' ? chartTwinsArtCard(locale) : ({ big: '/assets/og/v2/tool/big-three.png', invite: '/assets/og/v2/tool/compatibility-private-invite.png', group: '/assets/og/v2/tool/group-charts.png' })[kind];
+const cardAlt = kind === 'twins' ? chartTwinsArtCardCopy(locale).alt : s(locale, titleKey);
 // English pages that otherwise serve little more than a form get a search title, a description and plain answers in the HTML.
 const explainerKind = locale === 'en' && (kind === 'group' || kind === 'twins') ? kind : null;
 const explainer = explainerKind ? TOOL_EXPLAINERS[explainerKind] : null;
@@ -49,7 +54,7 @@ const pageTitle = explainer?.title ?? `${s(locale, titleKey)} | Zodiacs.org`;
 const pageDescription = explainer?.description ?? s(locale, ledeKey);
 const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), description: pageDescription, url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }, ...(explainerKind ? [explainerFaqJsonLd(explainerKind)] : [])];
 ---
-<Base privateSurface clientUi locale={locale} path={route} title={pageTitle} description={pageDescription} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : cardImage} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
+<Base privateSurface clientUi locale={locale} path={route} title={pageTitle} description={pageDescription} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : cardImage} imageAlt={cardAlt} jsonLd={jsonLd} glass>
   <section class:list={['section--tight', 'container', 'sharing-page', { 'container--narrow': kind !== 'group' }]}>
     <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, headlineKey)}</h1><p>{s(locale, ledeKey)}</p></header>
     {moving && <slot name="motion" />}
