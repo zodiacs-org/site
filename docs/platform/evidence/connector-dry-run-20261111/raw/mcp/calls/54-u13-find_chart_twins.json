@@ -1,0 +1,41 @@
+{
+ "id": "54-u13-find_chart_twins",
+ "why": "D4: under-13 refusal",
+ "sentAtUtc": "2026-11-11T16:02:49+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "find_chart_twins",
+   "arguments": {
+    "birthDate": "2016-02-02"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"find_chart_twins\",\"error\":{\"code\":\"invalid-request\",\"message\":\"Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "find_chart_twins",
+    "error": {
+     "code": "invalid-request",
+     "message": "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

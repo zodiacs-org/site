@@ -1,0 +1,41 @@
+{
+ "id": "83-err-bad-zone",
+ "why": "D4: unknown time zone",
+ "sentAtUtc": "2026-11-11T16:04:12+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_sky",
+   "arguments": {
+    "zone": "Mars/Olympus"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_sky\",\"error\":{\"code\":\"invalid-request\",\"message\":\"zone must be a time zone name the server's time zone data includes.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_sky",
+    "error": {
+     "code": "invalid-request",
+     "message": "zone must be a time zone name the server's time zone data includes."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

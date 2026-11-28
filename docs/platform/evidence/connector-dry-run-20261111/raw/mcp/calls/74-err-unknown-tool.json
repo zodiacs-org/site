@@ -1,0 +1,25 @@
+{
+ "id": "74-err-unknown-tool",
+ "why": "D4: unknown tool",
+ "sentAtUtc": "2026-11-11T16:03:43+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_stock_tip",
+   "arguments": {}
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+   "code": -32602,
+   "message": "The MCP request does not match a supported operation or schema."
+  }
+ }
+}

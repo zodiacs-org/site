@@ -1,0 +1,15 @@
+{
+ "id": "92-http-get",
+ "why": "D4: GET on the endpoint",
+ "sentAtUtc": "2026-11-11T16:05:39+00:00",
+ "httpMethod": "GET",
+ "request": null,
+ "httpStatus": 405,
+ "contentType": "application/json; charset=utf-8",
+ "response": {
+  "error": {
+   "code": "method-not-allowed",
+   "message": "Zodiacs could not accept this request."
+  }
+ }
+}

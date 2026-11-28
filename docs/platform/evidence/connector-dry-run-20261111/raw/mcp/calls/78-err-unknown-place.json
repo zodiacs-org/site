@@ -1,0 +1,55 @@
+{
+ "id": "78-err-unknown-place",
+ "why": "D4: place not found",
+ "sentAtUtc": "2026-11-11T16:03:50+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "find_birthplace",
+   "arguments": {
+    "place": "Zzzzqqqx"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"find_birthplace\",\"data\":{\"place\":\"Zzzzqqqx\",\"country\":null,\"date\":\"2026-11-11\",\"places\":[],\"message\":\"No town or city matches. Try another spelling. The index lists places of 15,000 people or more.\",\"source\":{\"name\":\"GeoNames cities15000\",\"licence\":\"CC BY 4.0\",\"note\":\"Resolved from the place index shipped with Zodiacs. The name is not sent anywhere, and nothing is stored. Pass the latitude, longitude and time zone to a chart tool.\"}},\"links\":[{\"title\":\"Birth chart on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "find_birthplace",
+    "data": {
+     "place": "Zzzzqqqx",
+     "country": null,
+     "date": "2026-11-11",
+     "places": [],
+     "message": "No town or city matches. Try another spelling. The index lists places of 15,000 people or more.",
+     "source": {
+      "name": "GeoNames cities15000",
+      "licence": "CC BY 4.0",
+      "note": "Resolved from the place index shipped with Zodiacs. The name is not sent anywhere, and nothing is stored. Pass the latitude, longitude and time zone to a chart tool."
+     }
+    },
+    "links": [
+     {
+      "title": "Birth chart on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

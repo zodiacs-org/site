@@ -1,0 +1,315 @@
+{
+ "id": "30-get_natal_chart",
+ "why": "valid call with time and place; D3 link check",
+ "sentAtUtc": "2026-11-11T16:01:02+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_natal_chart",
+   "arguments": {
+    "birthDate": "1990-05-03",
+    "time": "08:30",
+    "zone": "Europe/Madrid",
+    "latitude": 40.42,
+    "longitude": -3.7,
+    "place": "Madrid, Spain"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_natal_chart\",\"data\":{\"birthDate\":\"1990-05-03\",\"time\":\"08:30\",\"zone\":\"Europe/Madrid\",\"place\":\"Madrid, Spain\",\"timeKnown\":true,\"placed\":true,\"castFor\":{\"utc\":\"1990-05-03T06:30:00.000Z\",\"basis\":\"birth-time\"},\"houseSystem\":\"whole-sign\",\"sun\":{\"sign\":\"taurus\",\"possibleSigns\":[\"taurus\"],\"meaning\":\"You are built for consistency: slow to start, nearly impossible to stop, with an unteachable instinct for what feels good and lasts. Change is fine, as long as it was your idea and arrived on schedule.\",\"pageUrl\":\"https://zodiacs.org/taurus/?ref=assistant\"},\"moon\":{\"sign\":\"leo\",\"possibleSigns\":[\"leo\"],\"meaning\":\"You need to be someone’s favorite, not everyone’s, someone’s. Appreciation is oxygen; give it as freely as you need it and your relationships thrive.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/moon-in-leo/?ref=assistant\"},\"rising\":{\"sign\":\"gemini\",\"possibleSigns\":[\"gemini\"],\"meaning\":\"First impression: quick, verbal, visibly curious. Strangers tell you things in checkout lines. You seem younger than your age for most of your life.\",\"pageUrl\":\"https://zodiacs.org/rising-sign/gemini/?ref=assistant\"},\"planets\":[{\"body\":\"Sun\",\"sign\":\"taurus\",\"possibleSigns\":[\"taurus\"],\"position\":\"12°34′ Taurus\",\"retrograde\":false,\"house\":12,\"signLine\":\"In Taurus, it takes on a fixed earth style. Steady hands, good taste, and a long memory for comfort.\",\"houseLine\":\"Your Sun centers itself in the twelfth house: solitude, rest, and what runs beneath awareness.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/sun-in-taurus/?ref=assistant\"},{\"body\":\"Moon\",\"sign\":\"leo\",\"possibleSigns\":[\"leo\"],\"position\":\"29°34′ Leo\",\"retrograde\":false,\"house\":3,\"signLine\":\"In Leo, it takes on a fixed fire style. Warm-hearted, expressive, born for the spotlight.\",\"houseLine\":\"Your Moon keeps its tides in the third house: language, siblings, short trips, and the everyday mind.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/moon-in-leo/?ref=assistant\"},{\"body\":\"Mercury\",\"sign\":\"taurus\",\"possibleSigns\":[\"taurus\"],\"position\":\"13°43′ Taurus\",\"retrograde\":true,\"house\":12,\"signLine\":\"In Taurus, it takes on a fixed earth style. Steady hands, good taste, and a long memory for comfort.\",\"houseLine\":\"Your Mercury does its thinking in the twelfth house: solitude, rest, and what runs beneath awareness.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/mercury-in-taurus/?ref=assistant\"},{\"body\":\"Venus\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"29°00′ Pisces\",\"retrograde\":false,\"house\":10,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":\"Your Venus looks for beauty in the tenth house: career, reputation, and the public record.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/venus-in-pisces/?ref=assistant\"},{\"body\":\"Mars\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"9°13′ Pisces\",\"retrograde\":false,\"house\":10,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":\"Your Mars spends its heat in the tenth house: career, reputation, and the public record.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/mars-in-pisces/?ref=assistant\"},{\"body\":\"Jupiter\",\"sign\":\"cancer\",\"possibleSigns\":[\"cancer\"],\"position\":\"7°19′ Cancer\",\"retrograde\":false,\"house\":2,\"signLine\":\"In Cancer, it takes on a cardinal water style. Feels first, remembers everything, protects what it loves.\",\"houseLine\":\"Your Jupiter wants more room in the second house: earning, owning, and what security is made of.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/jupiter-in-cancer/?ref=assistant\"},{\"body\":\"Saturn\",\"sign\":\"capricorn\",\"possibleSigns\":[\"capricorn\"],\"position\":\"25°20′ Capricorn\",\"retrograde\":false,\"house\":8,\"signLine\":\"In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.\",\"houseLine\":\"Your Saturn keeps its ledger in the eighth house: shared resources, intimacy, and what gets merged.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/saturn-in-capricorn/?ref=assistant\"},{\"body\":\"Uranus\",\"sign\":\"capricorn\",\"possibleSigns\":[\"capricorn\"],\"position\":\"9°25′ Capricorn\",\"retrograde\":true,\"house\":8,\"signLine\":\"In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.\",\"houseLine\":\"Your Uranus refuses to settle in the eighth house: shared resources, intimacy, and what gets merged.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/uranus-in-capricorn/?ref=assistant\"},{\"body\":\"Neptune\",\"sign\":\"capricorn\",\"possibleSigns\":[\"capricorn\"],\"position\":\"14°29′ Capricorn\",\"retrograde\":true,\"house\":8,\"signLine\":\"In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.\",\"houseLine\":\"Your Neptune softens the walls of the eighth house: shared resources, intimacy, and what gets merged.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/neptune-in-capricorn/?ref=assistant\"},{\"body\":\"Pluto\",\"sign\":\"scorpio\",\"possibleSigns\":[\"scorpio\"],\"position\":\"16°30′ Scorpio\",\"retrograde\":true,\"house\":6,\"signLine\":\"In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.\",\"houseLine\":\"Your Pluto digs deepest in the sixth house: routines, craft, and the shape of the day.\",\"pageUrl\":\"https://zodiacs.org/learn/placements/pluto-in-scorpio/?ref=assistant\"}],\"angles\":{\"ascendant\":\"5°59′ Gemini\",\"midheaven\":\"12°14′ Aquarius\"},\"aspects\":[{\"a\":\"Mars\",\"b\":\"Uranus\",\"type\":\"sextile\",\"orb\":0.2,\"line\":\"Your Mars has an open line to your Uranus. A change of method can restore momentum when effort stalls. Test a different tool or approach before simply pushing harder.\"},{\"a\":\"Mercury\",\"b\":\"Neptune\",\"type\":\"trine\",\"orb\":0.8,\"line\":\"Your Mercury runs downhill into your Neptune. Your way of thinking and your imagination help each other so smoothly the gift is easy to miss.\"},{\"a\":\"Sun\",\"b\":\"Mercury\",\"type\":\"conjunction\",\"orb\":1.2,\"line\":\"Your Sun is fused to your Mercury. The self and its narrator share a desk, which makes the account vivid and the distance between you and your own opinions small.\"},{\"a\":\"Mars\",\"b\":\"Jupiter\",\"type\":\"trine\",\"orb\":1.9,\"line\":\"Your Mars runs downhill into your Jupiter. Your drive and your appetite for more help each other so smoothly the gift is easy to miss.\"},{\"a\":\"Sun\",\"b\":\"Neptune\",\"type\":\"trine\",\"orb\":1.9,\"line\":\"Your Sun runs downhill into your Neptune. Imagination and empathy can become natural ways of expressing yourself. Give them a medium, and keep time for your own wishes alongside what you absorb from others.\"},{\"a\":\"Neptune\",\"b\":\"Pluto\",\"type\":\"sextile\",\"orb\":2,\"line\":\"Your Neptune has an open line to your Pluto. Your imagination and your intensity cooperate whenever you remember to ask.\"},{\"a\":\"Jupiter\",\"b\":\"Uranus\",\"type\":\"opposition\",\"orb\":2.1,\"line\":\"Your Jupiter faces off with your Uranus. Your appetite for more and your independence hold opposite ends of one axis, taking turns unless you seat them both.\"},{\"a\":\"Mercury\",\"b\":\"Pluto\",\"type\":\"opposition\",\"orb\":2.8,\"line\":\"Your Mercury faces off with your Pluto. Your way of thinking and your intensity hold opposite ends of one axis, taking turns unless you seat them both.\"}],\"balance\":{\"elements\":{\"fire\":1,\"earth\":5,\"air\":0,\"water\":4},\"modalities\":{\"cardinal\":4,\"fixed\":4,\"mutable\":2},\"lines\":[\"Earth carries 5 of the ten planets. The chart is load-bearing: real things, on real timelines.\",\"There is no planet in air. Distance from a question takes deliberate effort.\",\"4 planets were retrograde when you were born, a chart that does much of its work on the second pass.\",\"Saturn, Uranus, Neptune all sit in Capricorn, a stellium; that sign's agenda gets 3 votes.\",\"Saturn, Uranus, Neptune share your eighth house. Shared resources, intimacy, and what gets merged takes outsized weight.\"]},\"unknown\":[],\"chartUrl\":\"https://zodiacs.org/birth-chart/?ref=assistant\",\"under18\":false,\"note\":\"Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.\"},\"links\":[{\"title\":\"Open the birth chart page on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Taurus on Zodiacs\",\"url\":\"https://zodiacs.org/taurus/?ref=assistant\"},{\"title\":\"How to read a birth chart\",\"url\":\"https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_natal_chart",
+    "data": {
+     "birthDate": "1990-05-03",
+     "time": "08:30",
+     "zone": "Europe/Madrid",
+     "place": "Madrid, Spain",
+     "timeKnown": true,
+     "placed": true,
+     "castFor": {
+      "utc": "1990-05-03T06:30:00.000Z",
+      "basis": "birth-time"
+     },
+     "houseSystem": "whole-sign",
+     "sun": {
+      "sign": "taurus",
+      "possibleSigns": [
+       "taurus"
+      ],
+      "meaning": "You are built for consistency: slow to start, nearly impossible to stop, with an unteachable instinct for what feels good and lasts. Change is fine, as long as it was your idea and arrived on schedule.",
+      "pageUrl": "https://zodiacs.org/taurus/?ref=assistant"
+     },
+     "moon": {
+      "sign": "leo",
+      "possibleSigns": [
+       "leo"
+      ],
+      "meaning": "You need to be someone’s favorite, not everyone’s, someone’s. Appreciation is oxygen; give it as freely as you need it and your relationships thrive.",
+      "pageUrl": "https://zodiacs.org/learn/placements/moon-in-leo/?ref=assistant"
+     },
+     "rising": {
+      "sign": "gemini",
+      "possibleSigns": [
+       "gemini"
+      ],
+      "meaning": "First impression: quick, verbal, visibly curious. Strangers tell you things in checkout lines. You seem younger than your age for most of your life.",
+      "pageUrl": "https://zodiacs.org/rising-sign/gemini/?ref=assistant"
+     },
+     "planets": [
+      {
+       "body": "Sun",
+       "sign": "taurus",
+       "possibleSigns": [
+        "taurus"
+       ],
+       "position": "12°34′ Taurus",
+       "retrograde": false,
+       "house": 12,
+       "signLine": "In Taurus, it takes on a fixed earth style. Steady hands, good taste, and a long memory for comfort.",
+       "houseLine": "Your Sun centers itself in the twelfth house: solitude, rest, and what runs beneath awareness.",
+       "pageUrl": "https://zodiacs.org/learn/placements/sun-in-taurus/?ref=assistant"
+      },
+      {
+       "body": "Moon",
+       "sign": "leo",
+       "possibleSigns": [
+        "leo"
+       ],
+       "position": "29°34′ Leo",
+       "retrograde": false,
+       "house": 3,
+       "signLine": "In Leo, it takes on a fixed fire style. Warm-hearted, expressive, born for the spotlight.",
+       "houseLine": "Your Moon keeps its tides in the third house: language, siblings, short trips, and the everyday mind.",
+       "pageUrl": "https://zodiacs.org/learn/placements/moon-in-leo/?ref=assistant"
+      },
+      {
+       "body": "Mercury",
+       "sign": "taurus",
+       "possibleSigns": [
+        "taurus"
+       ],
+       "position": "13°43′ Taurus",
+       "retrograde": true,
+       "house": 12,
+       "signLine": "In Taurus, it takes on a fixed earth style. Steady hands, good taste, and a long memory for comfort.",
+       "houseLine": "Your Mercury does its thinking in the twelfth house: solitude, rest, and what runs beneath awareness.",
+       "pageUrl": "https://zodiacs.org/learn/placements/mercury-in-taurus/?ref=assistant"
+      },
+      {
+       "body": "Venus",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "29°00′ Pisces",
+       "retrograde": false,
+       "house": 10,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": "Your Venus looks for beauty in the tenth house: career, reputation, and the public record.",
+       "pageUrl": "https://zodiacs.org/learn/placements/venus-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Mars",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "9°13′ Pisces",
+       "retrograde": false,
+       "house": 10,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": "Your Mars spends its heat in the tenth house: career, reputation, and the public record.",
+       "pageUrl": "https://zodiacs.org/learn/placements/mars-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Jupiter",
+       "sign": "cancer",
+       "possibleSigns": [
+        "cancer"
+       ],
+       "position": "7°19′ Cancer",
+       "retrograde": false,
+       "house": 2,
+       "signLine": "In Cancer, it takes on a cardinal water style. Feels first, remembers everything, protects what it loves.",
+       "houseLine": "Your Jupiter wants more room in the second house: earning, owning, and what security is made of.",
+       "pageUrl": "https://zodiacs.org/learn/placements/jupiter-in-cancer/?ref=assistant"
+      },
+      {
+       "body": "Saturn",
+       "sign": "capricorn",
+       "possibleSigns": [
+        "capricorn"
+       ],
+       "position": "25°20′ Capricorn",
+       "retrograde": false,
+       "house": 8,
+       "signLine": "In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.",
+       "houseLine": "Your Saturn keeps its ledger in the eighth house: shared resources, intimacy, and what gets merged.",
+       "pageUrl": "https://zodiacs.org/learn/placements/saturn-in-capricorn/?ref=assistant"
+      },
+      {
+       "body": "Uranus",
+       "sign": "capricorn",
+       "possibleSigns": [
+        "capricorn"
+       ],
+       "position": "9°25′ Capricorn",
+       "retrograde": true,
+       "house": 8,
+       "signLine": "In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.",
+       "houseLine": "Your Uranus refuses to settle in the eighth house: shared resources, intimacy, and what gets merged.",
+       "pageUrl": "https://zodiacs.org/learn/placements/uranus-in-capricorn/?ref=assistant"
+      },
+      {
+       "body": "Neptune",
+       "sign": "capricorn",
+       "possibleSigns": [
+        "capricorn"
+       ],
+       "position": "14°29′ Capricorn",
+       "retrograde": true,
+       "house": 8,
+       "signLine": "In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.",
+       "houseLine": "Your Neptune softens the walls of the eighth house: shared resources, intimacy, and what gets merged.",
+       "pageUrl": "https://zodiacs.org/learn/placements/neptune-in-capricorn/?ref=assistant"
+      },
+      {
+       "body": "Pluto",
+       "sign": "scorpio",
+       "possibleSigns": [
+        "scorpio"
+       ],
+       "position": "16°30′ Scorpio",
+       "retrograde": true,
+       "house": 6,
+       "signLine": "In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.",
+       "houseLine": "Your Pluto digs deepest in the sixth house: routines, craft, and the shape of the day.",
+       "pageUrl": "https://zodiacs.org/learn/placements/pluto-in-scorpio/?ref=assistant"
+      }
+     ],
+     "angles": {
+      "ascendant": "5°59′ Gemini",
+      "midheaven": "12°14′ Aquarius"
+     },
+     "aspects": [
+      {
+       "a": "Mars",
+       "b": "Uranus",
+       "type": "sextile",
+       "orb": 0.2,
+       "line": "Your Mars has an open line to your Uranus. A change of method can restore momentum when effort stalls. Test a different tool or approach before simply pushing harder."
+      },
+      {
+       "a": "Mercury",
+       "b": "Neptune",
+       "type": "trine",
+       "orb": 0.8,
+       "line": "Your Mercury runs downhill into your Neptune. Your way of thinking and your imagination help each other so smoothly the gift is easy to miss."
+      },
+      {
+       "a": "Sun",
+       "b": "Mercury",
+       "type": "conjunction",
+       "orb": 1.2,
+       "line": "Your Sun is fused to your Mercury. The self and its narrator share a desk, which makes the account vivid and the distance between you and your own opinions small."
+      },
+      {
+       "a": "Mars",
+       "b": "Jupiter",
+       "type": "trine",
+       "orb": 1.9,
+       "line": "Your Mars runs downhill into your Jupiter. Your drive and your appetite for more help each other so smoothly the gift is easy to miss."
+      },
+      {
+       "a": "Sun",
+       "b": "Neptune",
+       "type": "trine",
+       "orb": 1.9,
+       "line": "Your Sun runs downhill into your Neptune. Imagination and empathy can become natural ways of expressing yourself. Give them a medium, and keep time for your own wishes alongside what you absorb from others."
+      },
+      {
+       "a": "Neptune",
+       "b": "Pluto",
+       "type": "sextile",
+       "orb": 2,
+       "line": "Your Neptune has an open line to your Pluto. Your imagination and your intensity cooperate whenever you remember to ask."
+      },
+      {
+       "a": "Jupiter",
+       "b": "Uranus",
+       "type": "opposition",
+       "orb": 2.1,
+       "line": "Your Jupiter faces off with your Uranus. Your appetite for more and your independence hold opposite ends of one axis, taking turns unless you seat them both."
+      },
+      {
+       "a": "Mercury",
+       "b": "Pluto",
+       "type": "opposition",
+       "orb": 2.8,
+       "line": "Your Mercury faces off with your Pluto. Your way of thinking and your intensity hold opposite ends of one axis, taking turns unless you seat them both."
+      }
+     ],
+     "balance": {
+      "elements": {
+       "fire": 1,
+       "earth": 5,
+       "air": 0,
+       "water": 4
+      },
+      "modalities": {
+       "cardinal": 4,
+       "fixed": 4,
+       "mutable": 2
+      },
+      "lines": [
+       "Earth carries 5 of the ten planets. The chart is load-bearing: real things, on real timelines.",
+       "There is no planet in air. Distance from a question takes deliberate effort.",
+       "4 planets were retrograde when you were born, a chart that does much of its work on the second pass.",
+       "Saturn, Uranus, Neptune all sit in Capricorn, a stellium; that sign's agenda gets 3 votes.",
+       "Saturn, Uranus, Neptune share your eighth house. Shared resources, intimacy, and what gets merged takes outsized weight."
+      ]
+     },
+     "unknown": [],
+     "chartUrl": "https://zodiacs.org/birth-chart/?ref=assistant",
+     "under18": false,
+     "note": "Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny."
+    },
+    "links": [
+     {
+      "title": "Open the birth chart page on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Taurus on Zodiacs",
+      "url": "https://zodiacs.org/taurus/?ref=assistant"
+     },
+     {
+      "title": "How to read a birth chart",
+      "url": "https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

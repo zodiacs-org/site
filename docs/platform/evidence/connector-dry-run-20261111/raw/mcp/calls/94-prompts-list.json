@@ -1,0 +1,22 @@
+{
+ "id": "94-prompts-list",
+ "why": "record whether prompts are declared",
+ "sentAtUtc": "2026-11-11T16:05:42+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "prompts/list",
+  "params": {}
+ },
+ "httpStatus": 200,
+ "contentType": "application/json; charset=utf-8",
+ "response": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+   "code": -32601,
+   "message": "This MCP operation is not supported."
+  }
+ }
+}

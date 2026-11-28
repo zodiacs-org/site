@@ -1,0 +1,452 @@
+{
+ "id": "93-resources-list",
+ "why": "record the panels the server declares",
+ "sentAtUtc": "2026-11-11T16:05:41+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "resources/list",
+  "params": {}
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "resources": [
+    {
+     "uri": "ui://zodiacs/sky-events-v4.html",
+     "name": "sky-events",
+     "title": "Zodiacs sky calendar",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A list of what changes in the sky, with times on your clock."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/sky-events-v3.html",
+     "name": "sky-events-legacy-3",
+     "title": "Zodiacs sky calendar",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A list of what changes in the sky, with times on your clock."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/sky-events-v2.html",
+     "name": "sky-events-legacy-2",
+     "title": "Zodiacs sky calendar",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A list of what changes in the sky, with times on your clock."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/sky-events-v1.html",
+     "name": "sky-events-legacy-1",
+     "title": "Zodiacs sky calendar",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A list of what changes in the sky, with times on your clock."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/chart-studio-v6.html",
+     "name": "chart-studio",
+     "title": "Zodiacs Chart Studio",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/chart-studio-v5.html",
+     "name": "chart-studio-legacy-5",
+     "title": "Zodiacs Chart Studio",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/chart-studio-v4.html",
+     "name": "chart-studio-legacy-4",
+     "title": "Zodiacs Chart Studio",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/chart-studio-v3.html",
+     "name": "chart-studio-legacy-3",
+     "title": "Zodiacs Chart Studio",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/chart-studio-v2.html",
+     "name": "chart-studio-legacy-2",
+     "title": "Zodiacs Chart Studio",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/chart-studio-v1.html",
+     "name": "chart-studio-legacy-1",
+     "title": "Zodiacs Chart Studio",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": []
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/horoscopes-v6.html",
+     "name": "horoscopes",
+     "title": "Zodiacs horoscopes",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/horoscopes-v5.html",
+     "name": "horoscopes-legacy-5",
+     "title": "Zodiacs horoscopes",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/horoscopes-v4.html",
+     "name": "horoscopes-legacy-4",
+     "title": "Zodiacs horoscopes",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/horoscopes-v3.html",
+     "name": "horoscopes-legacy-3",
+     "title": "Zodiacs horoscopes",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/horoscopes-v2.html",
+     "name": "horoscopes-legacy-2",
+     "title": "Zodiacs horoscopes",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/horoscopes-v1.html",
+     "name": "horoscopes-legacy-1",
+     "title": "Zodiacs horoscopes",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/readings-v3.html",
+     "name": "readings",
+     "title": "Zodiacs readings",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A birth chart, a monthly, yearly or weekly horoscope, the Chinese zodiac, personal transits, or a short explainer. Inline only."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v8.html",
+     "name": "occasions",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v7.html",
+     "name": "occasions-legacy-7",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v6.html",
+     "name": "occasions-legacy-6",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v5.html",
+     "name": "occasions-legacy-5",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v4.html",
+     "name": "occasions-legacy-4",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v3.html",
+     "name": "occasions-legacy-3",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v2.html",
+     "name": "occasions-legacy-2",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    },
+    {
+     "uri": "ui://zodiacs/occasions-v1.html",
+     "name": "occasions-legacy-1",
+     "title": "Zodiacs occasions",
+     "mimeType": "text/html;profile=mcp-app",
+     "_meta": {
+      "ui": {
+       "csp": {
+        "connectDomains": [],
+        "resourceDomains": [
+         "https://zodiacs.org"
+        ]
+       },
+       "prefersBorder": true
+      },
+      "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar."
+     }
+    }
+   ]
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

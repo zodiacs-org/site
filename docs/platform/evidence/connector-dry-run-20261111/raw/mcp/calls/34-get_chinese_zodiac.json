@@ -1,0 +1,128 @@
+{
+ "id": "34-get_chinese_zodiac",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:01:22+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_chinese_zodiac",
+   "arguments": {
+    "birthDate": "1990-01-20",
+    "zone": "Asia/Singapore"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_chinese_zodiac\",\"data\":{\"from\":\"birth-date\",\"birthDate\":\"1990-01-20\",\"person\":{\"year\":1989,\"animal\":{\"slug\":\"snake\",\"name\":\"Snake\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/snake/?ref=assistant\",\"branch\":\"巳\",\"branchPinyin\":\"sì\",\"position\":6},\"element\":\"earth\",\"yinYang\":\"yin\",\"stemBranch\":\"己巳\",\"label\":\"Earth Snake (yin)\",\"starts\":\"1989-02-06\",\"ends\":\"1990-01-26\",\"association\":\"Traditionally associated with perception, reserve, and transformation.\",\"context\":\"The Snake follows the Dragon in the cycle. Interpretive traits vary by source, family, and region; the calendar position is the stable fact.\",\"pairings\":{\"harmony\":[{\"slug\":\"rooster\",\"name\":\"Rooster\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/rooster/?ref=assistant\"},{\"slug\":\"ox\",\"name\":\"Ox\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/ox/?ref=assistant\"}],\"partner\":{\"slug\":\"monkey\",\"name\":\"Monkey\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/monkey/?ref=assistant\"},\"opposite\":{\"slug\":\"pig\",\"name\":\"Pig\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/pig/?ref=assistant\"},\"text\":\"Tradition groups the Snake with the Rooster and the Ox as a harmonious three (三合), pairs it with the Monkey (六合), and sets it opposite the Pig (六冲), a pairing read as a clash.\"}},\"boundary\":{\"lunarNewYear\":\"1990-01-27\",\"beforeNewYear\":true,\"earlierAnimal\":null,\"text\":\"Born on 20 January 1990, before the Lunar New Year of 27 January 1990, so the year is still the Snake year that began in 1989.\"},\"current\":{\"year\":2026,\"animal\":{\"slug\":\"horse\",\"name\":\"Horse\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant\",\"branch\":\"午\",\"branchPinyin\":\"wǔ\",\"position\":7},\"element\":\"fire\",\"yinYang\":\"yang\",\"stemBranch\":\"丙午\",\"label\":\"Fire Horse (yang)\",\"starts\":\"2026-02-17\",\"ends\":\"2027-02-05\"},\"today\":\"2026-11-12\",\"zone\":\"Asia/Singapore\",\"zoneNote\":null,\"guideUrl\":\"https://zodiacs.org/learn/chinese-zodiac/?ref=assistant\",\"note\":\"Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction.\"},\"links\":[{\"title\":\"The Snake on Zodiacs\",\"url\":\"https://zodiacs.org/learn/chinese-zodiac/snake/?ref=assistant\"},{\"title\":\"The Horse, this year's animal\",\"url\":\"https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant\"},{\"title\":\"The Chinese zodiac on Zodiacs\",\"url\":\"https://zodiacs.org/learn/chinese-zodiac/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_chinese_zodiac",
+    "data": {
+     "from": "birth-date",
+     "birthDate": "1990-01-20",
+     "person": {
+      "year": 1989,
+      "animal": {
+       "slug": "snake",
+       "name": "Snake",
+       "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/snake/?ref=assistant",
+       "branch": "巳",
+       "branchPinyin": "sì",
+       "position": 6
+      },
+      "element": "earth",
+      "yinYang": "yin",
+      "stemBranch": "己巳",
+      "label": "Earth Snake (yin)",
+      "starts": "1989-02-06",
+      "ends": "1990-01-26",
+      "association": "Traditionally associated with perception, reserve, and transformation.",
+      "context": "The Snake follows the Dragon in the cycle. Interpretive traits vary by source, family, and region; the calendar position is the stable fact.",
+      "pairings": {
+       "harmony": [
+        {
+         "slug": "rooster",
+         "name": "Rooster",
+         "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/rooster/?ref=assistant"
+        },
+        {
+         "slug": "ox",
+         "name": "Ox",
+         "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/ox/?ref=assistant"
+        }
+       ],
+       "partner": {
+        "slug": "monkey",
+        "name": "Monkey",
+        "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/monkey/?ref=assistant"
+       },
+       "opposite": {
+        "slug": "pig",
+        "name": "Pig",
+        "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/pig/?ref=assistant"
+       },
+       "text": "Tradition groups the Snake with the Rooster and the Ox as a harmonious three (三合), pairs it with the Monkey (六合), and sets it opposite the Pig (六冲), a pairing read as a clash."
+      }
+     },
+     "boundary": {
+      "lunarNewYear": "1990-01-27",
+      "beforeNewYear": true,
+      "earlierAnimal": null,
+      "text": "Born on 20 January 1990, before the Lunar New Year of 27 January 1990, so the year is still the Snake year that began in 1989."
+     },
+     "current": {
+      "year": 2026,
+      "animal": {
+       "slug": "horse",
+       "name": "Horse",
+       "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant",
+       "branch": "午",
+       "branchPinyin": "wǔ",
+       "position": 7
+      },
+      "element": "fire",
+      "yinYang": "yang",
+      "stemBranch": "丙午",
+      "label": "Fire Horse (yang)",
+      "starts": "2026-02-17",
+      "ends": "2027-02-05"
+     },
+     "today": "2026-11-12",
+     "zone": "Asia/Singapore",
+     "zoneNote": null,
+     "guideUrl": "https://zodiacs.org/learn/chinese-zodiac/?ref=assistant",
+     "note": "Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction."
+    },
+    "links": [
+     {
+      "title": "The Snake on Zodiacs",
+      "url": "https://zodiacs.org/learn/chinese-zodiac/snake/?ref=assistant"
+     },
+     {
+      "title": "The Horse, this year's animal",
+      "url": "https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant"
+     },
+     {
+      "title": "The Chinese zodiac on Zodiacs",
+      "url": "https://zodiacs.org/learn/chinese-zodiac/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

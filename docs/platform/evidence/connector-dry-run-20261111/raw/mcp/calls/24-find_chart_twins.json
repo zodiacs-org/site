@@ -1,0 +1,161 @@
+{
+ "id": "24-find_chart_twins",
+ "why": "valid call; D3 link check",
+ "sentAtUtc": "2026-11-11T16:00:28+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "find_chart_twins",
+   "arguments": {
+    "birthDate": "1990-05-03",
+    "time": "08:30",
+    "zone": "Europe/Madrid"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"find_chart_twins\",\"data\":{\"birthDate\":\"1990-05-03\",\"timeKnown\":true,\"you\":{\"sun\":\"taurus\",\"moon\":\"leo\"},\"twins\":[{\"name\":\"Audrey Hepburn\",\"slug\":\"audrey-hepburn\",\"shortDescription\":\"Film actor · Belgium · 1929 to 1993\",\"born\":\"1929-05-04\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/audrey-hepburn/?ref=assistant\"},{\"name\":\"Bertrand Russell\",\"slug\":\"bertrand-russell\",\"shortDescription\":\"Analytic philosopher and logician · United Kingdom · 1872 to 1970\",\"born\":\"1872-05-18\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/bertrand-russell/?ref=assistant\"},{\"name\":\"Charlotte Brontë\",\"slug\":\"charlotte-bronte\",\"shortDescription\":\"Novelist and poet · United Kingdom · 1816 to 1855\",\"born\":\"1816-04-21\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/charlotte-bronte/?ref=assistant\"},{\"name\":\"Ella Fitzgerald\",\"slug\":\"ella-fitzgerald\",\"shortDescription\":\"Jazz singer · United States · 1917 to 1996\",\"born\":\"1917-04-25\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/ella-fitzgerald/?ref=assistant\"},{\"name\":\"Eva Perón\",\"slug\":\"eva-peron\",\"shortDescription\":\"Politician and stage actor · Argentina · 1919 to 1952\",\"born\":\"1919-05-07\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/eva-peron/?ref=assistant\"},{\"name\":\"Florence Nightingale\",\"slug\":\"florence-nightingale\",\"shortDescription\":\"Nurse and writer · Italy · 1820 to 1910\",\"born\":\"1820-05-12\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/florence-nightingale/?ref=assistant\"},{\"name\":\"Immanuel Kant\",\"slug\":\"immanuel-kant\",\"shortDescription\":\"Philosopher · Prussia · 1724 to 1804\",\"born\":\"1724-04-22\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/immanuel-kant/?ref=assistant\"},{\"name\":\"Johan Cruyff\",\"slug\":\"johan-cruyff\",\"shortDescription\":\"Association football player · Netherlands · 1947 to 2016\",\"born\":\"1947-04-25\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/johan-cruyff/?ref=assistant\"},{\"name\":\"Karen Carpenter\",\"slug\":\"karen-carpenter\",\"shortDescription\":\"Singer · United States · 1950 to 1983\",\"born\":\"1950-03-02\",\"shares\":\"moon\",\"url\":\"https://zodiacs.org/people/karen-carpenter/?ref=assistant\"},{\"name\":\"Karl Marx\",\"slug\":\"karl-marx\",\"shortDescription\":\"Philosopher · Germany · 1818 to 1883\",\"born\":\"1818-05-05\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/karl-marx/?ref=assistant\"},{\"name\":\"Katharine Hepburn\",\"slug\":\"katharine-hepburn\",\"shortDescription\":\"Film actor · United States · 1907 to 2003\",\"born\":\"1907-05-12\",\"shares\":\"sun\",\"url\":\"https://zodiacs.org/people/katharine-hepburn/?ref=assistant\"},{\"name\":\"Mohandas K. Gandhi\",\"slug\":\"mahatma-gandhi\",\"shortDescription\":\"Freedom fighter · India · 1869 to 1948\",\"born\":\"1869-10-02\",\"shares\":\"moon\",\"url\":\"https://zodiacs.org/people/mahatma-gandhi/?ref=assistant\"}],\"total\":14,\"notes\":[\"Birth times in this directory are unknown, so we compare verified Sun and Moon signs only. Rising signs are not compared.\"],\"pageUrl\":\"https://zodiacs.org/chart-twins/?ref=assistant\",\"shareUrl\":\"https://zodiacs.org/share/chart-twins/?s=taurus&m=leo&ref=assistant\"},\"links\":[{\"title\":\"Chart twins on Zodiacs\",\"url\":\"https://zodiacs.org/chart-twins/?ref=assistant\"},{\"title\":\"Famous birth charts on Zodiacs\",\"url\":\"https://zodiacs.org/people/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "find_chart_twins",
+    "data": {
+     "birthDate": "1990-05-03",
+     "timeKnown": true,
+     "you": {
+      "sun": "taurus",
+      "moon": "leo"
+     },
+     "twins": [
+      {
+       "name": "Audrey Hepburn",
+       "slug": "audrey-hepburn",
+       "shortDescription": "Film actor · Belgium · 1929 to 1993",
+       "born": "1929-05-04",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/audrey-hepburn/?ref=assistant"
+      },
+      {
+       "name": "Bertrand Russell",
+       "slug": "bertrand-russell",
+       "shortDescription": "Analytic philosopher and logician · United Kingdom · 1872 to 1970",
+       "born": "1872-05-18",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/bertrand-russell/?ref=assistant"
+      },
+      {
+       "name": "Charlotte Brontë",
+       "slug": "charlotte-bronte",
+       "shortDescription": "Novelist and poet · United Kingdom · 1816 to 1855",
+       "born": "1816-04-21",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/charlotte-bronte/?ref=assistant"
+      },
+      {
+       "name": "Ella Fitzgerald",
+       "slug": "ella-fitzgerald",
+       "shortDescription": "Jazz singer · United States · 1917 to 1996",
+       "born": "1917-04-25",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/ella-fitzgerald/?ref=assistant"
+      },
+      {
+       "name": "Eva Perón",
+       "slug": "eva-peron",
+       "shortDescription": "Politician and stage actor · Argentina · 1919 to 1952",
+       "born": "1919-05-07",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/eva-peron/?ref=assistant"
+      },
+      {
+       "name": "Florence Nightingale",
+       "slug": "florence-nightingale",
+       "shortDescription": "Nurse and writer · Italy · 1820 to 1910",
+       "born": "1820-05-12",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/florence-nightingale/?ref=assistant"
+      },
+      {
+       "name": "Immanuel Kant",
+       "slug": "immanuel-kant",
+       "shortDescription": "Philosopher · Prussia · 1724 to 1804",
+       "born": "1724-04-22",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/immanuel-kant/?ref=assistant"
+      },
+      {
+       "name": "Johan Cruyff",
+       "slug": "johan-cruyff",
+       "shortDescription": "Association football player · Netherlands · 1947 to 2016",
+       "born": "1947-04-25",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/johan-cruyff/?ref=assistant"
+      },
+      {
+       "name": "Karen Carpenter",
+       "slug": "karen-carpenter",
+       "shortDescription": "Singer · United States · 1950 to 1983",
+       "born": "1950-03-02",
+       "shares": "moon",
+       "url": "https://zodiacs.org/people/karen-carpenter/?ref=assistant"
+      },
+      {
+       "name": "Karl Marx",
+       "slug": "karl-marx",
+       "shortDescription": "Philosopher · Germany · 1818 to 1883",
+       "born": "1818-05-05",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/karl-marx/?ref=assistant"
+      },
+      {
+       "name": "Katharine Hepburn",
+       "slug": "katharine-hepburn",
+       "shortDescription": "Film actor · United States · 1907 to 2003",
+       "born": "1907-05-12",
+       "shares": "sun",
+       "url": "https://zodiacs.org/people/katharine-hepburn/?ref=assistant"
+      },
+      {
+       "name": "Mohandas K. Gandhi",
+       "slug": "mahatma-gandhi",
+       "shortDescription": "Freedom fighter · India · 1869 to 1948",
+       "born": "1869-10-02",
+       "shares": "moon",
+       "url": "https://zodiacs.org/people/mahatma-gandhi/?ref=assistant"
+      }
+     ],
+     "total": 14,
+     "notes": [
+      "Birth times in this directory are unknown, so we compare verified Sun and Moon signs only. Rising signs are not compared."
+     ],
+     "pageUrl": "https://zodiacs.org/chart-twins/?ref=assistant",
+     "shareUrl": "https://zodiacs.org/share/chart-twins/?s=taurus&m=leo&ref=assistant"
+    },
+    "links": [
+     {
+      "title": "Chart twins on Zodiacs",
+      "url": "https://zodiacs.org/chart-twins/?ref=assistant"
+     },
+     {
+      "title": "Famous birth charts on Zodiacs",
+      "url": "https://zodiacs.org/people/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

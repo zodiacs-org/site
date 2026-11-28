@@ -1,0 +1,55 @@
+{
+ "id": "79-err-famous-unknown",
+ "why": "D4: famous person not published",
+ "sentAtUtc": "2026-11-11T16:03:52+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_compatibility",
+   "arguments": {
+    "a": {
+     "birthDate": "1990-05-03"
+    },
+    "b": {
+     "famous": "Zzyx Nobody"
+    }
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_compatibility\",\"data\":{\"found\":false,\"side\":\"b\",\"query\":\"Zzyx Nobody\",\"directoryUrl\":\"https://zodiacs.org/people/?ref=assistant\",\"note\":\"Zodiacs has no chart for this name in its famous-people directory.\"},\"links\":[{\"title\":\"Famous birth charts on Zodiacs\",\"url\":\"https://zodiacs.org/people/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_compatibility",
+    "data": {
+     "found": false,
+     "side": "b",
+     "query": "Zzyx Nobody",
+     "directoryUrl": "https://zodiacs.org/people/?ref=assistant",
+     "note": "Zodiacs has no chart for this name in its famous-people directory."
+    },
+    "links": [
+     {
+      "title": "Famous birth charts on Zodiacs",
+      "url": "https://zodiacs.org/people/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

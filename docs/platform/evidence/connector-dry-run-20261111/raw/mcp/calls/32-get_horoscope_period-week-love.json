@@ -1,0 +1,172 @@
+{
+ "id": "32-get_horoscope_period-week-love",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:01:17+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_horoscope_period",
+   "arguments": {
+    "sign": "leo",
+    "period": "week",
+    "focus": "love",
+    "zone": "Asia/Bangkok"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_horoscope_period\",\"data\":{\"status\":\"available\",\"sign\":\"leo\",\"signName\":\"Leo\",\"period\":\"week\",\"focus\":\"love\",\"from\":\"2026-11-09\",\"to\":\"2026-11-15\",\"label\":\"Week of 9 November 2026\",\"zone\":\"Asia/Bangkok\",\"zoneSource\":\"request\",\"reading\":{\"title\":\"Leo · Week of 9 November 2026\",\"paragraphs\":[{\"text\":\"Give the week a center without making every moment orbit it. The week opens with home, family, and your private life, moves through creativity, romance, children, and enjoyment by Thursday, and closes on partners and one-to-one relationships. Give home and family the first concrete move instead of asking one choice to settle all three areas at once.\"},{\"text\":\"Early in the week, turn toward home, family, and your private life: protect the conditions that make home and private life workable, then before agreeing to another plan, check what you need at home and make time for it. Keep the home and family adjustment small enough to see what it changes before adding another.\"},{\"text\":\"By midweek, attention shifts to creativity, romance, children, and enjoyment: give play, romance, or creative work a defined place, then reserve time for the person, pleasure, or creative draft before the calendar treats it as optional.\"},{\"text\":\"At the exact contact, check whether the private conditions still support the week outside them. The New Moon in Scorpio brings home, family, and your private life into focus.\"},{\"text\":\"The week closes with partners and one-to-one relationships: put the agreement or disagreement directly on the table, then state the term that is still vague and give the other person a real chance to answer it. For Leo, the final review is to choose the contribution you would still value without applause.\"}],\"published\":null},\"focusReadings\":[{\"date\":\"2026-11-10\",\"title\":\"Leo · Tuesday 10 November · Love\",\"paragraphs\":[{\"text\":\"Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground.\"},{\"text\":\"Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment.\"}]},{\"date\":\"2026-11-11\",\"title\":\"Leo · Wednesday 11 November · Love\",\"paragraphs\":[{\"text\":\"Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground.\"},{\"text\":\"Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment.\"}]},{\"date\":\"2026-11-12\",\"title\":\"Leo · Thursday 12 November · Love\",\"paragraphs\":[{\"text\":\"Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground.\"},{\"text\":\"Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment.\"}]}],\"sky\":[{\"date\":\"Tue 10 Nov\",\"utc\":\"2026-11-10T08:35:46.562Z\",\"kind\":\"ingress\",\"planet\":\"Moon\",\"sign\":\"sagittarius\",\"house\":5,\"line\":\"Moon enters Sagittarius on Tue 10 Nov, moving into your fifth solar house, creativity, romance, children, and enjoyment.\"},{\"date\":\"Sat 14 Nov\",\"utc\":\"2026-11-14T00:21:08.412Z\",\"kind\":\"station\",\"planet\":\"Venus\",\"sign\":\"libra\",\"house\":3,\"line\":\"Venus turns direct in Libra on Sat 14 Nov, in your third solar house, messages, errands, siblings, and your local community: forward motion returns there.\"},{\"date\":\"Sun 15 Nov\",\"utc\":\"2026-11-15T09:24:16.361Z\",\"kind\":\"ingress\",\"planet\":\"Moon\",\"sign\":\"aquarius\",\"house\":7,\"line\":\"Moon enters Aquarius on Sun 15 Nov, moving into your seventh solar house, partners and one-to-one relationships.\"}],\"message\":\"Zodiacs writes love readings by the day; these are the ones published for days in this week. For love, the sky keeps Venus and Mars, and events in your fifth, seventh and eighth solar houses (romance, partners and intimacy). If the person is under 18, do not frame this as romance or attraction.\",\"available\":{\"months\":[\"2026-07\",\"2026-08\",\"2026-09\",\"2026-10\",\"2026-11\"],\"years\":[2026,2027]},\"pageUrl\":\"https://zodiacs.org/horoscopes/leo/love/?ref=assistant\",\"confidence\":40,\"confidenceLabel\":\"Reading confidence 40%\",\"disclosure\":\"For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%.\"},\"links\":[{\"title\":\"Leo horoscopes on Zodiacs\",\"url\":\"https://zodiacs.org/horoscopes/leo/love/?ref=assistant\"},{\"title\":\"Transits this month\",\"url\":\"https://zodiacs.org/transits/?ref=assistant\"},{\"title\":\"The Leo horoscope by email each morning\",\"url\":\"https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_horoscope_period",
+    "data": {
+     "status": "available",
+     "sign": "leo",
+     "signName": "Leo",
+     "period": "week",
+     "focus": "love",
+     "from": "2026-11-09",
+     "to": "2026-11-15",
+     "label": "Week of 9 November 2026",
+     "zone": "Asia/Bangkok",
+     "zoneSource": "request",
+     "reading": {
+      "title": "Leo · Week of 9 November 2026",
+      "paragraphs": [
+       {
+        "text": "Give the week a center without making every moment orbit it. The week opens with home, family, and your private life, moves through creativity, romance, children, and enjoyment by Thursday, and closes on partners and one-to-one relationships. Give home and family the first concrete move instead of asking one choice to settle all three areas at once."
+       },
+       {
+        "text": "Early in the week, turn toward home, family, and your private life: protect the conditions that make home and private life workable, then before agreeing to another plan, check what you need at home and make time for it. Keep the home and family adjustment small enough to see what it changes before adding another."
+       },
+       {
+        "text": "By midweek, attention shifts to creativity, romance, children, and enjoyment: give play, romance, or creative work a defined place, then reserve time for the person, pleasure, or creative draft before the calendar treats it as optional."
+       },
+       {
+        "text": "At the exact contact, check whether the private conditions still support the week outside them. The New Moon in Scorpio brings home, family, and your private life into focus."
+       },
+       {
+        "text": "The week closes with partners and one-to-one relationships: put the agreement or disagreement directly on the table, then state the term that is still vague and give the other person a real chance to answer it. For Leo, the final review is to choose the contribution you would still value without applause."
+       }
+      ],
+      "published": null
+     },
+     "focusReadings": [
+      {
+       "date": "2026-11-10",
+       "title": "Leo · Tuesday 10 November · Love",
+       "paragraphs": [
+        {
+         "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground."
+        },
+        {
+         "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment."
+        }
+       ]
+      },
+      {
+       "date": "2026-11-11",
+       "title": "Leo · Wednesday 11 November · Love",
+       "paragraphs": [
+        {
+         "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground."
+        },
+        {
+         "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment."
+        }
+       ]
+      },
+      {
+       "date": "2026-11-12",
+       "title": "Leo · Thursday 12 November · Love",
+       "paragraphs": [
+        {
+         "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground."
+        },
+        {
+         "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment."
+        }
+       ]
+      }
+     ],
+     "sky": [
+      {
+       "date": "Tue 10 Nov",
+       "utc": "2026-11-10T08:35:46.562Z",
+       "kind": "ingress",
+       "planet": "Moon",
+       "sign": "sagittarius",
+       "house": 5,
+       "line": "Moon enters Sagittarius on Tue 10 Nov, moving into your fifth solar house, creativity, romance, children, and enjoyment."
+      },
+      {
+       "date": "Sat 14 Nov",
+       "utc": "2026-11-14T00:21:08.412Z",
+       "kind": "station",
+       "planet": "Venus",
+       "sign": "libra",
+       "house": 3,
+       "line": "Venus turns direct in Libra on Sat 14 Nov, in your third solar house, messages, errands, siblings, and your local community: forward motion returns there."
+      },
+      {
+       "date": "Sun 15 Nov",
+       "utc": "2026-11-15T09:24:16.361Z",
+       "kind": "ingress",
+       "planet": "Moon",
+       "sign": "aquarius",
+       "house": 7,
+       "line": "Moon enters Aquarius on Sun 15 Nov, moving into your seventh solar house, partners and one-to-one relationships."
+      }
+     ],
+     "message": "Zodiacs writes love readings by the day; these are the ones published for days in this week. For love, the sky keeps Venus and Mars, and events in your fifth, seventh and eighth solar houses (romance, partners and intimacy). If the person is under 18, do not frame this as romance or attraction.",
+     "available": {
+      "months": [
+       "2026-07",
+       "2026-08",
+       "2026-09",
+       "2026-10",
+       "2026-11"
+      ],
+      "years": [
+       2026,
+       2027
+      ]
+     },
+     "pageUrl": "https://zodiacs.org/horoscopes/leo/love/?ref=assistant",
+     "confidence": 40,
+     "confidenceLabel": "Reading confidence 40%",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%."
+    },
+    "links": [
+     {
+      "title": "Leo horoscopes on Zodiacs",
+      "url": "https://zodiacs.org/horoscopes/leo/love/?ref=assistant"
+     },
+     {
+      "title": "Transits this month",
+      "url": "https://zodiacs.org/transits/?ref=assistant"
+     },
+     {
+      "title": "The Leo horoscope by email each morning",
+      "url": "https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

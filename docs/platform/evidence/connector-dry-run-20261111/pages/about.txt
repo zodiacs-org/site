@@ -1,0 +1,66 @@
+About Zodiacs.org: Accurate, Plain, Private AstrologySkip to content <#main>
+Zodiacs·org </>
+ToolsSignsToday </today/>Learn </learn/>Horoscopes </horoscopes/> </profile/>/Astrofolio </astrofolio/>
+Birth chartSee your sun, moon, rising, planets, houses, and what they mean. </birth-chart/>CompatibilityCompare two charts and see where they click, clash, and grow. </compatibility/>TransitsExplore today’s planets and their connections to your chart. </transits/>Moon signHow you feel, and what settles you. </moon-sign/>Rising signFind the sign people meet first. Birth time helps. </rising-sign/>Moon phaseTonight’s moon, and the moon of any date you care about. </moon-phase/>Saturn returnWhen yours hits, exactly, and what it tends to ask. </saturn-return/>BirthdayFind your Sun sign from your birthday, including dates near a sign change. </birthday/>
+More to explore
+- Group charts </group-charts/>
+- Chart twins </chart-twins/>
+- Big three card </big-three/>
+- Invite a friend </compatibility/invite/>
+- Sky calendar </sky-calendar/>
+- Chart of the day </chart-of-the-day/>
+- Your sky, wrapped </your-sky-wrapped/>
+- Chart PDF </astrologer-kit/>All tools → </tools/>
+AriesMar 21 to Apr 19 </aries/>TaurusApr 20 to May 20 </taurus/>GeminiMay 21 to Jun 20 </gemini/>CancerJun 21 to Jul 22 </cancer/>LeoJul 23 to Aug 22 </leo/>VirgoAug 23 to Sep 22 </virgo/>LibraSep 23 to Oct 22 </libra/>ScorpioOct 23 to Nov 21 </scorpio/>SagittariusNov 22 to Dec 21 </sagittarius/>CapricornDec 22 to Jan 19 </capricorn/>AquariusJan 20 to Feb 18 </aquarius/>PiscesFeb 19 to Mar 20 </pisces/>
+The siteBirth chart </birth-chart/>Compatibility </compatibility/>TodayYour daily reading and personal chart highlights </today/>Learn </learn/>HoroscopesDaily readings for your zodiac sign </horoscopes/>Saved chartsYour birth chart and the people you’ve added </profile/>
+Tools
+Transits </transits/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Birthday </birthday/>All tools → </tools/>
+Developers </developers/>AstrofolioOfficial Zodiac token collection </astrofolio/>
+The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+# A straight answer about the sky.
+Zodiacs.org is a free astrology reference built on one idea: the astronomy can be exact even when the interpretation is a tradition. Every chart here is computed from the real positions of the planets and kept on your own device.
+## Company
+Zodiacs.org is the official website of Zodiacs LLC, a New Mexico limited liability company formed on August 11, 2026. Zodiacs LLC owns and operates this website and develops Zodiacs: Birth Chart. Company, legal, press, and support inquiries may be sent to admin@zodiacs.org <mailto:admin@zodiacs.org>.
+## Why it exists
+Most astrology sites are either beautiful and vague or accurate and unreadable. The calculators that get the math right tend to look like tax software; the ones that feel good tend to hand-wave the numbers. We wanted a third option, a place where you can get your full birth chart in about twenty seconds, see the exact degrees behind every claim, and read what they mean in ordinary words.
+The reading comes first. Exact degrees, dated sky facts, and sources stay close by for anyone who wants to check them, without turning every page into a technical report.
+## Accuracy without the homework
+When a date, degree, or birth time matters, it is calculated against the actual sky and checked before it appears. If you want the ephemerisIn plain EnglishEphemerisAn ephemeris is a table or computational model of astronomical positions over time.Learn more about Ephemeris → </learn/glossary/#ephemeris>, house systemsIn plain EnglishHouse systemA method for dividing a birth chart into twelve areas of life.Learn more about House system → </learn/glossary/#house-system>, historical time-zone handling, and accuracy limits, the full methodology is public </methodology/>.
+## Your data stays yours
+The engine runs in your browser, so chart calculation sends no birth fields to a chart API. Charts you save live on your device; if you sign in to a free account, they sync to it with their birth details. If you explicitly attach a chart to Guide, which is offered only in the encrypted sync preview and not on the public site, its placements-only summary, not the saved name or raw birth fields, is sent with your question to Anthropic for that conversation; its positions still give your birth date and time. There are no ads and no cross-site tracking. The full detail is on the privacy page </privacy/>.
+## Four experiences under one roof
+Most of the site is the astrology reference: guides, calculators, horoscopes, and the birthday pages. Alongside it lives Astrofolio </astrofolio/>, a collection view of the Twelve. The Zodiacs Registry </registry/> keeps their canonical records and addresses, while the Terminal </terminal/> presents a denser record of dated public activity. These sections stay separate from the free astrology surfaces by design.
+Charts you save start on this device and sync only if you choose a Zodiacs.org account. Saved charts live in your profile and are never required to use the free tools.
+The Registry’s operator and economic-interest attestations, the twelve dated origin receipts, and the establishment provenance are published on the disclosure page. Read the Registry disclosure </disclosure/>.
+## How Zodiacs.org is maintained
+Zodiacs.org is a Zodiacs LLC publication maintained by automated systems, without a traditional human editorial staff. Articles use the Zodiacs.org organizational byline; there is no invented editor, biography, or set of credentials behind it. The calculators remain free because the core math runs on your device.Open the publication detailsAutomation, checks, and public records
+AI agents can propose writing, design, and code, but free-form model prose cannot publish itself. Daily editions begin with structured sky facts and versioned local templates. A separate astronomy audit recalculates the sky, while policy checks reject unsupported facts, unsafe certainty, and incomplete editions before publication.
+The current daily edition exposes its facts, generation mode, policy version, hashes, and verification result in a public publication record </data/daily-publication.json>. The rulebook is machine-readable </data/editorial-constitution.json>, the daily method is documented </methodology/#daily-publication>, and the correction log </corrections/> records material changes.
+## Get in touch
+Corrections, questions, press, or a request about your data: write to admin@zodiacs.org <mailto:admin@zodiacs.org>. If you have spotted an astrological or astronomical error on a page, tell us which page; accuracy reports are the ones we answer first.
+For a correction or removal request concerning a page in the People directory, write to people@zodiacs.org <mailto:people@zodiacs.org>.
+Get your free birth chart↗ </birth-chart/>How we compute it </methodology/>
+## The daily, by email.
+Your sign’s reading each morning. Free, unsubscribe anytime.
+Leave this field blank
+Email address
+ChangeYour Sun sign
+AriesTaurusGeminiCancerLeoVirgoLibraScorpioSagittariusCapricornAquariusPiscesEmail my daily horoscope
+We store your email and your chosen sign, nothing else. Never your birth details.
+You’re set. If confirmation or a change is needed, check your inbox.Choose your Sun sign so we can send its daily horoscope.That email address doesn’t look complete.Couldn't start the subscription. Please try again.
+Zodiacs·org </>
+Free astrology tools and sign guides, with charts calculated privately in your browser.Guide→
+An AI assistant for astrology questions and help using Zodiacs.
+Tools
+Birth chart </birth-chart/>Today </today/>Compatibility </compatibility/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Transits </transits/>Retrogrades </retrogrades/>Learn
+Learn astrology </learn/>Horoscopes </horoscopes/>The planets </learn/planets/>The houses </learn/houses/>Zodiac dates </learn/zodiac-dates/>Glossary </learn/glossary/>How charts are calculated </methodology/>Saved charts </profile/>Registry
+Astrofolio </astrofolio/>Registry </registry/>SDK </sdk/>Disclosure </disclosure/>Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. Read our disclosure </disclosure/>.The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+LanguageEnglishEspañol </es/>Português (Brasil) </pt/>Français </fr/>Italiano </it/>
+© 2026 Zodiacs.orgLegal
+About </about/>Privacy </privacy/>Terms </terms/>More
+Developers </developers/>Widgets </widgets/>RSS </feeds/horoscopes.xml>
+Data & licenses
+Place data: GeoNames <https://www.geonames.org/> · CC BY 4.0
+Fonts under SIL OFL 1.1 </fonts/OFL-instrument-sans.txt>

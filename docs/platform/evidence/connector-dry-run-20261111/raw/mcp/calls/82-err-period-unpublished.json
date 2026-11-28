@@ -1,0 +1,141 @@
+{
+ "id": "82-err-period-unpublished",
+ "why": "D4: a month with no published reading",
+ "sentAtUtc": "2026-11-11T16:04:09+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_horoscope_period",
+   "arguments": {
+    "sign": "leo",
+    "period": "month",
+    "date": "2030-03-01"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_horoscope_period\",\"data\":{\"status\":\"sky-only\",\"sign\":\"leo\",\"signName\":\"Leo\",\"period\":\"month\",\"focus\":\"general\",\"from\":\"2030-03-01\",\"to\":\"2030-03-31\",\"label\":\"March 2030\",\"zone\":\"UTC\",\"zoneSource\":\"default\",\"reading\":null,\"focusReadings\":[],\"sky\":[{\"date\":\"Mon 4 Mar\",\"utc\":\"2030-03-04T06:34:43.579Z\",\"kind\":\"lunation\",\"planet\":\"Moon\",\"sign\":\"pisces\",\"house\":8,\"line\":\"New Moon in Pisces on Mon 4 Mar, in your eighth solar house, shared finances, debts, intimacy, and trust: a clean line to start something.\"},{\"date\":\"Wed 6 Mar\",\"utc\":\"2030-03-06T12:49:34.249Z\",\"kind\":\"ingress\",\"planet\":\"Venus\",\"sign\":\"aquarius\",\"house\":7,\"line\":\"Venus enters Aquarius on Wed 6 Mar, moving into your seventh solar house, partners and one-to-one relationships.\"},{\"date\":\"Wed 13 Mar\",\"utc\":\"2030-03-13T14:34:12.204Z\",\"kind\":\"station\",\"planet\":\"Jupiter\",\"sign\":\"scorpio\",\"house\":4,\"line\":\"Jupiter turns retrograde in Scorpio on Wed 13 Mar, in your fourth solar house, home, family, and your private life: a time for revisions there.\"},{\"date\":\"Fri 15 Mar\",\"utc\":\"2030-03-15T08:41:25.213Z\",\"kind\":\"ingress\",\"planet\":\"Mercury\",\"sign\":\"aries\",\"house\":9,\"line\":\"Mercury enters Aries on Fri 15 Mar, moving into your ninth solar house, travel, learning, beliefs, and long-term plans.\"},{\"date\":\"Tue 19 Mar\",\"utc\":\"2030-03-19T17:56:32.801Z\",\"kind\":\"lunation\",\"planet\":\"Moon\",\"sign\":\"virgo\",\"house\":2,\"line\":\"Full Moon in Virgo on Tue 19 Mar, in your second solar house, your money, possessions, and priorities: something comes due.\"},{\"date\":\"Wed 20 Mar\",\"utc\":\"2030-03-20T13:51:51.391Z\",\"kind\":\"ingress\",\"planet\":\"Sun\",\"sign\":\"aries\",\"house\":9,\"line\":\"Sun enters Aries on Wed 20 Mar, moving into your ninth solar house, travel, learning, beliefs, and long-term plans.\"}],\"message\":\"The March 2030 reading for Leo isn't published yet; monthly readings appear on the first of the month. Dates assume UTC because no time zone was given.\",\"available\":{\"months\":[\"2026-07\",\"2026-08\",\"2026-09\",\"2026-10\",\"2026-11\"],\"years\":[2026,2027]},\"pageUrl\":\"https://zodiacs.org/horoscopes/leo/?ref=assistant\",\"confidence\":40,\"confidenceLabel\":\"Reading confidence 40%\",\"disclosure\":\"For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%.\"},\"links\":[{\"title\":\"Leo horoscopes on Zodiacs\",\"url\":\"https://zodiacs.org/horoscopes/leo/?ref=assistant\"},{\"title\":\"Transits this month\",\"url\":\"https://zodiacs.org/transits/?ref=assistant\"},{\"title\":\"The Leo horoscope by email each morning\",\"url\":\"https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_horoscope_period",
+    "data": {
+     "status": "sky-only",
+     "sign": "leo",
+     "signName": "Leo",
+     "period": "month",
+     "focus": "general",
+     "from": "2030-03-01",
+     "to": "2030-03-31",
+     "label": "March 2030",
+     "zone": "UTC",
+     "zoneSource": "default",
+     "reading": null,
+     "focusReadings": [],
+     "sky": [
+      {
+       "date": "Mon 4 Mar",
+       "utc": "2030-03-04T06:34:43.579Z",
+       "kind": "lunation",
+       "planet": "Moon",
+       "sign": "pisces",
+       "house": 8,
+       "line": "New Moon in Pisces on Mon 4 Mar, in your eighth solar house, shared finances, debts, intimacy, and trust: a clean line to start something."
+      },
+      {
+       "date": "Wed 6 Mar",
+       "utc": "2030-03-06T12:49:34.249Z",
+       "kind": "ingress",
+       "planet": "Venus",
+       "sign": "aquarius",
+       "house": 7,
+       "line": "Venus enters Aquarius on Wed 6 Mar, moving into your seventh solar house, partners and one-to-one relationships."
+      },
+      {
+       "date": "Wed 13 Mar",
+       "utc": "2030-03-13T14:34:12.204Z",
+       "kind": "station",
+       "planet": "Jupiter",
+       "sign": "scorpio",
+       "house": 4,
+       "line": "Jupiter turns retrograde in Scorpio on Wed 13 Mar, in your fourth solar house, home, family, and your private life: a time for revisions there."
+      },
+      {
+       "date": "Fri 15 Mar",
+       "utc": "2030-03-15T08:41:25.213Z",
+       "kind": "ingress",
+       "planet": "Mercury",
+       "sign": "aries",
+       "house": 9,
+       "line": "Mercury enters Aries on Fri 15 Mar, moving into your ninth solar house, travel, learning, beliefs, and long-term plans."
+      },
+      {
+       "date": "Tue 19 Mar",
+       "utc": "2030-03-19T17:56:32.801Z",
+       "kind": "lunation",
+       "planet": "Moon",
+       "sign": "virgo",
+       "house": 2,
+       "line": "Full Moon in Virgo on Tue 19 Mar, in your second solar house, your money, possessions, and priorities: something comes due."
+      },
+      {
+       "date": "Wed 20 Mar",
+       "utc": "2030-03-20T13:51:51.391Z",
+       "kind": "ingress",
+       "planet": "Sun",
+       "sign": "aries",
+       "house": 9,
+       "line": "Sun enters Aries on Wed 20 Mar, moving into your ninth solar house, travel, learning, beliefs, and long-term plans."
+      }
+     ],
+     "message": "The March 2030 reading for Leo isn't published yet; monthly readings appear on the first of the month. Dates assume UTC because no time zone was given.",
+     "available": {
+      "months": [
+       "2026-07",
+       "2026-08",
+       "2026-09",
+       "2026-10",
+       "2026-11"
+      ],
+      "years": [
+       2026,
+       2027
+      ]
+     },
+     "pageUrl": "https://zodiacs.org/horoscopes/leo/?ref=assistant",
+     "confidence": 40,
+     "confidenceLabel": "Reading confidence 40%",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%."
+    },
+    "links": [
+     {
+      "title": "Leo horoscopes on Zodiacs",
+      "url": "https://zodiacs.org/horoscopes/leo/?ref=assistant"
+     },
+     {
+      "title": "Transits this month",
+      "url": "https://zodiacs.org/transits/?ref=assistant"
+     },
+     {
+      "title": "The Leo horoscope by email each morning",
+      "url": "https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}
