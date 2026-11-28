@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "name": "@zodiacs/engine",
   "version": "3.0.0",
-  "releaseStatus": "vendored-candidate",
-  "releaseLabel": "Vendored candidate",
+  "releaseStatus": "published",
+  "releaseLabel": "On npm",
   "artifactPath": "vendor/zodiacs-engine-3.0.0.tgz",
   "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/b5bfdb473b396a4f8c083e5689cf9560789784dd/artifacts/zodiacs-engine-3.0.0.tgz",
   "sha256": "0addb2f4d39ea4d8e87f54ad82a033a16a94859c78845f055d2208e04259a9a3",
@@ -21,6 +21,6 @@
   "artifactRepository": "https://github.com/zodiacs-org/engine",
   "artifactCommit": "b5bfdb473b396a4f8c083e5689cf9560789784dd",
   "artifactRepositoryPath": "artifacts/zodiacs-engine-3.0.0.tgz",
-  "registryVersion": "2.1.0",
-  "registryObservedOn": "2026-11-26"
+  "registryVersion": "3.0.0",
+  "registryObservedOn": "2026-11-28"
 }

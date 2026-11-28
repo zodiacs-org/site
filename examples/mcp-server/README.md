@@ -59,7 +59,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.30.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.31.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -497,7 +497,7 @@ are separate fields, so a fallback is visible rather than silent.
     "tool": "compare_calculation_records",
     "adapter": {
       "name": "zodiacs-mcp-server",
-      "version": "0.1.0-rc.30"
+      "version": "0.1.0-rc.31"
     },
     "engine": {
       "name": "@zodiacs/engine",
@@ -511,7 +511,7 @@ are separate fields, so a fallback is visible rather than silent.
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:2ca2e66ea9ff74f7517b7cfed24b915018bdc226a3d4f2eb8c23bd5d2358e4ab",
+    "receipt": "sha256:bc2574f8c5e92ba54bca8ffcd46ac40601931cd9ea7a2a91d37ee135806e69d8",
     "engine": "@zodiacs/engine",
     "version": "3.0.0"
   }
@@ -588,8 +588,8 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.30`, unpublished candidate |
-| engine | `@zodiacs/engine` `3.0.0`, a vendored candidate not on npm, bundled into `server.mjs`. It uses DE440 by default. |
+| adapter | `0.1.0-rc.31`, unpublished candidate |
+| engine | `@zodiacs/engine` `3.0.0`, published on npm, bundled into `server.mjs`. It uses DE440 by default. |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
@@ -639,14 +639,15 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   `broadDateRange: "not-certified"`; this is the range the rest of Zodiacs
   supports and the adapter adopts it rather than inventing a wider one.
 - **Not on npm.** This adapter is not published under any name, and
-  `get_capabilities` labels it `unpublished-candidate`, and so the engine it
-  bundles: 3.0.0 is a vendored candidate, while npm serves `@zodiacs/engine`
-  2.1.0 under `latest`.
+  `get_capabilities` labels it `unpublished-candidate`. The engine it bundles
+  is on npm: npm serves `@zodiacs/engine` 3.0.0 under `latest` since
+  27 November 2026, and `get_capabilities` labels it published.
   From 1.1.0-rc.1 the engine's records list the ids of the Zodiacs
   conventions registry they name, and 1.0.0, like adapters up to rc.24,
   refuses them as `unsupported_feature`. `server.mjs` is built from the
   engine's carried archive. This adapter does not import `calc` or Vedic; its
-  finite comparison with rc.18 is recorded in the site adoption. rc.30
+  finite comparison with rc.18 is recorded in the site adoption. rc.31
+  labels the bundled engine published, since npm now serves 3.0.0. rc.30
   bundles 3.0.0 in place of 2.1.0 and installs its DE440 pack with
   `useDe440()`, so its positions are 2.1.0's. rc.28
   bundles 2.1.0 in place of 1.1.0: after the IERS table ends (2027-10-02) it

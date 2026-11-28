@@ -846,6 +846,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...UNKNOWN_TIME_MOON_ROUTES.map((loc) => [loc, UNKNOWN_TIME_MOON_LASTMOD] as const),
   // Engine 3.0.0 and MCP adapter 0.1.0-rc.30 (ENGINE_300_ROUTES, /methodology/, and the guides), last so it wins.
   ...[...ENGINE_300_ROUTES, ...DEVELOPER_GUIDES_ROUTES].map((loc) => [loc, ENGINE_300_LASTMOD] as const),
+  // npm serves engine 3.0.0 under latest (registry read 2026-11-28), and MCP adapter 0.1.0-rc.31 labels it
+  // published: the pages that state the engine's release status or the adapter's version, last so they win.
+  ...['/developers/', '/developers/engine/', '/developers/mcp/', '/developers/support/'].map(
+    (loc) => [loc, '2026-11-28'] as const,
+  ),
   // The iPhone app privacy policy, linked from /support/ (ZOD-127), last so the support date wins.
   ['/app/privacy/', '2026-11-22'] as const,
   ['/support/', '2026-11-22'] as const,
