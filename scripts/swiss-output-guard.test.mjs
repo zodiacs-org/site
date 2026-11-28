@@ -139,8 +139,10 @@ const hasPatch = (value) => value !== null && typeof value === 'object'
 
 /** One pass over the tree, shared by the content checks below. */
 let found;
-function scan() {
-  if (found) return found;
+let scanning;
+const scan = () => (scanning ??= collect());
+
+async function collect() {
   const forbidden = new Map([
     ...manifest.removedFiles.map((entry) => [entry.sha256, `the removed ${entry.path}`]),
     ...manifest.replacedFiles.map((entry) => [entry.before.sha256, `${entry.path} as it gave Swiss's values back`]),
@@ -148,7 +150,7 @@ function scan() {
   const sizes = new Set([...manifest.removedFiles.map((e) => e.bytes), ...manifest.replacedFiles.map((e) => e.before.bytes)]);
   const gone = new Set(digests.gone);
   found = { files: 0, bytes: [], values: [], provenance: [], source: [], patches: [] };
-  found.files = walkTree(root, (entry) => {
+  found.files = await walkTree(root, (entry) => {
     if (entry.path.startsWith(RECORD)) return;
     const where = entry.member ? `${entry.path}!${entry.member}` : entry.path;
     if (sizes.has(entry.bytes.length)) {
@@ -264,21 +266,21 @@ describe('Swiss Ephemeris output stays out of the tree', () => {
     }
   });
 
-  it("finds no removed or replaced file's bytes under any name, archive members included", { timeout: SCAN_TIMEOUT }, () => {
-    const { files, bytes } = scan();
+  it("finds no removed or replaced file's bytes under any name, archive members included", { timeout: SCAN_TIMEOUT }, async () => {
+    const { files, bytes } = await scan();
     expect(files).toBeGreaterThan(1000);
     expect(bytes, REGENERATE).toEqual([]);
   });
 
-  it('finds no removed value in any data or code file, or anywhere under src/', { timeout: SCAN_TIMEOUT }, () => {
+  it('finds no removed value in any data or code file, or anywhere under src/', { timeout: SCAN_TIMEOUT }, async () => {
     // A match is a distinctive number or timestamp that left the tree. If it
     // is an input or a statistic rather than a Swiss value, the removal record
     // says how it is listed as kept.
-    expect(scan().values, REGENERATE).toEqual([]);
+    expect((await scan()).values, REGENERATE).toEqual([]);
   });
 
-  it('finds no Swiss provenance under src/ beyond the kept policies and the conformance summary', { timeout: SCAN_TIMEOUT }, () => {
-    expect(scan().provenance, REGENERATE).toEqual([]);
+  it('finds no Swiss provenance under src/ beyond the kept policies and the conformance summary', { timeout: SCAN_TIMEOUT }, async () => {
+    expect((await scan()).provenance, REGENERATE).toEqual([]);
   });
 
   it('lets the developer guides name the bindings and nothing else of Swiss', () => {
@@ -289,8 +291,8 @@ describe('Swiss Ephemeris output stays out of the tree', () => {
     expect(namedPackageProblems('src/data/other.json', 'swisseph')).toEqual(['src/data/other.json:1: swisseph']);
   });
 
-  it('finds no Swiss Ephemeris source code in the tree, and no patch in a swisseph commit receipt', { timeout: SCAN_TIMEOUT }, () => {
-    const { source, patches } = scan();
+  it('finds no Swiss Ephemeris source code in the tree, and no patch in a swisseph commit receipt', { timeout: SCAN_TIMEOUT }, async () => {
+    const { source, patches } = await scan();
     expect(source, 'Swiss Ephemeris is AGPL or commercially licensed, and this repository is all rights reserved').toEqual([]);
     expect(patches, 'a commit receipt keeps the commit, not its diff').toEqual([]);
   });
