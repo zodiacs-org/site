@@ -313,6 +313,47 @@ async function settleFonts(page) {
   return state;
 }
 
+/**
+ * Chromium's full-page capture (captureBeyondViewport) resizes the window to
+ * 1 by 1 pixel and back while it captures (the page sees two resize events).
+ * A responsive image whose `sizes` picks a different candidate at that width
+ * selects it, then reselects the settled one, and the capture can paint while
+ * the settled file decodes again: on the birth chart at 1440 the closing
+ * astrolabe (1200w, 720w at 1 pixel) went missing from captures on a slow
+ * CPU, the same 0.32% every time, and no two captures in a row agreed. A
+ * visitor's window never passes through 1 pixel, so the page is not at fault.
+ *
+ * Every drawn image therefore keeps only the candidate it already shows, with
+ * the same descriptor (and each <source> in its <picture> offers that one
+ * file), so the capture's resize selects the same file and nothing reloads.
+ * The pixels are the settled state's. Returns how many images were pinned.
+ */
+async function pinResponsiveImages(page) {
+  return page.evaluate(async () => {
+    const pinned = [];
+    for (const image of document.images) {
+      if (!image.srcset || !image.complete || image.naturalWidth === 0 || !image.currentSrc) continue;
+      const sources = image.parentElement?.tagName === 'PICTURE'
+        ? [...image.parentElement.querySelectorAll('source[srcset]')]
+        : [];
+      // srcset candidates are "url descriptor" separated by commas; a URL with
+      // a comma in it (a data: URL) simply finds no match and is left alone.
+      const candidate = [image, ...sources]
+        .flatMap((element) => element.srcset.split(','))
+        .map((entry) => entry.trim().split(/\s+/))
+        .find(([url]) => url && new URL(url, document.baseURI).href === image.currentSrc);
+      if (!candidate) continue;
+      const settled = candidate.join(' ');
+      for (const source of sources) source.srcset = settled;
+      image.srcset = settled;
+      pinned.push(image);
+    }
+    await Promise.all(pinned.map((image) => image.decode().catch(() => undefined)));
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    return pinned.length;
+  });
+}
+
 async function ariesFontReceipt(page, context, stem, phase) {
   const css = await page.evaluate(() => ({
     faces: [...document.fonts].map((face) => ({
@@ -552,6 +593,9 @@ async function capture(browser, baseURL, testCase, judge) {
       );
     }
   }
+
+  const pinned = await pinResponsiveImages(page);
+  if (pinned > 0) console.log(`  images: ${fileStem(testCase)} pinned ${pinned} responsive image${pinned === 1 ? '' : 's'} to the candidate drawn`);
 
   // Chromium's full-page capture (Page.captureScreenshot with
   // captureBeyondViewport) recreates the page's CSS font faces, which load
