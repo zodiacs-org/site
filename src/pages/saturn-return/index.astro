@@ -58,7 +58,12 @@ const jsonLd = [
   image="/assets/og/v2/tool/saturn-return.png"
   imageAlt="Free Saturn return calculator, Zodiacs.org"
   jsonLd={jsonLd}
+  stableTypography
 >
+  {/* Optional faces (stableTypography): a heading font that landed after the
+      first paint rewrapped the title and moved the calculator below it. A
+      face that misses the first paint now stays in the fallback for the
+      visit. Base already preloads the title's face. */}
   <section class="section--tight container">
     <Motion />
     <ToolHeroMark name="saturn-return" />

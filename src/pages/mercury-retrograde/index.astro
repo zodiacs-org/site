@@ -139,7 +139,12 @@ const jsonLd = [
   imageAlt="Mercury retrograde dates, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
+  stableTypography
 >
+  {/* Optional faces (stableTypography): a late font rewrapped the hero
+      paragraph and moved .rx-now and everything below it. A face that misses
+      the first paint now stays in the fallback for the visit. Base already
+      preloads the hero's faces. */}
   <section class="section--tight container container--narrow">
     <Motion />
     <ToolHeroMark name="retrogrades" />
