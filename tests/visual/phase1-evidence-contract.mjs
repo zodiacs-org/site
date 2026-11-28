@@ -80,6 +80,23 @@ export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS = Object.freeze([
   'src/styles/good-days.css',
 ]);
 
+/**
+ * Vitest test files found by walking the directories above are not render
+ * inputs: no page, component or build step imports one, and a change to a
+ * test cannot move a pixel. The pattern is vitest's default `include`
+ * (`**\/*.{test,spec}.?(c|m)[jt]s?(x)`; vitest.config.mts keeps the default),
+ * applied under `src/` only. Routes under `src/pages/` stay hashed whatever
+ * their name, because Astro would build such a file as a page, and so do test
+ * helpers, fixtures and snapshots, and every path listed explicitly above.
+ */
+export const PHASE1_TEMPLATE_SOURCE_TEST_FILE_PATTERN = /\.(?:test|spec)\.[cm]?[jt]sx?$/u;
+
+export function isPhase1ExcludedTestFile(path) {
+  return path.startsWith('src/')
+    && !path.startsWith('src/pages/')
+    && PHASE1_TEMPLATE_SOURCE_TEST_FILE_PATTERN.test(path);
+}
+
 export function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
@@ -106,7 +123,8 @@ export async function phase1TemplateSourceSha256(
     PHASE1_TEMPLATE_SOURCE_DIRECTORIES.map((path) => sourceFiles(repositoryRoot, path)),
   )).flat().filter((path) => !PHASE1_TEMPLATE_SOURCE_EXCLUDED_DIRECTORIES.some(
     (directory) => path === directory || path.startsWith(`${directory}/`),
-  ) && !PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS.includes(path));
+  ) && !PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS.includes(path)
+    && !isPhase1ExcludedTestFile(path));
   const paths = [...new Set([...PHASE1_TEMPLATE_SOURCE_PATHS, ...directoryFiles])].sort();
   // Bound concurrent reads, then hash every path and byte in the same sorted
   // order. Reading one file at a time made repeated invalidation checks depend
