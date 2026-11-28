@@ -824,7 +824,8 @@
   background: var(--void-0);
 }
 
-/* No saved chart yet: the keepsake case, waiting for its first disc. */
+/* No saved chart yet: the zodiac ring in space (SavedChartsFigure), its
+   places waiting for planets. */
 .pf-page .pfd__empty {
   position: relative;
   overflow: hidden;
@@ -833,20 +834,17 @@
   min-height: 300px;
   align-content: center;
 }
-.pf-page .pfd__empty > :not(.pf-art) { position: relative; max-width: min(46ch, 50%); }
+.pf-page .pfd__empty > :not(.pf-art, .pf-figure) { position: relative; max-width: min(46ch, 50%); }
 .pf-page .pfd__empty h2 { font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.4rem); }
 .pf-page .pfd__empty p { color: var(--text-2); font-size: 1rem; line-height: 1.6; }
 .pf-page .pfd__empty .btn { margin-top: 8px; }
-.pf-page .pf-art--keepsake {
+.pf-page .pf-figure--wheel {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   width: min(58%, 560px);
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 44%, transparent 100%);
-  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 44%, transparent 100%);
 }
-.pf-page .pf-art--keepsake { --focus: 62% 46%; }
 
 /* Which chart is yours: a panel of its own under the header. */
 .pf-page .pf-choose__core {
@@ -886,15 +884,15 @@
   border-top: 1px solid var(--hair-1);
 }
 .pf-page .living-chart__empty { max-width: 58ch; color: var(--text-2); font-size: 0.9375rem; }
-.pf-page .pf-art--sundial { --focus: 44% 55%; width: 100%; height: 170px; }
+.pf-page .pf-figure--timeline { width: 100%; height: 170px; }
 @media (min-width: 760px) {
   .pf-page .living-chart__empty-state {
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     align-items: center;
     column-gap: clamp(24px, 4vw, 48px);
   }
-  .pf-page .pf-art--sundial { grid-row: 1 / span 2; height: 210px; margin-left: calc(var(--pf-pad) * -0.6); }
-  .pf-page .living-chart__empty-state > :not(.pf-art) { grid-column: 2; }
+  .pf-page .pf-figure--timeline { grid-row: 1 / span 2; height: 210px; margin-left: calc(var(--pf-pad) * -0.6); }
+  .pf-page .living-chart__empty-state > :not(.pf-art, .pf-figure) { grid-column: 2; }
 }
 
 /* ── Compatibility invitations ── */
@@ -939,9 +937,19 @@
 @media (max-width: 759px) {
   .pf-page .pfd__empty,
   .pf-page .pf-invites--empty > .core { min-height: 0; align-content: start; }
-  .pf-page .pfd__empty > :not(.pf-art),
+  .pf-page .pfd__empty > :not(.pf-art, .pf-figure),
   .pf-page .pf-invites--empty > .core > :not(.pf-art) { max-width: none; }
-  .pf-page :is(.pf-art--keepsake, .pf-art--invite) {
+  .pf-page .pf-figure--wheel {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    justify-self: stretch;
+    width: auto;
+    height: 200px;
+    margin: calc(var(--pf-pad) * -1) calc(var(--pf-pad) * -1) -12px;
+  }
+  .pf-page .pf-art--invite {
     position: relative;
     top: auto;
     right: auto;

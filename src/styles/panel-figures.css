@@ -1,0 +1,31 @@
+/* ── Code-drawn panel figures (src/components/art/) ──
+   A canvas scene inside a panel's empty state. The box is sized by the
+   page's stylesheet (.pf-figure--*), so nothing moves when it draws; the
+   canvas fills it and fades in once its first frame is drawn. A soft
+   elliptical mask lets the star field dissolve into the panel before any
+   edge of the box. */
+.pf-figure {
+  display: block;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+}
+/* The path to today is wide and short and uses its whole box: only its
+   two ends and the top of its sky fade. */
+.pf-figure[data-figure='moments'] {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 22%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 22%);
+  mask-composite: intersect;
+}
+.pf-figure > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+.pf-figure.is-drawn > canvas { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .pf-figure > canvas { transition: none; }
+}

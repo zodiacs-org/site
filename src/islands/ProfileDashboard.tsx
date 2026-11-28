@@ -15,6 +15,7 @@ import { livingChartCaptureEnabled } from '../lib/living-chart/feature-flags';
 import { transitLine } from '../lib/transits';
 import PlanetGlyph from '../components/PlanetGlyph';
 import PanelArt from '../components/PanelArt';
+import SavedChartsFigure from '../components/art/SavedChartsFigure';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
@@ -213,7 +214,7 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
       // than flash the no-chart invitation before its Today panel.
       <section class="shell pfd" aria-label={t(locale, 'pfdEmptyTitle')} data-pf-pending={ready ? undefined : ''}>
         <div class="core pfd__core pfd__empty">
-          <PanelArt name="profile-keepsake" class="pf-art--keepsake" />
+          <SavedChartsFigure class="pf-figure--wheel" />
           <h2>{t(locale, 'pfdEmptyTitle')}</h2>
           <p>{t(locale, 'pfdEmptyBody')}</p>
           <a class="btn btn--primary" href={localizePath(locale, '/birth-chart/')}>
