@@ -45,6 +45,22 @@ import { protectedPathLabels } from './phase1-scope-guard.mjs';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(repoRoot, path), 'utf8');
 const exists = (path) => existsSync(resolve(repoRoot, path));
+// R3 cites many files over and over (the engine's dist/*.js glob alone about
+// 130 times, about 160 MB of reads in all), so evidence text is read and
+// parsed once per file; nothing writes these files while the suite runs.
+const evidenceText = new Map();
+const readEvidence = (paths) => {
+  const key = paths.join('\n');
+  if (!evidenceText.has(key)) evidenceText.set(key, paths.map(read).join('\n'));
+  return evidenceText.get(key);
+};
+const evidenceParses = new Map();
+const parsesAsJson = (key, text) => {
+  if (!evidenceParses.has(key)) {
+    try { JSON.parse(text); evidenceParses.set(key, true); } catch { evidenceParses.set(key, false); }
+  }
+  return evidenceParses.get(key);
+};
 
 const ledger = readLedger(repoRoot);
 const claimsById = new Map(ledger.claims.map((claim) => [claim.id, claim]));
@@ -147,14 +163,14 @@ describe('claims ledger', () => {
           continue;
         }
         if (/chunk-[A-Za-z0-9]{6,}\.js$/u.test(item.path)) problems.push(`${where}: names a hashed chunk; cite the dist/*.js glob`);
-        const text = files.map(read).join('\n');
+        const text = readEvidence(files);
         if (item.match !== undefined && !text.includes(item.match)) problems.push(`${where}: match not found: "${item.match}"`);
         if (item.sha256 !== undefined) {
           const digest = createHash('sha256').update(readFileSync(resolve(repoRoot, item.path))).digest('hex');
           if (digest !== item.sha256) problems.push(`${where}: sha256 is ${digest}, not ${item.sha256}`);
         }
         if (item.kind === 'data' && item.path.endsWith('.json')) {
-          try { JSON.parse(text); } catch { problems.push(`${where}: does not parse`); }
+          if (!parsesAsJson(files.join('\n'), text)) problems.push(`${where}: does not parse`);
         }
         if (item.kind === 'test') {
           if (!item.anchor) {
@@ -176,7 +192,8 @@ describe('claims ledger', () => {
       }
     }
     expect(problems, report(problems)).toEqual([]);
-  });
+    // About 660 evidence files are read on a cold disk the first time, so allow more than vitest's 5 s default.
+  }, 30_000);
 
   it('R4 finds every binding in its code or data', () => {
     const problems = [];
