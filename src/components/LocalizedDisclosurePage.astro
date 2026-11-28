@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import DisclosureTable from './DisclosureTable.astro';
 import SignIcon from './SignIcon.astro';
 import {
+  ADDRESS_LOOKUP_ID,
   disclosureRows,
   disclosureText,
   type DisclosureTextKey,
@@ -88,6 +89,11 @@ const jsonLd = [
 
     <DisclosureTable rows={rows} locale={locale} />
 
+    <section id={ADDRESS_LOOKUP_ID} class="address-lookup" aria-labelledby="address-lookup-title">
+      <h2 id="address-lookup-title">{text('addressLookupHeading')}</h2>
+      <p>{text('addressLookupBody')}</p>
+    </section>
+
     <aside class="operator-request" aria-labelledby="operator-request-title">
       <div class="operator-request__icons" aria-hidden="true">
         <SignIcon sign="aries" size={40} />
@@ -153,6 +159,14 @@ const jsonLd = [
   /* Attestation explainer — cool tint matching the operator-attested chip
      (#B6D4E4, Cancer disc hue). The amber styling stays reserved for a
      future genuinely-pending state. */
+  .address-lookup {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--hair-1);
+    scroll-margin-top: 96px;
+  }
+  .address-lookup h2 { margin: 0 0 9px; font-size: var(--text-lg); }
+  .address-lookup p { margin: 0; max-width: 68ch; color: var(--muted); line-height: 1.6; }
   .operator-request {
     display: grid;
     grid-template-columns: auto 1fr;
