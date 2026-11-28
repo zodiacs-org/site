@@ -43,7 +43,7 @@
       "exclusions": "None; all four existing snapshots used.",
       "result": "Four weekly snapshots exist: 2026-06-29 median 26.62% (range 23.2–28.9), 2026-07-06 median 26.62% (23.2–28.9), 2026-07-13 median 27.16% (23.0–30.6), 2026-07-20 median 27.16% (23.0–30.6). Baseline established; no widening — the median moved slightly toward concentration. Not refreshed on 2026-11-10: no keyless public Solana RPC answered getTokenLargestAccounts (see docs/thesis-evidence/2026-11-10/rpc-endpoint-probe.json), so the weekly snapshot has not changed since 2026-08-24 and this row keeps its July date.",
       "verificationUrls": [
-        "https://github.com/ZodiacsOfficial/site/commits/main/public/assets/distribution.json"
+        "https://github.com/zodiacs-org/site/commits/main/public/assets/distribution.json"
       ]
     },
     "liquidityPersistence": {

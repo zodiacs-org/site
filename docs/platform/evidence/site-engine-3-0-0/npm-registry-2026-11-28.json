@@ -1,0 +1,41 @@
+{
+  "readAt": "2026-11-28T01:40:08Z",
+  "package": "@zodiacs/engine",
+  "distTags": {
+    "next": "2.0.0-rc.3",
+    "latest": "3.0.0"
+  },
+  "published3_0_0": "2026-11-27T07:47:39.245Z",
+  "versionsInclude3_0_0": true,
+  "dist": {
+    "integrity": "sha512-KzFYG4fnFEz88qW7gM1Sc0rMqDecjXmnap98pvje8yCVXIf0wmlIsLtk+6uviPIQqNxuDTQ2CicacMF8+/z/Mw==",
+    "shasum": "6f6daebda8183efa07a5e79d6e8574c1fdf8c617",
+    "fileCount": 107,
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/@zodiacs%2fengine@3.0.0",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    }
+  },
+  "vendoredArchive": {
+    "path": "vendor/zodiacs-engine-3.0.0.tgz",
+    "integrity": "sha512-KzFYG4fnFEz88qW7gM1Sc0rMqDecjXmnap98pvje8yCVXIf0wmlIsLtk+6uviPIQqNxuDTQ2CicacMF8+/z/Mw==",
+    "shasum": "6f6daebda8183efa07a5e79d6e8574c1fdf8c617"
+  },
+  "provenance": {
+    "predicateType": "https://slsa.dev/provenance/v1",
+    "subject": {
+      "name": "pkg:npm/%40zodiacs/engine@3.0.0",
+      "sha512": "2b31581b87e7144cfcf2a5bb80cd52734acca8379c8d79a76a9f7ca6f8def320955c87f4c26948b0bb64fbabaf88f210a8dc6e0d34360a271a70c17cfbfcff33"
+    },
+    "workflow": {
+      "ref": "refs/heads/main",
+      "repository": "https://github.com/zodiacs-org/engine",
+      "path": ".github/workflows/release.yml"
+    },
+    "gitCommit": "64ebb97b478da79301da47154413a03264cd97fd",
+    "invocation": "https://github.com/zodiacs-org/engine/actions/runs/45960268173/attempts/1",
+    "note": "Read from the registry's attestation bundle; the signature itself was not re-verified with npm audit signatures in this capture."
+  }
+}
