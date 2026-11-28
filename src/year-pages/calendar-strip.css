@@ -1,0 +1,23 @@
+/* The calendar file strip on the year pages (/mercury-retrograde/2027/,
+   /eclipses/2027/, /full-moon-calendar/2027/): the .rx-now card the hub pages
+   draw, with its label, link and note on rows of their own. The values are
+   the ones /mercury-retrograde/ keeps in its scoped block. Each selector
+   names .rx-now as well, so these global rules outrank base.css's .core and
+   .mono the way the hub's scoped rules do. This file sits outside
+   src/styles/ so the Phase 1 template fingerprint does not move. */
+.rx-now > .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+/* One flat card: no outer bezel, sign wash or lit edge. Its link brightens
+   the border when focused. */
+.rx-now.shell { padding: 0; border: 0; background: none; }
+.rx-now.shell > .rx-now__core {
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  background: var(--void-1);
+  box-shadow: none;
+  transition: border-color var(--dur-1) var(--ease);
+}
+.rx-now.shell:focus-within > .rx-now__core { border-color: var(--hair-3); }
+.rx-now .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
+.rx-now .rx-now__all { font-family: var(--font-sans); font-size: 13px; color: var(--faint); letter-spacing: 0; }
+.rx-now .rx-now__all a { color: var(--muted); }
+.rx-now .rx-now__all a:hover { color: var(--text); }
