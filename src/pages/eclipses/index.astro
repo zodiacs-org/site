@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Motion from '../../components/Motion.astro';
 import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
+import EclipseVisibilityMap from '../../components/sky/EclipseVisibilityMap.astro';
 import '../../styles/rx-table.css';
 import eclipseData from '../../data/eclipses.json';
 import { signBySlug } from '../../lib/signs';
@@ -10,6 +11,7 @@ import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/site-publication';
 import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
 import { artPageCard, artPageCardAlt } from '../../lib/og-art-cards.mjs';
+import type { MapLabels } from '../../lib/eclipse-visibility';
 
 // Every eclipse in the committed data (2026 to 2030), receipts, no
 // client ephemeris.
@@ -88,6 +90,49 @@ const status = next
   : 'Later eclipse dates are not available yet.';
 
 const asOf = formatShortDate('en', buildNow);
+
+// The visibility map (src/components/sky/EclipseVisibilityMap.astro) opens on the next eclipse,
+// or on the last one once the table's span has passed.
+const mapEclipses = eclipses.map((e) => ({
+  id: e.anchorId,
+  title: `${e.label} eclipse, ${fmtDay(e.at)}`,
+  day: formatDate('en', e.at, { month: 'short', day: 'numeric', timeZone: 'UTC' }),
+  type: e.type === 'solar' ? 'Solar' : 'Lunar',
+  year: e.at.getUTCFullYear(),
+  hue: e.sign.hue,
+  past: e.past,
+}));
+const mapSelected = (next ?? eclipses[eclipses.length - 1]).anchorId;
+const mapLabels: MapLabels = {
+  heading: 'Where each eclipse can be seen',
+  pick: 'Choose an eclipse',
+  visibleFrom: 'Visible from',
+  region: {
+    solar: 'Sun up during part of the partial eclipse',
+    total: 'Moon up during part of the partial or total eclipse',
+    partial: 'Moon up during part of the partial eclipse',
+    penumbral: 'Moon up during part of the eclipse',
+  },
+  pathTotal: 'Path of totality',
+  pathAnnular: 'Path of annularity',
+  greatest: 'Greatest eclipse',
+  overhead: 'Moon overhead at maximum',
+  source: 'Dots: towns of 15,000 people or more (GeoNames). Visibility: Astronomy Engine.',
+  words: {
+    all: 'all of',
+    most: 'most of',
+    parts: 'parts of',
+    and: 'and',
+    continents: {
+      Europe: 'Europe',
+      Africa: 'Africa',
+      Asia: 'Asia',
+      'North America': 'North America',
+      'South America': 'South America',
+      Oceania: 'Oceania',
+    },
+  },
+};
 
 const faq = [
   {
@@ -199,6 +244,8 @@ const jsonLd = [
       </p>
     </details>
   </section>
+
+  <EclipseVisibilityMap eclipses={mapEclipses} selected={mapSelected} labels={mapLabels} />
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">

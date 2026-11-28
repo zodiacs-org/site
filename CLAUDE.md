@@ -197,6 +197,16 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   site-check drift gate runs it. Rerun it whenever sky.json is rebuilt)
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
   yearly with sky.json)
+- `src/data/eclipse-visibility.json` ← `node scripts/build-eclipse-visibility.mjs`
+  (where each eclipse in eclipses.json can be seen, on the land cells of
+  astrocartography-land.json: astronomy-engine's local solar circumstances,
+  the Moon's altitude through each lunar eclipse, and the central path; drawn
+  at build time by the map on /eclipses/, `src/lib/eclipse-visibility.ts`,
+  so nothing of it ships but the SVG. No timestamp, so `--check` catches
+  drift; the site-check drift gate runs it. Rerun it whenever eclipses.json
+  or the land dots are rebuilt. `scripts/build-eclipse-visibility.test.mjs`
+  holds it to NASA's published paths, saved in
+  `scripts/fixtures/eclipse-visibility/`)
 - `src/data/birthdays.json` ← `node scripts/build-birthdays.mjs` (the
   `now` receipt year — refresh yearly with sky.json). The same run writes
   `src/data/birthdays-precise.json`, the noon-UTC degrees to four decimals

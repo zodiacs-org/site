@@ -105,6 +105,10 @@ same runtime as the three verbs, then holds still.
   figure. A new plate is right only when the page has no figure for that
   data.
 - Never draw a duplicate of a figure the page already has.
+- A plate that lets the reader choose what it shows (the eclipse map's
+  radio buttons) tells its story once, for the choice the page opens on.
+  Every other choice shows its finished picture at once: a control's answer
+  never waits.
 
 ### Wiring
 
@@ -159,6 +163,9 @@ image's frame back from the rendered SVG, and
 `src/lib/birth-chart-anatomy-story.test.ts` renders the birth chart page's
 anatomy wheel and checks the child order, the counts and the radii its
 selectors and delays depend on.
+`src/lib/eclipse-visibility.test.ts` checks that the eclipse map's clip
+shapes hold exactly the dots the data marks, that its pass ends by 2.5 s and
+that its story CSS stays inside the rules above.
 
 ### The sitemap
 
@@ -183,6 +190,7 @@ the fingerprint and needs no new date.
 | Birthday date pages | The dial under "Where the Sun stands" | `src/components/birthday/BirthdayDial.astro` | Existing figure (it no longer rises) | The ring, drawn round from the top in zodiac order, then the decans, the arc of the noon Sun across the years and the Sun marker | The date's own tick at full strength |
 | Rising sign | The one-day strip of risings | `src/pages/rising-sign/index.astro` | Existing figure | A cursor from midnight to midnight at one pace; each band lights and each pin arrives at its minute | The discs of the longest and shortest bands |
 | Birth chart | The numbered anatomy wheel under "What you get" | `src/pages/birth-chart/index.astro` with `src/lib/birth-chart-anatomy-story.ts` | Existing figure (the shared `Wheel`, untouched) | The sign ring, drawn round from the rising degree, then the houses, then the planets in zodiac order; each numbered mark arrives with its part | The last aspect chord |
+| Eclipses | Where each eclipse can be seen, on the astrocartography map's land dots | `src/components/sky/EclipseVisibilityMap.astro` (drawing and timing in `src/lib/eclipse-visibility.ts`, data from `scripts/build-eclipse-visibility.mjs`) | New plate | Solar: the dots that see the eclipse light in the order it reaches its maximum there, while the central path draws on the same clock. Lunar: the ring under the Moon first, then the dots outward from it, highest Moon first, since every place sees the same Moon at once | The greatest-eclipse ring (solar) |
 
 ### Before you build one
 

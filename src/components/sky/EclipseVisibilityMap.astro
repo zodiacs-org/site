@@ -1,0 +1,230 @@
+---
+/**
+ * Where each eclipse on /eclipses/ can be seen: a dotted world map (the land
+ * dots of the /astrocartography/ map, src/data/astrocartography-land.json),
+ * the dots that see the chosen eclipse in the hue of the sign it falls in,
+ * and for a total or annular solar eclipse the central path and the point of
+ * greatest eclipse; for a lunar eclipse, the point under the Moon at maximum.
+ * The data is src/data/eclipse-visibility.json (scripts/build-eclipse-visibility.mjs),
+ * drawn at build time by src/lib/eclipse-visibility.ts; nothing is fetched and
+ * no script ships with it.
+ *
+ * One map, and a row of radio buttons per year below it. Without JavaScript
+ * the radios choose the eclipse through :has(); a browser without :has()
+ * shows the eclipse the page opens on (`selected`, the next one).
+ *
+ * A story plate in the /thesis/ manner (docs/MOTION.md, Stories), played once
+ * by the shared entrance runtime for the eclipse the page opens on. Solar: the
+ * dots light in the order the eclipse reaches its maximum across the map,
+ * while the central path draws on the same clock; the greatest-eclipse ring
+ * closes the pass. Lunar: the ring under the Moon first, then the dots outward
+ * from it, highest Moon first. The markup is the finished picture; the hidden
+ * states apply only while html[data-entrance="on"] and the map's one mark
+ * (.ev-go) is still waiting. Words and controls never move. Opacity and
+ * stroke-dashoffset only; the pass ends by 2.25 s.
+ *
+ * Every word arrives as a prop, so a translated page can pass its own.
+ */
+import {
+  MAP_H, MAP_W, cellRunsPath, centralPathData, eclipseVisibility, landDotsPath, regionPhrase,
+  storyTimes, sweepFlags, visibleFlags, xOf, yOf, type MapEclipse, type MapLabels,
+} from '../../lib/eclipse-visibility';
+
+interface Props {
+  eclipses: MapEclipse[];
+  selected: string;
+  labels: MapLabels;
+}
+
+const { eclipses, selected, labels } = Astro.props;
+const byId = new Map(eclipseVisibility.map((e) => [e.id, e]));
+const n = (value: number) => String(Math.round(value * 10) / 10);
+const landD = landDotsPath();
+
+const items = eclipses.flatMap((item, index) => {
+  const data = byId.get(item.id);
+  if (!data) return [];
+  const isDefault = item.id === selected;
+  const paths = centralPathData(data);
+  const point = data.type === 'solar' ? data.greatest : data.overhead;
+  const pathLabel = paths.length ? (data.kind === 'annular' ? labels.pathAnnular : labels.pathTotal) : null;
+  return [{
+    ...item,
+    data,
+    index,
+    isDefault,
+    clip: isDefault ? null : cellRunsPath(visibleFlags(data)),
+    steps: isDefault ? sweepFlags(data).map((flags) => cellRunsPath(flags)) : null,
+    times: isDefault ? storyTimes(data) : null,
+    paths,
+    pathLabel,
+    point: point ? { x: xOf(point.lon), y: yOf(point.lat) } : null,
+    pointLabel: point ? (data.type === 'solar' ? labels.greatest : labels.overhead) : null,
+    regionLabel: labels.region[data.type === 'solar' ? 'solar' : (data.kind as 'total' | 'partial' | 'penumbral')],
+    where: regionPhrase(data, labels.words),
+  }];
+});
+const years = [...new Set(items.map((item) => item.year))].map((year) => ({ year, items: items.filter((item) => item.year === year) }));
+
+// The plate's styles travel in the body, just before its markup, as one inline
+// block (docs/MOTION.md, Performance). Every class is ev- prefixed.
+const choose = items
+  .map((item) => `.ev:has(#ev-r${item.index}:checked) .ev-${item.index}{display:revert}`)
+  .join('\n');
+const styles = `
+.ev-plate { padding: clamp(20px, 4vw, 36px); border: 1px solid var(--hair-1); border-radius: var(--r-xl); background: rgba(198, 204, 218, 0.02); }
+.ev-figure { position: relative; margin: 0; }
+.ev-map { position: relative; }
+.ev-go { position: absolute; left: 0; top: 50%; width: 100%; height: 1px; pointer-events: none; }
+.ev-svg { display: block; width: 100%; height: auto; aspect-ratio: ${MAP_W} / ${MAP_H}; }
+.ev-grid { fill: none; stroke: var(--hair-1); stroke-width: 1; }
+.ev-land, .ev-on { fill: none; stroke-width: 2.6; stroke-linecap: round; }
+.ev-land { stroke: var(--ink-2); opacity: 0.34; }
+.ev-on { stroke: var(--hue); }
+.ev-path { fill: none; stroke: var(--ink-0); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ev-point { fill: none; stroke: var(--ink-0); stroke-width: 1.6; }
+.ev-cap { margin: 18px 0 0; }
+.ev-cap__title { margin: 0; font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.25; color: var(--ink-0); }
+.ev-cap__where { margin: 6px 0 0; max-width: 62ch; font-size: 0.9375rem; line-height: 1.55; color: var(--text-2); }
+.ev-key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.ev-key li { display: inline-flex; align-items: center; gap: 8px; }
+.ev-key svg { flex: none; overflow: visible; }
+.ev-pick { margin: 22px 0 0; padding: 18px 0 0; border: 0; border-top: 1px solid var(--hair-2); min-width: 0; }
+.ev-pick legend { padding: 0; margin: 0 0 10px; font-size: 13px; font-weight: 500; color: var(--faint); float: left; width: 100%; }
+.ev-year { clear: both; display: grid; grid-template-columns: 3.2em minmax(0, 1fr); align-items: start; gap: 10px; padding: 6px 0; }
+.ev-year__label { padding-top: 9px; font-family: var(--font-mono); font-size: 12px; letter-spacing: -0.01em; color: var(--faint); }
+.ev-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ev-chip { position: relative; display: grid; gap: 1px; min-width: 4.4em; padding: 6px 10px 7px; border: 1px solid var(--hair-2); border-radius: 10px; cursor: pointer; font-size: 13px; line-height: 1.25; color: var(--text-2); }
+.ev-chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.ev-chip__type { font-size: 11.5px; color: var(--faint); }
+.ev-chip.is-past { color: var(--muted); }
+.ev-chip:hover { border-color: var(--hair-3); }
+.ev-chip:has(input:checked) { border-color: var(--ink-1); background: var(--hair-1); color: var(--ink-0); }
+.ev-chip:has(input:focus-visible) { outline: 2px solid var(--ink-0); outline-offset: 2px; }
+.ev-source { margin: 16px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--faint); }
+.ev-layer:not(.is-default), .ev-cap:not(.is-default) { display: none; }
+@supports selector(:has(a)) {
+  .ev-layer.is-default, .ev-cap.is-default { display: none; }
+${choose}
+}
+@media (max-width: 600px) {
+  .ev-plate { margin-inline: -4px; padding: 18px 14px 20px; border-radius: 20px; }
+  .ev-land, .ev-on { stroke-width: 3.4; }
+  .ev-path { stroke-width: 2.6; }
+  .ev-point { stroke-width: 2.4; }
+  .ev-year { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 4px 0 8px; }
+  .ev-year__label { padding-top: 0; }
+  .ev-chips { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; }
+  .ev-chip { min-width: 0; padding: 5px 2px 6px; text-align: center; font-size: 12.5px; }
+  .ev-chip__type { font-size: 11px; }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-entrance='on'] .ev-go ~ .ev-svg .ev-layer.is-default .ev-path { stroke-dasharray: 1; }
+  html[data-entrance='on'] .ev-go:not(.is-in) ~ .ev-svg .ev-layer.is-default .ev-on { opacity: 0.15; }
+  html[data-entrance='on'] .ev-go:not(.is-in) ~ .ev-svg .ev-layer.is-default .ev-path { stroke-dashoffset: 1; }
+  html[data-entrance='on'] .ev-go:not(.is-in) ~ .ev-svg .ev-layer.is-default .ev-point { opacity: 0; }
+  html[data-entrance='on'] .ev-go:not(.is-done) ~ .ev-svg .ev-layer.is-default .ev-on { transition: opacity 500ms ease var(--t); }
+  html[data-entrance='on'] .ev-go:not(.is-done) ~ .ev-svg .ev-layer.is-default .ev-path { transition: stroke-dashoffset var(--d) linear var(--t); }
+  html[data-entrance='on'] .ev-go:not(.is-done) ~ .ev-svg .ev-layer.is-default .ev-point { transition: opacity 400ms ease var(--t); }
+}
+`;
+const grid = [
+  ...[-60, -30, 0, 30, 60].map((lat) => `M0 ${n(yOf(lat))}H${MAP_W}`),
+  ...[-120, -60, 0, 60, 120].map((lon) => `M${n(xOf(lon))} 0V${MAP_H}`),
+].join('');
+---
+{items.length > 0 && (
+  <Fragment>
+  <style is:inline set:html={styles}></style>
+  <section class="ev section--tight container container--narrow" aria-labelledby="ev-title">
+    <div class="section-head"><h2 id="ev-title">{labels.heading}</h2></div>
+    <div class="ev-plate">
+      <figure class="ev-figure">
+        <div class="ev-map">
+          <span class="ev-go" data-enter="draw" aria-hidden="true"></span>
+          <svg class="ev-svg" viewBox={`0 0 ${MAP_W} ${MAP_H}`} aria-hidden="true" focusable="false">
+            <defs>
+              <path id="ev-dots" d={landD} />
+              {items.map((item) => item.clip !== null
+                ? <clipPath id={`ev-c${item.index}`}><path d={item.clip} /></clipPath>
+                : item.steps!.map((d, k) => <clipPath id={`ev-c${item.index}-${k}`}><path d={d} /></clipPath>))}
+            </defs>
+            <path class="ev-grid" d={grid} />
+            <use class="ev-land" href="#ev-dots" />
+            {items.map((item) => (
+              <g class:list={['ev-layer', `ev-${item.index}`, { 'is-default': item.isDefault }]} style={`--hue:${item.hue}`}>
+                {item.clip !== null
+                  ? <use class="ev-on" href="#ev-dots" clip-path={`url(#ev-c${item.index})`} />
+                  : item.steps!.map((_, k) => (
+                    <use class="ev-on" href="#ev-dots" clip-path={`url(#ev-c${item.index}-${k})`} style={`--t:${item.times!.steps[k]}ms`} />
+                  ))}
+                {item.paths.map((d) => (
+                  <path
+                    class="ev-path"
+                    d={d}
+                    pathLength={item.isDefault ? '1' : undefined}
+                    style={item.isDefault && item.times!.path ? `--t:${item.times!.path.t}ms;--d:${item.times!.path.d}ms` : undefined}
+                  />
+                ))}
+                {item.point && (
+                  <circle
+                    class="ev-point"
+                    cx={n(item.point.x)}
+                    cy={n(item.point.y)}
+                    r="6"
+                    style={item.isDefault && item.times!.mark !== null ? `--t:${item.times!.mark}ms` : undefined}
+                  />
+                )}
+              </g>
+            ))}
+          </svg>
+        </div>
+        <figcaption>
+        {items.map((item) => (
+          <div class:list={['ev-cap', `ev-${item.index}`, { 'is-default': item.isDefault }]} style={`--hue:${item.hue}`}>
+            <p class="ev-cap__title">{item.title}</p>
+            <p class="ev-cap__where">{labels.visibleFrom} {item.where}.</p>
+            <ul class="ev-key">
+              <li>
+                <svg width="22" height="8" viewBox="0 0 22 8" aria-hidden="true"><path d="M3 4h0m8 0h0m8 0h0" stroke="var(--hue)" stroke-width="3.4" stroke-linecap="round" /></svg>
+                {item.regionLabel}
+              </li>
+              {item.pathLabel && (
+                <li>
+                  <svg width="22" height="8" viewBox="0 0 22 8" aria-hidden="true"><path d="M1 4h20" stroke="var(--ink-0)" stroke-width="1.8" stroke-linecap="round" /></svg>
+                  {item.pathLabel}
+                </li>
+              )}
+              {item.pointLabel && (
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="var(--ink-0)" stroke-width="1.6" /></svg>
+                  {item.pointLabel}
+                </li>
+              )}
+            </ul>
+          </div>
+        ))}
+        </figcaption>
+      </figure>
+      <fieldset class="ev-pick">
+        <legend>{labels.pick}</legend>
+        {years.map(({ year, items: row }) => (
+          <div class="ev-year">
+            <span class="ev-year__label" aria-hidden="true">{year}</span>
+            <div class="ev-chips">
+              {row.map((item) => (
+                <label class:list={['ev-chip', { 'is-past': item.past }]}>
+                  <input type="radio" name="ev-pick" id={`ev-r${item.index}`} value={item.id} checked={item.isDefault} aria-label={item.title} />
+                  <span aria-hidden="true">{item.day}</span>
+                  <span class="ev-chip__type" aria-hidden="true">{item.type}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </fieldset>
+      <p class="ev-source">{labels.source}</p>
+    </div>
+  </section>
+  </Fragment>
+)}

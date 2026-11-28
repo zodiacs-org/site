@@ -883,6 +883,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The Mercury retrograde page's plate of the year's loops (src/components/sky/MercuryYearPlate.astro), on the day
   // of the daily edition it was built with, last so it wins.
   ['/mercury-retrograde/', '2026-11-26'] as const,
+  // The eclipses page's map of where each eclipse can be seen (src/components/sky/EclipseVisibilityMap.astro),
+  // on the day of the daily edition it was built with, last so it wins.
+  ['/eclipses/', '2026-11-28'] as const,
 ]);
 
 function getLastmod(loc: string): string {
