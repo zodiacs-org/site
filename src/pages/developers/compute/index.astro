@@ -20,7 +20,7 @@ import {
   type ErrorCode,
 } from '../../../lib/compute-api/constants';
 
-const title = 'Compute API — Charts, Positions and Sky Facts over HTTP | Zodiacs.org';
+const title = 'Compute API: Charts, Positions and Sky Facts over HTTP | Zodiacs.org';
 // A plain literal: scripts/build-assistant-context.mjs reads it from the source.
 const description = 'Seven POST endpoints under /api/v1/ compute a chart, positions, houses, the events in a window, a local time as UTC and TT, whether a stated sky fact holds, and when chosen conditions all hold. Every answer names the engine and carries a receipt. No key; birth data goes in the body, and the function writes nothing from a request to a log, a file or a database.';
 
@@ -107,8 +107,9 @@ const jsonLd = [
         answer carries the result, a receipt that says how it was computed, and
         the name and version of the engine that computed it:{' '}
         <code>{backend.name}</code> {backend.version}, with{' '}
-        {backend.ephemeris.name} {backend.ephemeris.version}, the engine this
-        site's calculators run in the browser.
+        {backend.ephemeris.name} {backend.ephemeris.version}. This site's
+        calculators run the same engine version in the browser, in a smaller
+        build that keeps the package default, astronomy-engine.
       </p>
       <p>
         The endpoints answer only while their per-address rate limit is in
@@ -194,13 +195,16 @@ const jsonLd = [
         computed and flagged <code>outside-reference-span</code>.
       </p>
       <p>
-        The engine reads an instant as a chart reads it. From 1972 to
-        2 October 2027 it is UTC: Terrestrial Time is UTC plus the leap
-        seconds and 32.184 seconds, and UT1 comes from the IERS measurements
-        of UT1 − UTC. Before 1972 and after that date it is read as UT1, and
-        Terrestrial Time is UT1 plus the engine's ΔT model. Every result that
-        gives an instant's ΔT also gives its <code>timeScale</code>, which
-        says which way it was read.
+        The engine reads an instant as a chart reads it. From 1972 through
+        2027-10-02T00:00:00Z it is UTC: Terrestrial Time is UTC plus the IERS
+        TAI − UTC offset and 32.184 seconds, and UT1 comes from the IERS table
+        of UT1 − UTC observations and predictions. After 2027-10-02T00:00:00Z it
+        is still UTC: Terrestrial Time is UTC plus 69.184 seconds, the last
+        IERS TAI − UTC offset of 37 seconds plus 32.184 seconds, and UT1 comes
+        from the engine's ΔT model. Before 1972 it is
+        read as UT1, and Terrestrial Time is UT1 plus the engine's ΔT model.
+        Every result that gives an instant's ΔT also gives its{' '}
+        <code>timeScale</code>, which says which way it was read.
       </p>
       <p>
         A latitude is degrees north, greater than −90 and less than 90: the
@@ -376,8 +380,8 @@ const jsonLd = [
           the atlas's instant is two hours before tzdb's for Europe/Paris.</li>
         <li>Terrestrial Time and ΔT are the engine's for that instant, to the
           millisecond, read as described above. ΔT comes with its one-sigma
-          band and the source it came from: the IERS measurements, or the part
-          of the model.</li>
+          band and the source it came from: IERS observations and predictions,
+          or the part of the model.</li>
       </ul>
     </div>
     <pre tabindex="0" role="region" aria-label="Time request"><code>{request('time')}</code></pre>
@@ -632,13 +636,13 @@ const jsonLd = [
         refused with <code>invalid-request</code>.
       </p>
       <p>
-        Within v1, fields are added, never renamed or removed. The engine is a
-        release candidate: when the site adopts a new one, the version in{' '}
+        Within v1, fields are added, never renamed or removed. When the site
+        adopts a new engine release, the version in{' '}
         <code>backend</code> and <code>cite</code> changes with it, and results
         can move with the engine's conventions, which the receipt names. Compare
         versions and receipts before comparing numbers from different days. The{' '}
         <a href="/developers/engine/#accuracy">engine page</a> says how close its
-        positions are to Swiss Ephemeris and NASA JPL Horizons.
+        positions are to NASA JPL Horizons.
       </p>
     </div>
   </section>
