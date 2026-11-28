@@ -3,6 +3,7 @@ import {
   NumerologyInputError,
   classifyPart,
   dateNumbers,
+  droppedNamePartEntries,
   droppedNameParts,
   formatChain,
   letterValue,
@@ -659,6 +660,25 @@ describe('normalizeName', () => {
     expect(normalizeName('Sir Example Jr.', { keepParts: ['Jr.'] })).toEqual(['EXAMPLE', 'JR']);
     const kept = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir John Jr.', today: '2026-11-28', keepParts: ['Sir'] });
     expect(kept.name!.parts.map((part) => part.letters)).toEqual(['SIR', 'JOHN']);
+    // Repeated title/suffix spellings are identified by 0-based letter-bearing position so one occurrence can be kept.
+    expect(droppedNamePartEntries('Sir Sir Example Jr.')).toEqual([
+      { raw: 'Sir', key: 'SIR', index: 0, occurrence: 1, occurrences: 2 },
+      { raw: 'Sir', key: 'SIR', index: 1, occurrence: 2, occurrences: 2 },
+      { raw: 'Jr.', key: 'JR', index: 3, occurrence: 1, occurrences: 1 },
+    ]);
+    expect(normalizeName('Sir Sir Example', { keepPartIndices: [1] })).toEqual(['SIR', 'EXAMPLE']);
+    expect(normalizeName('123 Sir Sir Example', { keepPartIndices: [1] })).toEqual(['SIR', 'EXAMPLE']);
+    const singleOccurrence = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir Sir Example', today: '2026-11-28', keepPartIndices: [1] });
+    const singleExpected = numerologyProfile({ birthDate: '1990-05-03', fullName: 'Sir Example', today: '2026-11-28', keepPartIndices: [0] });
+    expect(singleOccurrence.name!.expression).toEqual(singleExpected.name!.expression);
+    // Remapping Y overrides stays exact when keeping only one repeated occurrence.
+    const remapped = remapYOverrides(
+      'Sir Sir Yvonne',
+      { keepPartIndices: [] },
+      { keepPartIndices: [1] },
+      [{ part: 0, index: 0, as: 'consonant' }],
+    );
+    expect(remapped).toEqual([{ part: 1, index: 0, as: 'consonant' }]);
   });
 
   it('remaps Y overrides onto retained parts when toggling keepTitles', () => {

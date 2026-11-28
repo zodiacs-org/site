@@ -203,7 +203,7 @@ async function lunarReturn(input: unknown) {
 }
 
 async function numerology(input: unknown) {
-  const { birthDate, fullName, today, keepParts } = fields(input, ['birthDate', 'fullName', 'today', 'keepParts']);
+  const { birthDate, fullName, today, keepParts, keepPartIndices } = fields(input, ['birthDate', 'fullName', 'today', 'keepParts', 'keepPartIndices']);
   const date = need(readDate(birthDate));
   admitBirthDate(date);
   if (fullName !== undefined && (typeof fullName !== 'string' || characters(fullName) > 200)) {
@@ -220,9 +220,20 @@ async function numerology(input: unknown) {
     }
     kept = keepParts as string[];
   }
+  let keptIndices: number[] | undefined;
+  if (keepPartIndices !== undefined) {
+    if (
+      !Array.isArray(keepPartIndices)
+      || keepPartIndices.length > 20
+      || !keepPartIndices.every((item) => typeof item === 'number' && Number.isInteger(item) && item >= 0 && item <= 99)
+    ) {
+      throw new Refusal('INVALID_INPUT');
+    }
+    keptIndices = keepPartIndices as number[];
+  }
   const forDate = today === undefined ? localToday(new Date()) : need(readDate(today));
   try {
-    return numerologyResult(date, (fullName as string | undefined) ?? null, forDate, kept);
+    return numerologyResult(date, (fullName as string | undefined) ?? null, forDate, kept, keptIndices);
   } catch (error) {
     if (error instanceof NumerologyInputError) {
       throw new Refusal(error.code === 'unsupported-letters' ? 'UNSUPPORTED_NAME' : 'INVALID_INPUT');

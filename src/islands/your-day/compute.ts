@@ -42,20 +42,22 @@ export async function computeYourDay(
   input: YourDayInput,
   preload: (date: string, zone: string) => Promise<void> = prepareLocalTime,
 ): Promise<PersonalDayReading & { sunSign: ShareSign | null }> {
-  // Load the resolver and all 16 zone history files uniformly (independent of birth date or zone) so request logs
-  // never hint at either. Tolerate individual unused shard failures without retrying any birth-specific file:
-  // for a pre-1970 date, decode from the already-loaded shard when its bucket succeeded, or fail without retrying.
-  const settled = await Promise.allSettled([
-    preload('2026-01-01', 'UTC'),
-    ...ZONE_PER_HISTORY_FILE.map((zone) => preload(HISTORY_DATE, zone)),
-  ]);
-  if (settled[0].status === 'rejected') throw settled[0].reason;
-  const shardResults = settled.slice(1);
+  // Start the resolver and all 16 zone history downloads uniformly (independent of birth date or zone) so request
+  // logs never hint at either. Attach handlers immediately so unused shard failures never go unhandled, and await
+  // only the resolver plus any shard this reading actually needs so slow or stalled unused shards never block it.
+  const resolverReady = preload('2026-01-01', 'UTC');
+  const shardPromises = ZONE_PER_HISTORY_FILE.map((zone) =>
+    preload(HISTORY_DATE, zone).then(
+      () => ({ ok: true as const }),
+      (reason: unknown) => ({ ok: false as const, reason }),
+    ),
+  );
+  await resolverReady;
   const clock = {
     prepareLocalTime: async (date: string, zone: string) => {
       if (!birthplaceTimeCanApply(date) || isFixedOffsetZone(zone)) return;
-      const bucket = shardResults[zoneHistoryBucket(zone)];
-      if (bucket?.status === 'rejected') throw bucket.reason;
+      const bucket = await shardPromises[zoneHistoryBucket(zone)];
+      if (!bucket.ok) throw bucket.reason;
       await prepareLocalTime(date, zone);
     },
     resolveLocalToUtc,

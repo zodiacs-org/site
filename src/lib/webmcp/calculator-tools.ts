@@ -227,6 +227,12 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
         items: { type: 'string', minLength: 1, maxLength: 20 },
         description: 'Specific title or suffix parts (such as "Sir" or "Miss") to count as part of the birth name instead of ignoring them.',
       },
+      keepPartIndices: {
+        type: 'array',
+        maxItems: 20,
+        items: { type: 'integer', minimum: 0, maximum: 99 },
+        description: '0-based positions among the letter-bearing name parts (such as [1] for the second "Sir" in "Sir Sir Example") to count as part of the birth name.',
+      },
     }, ['birthDate']),
   },
   {

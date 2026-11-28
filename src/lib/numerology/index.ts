@@ -241,6 +241,21 @@ export interface NormalizeNameOptions {
   keepTitles?: boolean;
   /** Specific title or suffix parts (case- and punctuation-insensitive, e.g. ["Sir"]) to keep as part of the birth name while still dropping others. */
   keepParts?: readonly string[];
+  /** Specific 0-based positions among the letter-bearing name parts (e.g. [1] for the second "Sir" in "Sir Sir Example") to keep as part of the birth name. */
+  keepPartIndices?: readonly number[];
+}
+
+export interface DroppedNamePart {
+  /** The part as written in the input (e.g. "Sir", "Jr."). */
+  raw: string;
+  /** Folded uppercase A-Z spelling (e.g. "SIR", "JR"). */
+  key: string;
+  /** 0-based position among the name's letter-bearing parts. */
+  index: number;
+  /** 1-based occurrence index among parts sharing `key`. */
+  occurrence: number;
+  /** Total occurrences of `key` in the name. */
+  occurrences: number;
 }
 
 /** Folds a candidate name part key (e.g. "Sir", "Jr.") to uppercase A-Z without throwing on non-Latin input. */
@@ -261,22 +276,40 @@ function keptPartSet(options?: NormalizeNameOptions): Set<string> {
   return out;
 }
 
-function isPartKept(letters: string, keepTitles: boolean, kept: ReadonlySet<string>): boolean {
+function keptIndexSet(options?: NormalizeNameOptions): Set<number> {
+  const out = new Set<number>();
+  for (const index of options?.keepPartIndices ?? []) {
+    if (Number.isInteger(index) && index >= 0) out.add(index);
+  }
+  return out;
+}
+
+function isPartKept(
+  letters: string,
+  partIndex: number,
+  keepTitles: boolean,
+  kept: ReadonlySet<string>,
+  keptIndices: ReadonlySet<number>,
+): boolean {
   if (!SUFFIXES.has(letters) && !TITLES.has(letters)) return true;
-  return keepTitles || kept.has(letters);
+  return keepTitles || kept.has(letters) || keptIndices.has(partIndex);
 }
 
 function normalizeNameParts(input: string, options: NormalizeNameOptions = {}): RawPart[] {
   if (typeof input !== 'string') throw new NumerologyInputError('empty-name');
   const keepTitles = options.keepTitles === true;
   const kept = keptPartSet(options);
+  const keptIndices = keptIndexSet(options);
   const parts: RawPart[] = [];
+  let partIndex = 0;
   for (const raw of input.split(/\s+/)) {
     if (!raw) continue;
     const letters = foldToken(raw);
     if (!letters) continue;
-    if (!isPartKept(letters, keepTitles, kept)) continue;
-    parts.push({ raw, letters });
+    if (isPartKept(letters, partIndex, keepTitles, kept, keptIndices)) {
+      parts.push({ raw, letters });
+    }
+    partIndex += 1;
   }
   if (parts.length === 0) throw new NumerologyInputError('empty-name');
   return parts;
@@ -299,28 +332,41 @@ export function droppedNameParts(input: string): string[] {
 }
 
 /**
- * Distinct excluded title/suffix parts in order of first appearance, each with
- * its folded key (e.g. `{ raw: 'Sir', key: 'SIR' }`, `{ raw: 'Jr.', key: 'JR' }`)
- * so readers can include or ignore each excluded part independently.
+ * Every excluded title/suffix occurrence in written order, identified by its
+ * 0-based `index` among letter-bearing name parts so readers can include or
+ * ignore each occurrence independently (even when repeated, e.g. "Sir Sir Example").
  */
-export function droppedNamePartEntries(input: string): { raw: string; key: string }[] {
+export function droppedNamePartEntries(input: string): DroppedNamePart[] {
   if (typeof input !== 'string') return [];
-  const seen = new Set<string>();
-  const out: { raw: string; key: string }[] = [];
+  const matches: { raw: string; key: string; index: number }[] = [];
+  const totals = new Map<string, number>();
+  let partIndex = 0;
   for (const raw of input.split(/\s+/)) {
     if (!raw) continue;
     const letters = foldToken(raw);
-    if (!letters || (!SUFFIXES.has(letters) && !TITLES.has(letters)) || seen.has(letters)) continue;
-    seen.add(letters);
-    out.push({ raw, key: letters });
+    if (!letters) continue;
+    if (SUFFIXES.has(letters) || TITLES.has(letters)) {
+      matches.push({ raw, key: letters, index: partIndex });
+      totals.set(letters, (totals.get(letters) ?? 0) + 1);
+    }
+    partIndex += 1;
   }
-  return out;
+  const seen = new Map<string, number>();
+  return matches.map((entry) => {
+    const occurrence = (seen.get(entry.key) ?? 0) + 1;
+    seen.set(entry.key, occurrence);
+    return {
+      ...entry,
+      occurrence,
+      occurrences: totals.get(entry.key) ?? 1,
+    };
+  });
 }
 
 /**
  * Remaps Y overrides when switching name normalisation options (such as
- * toggling `keepTitles` or `keepParts`) so overrides on parts that stay in the
- * name keep pointing to the same part and letter index.
+ * toggling `keepTitles`, `keepParts`, or `keepPartIndices`) so overrides on
+ * parts that stay in the name keep pointing to the same part and letter index.
  */
 export function remapYOverrides(
   input: string,
@@ -333,6 +379,8 @@ export function remapYOverrides(
   const toKeepAll = to.keepTitles === true;
   const fromKept = keptPartSet(from);
   const toKept = keptPartSet(to);
+  const fromKeptIndices = keptIndexSet(from);
+  const toKeptIndices = keptIndexSet(to);
 
   const fromPartIndex: number[] = [];
   const toPartByIndex = new Map<number, number>();
@@ -342,8 +390,8 @@ export function remapYOverrides(
     if (!raw) continue;
     const letters = foldToken(raw);
     if (!letters) continue;
-    if (isPartKept(letters, fromKeepAll, fromKept)) fromPartIndex.push(partIndex);
-    if (isPartKept(letters, toKeepAll, toKept)) {
+    if (isPartKept(letters, partIndex, fromKeepAll, fromKept, fromKeptIndices)) fromPartIndex.push(partIndex);
+    if (isPartKept(letters, partIndex, toKeepAll, toKept, toKeptIndices)) {
       toPartByIndex.set(partIndex, toPart);
       toPart += 1;
     }
@@ -587,13 +635,19 @@ export interface NumerologyProfileInput {
   keepTitles?: boolean;
   /** Specific title/suffix parts (e.g. ["Sir"]) to keep as part of the birth name while still dropping others. */
   keepParts?: readonly string[];
+  /** Specific 0-based positions among the letter-bearing name parts to keep as part of the birth name. */
+  keepPartIndices?: readonly number[];
 }
 
 export function numerologyProfile(input: NumerologyProfileInput): NumerologyProfile {
   const date = dateNumbers(input.birthDate);
   const fullName = typeof input.fullName === 'string' ? input.fullName.trim() : '';
   const name = fullName
-    ? nameNumbers(fullName, input.yOverrides ?? [], { keepTitles: input.keepTitles, keepParts: input.keepParts })
+    ? nameNumbers(fullName, input.yOverrides ?? [], {
+      keepTitles: input.keepTitles,
+      keepParts: input.keepParts,
+      keepPartIndices: input.keepPartIndices,
+    })
     : null;
   const maturity = name ? reduceKeepingMasters(date.lifePath.value + name.expression.value) : null;
   const cycles = personalCycles(input.birthDate, input.today);

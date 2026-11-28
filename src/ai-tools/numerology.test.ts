@@ -120,7 +120,7 @@ describe('the numerology switch on', () => {
       'openai/outputTemplate': FEATURES_URI,
       'openai/ui': { entrypoints: [{ type: 'thread' }] },
     });
-    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone', 'keepParts']);
+    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone', 'keepParts', 'keepPartIndices']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
     // Labelled as separate from astrology; work and wellbeing allowed as the tradition reads them, no money forecasts (ZOD-30), with the lines it may not cross.
     expect(tool.description).toContain('Numerology is a separate tradition from astrology');
@@ -169,6 +169,13 @@ describe('the numerology switch on', () => {
     expect(mixed.structuredContent.data.expression).toEqual(expected.structuredContent.data.expression);
     expect(mixed.structuredContent.data.soulUrge).toEqual(expected.structuredContent.data.soulUrge);
     expect(mixed.structuredContent.data.personality).toEqual(expected.structuredContent.data.personality);
+    // Keeping only the second "Sir" in "Sir Sir Example" via keepPartIndices: [1] counts exactly one "Sir".
+    const repeated = await call(host, 'get_numerology', { birthDate: '1990-05-03', name: 'Sir Sir Example', keepPartIndices: [1] });
+    expect(repeated.isError).toBe(false);
+    expect(repeated.structuredContent.data.expression).toEqual(expected.structuredContent.data.expression);
+    expect(repeated.structuredContent.data.soulUrge).toEqual(expected.structuredContent.data.soulUrge);
+    expect(repeated.structuredContent.data.personality).toEqual(expected.structuredContent.data.personality);
+    expect(JSON.stringify(repeated)).not.toMatch(/\bSir\b/u);
   });
 
   it('with every released tool on, lists get_numerology after sky events, year score and solar return', async () => {

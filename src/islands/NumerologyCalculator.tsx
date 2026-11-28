@@ -23,6 +23,7 @@ import {
   NumerologyInputError,
   remapYOverrides,
   type CoreNumber,
+  type DroppedNamePart,
   type KarmicDebt,
   type NamePartNumbers,
   type NumerologyProfile,
@@ -61,7 +62,7 @@ interface Submitted {
   name: string;
   date: string;
   today: string;
-  keptParts?: string[];
+  keptPartIndices?: number[];
 }
 
 /** Local calendar date as YYYY-MM-DD; personal cycles run on the reader's own calendar. */
@@ -116,13 +117,13 @@ interface Computed {
   example: string;
   /** Set when a non-blank name normalised to nothing and the date numbers were computed alone. */
   nameEmptied: boolean;
-  /** Distinct name parts matching the title/suffix list (e.g. "Sir", "Jr.") so the reader can include or ignore each one. */
-  droppedParts: { raw: string; key: string }[];
+  /** Every name-part occurrence matching the title/suffix list (identified by 0-based position) so each can be toggled independently. */
+  droppedParts: DroppedNamePart[];
 }
 
 function compute(input: Submitted, overrides: readonly YOverride[]): Computed {
   const example = lifePathExample(input.date);
-  const keptParts = input.keptParts ?? [];
+  const keptPartIndices = input.keptPartIndices ?? [];
   const droppedParts = input.name.trim() ? droppedNamePartEntries(input.name) : [];
   try {
     const profile = numerologyProfile({
@@ -130,7 +131,7 @@ function compute(input: Submitted, overrides: readonly YOverride[]): Computed {
       fullName: input.name,
       today: input.today,
       yOverrides: overrides,
-      keepParts: keptParts,
+      keepPartIndices: keptPartIndices,
     });
     return {
       profile,
@@ -240,6 +241,14 @@ function listJoin(items: readonly string[]): string {
   return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
 }
 
+/** Label for an excluded title/suffix occurrence, disambiguating repeated spellings by occurrence order. */
+function droppedPartLabel(part: DroppedNamePart): string {
+  if (part.occurrences <= 1) return `"${part.raw}"`;
+  const n = part.occurrence;
+  const suffix = n % 100 >= 11 && n % 100 <= 13 ? 'th' : n % 10 === 1 ? 'st' : n % 10 === 2 ? 'nd' : n % 10 === 3 ? 'rd' : 'th';
+  return `"${part.raw}" (${n}${suffix})`;
+}
+
 function ageSpan(starts: readonly number[], i: number): string {
   const from = starts[i] ?? 0;
   const next = starts[i + 1];
@@ -313,11 +322,11 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
       setError(birthDateRefusalText(refusal));
       return;
     }
-    // Y overrides and keptParts index into one specific name; a different name starts clean.
+    // Y overrides and keptPartIndices index into one specific name; a different name starts clean.
     const sameName = submitted !== null && submitted.name === name;
     const nextOverrides = sameName ? overrides : [];
-    const nextKeptParts = sameName ? (submitted.keptParts ?? []) : [];
-    const input: Submitted = { name, date, today: localIsoDate(new Date()), keptParts: nextKeptParts };
+    const nextKeptIndices = sameName ? (submitted.keptPartIndices ?? []) : [];
+    const input: Submitted = { name, date, today: localIsoDate(new Date()), keptPartIndices: nextKeptIndices };
     try {
       setResult(compute(input, nextOverrides));
       setSubmitted(input);
@@ -327,18 +336,18 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
     }
   }
 
-  function toggleDroppedPart(partKey: string) {
+  function toggleDroppedPart(partIndex: number) {
     if (!submitted) return;
-    const prevKept = submitted.keptParts ?? [];
-    const nextKept = prevKept.includes(partKey)
-      ? prevKept.filter((key) => key !== partKey)
-      : [...prevKept, partKey];
-    const nextInput: Submitted = { ...submitted, keptParts: nextKept };
+    const prevKept = submitted.keptPartIndices ?? [];
+    const nextKept = prevKept.includes(partIndex)
+      ? prevKept.filter((index) => index !== partIndex)
+      : [...prevKept, partIndex];
+    const nextInput: Submitted = { ...submitted, keptPartIndices: nextKept };
     try {
       const nextOverrides = remapYOverrides(
         submitted.name,
-        { keepParts: prevKept },
-        { keepParts: nextKept },
+        { keepPartIndices: prevKept },
+        { keepPartIndices: nextKept },
         overrides,
       );
       setError('');
@@ -445,29 +454,30 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
           {result?.nameEmptied && result.droppedParts.length === 0 && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
 
           {result && result.droppedParts.length > 0 && (() => {
-            const keptSet = new Set(submitted?.keptParts ?? []);
-            const keptList = result.droppedParts.filter((part) => keptSet.has(part.key));
-            const ignoredList = result.droppedParts.filter((part) => !keptSet.has(part.key));
+            const keptSet = new Set(submitted?.keptPartIndices ?? []);
+            const keptList = result.droppedParts.filter((part) => keptSet.has(part.index));
+            const ignoredList = result.droppedParts.filter((part) => !keptSet.has(part.index));
             return (
               <div class="notice" role="status">
                 <p>
                   {ignoredList.length > 0 && keptList.length > 0
-                    ? `Ignored ${listJoin(ignoredList.map((part) => `"${part.raw}"`))} as a title or suffix. Including ${listJoin(keptList.map((part) => `"${part.raw}"`))} as part of your birth name.`
+                    ? `Ignored ${listJoin(ignoredList.map(droppedPartLabel))} as a title or suffix. Including ${listJoin(keptList.map(droppedPartLabel))} as part of your birth name.`
                     : keptList.length > 0
-                      ? `Including ${listJoin(keptList.map((part) => `"${part.raw}"`))} as part of your birth name.`
-                      : `Ignored ${listJoin(ignoredList.map((part) => `"${part.raw}"`))} as a title or suffix. If ${ignoredList.length === 1 ? 'it is' : 'any is'} part of your birth name, include it.`}
+                      ? `Including ${listJoin(keptList.map(droppedPartLabel))} as part of your birth name.`
+                      : `Ignored ${listJoin(ignoredList.map(droppedPartLabel))} as a title or suffix. If ${ignoredList.length === 1 ? 'it is' : 'any is'} part of your birth name, include it.`}
                 </p>
                 <div class="num__part-actions">
                   {result.droppedParts.map((part) => {
-                    const isKept = keptSet.has(part.key);
+                    const isKept = keptSet.has(part.index);
+                    const label = droppedPartLabel(part);
                     return (
                       <button
-                        key={part.key}
+                        key={part.index}
                         type="button"
                         class="btn btn--ghost"
-                        onClick={() => toggleDroppedPart(part.key)}
+                        onClick={() => toggleDroppedPart(part.index)}
                       >
-                        {isKept ? `Ignore "${part.raw}"` : `Include "${part.raw}" in birth name`}
+                        {isKept ? `Ignore ${label}` : `Include ${label} in birth name`}
                       </button>
                     );
                   })}

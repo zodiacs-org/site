@@ -7,9 +7,9 @@ import { numerologyResult } from './numerology';
 // NumerologyCalculator's compute, the code /numerology/ reckons with.
 const compute = islandFunction('NumerologyCalculator.tsx', { function: 'compute' });
 
-const page = (date: string, name: string, today: string, keptParts: string[] = []) => compute(
+const page = (date: string, name: string, today: string, keptPartIndices: number[] = []) => compute(
   { droppedNamePartEntries, numerologyProfile, NumerologyInputError, lifePathExample: () => '' },
-  { name, date, today, keptParts },
+  { name, date, today, keptPartIndices },
   [],
 ) as { profile: NumerologyProfile; nameEmptied: boolean };
 
@@ -46,21 +46,32 @@ describe('the numerology tool reckons what /numerology/ shows', () => {
     expect(() => page('1990-06-15', 'Алекс', '2026-10-15')).toThrow(NumerologyInputError);
   });
 
-  it('reproduces per-part keepParts choices from /numerology/ while preserving the default', async () => {
-    // Default strips "Sir" alone to date-only numbers; keepParts: ["Sir"] counts it identically to the page.
+  it('reproduces per-occurrence keepPartIndices and keepParts choices from /numerology/ while preserving the default', async () => {
+    // Default strips "Sir" alone to date-only numbers; keepParts/keepPartIndices count it identically to the page.
     expect(numerologyResult('1990-05-03', 'Sir', '2026-11-28').nameUsed).toBe(false);
-    for (const [fullName, keepParts] of [['Sir', ['Sir']], ['Sir Example Jr.', ['Sir']]] as const) {
-      const shown = page('1990-05-03', fullName, '2026-11-28', [...keepParts]);
-      const result = numerologyResult('1990-05-03', fullName, '2026-11-28', keepParts);
+    for (const [fullName, keepPartIndices, keepParts] of [
+      ['Sir', [0], ['Sir']],
+      ['Sir Example Jr.', [0], ['Sir']],
+      ['Sir Sir Example', [1], undefined],
+    ] as const) {
+      const shown = page('1990-05-03', fullName, '2026-11-28', [...keepPartIndices]);
+      const result = numerologyResult('1990-05-03', fullName, '2026-11-28', keepParts, keepPartIndices);
       expect(result.nameUsed).toBe(true);
       expect(result.expression).toEqual(reduction(shown.profile.name?.expression));
       expect(result.soulUrge).toEqual(reduction(shown.profile.name?.soulUrge));
       expect(result.personality).toEqual(reduction(shown.profile.name?.personality));
-      const envelope = await runCalculatorTool('zodiacs.numerology', { birthDate: '1990-05-03', fullName, today: '2026-11-28', keepParts: [...keepParts] });
+      const envelope = await runCalculatorTool('zodiacs.numerology', {
+        birthDate: '1990-05-03',
+        fullName,
+        today: '2026-11-28',
+        keepPartIndices: [...keepPartIndices],
+      });
       expect(envelope.ok).toBe(true);
       if (envelope.ok) expect((envelope.data as { expression: unknown }).expression).toEqual(result.expression);
     }
-    const bad = await runCalculatorTool('zodiacs.numerology', { birthDate: '1990-05-03', fullName: 'Sir', keepParts: [''] });
-    expect(bad.ok).toBe(false);
+    const badPart = await runCalculatorTool('zodiacs.numerology', { birthDate: '1990-05-03', fullName: 'Sir', keepParts: [''] });
+    expect(badPart.ok).toBe(false);
+    const badIndex = await runCalculatorTool('zodiacs.numerology', { birthDate: '1990-05-03', fullName: 'Sir Sir Example', keepPartIndices: [-1] });
+    expect(badIndex.ok).toBe(false);
   });
 });
